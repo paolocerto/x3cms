@@ -1,0 +1,1 @@
+If you need multi language, multi area, with themes and plugins, multi menus, multi user support with granular permissions with an easy administration panel and a powerful MVC core maybe you need X3 CMS

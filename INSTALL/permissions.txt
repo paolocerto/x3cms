@@ -1,0 +1,13 @@
+.htaccess
+robots.txt
+cms/config/config.php
+cms/files
+cms/files/sitemap.xml
+cms/files/filemanager/files
+cms/files/filemanager/img
+cms/files/filemanager/media
+cms/files/filemanager/template
+cms/files/thumbs/files
+cms/files/thumbs/img
+cms/files/thumbs/media
+cms/files/thumbs/template
