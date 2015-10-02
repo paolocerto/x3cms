@@ -1,0 +1,30 @@
+Header unset ETag
+FileETag None
+<FilesMatch "\.(ico|js|css|swf|gif|jpeg|png)$">
+Header unset Last-Modified
+Header set Expires "Fri, 21 Dec 2028 00:00:00 GMT"
+Header set Cache-Control "public, no-transform"
+SetOutputFilter DEFLATE
+</FilesMatch>
+
+<FilesMatch "\.(htm|html|css|js)$">
+AddDefaultCharset UTF-8
+</FilesMatch>
+
+Options -Indexes
+
+php_value zlib.output_compression 1
+php_value session.use_trans_sid "off"
+php_value upload_max_filesize 600M
+php_value post_max_size 600M
+php_value max_execution_time 1000
+php_value max_input_time 1000
+
+
+#RewriteEngine On
+#RewriteBase /x3cms
+
+#RewriteRule ^sitemap\.xml$ cms/files/sitemap.xml [L]
+#RewriteRule ^cms/files/(.*)$ cms/files/$1 [L]
+#RewriteRule ^files/js/tiny_mce/(.+)$ files/js/tiny_mce/$1 [L]
+#RewriteRule !\.(htm|html|js|ico|txt|gif|jpg|jpeg|png|css|less|pdf|xml|zip|swf|wmv|rm|mov|ttf|eot|woff|svg|htc)$ page.php
