@@ -1,0 +1,7 @@
+X3GET_BY_KEY
+
+REQUISITI: nessuno
+---
+COSA FA: visualizza paginati gli articoli contrassegnati dalla KEY
+---
+COME FUNZIONA: basta inserirlo come modulo nella pagina in cui si vuole visualizzare gli articoli con parametro uguale alla KEY

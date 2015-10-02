@@ -1,0 +1,32 @@
+X3FLAGS
+
+REQUIREMENTS: none
+---
+WHAT IT DOES: show a language switcher
+---
+HOW IT WORKS: you must put it into a template
+<?php
+	echo X4Utils_helper::module($this->site, $page, $args, 'x3flags', 'SEPARATOR');
+?>
+where SEPARATOR is an element between languages
+---
+CONFIGURATION
+FLAGS to set flags or language name
+SHORT_TEXT set language_code as link instead language name
+SHOW_ALL to view all flags, also if active
+---
+HTML
+<div id="flagsbox">
+	<a  href="<?php echo ROOT ?>en/public" title="english">[english|en|<img src="<?php echo ROOT ?>files/files/en.jpg" alt="english" />]</a> 
+	<a class="flagged" href="<?php echo ROOT ?>it/public" title="italiano">[italiano|it|<img src="<?php echo ROOT ?>files/files/it.jpg" alt="italiano" />]</a>
+</div>
+---
+CSS RULES
+/* FLAGS */
+#flagsbox {text-align:right;margin-top:5px;color:#666;}
+#flagsbox a {margin-left:15px;}
+#flagsbox a.flagged {color:#666;}
+#flagsbox img {border:none;}
+---
+REQUIRED FILES
+flags (jpg format) in files/files folder must named as language_code.jpg (e.g. it.jpg)

@@ -1,0 +1,33 @@
+X3SEARCH
+
+REQUISITI: nessuno
+---
+COSA FA: visualizza form di ricerca nel sito
+---
+COME FUNZIONA: la soluzione ideale &egrave; quella di inserirlo nel template
+<?php
+	echo X4Utils_helper::module($this->site, $page, $args, 'x3search', '');
+?>
+---
+CONFIGURAZIONE
+il parametro LABEL visualizza o meno la label "Cerca nel sito"
+---
+HTML
+<div id="sitesearch">
+	<form id="fsearch" method="post" action="<?php echo BASE_URL ?>search">
+		<fieldset>
+			<label for="search"> 
+				<input type="text" name="search" id="search" /> 
+				<button type="submit">Cerca</button>
+			</label>
+		</fieldset>
+	</form>
+</div>
+---
+IMPOSTAZIONI PER IL FOGLIO DI STILE CSS
+se non specificato diversamente usa le stesse regole definite per i form
+
+/* SEARCH */
+#sitesearch {margin:15px 0;background:#eee;border:1px solid #ccc;padding:10px;}
+#sitesearch input {/* none */}
+#sitesearch button {background:none;border:none;color:#666;}

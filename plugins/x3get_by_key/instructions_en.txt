@@ -1,0 +1,7 @@
+X3GET_BY_KEY
+
+REQUIREMENTS: none
+---
+WHAT IT DOES: show pages of articles signed with the KEY
+---
+HOW IT WORKS: put it as module into the page and set the param equal to KEY

@@ -1,0 +1,20 @@
+# Global to ignore 
+DOCS/*
+INSTALL/*
+puphet/*
+vendor/*
+
+# Config
+cms/config/config.php
+cms/files/sitemap.xml
+.htaccess
+robot.txt
+humans.txt
+
+
+# Trash box
+box/
+*.*~
+
+# Vagrant
+.vagrant/*

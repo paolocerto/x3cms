@@ -1,0 +1,29 @@
+X4SITE_MAP
+
+REQUISITI: nessuno
+---
+COSA FA: visualizza la mappa dell'area in cui si trova la pagina che lo contiene
+---
+COME FUNZIONA: basta inserirlo come modulo nella pagina in cui si vuole visualizzare la mappa dell'area
+---
+HTML
+<div id="sitemap">
+	<ul>
+		<li >
+			<a href="<?php echo BASE_URL?>" title="Home page">Home</a> - Home page
+			<ul>
+				<li >
+					<a href="<?php echo BASE_URL?>info" title="Informazioni">Infomazioni</a> - Informazioni
+				</li>
+				<li class="map">
+					<a href="<?php echo BASE_URL?>map" title="Mappa del sito">Mappa del sito</a> - Mappa del sito
+				</li>
+			</ul>
+		</li>
+	</ul>
+</div>
+---
+IMPOSTAZIONI PER IL FOGLIO DI STILE CSS
+/* SITEMAP */
+#sitemap {margin-left:10px;}
+#sitemap ul {margin-top:5px;margin-bottom:5px;}

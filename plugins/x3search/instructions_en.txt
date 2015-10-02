@@ -1,0 +1,33 @@
+X3SEARCH
+
+REQUIREMENTS: none
+---
+WHAT IT DOES: show a search form
+---
+HOW IT WORKS: you can put it into a template
+<?php
+	echo X4Utils_helper::module($this->site, $page, $args, 'x3search', '');
+?>
+---
+CONFIGURATION
+LABEL to show the label
+---
+HTML
+<div id="sitesearch">
+	<form id="fsearch" method="post" action="<?php echo BASE_URL ?>search">
+		<fieldset>
+			<label for="search"> 
+				<input type="text" name="search" id="search" /> 
+				<button type="submit">Search</button>
+			</label>
+		</fieldset>
+	</form>
+</div>
+---
+CSS RULES
+if not specified use form's rule
+
+/* SEARCH */
+#sitesearch {margin:15px 0;background:#eee;border:1px solid #ccc;padding:10px;}
+#sitesearch input {/* none */}
+#sitesearch button {background:none;border:none;color:#666;}

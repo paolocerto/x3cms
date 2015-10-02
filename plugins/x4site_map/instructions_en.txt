@@ -1,0 +1,29 @@
+X4SITE_MAP
+
+REQUIREMENTS: none
+---
+WHAT IT DOES: show the map of area
+---
+HOW IT WORKS: put it as module into the page
+---
+HTML
+<div id="sitemap">
+	<ul>
+		<li >
+			<a href="<?php echo BASE_URL?>" title="Home page">Home</a> - Home page
+			<ul>
+				<li >
+					<a href="<?php echo BASE_URL?>info" title="Informations">Infomations</a> - Informations
+				</li>
+				<li class="map">
+					<a href="<?php echo BASE_URL?>map" title="Site map">Site map</a> - Site map
+				</li>
+			</ul>
+		</li>
+	</ul>
+</div>
+---
+CSS RULES
+/* SITEMAP */
+#sitemap {margin-left:10px;}
+#sitemap ul {margin-top:5px;margin-bottom:5px;}

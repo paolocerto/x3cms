@@ -1,0 +1,919 @@
+
+X3CMS CHANGELOG.txt
+
+---
+
+october 2015
+
+0.5.3
+    - a new Logo
+    - completely rewritten the admin theme now cleaner and responsive
+    - replaced icons with Font Awesome in the admin side
+    - rewritten the default theme with Bootstrap
+    - fixed a lot of small bugs and added a lot of small improvementes to the admin interface
+    - improved Form building and validation
+    - added new validation rules
+    - added a method in the area controller to simplify the rename of an area (disabled to avoid surprises)
+    - added a method in the language controller to replace a language with another language in all areas (disabled to avoid surprises)
+    - upgraded Tiny MCE
+    - upgraded Mootools
+    - Upgraded Jquery
+   
+
+november 2014
+
+0.5.2
+	- added rotateElement function in X3ui.js
+	- added CSS rules to handle slider knobs in X3ui.css
+	- fixed a bug in create_cropped method and rewritten rotate method in x4Files_helper.php
+	- added CSS rules for pager in default theme
+	- changes to set the right area in the edit form in articles_controller and context controller
+	- added rotate option to image editing
+	- fixed XSS vulnerability in search controllers
+	- fixed a CSRF vulnerability when expose the admin side to demo users
+	- added auto translation with Google Translator when import dictionaries from a language to another
+	
+
+october 2014
+
+0.5.1.1
+	- fixed two bugs in X4Files_helper
+	- added missing translations for captcha error
+	- fixed a bug in saving profile changes
+	- fixed a bug in private login controller and added missing error message
+	- hide templates not installable in a theme
+	- fixed a bug in x3ui controller
+	- fixed a bug in X4Utils helper
+	- added few CSS rules for form styling
+	- fixed bug in file list creation for TinyMCE
+	
+
+october 2014
+
+0.5.1
+	- new helper for Arrays and improvement in Form_helper and Utils_helper
+	- added missing form messages and improved message for equal validation
+	- fixed bug in config for timezone
+	- added missing param description in call_plugin method
+	- improved importing languages
+	- improved area init for admin area
+	- small improvement to select field handling
+	- added home option to menu_builder method
+	- fixed bug in form save handling with tinyMCE
+	- removed useless code for HTML5 in templates
+	- fixed a bug in pages controller when page->xfrom contains a slash
+	- fixed bug in mysql.sql
+	- fixed two bugs in groups_controller
+	- added scroller in permission detail form
+	- added method last_query in X4Model_core
+	- added chck and parmissions change in refresh_js method
+	- small change in html and added classes to improve style options
+	- added option "inline" to set inline even on only one filed in the form
+	- added HTML5 tags in extended_valid_elements
+	- Removed missing library in the list of credits
+	- added picker range date in datepicker.js
+	- update Mootools to 1.5.1 version
+	- update tinyMCE to 4.1.3 version
+	- updated modernizr to 2.8.2 version
+	- added missing CSS rule
+	- changes to templates table to handle CSS and JS minification
+	- modified file folder organization to support Responsive FileManager for TinyMCE
+	- added Responsive Filemanager to TinyMCE
+	- reorganized files folders
+	- added last TCPDF in libraries
+	- added library and helper file to easily use TCPDF
+	- added missing info to use existent folders with areas without folder
+	- improved breadcrumb to go back easily from articles editor and composer page
+	- changes to handle new folder structure for files required by responsive filemanager
+	- updated tinymce_view to new tinyMCE version
+	- fixed bug in unistalling module
+	- fixed missing permissin check on module_list_view
+	- changes to handle the CSS and JS minification
+	- modified update and delete methods to return data like insert
+	- added method to open whatsoever page from URL
+	- added a class to stylish the lists of search results
+	- updated FPATH for the filemanager
+	- added the method indexof and modified obj_opt2 to handle different option names
+	- improved isDateTime method
+	- added reformat, months_array and get_months methods
+	- improved currency and array2obj methods
+	- added doform_section method and improved hidden, radio and checkbox methods
+	- improved requiredif, equal, phone, date, after, afterequal and before validation rules, fixed a bug with radio buttons
+	- improved datepicker style, reorganized rules and improved forms elements
+	- updated links to upgraded resources
+	- changes to handle minified resources and to handle direct page loading
+	- fixed a bug on rightClose
+	- improved rightOpen on small screens
+	- changes to direct open a subpage
+	- improved pickerize
+	- updated tinyMCE functions and added number_format, auto_size, xsetValue and getValues
+	- small changes to grant validation to templates in default theme
+	- added credits for new libraries added to the project
+	- added chk_upriv_level to get the user priv level on a whole table
+	- completed integration and support to Mongo DB collections
+	- modified X4Db_core and X4Model_core to handle queries on MySQl or Mongo DB using the same functions, Mongo collection do not support granula permissions, only global on the collection
+	- fix for Responsive file manager
+	- modified to 5.3 the minimum PHP version required by X3 CMS
+	- added a more readable BOOLEAN type for module parameters
+	- fixed a bug in the external_filemanager_path definition and simplified toolbars
+	- update tinymce_small_view to the new version of TinyMCE
+	- improved create_cropped method in X4Files_helper and fixed a bug for missing var definition
+	- added windowWidth function in x3ui.js
+	- small improvement in escape method in X4Db_core
+	- fixed a bug in files_controller when using bulk deletion and added the link to the file editor page
+	- new files and changes to handle file editor page
+	- fix to avoid caching of edited images
+	- added new pages for File editor and required translations
+	- Update the requirements for PHP and added credits for the author of Lasso.js script
+	- added GetID3 library a PHP script that extracts useful information from MP3s and other multimedia file formats
+	- removed static files to store file lists required by tinymce, now files are generated on the fly
+	- removed unused permissions and added new folders
+	- postponed Expiration date and added rules for video formats
+	- added an flv_player and swfobject.js script to handle swf files
+	- added edit file option for images, videos, templates and txt and csv files
+	- refactory of X4Files_helper
+	
+
+june 2014
+
+0.5
+	- small changes in default plugins settings
+	- small change in logger method to enable logs even with negative IDs
+	- upgraded datepicker.js for Mootools
+	- changes to support preg_replace_callback
+	- new default theme
+	- replaced phpmailer with swiftmailer
+	- removed tcpdf
+	- excluded logs table from permissions checks
+	- added Groundwork libraries to default theme
+	- refreshed installer theme
+	- added scrollable.js to Mootools
+	- added facebook sdk and mailchimp libraries
+	- added hybridauth library
+	- added ckeditor
+	- improved the code, changed the logic for tinymce ajax behaviour
+	- changed auth_model to handle differents hashes
+	- modified get_error to handle related validation, added method indicize and improved module method
+	- improved datetime_diff and added elapsed_time
+	- added methods: excerpt, collapse_white_space and write_address
+	- reorganized form helper
+	- improved file upload checking
+	- fixed a bug in get request_uri
+	- improved query_row to get only one row
+	- added new validation rule and added related option
+	- improved x3search plugin
+	- removed outdated IE rules from tinymce CSS
+	- fixed some bugs in simple-modal.js
+	- moved function to handle tinymce in x3ui.js
+	- added buttonize to handle topic links in the dashboard
+	- fixed a bug in file list view
+	- improved permissions handling
+	- improved error handling for admin side
+	- changed level permission to set a widget from write to read
+	- fixed a bug in log expired sessions
+	- fixed a bug in update group
+	- fixed a bug in file saving
+	- fixed a bug in admin area editing
+	- added ifempty option to set as required a field if another field is empty, improved error handling with RELATED fields
+	- modified set_error method to handle form error messages with RELATED fields. Added method to check empty sections
+	- improved radio buttons handling, improved textarea suggestions handling, improved complex select handling
+	- added basic support to Mongo DB
+	- modified the contructor to use EXT as extension
+	- modified controller_path method to use EXT as file extension
+	- modified shutdown method for compatibility with latest versions of PHP
+	- improved and simplified notice method
+	- fixed a bug with mimetype recognition
+	- changed password length field in users table and changed all form error messages for RELATED validation cases
+	- reorganized some elements and added HASH type selector
+	- added new function to remove editor when form submit
+	- fixed bug in actionize link
+	- fixed bug in tabber view
+	- fixed bug in tabs link
+	- fixed bug in initialize area link
+	- reorganized config items and added HASH item
+	- added a method to display system messages
+	- fixed a bug with articles permissions for new pages
+	- improved handling of gethostname function
+	- added breadcrumb
+	- added breadcrumb and calls from composer page
+	- added breadcrumb and improved redirect after update
+	- added a new option "scale" to action on the upload file
+	- fixed a bug in enable/disable link
+	- insert a line of code to handle js field of articles
+	- small changes to add breadcrumb inside titlebar, improved sortize and blanking functions, modified buttonize and X3.content functions to handle positioning of rbox container
+	- reorganized autocompleter rules, revisited form rules, modified rbox rule to handle position of the box
+	- changed access modifiers from private to public to the sanitize method so you can use it not only for form validation
+	- modified navbar method to handle case without home page link
+	- added a new case "elapsed" in datetime_diff
+	- added a new method "get_file" to return anonymous file and improved create_resized method
+	- enhanced get_all method and added "find" a new interesting method, with this a lot of queries do not need specific code
+	- added an ini_set rule for maxlifetime session
+	- added js field, changed editor_deselector to NoEditor, added some useful items to extended_valid_elements
+	- added js field to article_obj
+	- added js field to manage Javascript to associate with content, fixed a bug in the definition of the value of id_page for the article copy
+	- added some translations, added a js field in the table articles and reordered administration pages for the new interface
+	- improved the installation procedure, now the setting of the ROOT constant is properly regardeless of how is defined DocumentRoot in Apache
+	- added default charset rule in htaccess
+	- added mootools libraries to add autocompletion in admin panel
+	- added some useful Jquery plugins
+	- added a simplified version of the htaccess file to ensure compatibility with some hosting providers
+	- improved handling message
+	- improved constructor to handle all private areas and not only "private" area
+	- simplified widgets method and removed order method
+	- fixed a bug in get_installed method
+	- improved get_aprivs method, fixed a bug in sync_upriv method and improved get_all_records method
+	- added get_theme by id_area method
+	- improved get_subcat and get_files methods and added get_types method
+	- fixed a bug in context constructor
+	- fixed a bug in category constructor
+	- added get_new_bid method for article duplication
+	- fixed a bug in get_page method and added get_module_param_value method to get a single param value
+	- improved Obj_msg constructor
+	- modified set_error method, now you can set an alternative label "alabel" to use for error message, added module_exists method
+	- added an option "seconds" to datetime_diff method
+	- added fix_encoding, linkify and diff methods
+	- added class parameter in pager and pager_slim methods
+	- improved date fields in forms and handling of multiple files input
+	- improved get_type method and get_mime with finfo object, improved upload file with a better error message organization and added zip_file method
+	- fixed a bug in isDatetime method, fixed a bug in check_email method
+	- improved area handling for new areas, sanitized GET vars, added redirect method
+	- added get_attribute method to get DB information and added log handling
+	- modified access to public on $latest_query var added get_attribute method to explore DB configuration
+	- fixed a bug in check folder for private areas
+	- fixed a bug in dictionary construction. Reorganized BASE_URL definition
+	- added a new controller for the new admin interface
+	- rearranged and updated Javascript files
+	- replaced administration interface and admin theme
+	- updated Mootools libraries
+	- updated JQuery and JQuery UI libraries
+	- updated TinyMCE
+	- added a cleaner on querystring
+	- fixed bugs in install plugins, improved install and added a new check for area compatibility
+	- improved sanitize data
+	- added zip mimetype support and small changes to handling secret files
+	
+		
+november 2011
+
+0.4.3.1
+	- added as REST API library Restler 2
+	- renewed Admin theme, reorganized and simplified CSS files, replaced less with Boilerplate, added mail template
+	- added some Javascript libraries
+	- added a simple authorization model and helper
+	- rewritten login with X4Auth, added "remember me" and recovery password
+	- added constant LOGS for login logs
+	- fixed a bug in areas_controller, added cache cleaners with checks for APC users
+	- fixed a bug in xlist method in articles_controller, added cache cleaners checks for APC users
+	- fixed a bug in editing method in dictionary_controller, added cache cleaner checks for APC users
+	- fixed a bug in edit method in languages_controller
+	- added cache cleaner checks for APC users
+	- fixed a bug in clear_apc method in sites_controller and added cache cleaner checks for APC users
+	- fixed a bug in edit method in templates_controller
+	- rewritten login_controller for private area
+	- added final method get_all to get all records from a table
+	- changed the login_view, added recovery password link
+	- updated CSS rules in x4site_map plugin instructions
+	- added admitted var in x4page_controller for admitted pages without login
+	- added a case api to auto_load method in X4Core_core
+	- added a simple get_id_area method to X4Route_core
+	- added browse method to X4Files_helper to get all files inside a folder
+	- fixed a bug in handling $_FILES array, fixed a bug in handling captcha, fixed a bug in inarray case, added sanitize method to clean input data
+	- set the right name for humans.txt file
+	- added apis folder and a simple api example
+	- added a simple api_controller to interface Restler library with APIs in apis folder
+	- added recovery_view for recovery password page in admin area
+	- added Boilerplate apple-touch-icons
+	- added table-row rule to box sections
+
+october 2011
+
+0.4.3
+	- fixed a bug in edit area
+	- added Jquery as Javascript Framework
+	- added flag hidden to modules
+	- modified get_modules method to get only visible modules when edit an article
+	- fixed a bug in importing method
+	- fixed a bug in install method
+	- modified to display number of items found after page title in search controller
+	- fixed a bug in refactory_table method
+	- fixed a bug in ajax_template_view
+	- added popper div before unique_pop
+	- added msg div control in editor view
+	- added redirect option in empty_view
+	- added an interface for plugins
+	- replaced LL constant with X4Route::$lang and added an interface for plugins controllers
+	- added implements X3plugin to plugins
+	- improved X4Route removed LL constant and added protocol var, modified get_route method
+	- simplified isDateTime method and replaced verify_iban
+	- added some icons
+	- fixed some errors in translations
+	- added configuration options  SERVICE and DATE_FORMAT in config file
+	- changed type for xvalue field in param table and added BLOB type for parameters
+	- fixed a bug in x3flags
+	- fixed a bug in multi_exec method
+	- changed accessor from private to final for now method
+	- replaced deprecated ereg with preg_match function
+	- added some configuration options, added suggestion in default array for matching area without folder and an existent folder
+	- removed method get_by_type and modified method get_files in Files_model
+	- upgraded models to new naming convention
+	- upgraded views to new naming convention
+	- added a prefix to files list, now each area and each user have differents files list in tinyMCE
+	- removed call to X4Bench, moved to config.php some configuration options and upgraded to new naming convention
+	- in X4Utils_helper modified get_message and build_message methods, now do a check before to use nl2br; added replace_html method to replace the whole message
+	- added now var to avoid to many calls to UNIX_TIMESTAMP inside MySQL queries; commented some unused methods and upgraded to new naming convention
+	- in domready.js removed sidebar accordion script, moved zebrize outside window.addevent and modified enable_pop function
+	- moved admin template from xHTML to HTML 5
+	- X4Bench_core replace X4Bench, now have only a method to display benchmarking informations
+	- X4Core_core replace X4Core: removed buffer_levels, simplified shutdown method, upgraded to new naming convention and rewritten auto_load method to improve performances
+	- X4Db_core replace X4Db: fixed a bug in pgsql connection, fixed a bug in multi_exec method and upgraded to new naming convention
+	- X4Plugin_core replace X4Plugin in system/helpers: moved in core and upgraded to new naming convention
+	- X4Route_core replace X4Route: cleaned set_route method, removed set_folder method and upgraded to new naming convention
+	- X4Files_helper replace X4Files: moved outside method variables for mimetype, added refresh_js_list method and modified update-js_list to set a prefix for each user and for each area; upgraded to new naming convention
+	- X4Form_helper replace X4Form: added inline option to display label and field in the same row (require CSS rules), added hidden empty div option to use Ajax, fixed field name in select with multiple option enabled, moved get_option for selecet fields in another method; upgraded to new naming convention
+	- X4Mailer_helper replace X4Mailer: fixed a bug in mailto method when set from, added sanitize method and upgraded to new naming convention
+	- X4Pagination_helper replace X4Pagination: added sections option to pager_slim method and upgraded to new naming convention
+	- X4Time_helper replace X4Time: added age method to get age from birthday date and upgraded to new naming convention
+	- X4Utils_helper replace X4Utils: fixed a bug in set_error method to show multiple error on a single form field validation, added empty_rows method to delete from a string duplicate empty rows, modified chek_url method to detect https protocol, modified change_date method to set input and output separators and upgraded to new naming convention
+	- X4Validation_helper replace X4Validation: added checks for length, min, max, color and Italian IBAN; moved captcha check in required section, simplified numeric check; fixed a bug in set checkbox value and upgraded to new naming convention
+	- added a dedicated model to manage x3get_by_key plugin and upgraded to new naming convention
+	- upgraded default theme to new naming convention and switched from Mootools to jQuery
+	- fixed a bug in defining prefix in admin tinymce_view
+	- fixed a bug in shutdown method in X4Core_core
+	- updated jquery and related libraries to latest version
+	- updated mootools and related libraries to latest version and moved into mootools folder
+	- added colorpicker script
+	- added human.txt file
+	- fixed a bug in adding method in files_controller
+	- changed x4webapp version to 0.5
+	- fixed a bug in ob_start definition and updated display benchmarking info
+	- in X4Pagination_helper added suffix to manage URLs with page number not at the end of the URL
+	- fixed a bug in X4Cache_core name, delete useless ob_start call and simplified method write
+	- in X4Site_model modified get_page_to method to manage * wildcard in parameter
+	- removed bookmarks table and related translations, added cal translations and changed x3cms version to 0.4.3 STABLE
+	- cleaned basescreen.css and updated datepicker rules, updated domready to new datepicker version, changed the base template to be more compliant to HTML5, added a new icon
+	- added widget page in administration and translations for widgets
+	- modified widget manager, added a page and modified presentation of widgets
+	- modified admin home page to display new dashboard with widgets
+	- fixed a bug in compositing pages
+	- in article_controller fixed a bug in edit method
+	- added time method in X4Model_core
+	- replaced substr + strrchr with pathinfo
+	- rewritten build_menu method in X4Utils_helper
+	- removed useless methods from X4Site_model
+	- added configuration option for menu depth and query caching by APC
+	- added clear_apc method to delete APC cache in sites_controller
+	- modified url construction for plugin with personalized URL
+	- added escaping in queries with LIKE
+	- fixed a bug in call_plugin method
+	- modified get_type method to get folder name instead file code and improved create_resized method in X4Files_helper
+	- restored missed NOCACHE handling in X4Form_helper
+	- moved empty_rows and random_string methods to X4Text_helper, added push_array and nocache methods, improved build_menu method
+	- fixed a bug in no_duplicate method in X4Validation_helper
+	- added APC option in the most used methods
+	- replaced datepicker rules and added rules for widget
+	- replaced pickerize function and added refresh_pop function
+	- moved text handling methods from X4Utils_helper to X4Text_helper
+	- added less.js to javascript library
+	- added rule to use less.js and added reset.less and basescreen.less in default theme
+	- added some useful jquery plugins
+	- cleaned some overlap between the types and added the freedom to choose how to style buttons in X4Form_helper
+	- fixed a bug in site map construction
+	- added diff method, thanks to Paul Butler to X4Text_helper
+	- fixed a bug in APC key construction for the coexistence between multiple installations of x3 on the same server
+	- added datetime rules in basescreen.css in admin theme
+	- added check for APC PHP extension in the installer
+	- added rule for recommended PHP extensions
+	- fixed a bug in edit widget
+	- updated build_menu calls in base template to new parameters
+	- added less files to default theme
+
+february 2011
+
+0.4.2.1
+	- added refresh ordinal after plugin install
+	- added force option to chklevel to bypass admin permission if needed
+	- fixed a bug in get_language_by_code method
+	- fixed a bug in different case
+	- fixed bug in update call and fixed bug in seo form
+	- improved query string management and added get_query_string method
+	- added query string management in pagination
+	- added two new checks: grater and less
+
+0.4.2
+	- added table logs
+	- added translations for captcha
+	- added translations for clear cache
+	- tidied up the code, removed useless methods
+	- added comments for PHPDocumentor
+	- added suffix '_view' to all views files
+	- added clear cache command
+	- moved out Validation from Form helper
+	- added method get_page and _call to X4CMS controller to simplify all children class
+	- added post class var in x4route
+	- improved caching 
+	- fixed a bugs in default theme
+	- added folder DOCS for X3 CMS Docs generated with PHP Documentor
+	- added table widgets and related translations
+	- added controller and model to manage widgets
+	- changed controller, model and view related to bookmarks
+	- modified admin dashboard to display widgets
+	- modified bookmarks management
+	- small changes to admin theme
+	- fixed a bug in reset SESSION[token] in X4Validation
+	- fixed a bug in edit method in articles controller
+	- fixed a bug in refactory_table method
+	- upgraded x4version to 0.4
+
+january 2011
+
+0.4.1
+	- fixed a bug in Menu_model
+	- fixed a bug in X4Form helper
+	- added progress and time2sec method to X4Time helper
+	- fixed a bug in logged method in X4Utils helper
+	- added in .htaccess rules for errors 403 and 404, added rule to not browse cms folders and added some new file type to display
+	- added translation for INVALID VALUE form error message
+	- fixed bug in date_in article creation
+	- fixed bug in user privilege management
+	- fixed bug in path construction
+	- fixed bug in attribute name
+	- added verify_eu_vat method to X4Checker helper
+	- improved upload_files method, fixed a bug create_resized method when resize a png file, improved get_final_name method for suffix management
+	- added a check rule called different, fixed a bug in weight rule, replaced italian vat check with european vat check
+	- improved datetime_diff method: now you can get the result as time or as days, added time2money method
+	- fixed a bug in barcodes.php path and removed unused classes
+	- fixed a bug in zebra table
+	- added update_by_bid method to article model so you can set the status of all articles version in one time
+	- fixed a bug in query which get articles by key or context or both
+	- added htaccess rule to redirect all traffic (with or without www) to the domain
+	- improved admin login security
+	- replaced admin theme icons
+	- added default value to set method
+	- updated translations
+	- renewed default theme
+	- small changes to permissions method in users controller
+	- replaced refactory with refactory_table into adding method in files controller
+	- added group_obj in Group_model to simplify the insert and edit group
+	- added menu_obj in menu_model to simplify the insert and edit menu
+	- rewritten refactory_table method
+	- replaced refactory with refactory table in install_tpl method in template_model
+	- modified x3get_by_key plugin controller to display article options
+	- replaced refactory with refactory_table in install method in theme_model
+	- added a param for max_doc_size for not image files
+	- small change to inline_edit method and build_menu method, added get_block_options to display article options
+	- fixed a bug where domain is localhost
+	- added TimeZone to install settings
+	- removed innerbox class in group_list view
+	- added div.block as container for editor
+	- removed lock if debug mode active
+	- replaced NOW() mysql function to use php timezone
+	- added verify_iban method
+
+september 2010
+
+0.4.0.4
+	- fixed a bug in reset_url method
+	- added credit to TCPDF PHP class for generating PDF documents
+	- added italian dictionary
+	- added language configuration to tinyMCE init
+	- fixed a bug in date_in field creation
+	- fixed a bug in xlist in pages controller when called from uninitalized area, fixed a bug in init method
+	- added class for dummy page
+	- added get_uri method in X4Route
+	- replaced check_duplicate and set_duplicate methods with no_duplicate method in X4Form
+	- fixed a bug in reset_url method in X4Utils when str contains external links or links to files
+	- modified replace method in X4Dict_model, now can be called without arguments
+	- updated clientcide
+	- added error messages for new form checks
+	- added a new config item: timezone
+	- fixed a bug in date_in creation
+	- fixed a bug in my_insert method in Page_model and added Page_obj for new pages
+	- replaced intval(!int) with (int+1)%2
+	- added a control for form editor without title
+	- replaced DatePicker.js code
+	- set the timezone with the config value
+	- added new options to methods in X4Model, now if you need to call a default method you can from the model you already have loaded
+	- disabled mail checking if DEVEL is true
+	- fixed a bug in check_level method added change_date method
+	- more improvement to X4Form: added option to load a pre-builded form; improved validation; added new checks for timer, after, before, periodical
+	- replaced xls_reader with the latest version
+	- added get_by_from_with_fields and get_related methods to X4Matches_model
+	- added css rules for help div
+	- fixed a bug in Openlinks function inside domready.js
+	- added a new helper: X4Time
+	- added get_alanguages method to get area languages
+	- fixed bugs in deeper and ordinal methods
+	- added control to verify if there is an user timezone
+	- upgraded x4version to 0.3
+	- modified file section in doform method
+	- modified query in get_related method
+	- added a class for file sections in forms
+	
+---	
+	
+july 2010
+
+0.4.0.3
+	- upgraded Mootools framework
+	- added milkbox gallery scripts
+	- added TCPDF library
+	- modified to support font-face rule in css
+	- added missed translations
+	- fixed a bug in deleting method and added a small improvement to save tags
+	- fixed a bug in msg controllers
+	- fixed a bug in pages controller
+	- fixed a bug in sections controller
+	- fixed a bug in sites controller
+	- fixed a bug in Obj_article class and added get_all_by_bid method
+	- modified check dictionary method and deleted add_to_dictionary method
+	- fixed a bug in rtl method in language_model
+	- fixed two bugs in list_by_category view
+	- fixed two bugs in list_by_context view
+	- fixed three bugs in list_by_key view
+	- fixed three bugs in list_by-page view
+	- fixed a bug in compose view
+	- fixed a bug in sites view
+	- fixed a bug in get_menu_method and a bug in get_sections method
+	- added border-radius rule for css3 compliant browsers
+	- fixed a bug in module call, upgraded mootools framework and changed rules for internet explorer dedicated css
+	- fixed a bug in robots.txt construction
+	- added a mime type to upload_file and upload_files methods
+	- fixed bugs for css3 browser and fixed bug for Opera browser
+	- fixed bugs in header construction and added sections, so you can add and edit pages in admin area too
+	- added translation for missing error message for mimetype
+	- added create_container method and added check mimetype to upload_file for generic files (to improve)
+	- fixed bug for select multiple fileds required
+	- fixed bug in reset_url with mailto links and added chklevel method
+	- fixed bug in head items
+	- fixed missing translation
+	- fixed bugs in adding and importing methods
+	- added mime type checks for generic files
+	- fixed a bug in build_menu method
+	- fixed a bug in plugin install method
+
+---
+
+june 2010
+
+0.4.0.2 stable
+	- fixed bug in get_menus call
+	- fixed bug in init method
+	- fixed bug in initialize_area method
+	- added build_menu method
+	- small changes to X4Site_model to set menus max deep
+	- fixed bug in the installer when root is a slash
+	- fixed bug in path definitions
+	- fixed bug in build_menu method
+
+0.4.0.1 stable
+	- updated Tiny MCE to latest version
+	- fixed a bug in the installer related to file permissions after installation
+	- fixed a bug in get_menu method and added get_articles_by_context
+	- added handle html extension to get_type method
+	- modified mailto method to return real mail action result
+	- fixed bug in update_sitemap method, wrong home page url
+	- fixed bug in suggestion handling
+	- added robots.txt file
+	- added a line to robots.txt
+	- fixed a bug in edit method
+	- fixed a bug in reset_url method
+	- fixed bugs in ROOT and PATH definitions for some ISP
+	- added permissions level control to menus constructions
+	- fixed bug in ROOT definition for Windows users
+	- modified X4Model constructor for multiple database use
+	- write the install template procedure
+	- added some icons for plugins
+	- added translation for duplicate submit message
+	- added session token for antispam checks
+	- replaced no_duplicate method with check duplicate and added set_duplicate method
+
+---
+
+april 2010
+
+0.4 stable
+	- fixed a bug in pexec calls in x3admin form inline editing
+	- modified URL to X3 CMS legal notices in default templates
+	- modified routing to not display public area in the URL and not display language code if multilanguage is not set
+	- modified compose view to avoid layout problems
+	- fixed bug in sitemap.xml generator
+	- fixed a bug in edit method
+	- fixed bug in menu link title
+	- fixed bug in areas view
+	- fixed bug in get_pages method
+	- fixed bug in get_contexts method
+	- fixed bug in pexec calls
+	- fixed a bug in set permission routine when create a new object
+	- modified get_menus method to get the page title instead page description
+	- added a check to inline_edit method
+	- added a parameter to site configure to enable/disable inline editing
+	- small improvements to database, added few index to speed up slower queries
+	- fixed bug in check_url method
+	- modified get_pages method in model and updated controller
+	- fixed bug in redirect after login
+	- fixed bug in permitting method
+	- added lang as parameter of get_notices method
+
+---
+
+march 2010
+
+0.4 release candidate 3
+	- fixed bug in inline editing in subsites
+	- modified URL to call for notices
+	- fixed bug deleting version of article
+	- fixed bug in sync_priv method
+	- fixed bug in X4Utils added new method usable in Plugin_model and replaced exists with usable in Utils
+	- changed id from flags to flagsbox to avoid overlap
+	- fixed bug in seo method where check if an URl exists
+	- added db socket in the database configuration, excluded mail check if there is not connection to internet, small correction to messages
+	- splitted refactory permission in reset and refactory
+	- fixed a bug in redirect if unlogged
+	- auto setting of SITE constant while install
+	- added rule for images inside tables
+	- replaced curl code with file_get_contents
+	- depth review of almost all methods in permission_model, simplified logic operation and lightened the load on the database during refactory of permissions and during update of permissions
+	- modified permissions section in user detail view
+	- removed useless REQUEST_URI
+	- added obj2array method
+	- fixed home url, replaced description with title in links, replaced code for in line editing with a call to X4Utils::inline_edit method
+	- simplified home page url to avoid duplicate contents
+	- added uprivs table, removed param from privtypes, fixed some translations
+	- removed unused javascript
+	- fixed bug eliminating articles
+	- fixed bug in queries
+	- modified get_map method for compatibility with x3subpages plugin
+	- added inline_edit method and modified unspace method
+	- added order by date_in in get_artt_by_context method
+	- added compatibility var to default plugins and added HTML section to instructions
+	- added compatibility check to plugin install
+	- added version number in plugin views
+	- fixed bug in cleaning url for pages not in admin area
+	- set utf8 as DEFAULT charset for some tables and fixed wrong area for some records in dictionary table
+
+---
+	
+february 2010
+	
+0.4 release candidate 2
+	- fixed a bug in the installer
+	- simplified behavior before installation
+	- disabled schema in articles (maybe in the future)
+	- update htaccess file for installer
+	- fixed bug in initialize_area method
+	- added lang information in article editor
+	- modified TinyMCE toolbar organization for small screen
+	- fixed bug in editing method
+	- added id field to Article_obj
+	- replaced SESSION[mail] with session[site] to avoid cross admin between sites in the same domain
+	- added SESSION[site] to do_login method
+	- fixed bug in AdminUtils
+	- fixed bug in the default domready
+	- added css rule for large text fields
+	- added search by page in article list
+	- fixed bug on charset setting after db connection
+	- changed charset of all tables from latin1 to utf8
+	- added categories table
+	- added RTL languages support
+	- added sql for categories
+	- added version in themes
+	- integrated categories in articles, simplified frm layout of article editor
+	- added traslation for categories
+	- fixed bug in edit method
+	- fixed bug in plugins search
+	- modified get_page_to method for search inside plugins
+	- fixed bug in private logout
+	- modified behaviour of context and article list in compose view: now is floating
+	- fixed bug in get_page_to method in x4site_model
+	- added x3flags plugin in admin template
+	- added calendar words to dictionary
+	- modified get_templates method to change the order of templates
+	- added get_categories_by_key method to X4Site_model
+	- added get_article_by_key_and_ctg method
+	
+---
+
+february 2010
+
+0.4 release candidate 1
+	- added origin info to files derived from Kohana
+	- fixed bug in set files
+	- added lang in login session vars
+	- fixed bug in initialize area method and added x3admin pages
+	- added language field in profile form
+	- added copyright and license notices
+	- added initialize_context for new areas
+	- changed character encoding to UTF-8
+	- added NOCACHE constant to prevent caching of forms
+	- added Notices and Updates section to admin homepage
+	- added TinyBrowser file manager to TinyMCE
+	- added online editing directly from public and private pages: now only content editing with TinyMCE
+	- fixed bug into set_folder method in X4Route class
+	- cleaned TinyMCE css
+	- added Simple HTML DOM Library for schema editing
+	- added the installer
+	- fixed bug in caching with Advanced Editing
+	- modified get_type method in X4Files
+	- added query string management into X4Route
+	- added missing regulations in sitemap.xml
+	- fixed bug into required file case
+	- added create_extended, create_border and rotate method to X4Files
+	- fixed bug into detailed permission manager and added lost queries
+	- fixed bug into detailed permission manager
+	- modified search into module
+	- added get_article_by_bid method
+	- modified get_word method: now you can get a word in a specified lang
+	- fixed bug compositing with context if language of admin area is different from the page edited
+	- limited compositing to default contexts
+	- fixed bug when creating a new context
+	- fixed bug into required checks for files
+	- added global dictionary to compositing results
+	- moved file related methods from AdmUtils to X4Files and added some new control when upload a single file
+	- added two check rules: file size in kilobyte and image size in pixel
+	- changed folders order in auto_load method
+	- removed default messages from config.php and put into database
+	- added a switch to manage db_socket
+	- fixed bug in refresh_module method
+	- fixed bug on module list of private area
+	- fixed bug on load_view
+	- added code comments to system files
+	- added nl2br to message text in get_message
+	- added default values to pager_slim
+	- added optimize function to X4Db
+	- added captcha funtion
+	- added version to modules table
+	- fixed bug in ajax_template
+	- fixed bug wrong page origin when adding a new subpage
+	- moved X3 CMS version from index to database
+	- added affero GPL license
+	- new captcha font
+	- renamed x4call_plugin as call_plugin
+	- added option for location.href in empty view
+	- simplified styling articles boxes in compose view
+	- added list_by_key view and improved relations between articles and pages in ADVANCED_EDITING
+	- added a new free plugin which display, with paging, articles by key
+	- restored contexts editing and improved contexts management
+	- added order_by_key option to xlist method and improved all options with default value
+	- fixed bug into get_sections method
+	- fixed bug into get_by_bid method, added methods for get articles by contexts
+	- modified updown method with THEME_URL
+	- added edit link into compose layout, changed redirect after form saving
+	- fixed bug in search controllers
+	- cleaned code and modified to send mail only if DEVEL is off
+	- replaced theme path with THEME_URL
+	- moved bookmarks message into bookmark list
+	- fixed javascript bug for IE, minor changes to layout
+	- fixed bug into map visualization
+	- fixed bug on multi section compose
+	- set X4Page as subclass of X4Cms
+	- fixed bug when set default area language
+	- fixed bug in change theme	
+	
+---
+
+november 2009
+	
+0.4 beta 3 
+	- added User_obj class
+	- added some administration page
+	- cleaned domready.js
+	- simplified and finished admin theme
+	- fixed bug in permissions management
+	- changes to articles table and related
+	- languages management: added delete and simplified controller
+	- added automatic translation during section dictionary import. Thanks Google!
+	- added option short_text to x3flags
+	- modified admin theme moved site menu on the left, added toolbar on the right side
+	- added extra option to input checkbox
+	- fixed bug in enabled languages
+	- added offline template to default themen the area editor
+	- fixed bug in no html email send
+	- fixed bug on area related languages
+	- added offline template to default theme
+	- fixed bug with slashed strings
+	- added FPATH constant
+	- fixed bug on deleting language
+	- added breadcrumb in admin home
+	- added extra option to select
+	- added method pager_slim with only previous and next
+	- added articles management
+	- added contexts management
+	- added section management
+	- added spinnerize to update form with ajax
+	- added alert class for unsaved changes
+	- modified to handle pages in simple and advanced editing
+	- modified redirect for offline site and moved login to private areas from public to area
+	- added articles, contexts and sections dictionary, added offline pages
+	- the core of the page compositing in ADVANCED_EDITING mode
+	- fixed slashed strings, clean code and added management of ADVANCED EDITING mode
+	- fixed bug in the call to the editor in ADVANCED_EDITING mode
+	- added add to bookmarks button
+	- added zebra table class, modified enable_pop and submitform functions
+	- added array2obj method and Obj_opt class for options construction from an array
+	- replaced php unixtime with mysql unixtime, cleaned query with aliases
+	- added in pager_slim links for previous and next
+	- added switch for area and zebra table
+	- added bookmarks table and related translations
+	- added controller and model for bookmarks
+	- added bookmark list into admin home page with sortable table
+	- replaced php zebra table with mootools zebra table and added th style
+	- fixed bug in refresh-page method
+	- fixed bug in xlist method and cleaned code
+	- replaced contexts id with code
+	- modified submitform for new version of javascript function
+	- replaced public view with admin view that has close button and message window
+	- added install instruction
+	- replaced get_by_id_page with get_bid_by_id_page
+	- added method get_by_code
+	- fixed bug in menu method subin case and fixed bug in deeper method
+	- modified for ADVANCED_EDITING mode (replaced contents table with articles table, fixed bug in get_pages
+	- added recode and get_contexts methods
+	- fixed bug in close_pop
+	- moved sitemap.xml from files to cms/files
+	- replaced ROOT.cms/files/ with FPATH
+	- show find button only in isset finder var
+	- added datepicker to the theme admin
+	- added pickerize and sweepize functions
+	- rewritten article history management
+	- fixed bug in SEO tools form
+	- modified message method to enable visualization of unpredefined messages
+	- added refactory_table method  for one table refactory permissions
+	- added trim function to escape method
+	- added support to radio buttons, added stripslashes to strings
+	- added trim to unspace method
+	- modified get_menu method for no visualizable pages
+	- modified ordinals in page records
+	- modified sidebar layout, added multiselect rules, added rules for sortable pages
+	- rewritten the pages view, no table but uls, now sortable with drag and drop
+	- cleaned queries with aliases, fixed bug in update_sitemap, myupdate and delete methods
+	- modified get_menus method for pages view, rewritten menu method for sorting with drag and drop, fixed bug in deeper method
+	- modified menu method for page sorting
+	- fixed bug in menu manager
+	- fixed bug in page settings when xfrom <> home. Modified ordinals and xpos in initialize area
+	- added page name to default article created with page
+	- added cases for articles and contexts to get_detail method
+	- disabled in menu for base pages: home, msg, search, offline
+	- fixed bug in simple editing
+	- removed check on site name
+	- updated translation about menu order
+	- fixed bug duplicate css rule
+	- modified sitemap construction, now sitemap hide subpages of disabled pages
+	
+---
+
+october 2009
+	
+0.4 beta 2 
+	- X4DB: replaced database driver with PDO (tested only on Mysql).
+	- Completed multi-area management with default folders: you can create private or public areas as you want.
+	- Fixed bug into the Admin theme installer.
+	- Fixed bug into get_all method in Permission_model.
+	- Fixed bug in menus construction when change area theme.
+	- Fixed bug in multi_exec rollback
+	- moved menu management into theme management. Simplified menu management: one table, no area and no lang relations. Menu are related only with theme.
+	- finished template management
+	- added language switch into admin map area
+	- added English dictionary
+	- fixed bug in the ordinal management and added english pages in the admin area
+	- fixed bug in area map visualization
+	- Mootools: upgraded
+	- added TinyMCE support to private area
+	- added matches table for many to many relations
+	- improved upload method
+	- fixed bug duplicate record
+	- added inline option to pager method
+	- fixed bug in x4site_map
+	- fixed bug in deep management
+	- fixed bug in page visualization
+	- PhpMailer: upgraded
+	- fixed bug when uploading multiple files
+	- added search form rule
+	- added close function to reset button in set_date method in contents controller
+	- fixed bug wrong instructions language
+	- added modal windows while loading
+	- added X4Matches_model class
+	- added search translation
+	- added tabs style into admin theme, main div and modified submitform js script
+	- renamed value method as set
+	- fixed bug into menu and template management
+	- rewritten admin theme with icons: clean and tidy on small screen
+	- added a new table for enabled languages for each area. Rewritten management of SEO data area related
+	- modified dictionary management by area
+	- modified modules management by area
+	- fixed bug in the internal search engine
+	- added inarray rule into x4form helper
+	- fixed bug in the constant definition
+	- fixed bug when adding menu
+	- finished and improved permissions management
+	- fixed bug when many areas share the same theme
+	- added breadcrumb in search results page
+	- fixed bug in pagination
+	- fixed bug on permitted actions
+	
+---
+
+august 2009
+	
+0.4 beta 1 
+	this version is completely different from previous release.
+
