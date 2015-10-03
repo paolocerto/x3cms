@@ -161,7 +161,7 @@ class Login_controller extends X4Cms_controller
 			}
 			
 			// if submitted, check control field
-			if (X4Route_core::$post && array_key_exists(strrev('formlogin'),$_POST))
+			if (X4Route_core::$post && array_key_exists(strrev('formlogin'), $_POST))
 			{
 				$e = X4Validation_helper::form($fields, 'formlogin');
 				if ($e && !isset($_POST['antispam'])) 

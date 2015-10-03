@@ -137,6 +137,7 @@ class Profile_controller extends X3ui_controller
 			'type' => 'textarea', 
 			'value' => $u->description,
 			'name' => 'description',
+			'sanitize' => 'string',
 			'rule' => 'required'
 		);
 		
@@ -226,7 +227,7 @@ class Profile_controller extends X3ui_controller
 		$post = array(
 			'lang' => $_post['lang'],
 			'username' => $_post['username'],
-			'description' => $_post['description'],
+			'description' => strip_tags($_post['description']),
 			'mail' => $_post['mail'],
 			'phone' => $_post['phone']
 		);

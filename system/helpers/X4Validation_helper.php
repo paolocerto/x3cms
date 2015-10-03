@@ -85,7 +85,7 @@ class X4Validation_helper
 	
 	/**
 	 * Validate a form
-	 * on each field you can mix many rules (with |) and some rules can contains parameter (with -)
+	 * on each field you can mix many rules (with |) and some rules can contains parameter (with § as separator)
 	 *
 	 * @static
 	 * @param array		array of form fields
@@ -125,9 +125,6 @@ class X4Validation_helper
 						
 						// get parameters
 						$tok = explode('§', $ii);
-						
-						// check the rule only if another field (a checkbox) is set (eg. required-onlyif-another_field_name)
-						if ($tok[0] == 'onlyif' && !isset(self::$data[$tok[1]])) break;
 						
 						// set rule function name
 						$rule = '_'.$tok[0];
