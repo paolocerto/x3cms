@@ -2557,7 +2557,7 @@ CREATE TABLE IF NOT EXISTS `templates` (
 INSERT INTO `templates` (`id`, `updated`, `name`, `css`, `js`, `id_theme`, `description`, `sections`, `xlock`, `xon`) VALUES
 (1, NOW(), 'base', 'x3ui', 'x3ui', 1, 'Default Admin template', 1, 0, 1),
 (2, NOW(), 'base', 'base', 'jqready', 2, 'Default template (two columns)', 3, 0, 1),
-(3, NOW(), 'one', 'base', 'jqready', 2, 'One column template (one column)', 3, 0, 1),
+(3, NOW(), 'one', 'base', 'jqready', 2, 'One column template (one column)', 2, 0, 1),
 (4, NOW(), 'offline', 'offline', 'jqready', 2, 'Offline template', 2, 0, 1);;
 
 -- --------------------------------------------------------
@@ -2582,8 +2582,8 @@ CREATE TABLE IF NOT EXISTS `themes` (
 --
 
 INSERT INTO `themes` (`id`, `updated`, `name`, `description`, `version`, `xlock`, `xon`) VALUES
-(1, NOW(), 'admin', 'Admin - default Admin theme', '2', 0, 1),
-(2, NOW(), 'default', 'Default - default site theme', '1.2', 0, 1);
+(1, NOW(), 'admin', 'Admin - default Admin theme', '3', 0, 1),
+(2, NOW(), 'default', 'Default - default site theme', '1.4', 0, 1);
 
 -- --------------------------------------------------------
 
