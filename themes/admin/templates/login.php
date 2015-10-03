@@ -50,9 +50,8 @@ if (RTL)
 }
 ?>
 
-<script src="<?php echo ROOT ?>files/js/modernizr-2.8.2.min.js"></script>
-<script src="<?php echo ROOT ?>files/js/mootools/mootools-core-1.5.1-full-compat-yc.js" ></script>
-<script src="<?php echo ROOT ?>files/js/mootools/mootools-more-1.5.1.js" ></script>
+<script src="<?php echo ROOT ?>files/js/mootools/MooTools-Core-1.5.2-compat-compressed.js" ></script>
+<script src="<?php echo ROOT ?>files/js/mootools/MooTools-More-1.5.2-compat-compressed.js" ></script>
 <script>var root = "<?php echo $this->site->site->domain ?>";</script>
 <!-- datepicker -->
 <script src="<?php echo ROOT ?>files/js/mootools/datepicker.js"></script>
