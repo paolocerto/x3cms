@@ -47,6 +47,7 @@ button, a.button {background:#B0BEC5;color:#fff;border:none;padding:.5em 1em;bor
 .pad-right {padding-right:1em;}
 .pad-bottom {padding-bottom:1em;}
 .double-pad-top {padding-top:2em;}
+.triple-pad-top {padding-top:3em;}
 
 .no-gap {margin:0;}
 .gapped {margin:1em;}
@@ -55,6 +56,7 @@ button, a.button {background:#B0BEC5;color:#fff;border:none;padding:.5em 1em;bor
 .gap-right {margin-right:1em;}
 .gap-bottom {margin-bottom:1em;}
 .double-gap-top {margin-top:2em;}
+.triple-gap-top {margin-top:3em;}
 
 .small {font-size:.85em;}
 .suggestion {font-size:0.85em;margin-left:.5em;}
@@ -71,6 +73,8 @@ button, a.button {background:#B0BEC5;color:#fff;border:none;padding:.5em 1em;bor
 .borange {background:#fe8702;}
 .blightblue {background:#0dcdfe;}
 .bred {background:#e00;}
+
+.red {color:#e00;} 
 
 /* containers */
 
