@@ -76,8 +76,6 @@ echo X4Utils_helper::module($this->site, $page, array(), 'x3flags');
 // top menu
 if (!empty($menus['menu_top']))
 {	
-	// <div class="container-fluid">
-	// </div>
 	echo '<div class="row">
             <nav id="navbar" class="navbar navbar-default">
                 <div class="navbar-header hidden-md">
@@ -99,11 +97,13 @@ if (!empty($menus['menu_top']))
 if ($page->url == 'home')
 {
 ?>
-	<div data-cycle-fx="scrollHorz" data-cycle-pause-on-hover="true" class="cycle-slideshow row">
+    <div class="row hidden-sm">
+	<div data-cycle-fx="scrollHorz" data-cycle-pause-on-hover="true" class="cycle-slideshow">
 		<img src="http://placehold.it/1200x300/546E7A/ffffff/&amp;text=X3+CMS" alt="">
 		<img src="http://placehold.it/1200x300/ff7700/ffffff/&amp;text=...your+next+Content+Management+System..." alt="">
 		<img src="http://placehold.it/1200x300/ffffff/ff7700/&amp;text=...or+a+base+for+your+web+application..." alt="">
 		<img src="http://placehold.it/1200x300/C0CA33/ffffff/&amp;text=...because+Simple+is+better+:)" alt="">
+	</div>
 	</div>
 <?php 
 }

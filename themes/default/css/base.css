@@ -170,6 +170,7 @@ input[type="color"]:focus, input[type="checkbox"]:focus, input[type="radio"]:foc
 	#x3flags {margin-top:-1em;}
 	.xs-nopad {padding-left:0;padding-right:0;}
 	.row div {margin-left:0;margin-right:0;padding-left:0;padding-right:0;}
+	.hidden-sm {display:none;}
 }
 @media(max-width: 480px) {
 	h1 {line-height:.9em;}
