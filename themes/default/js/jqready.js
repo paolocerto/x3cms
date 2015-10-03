@@ -2,7 +2,7 @@
  * X3 CMS - A smart Content Management System
  *
  * @author		Paolo Certo
- * @copyright	(c) 2010-2012 CBlu.net di Paolo Certo
+ * @copyright	(c) 2010-2015 CBlu.net di Paolo Certo
  * @license		http://www.gnu.org/licenses/agpl.htm
  * @package		X3CMS
  */
@@ -25,22 +25,12 @@ $.fn.preload = function() {
 var c = 0;
 
 $(document).ready(function() {
-	
-	// leftmenu init
-	setTimeout(function(){
-		leftmenu();
-	}, 100);
-	
 		
 	$('#antispam').remove();
-    $('a[href^=http]').not('.no_target').addClass('blank');
+    	$('a[href^=http]').not('.no_target').addClass('blank');
 	$('<img/>').preload();
 	
 	recaptcha();
-	
-	if ($('#menu_top').length) {
-		enable_submenu('menu_top');
-	}
 	
 });
 
@@ -65,15 +55,3 @@ var recaptcha = function() {
 		});
 	};
 
-function leftmenu() {
-	
-	
-	$('.left-left-menu').css({
-		'height': $('#menu_left').outerHeight()
-	});
-	
-	$('#topic').css({
-		'margin-top': -$('#menu_left').outerHeight()
-	});
-
-}
