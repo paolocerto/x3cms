@@ -135,3 +135,7 @@ DOWNLOAD
 https://github.com/paolocerto/x3cms
 
 Paolo Certo
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/paolocerto/x3cms/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
