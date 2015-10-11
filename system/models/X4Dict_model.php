@@ -153,13 +153,14 @@ class Obj_msg
 	 * @param   string message title
 	 * @param   string message body
 	 * @param   boolean envelope switcher
+	 * @param   string Hn to use
 	 * @return  void
 	 */
-	public function __construct($title, $msg, $envelope = true)
+	public function __construct($title, $msg, $envelope = true, $hn = 'h2')
 	{
 		$title = (is_null($title))
 			? ''
-			: '<h2>'.$title.'</h2>';
+			: '<'.$hn.'>'.$title.'</'.$hn.'>';
 		
 		$this->content = ($envelope)
 			? $title.'<p>'.$msg.'</p>'
