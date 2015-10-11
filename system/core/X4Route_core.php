@@ -29,6 +29,9 @@ final class X4Route_core
 	// POST
 	public static $post = false;
 	
+	// URI
+	public static $uri = '';
+	
 	/*
 	 * Default configuration
 	 */
@@ -53,6 +56,9 @@ final class X4Route_core
 	 */
 	public static function set_route($request_uri, $default_config = array())
 	{
+	    // set the URI
+	    self::$uri = $request_uri;
+	    
 		// set default
 		if (empty(self::$default)) 
 			self::$default = $default_config;
@@ -111,15 +117,21 @@ final class X4Route_core
 		
 		// controller
 		if (!empty(self::$args)) 
+		{
 			self::$control = array_shift(self::$args);
+		}
 		
 		// method
-		if (!empty(self::$args)) 
+		if (!empty(self::$args))
+		{
 			self::$method = array_shift(self::$args);
+		}
 		
 		// home
 		if (empty(self::$control)) 
+		{
 			self::$method = self::$control = 'home';
+		}
 	}
 	
 	/**
@@ -191,33 +203,15 @@ final class X4Route_core
 	 */ 
 	public static function get_route()
 	{
-		$param = implode('/', self::$args);
-		
-		// check lang
-		$lang = (empty(self::$lang))
-			? ''
-			: self::$lang.'/';
-		
-		// base URL
-		$url = self::$protocol.'://'.$_SERVER['SERVER_NAME'].ROOT.$lang.self::$area;
-		
-		// add control
-		if (!empty(self::$control) && (self::$control != 'home' || (!empty(self::$method) && self::$method != '_default') || $param))
-			$url .= '/'.self::$control;
-		
-		// add method
-		if (!empty(self::$method) && self::$method != '_default')
-			$url .= '/'.self::$method;
-		
-		// add param
-		if ($param)
-			$url .= '/'.$param;
-		
-		// query string
-		if (!empty(self::$query_string))
-			$url .= '?'.self::$query_string;
-		
-		return $url;
+	    $param = (self::$args[0] == '_default') 
+			? '' 
+			: '/'.implode('/', self::$args);
+			
+		$area = (self::$area == 'public') 
+			? '' 
+			: self::$area.'/';
+			
+		return self::$lang.'/'.$area.self::$control.'/'.self::$method.$param;
 	}
 	
 	/**
@@ -266,15 +260,7 @@ final class X4Route_core
 	 */ 
 	public static function get_uri()
 	{
-		$param = (self::$args[0] == '_default') 
-			? '' 
-			: '/'.implode('/', self::$args);
-			
-		$area = (self::$area == 'public') 
-			? '' 
-			: self::$area.'/';
-			
-		return self::$lang.'/'.$area.self::$control.'/'.self::$method.$param;
+		return self::$protocol.'://'.$_SERVER['SERVER_NAME'].self::$uri;
 	}
 	
 	/**
