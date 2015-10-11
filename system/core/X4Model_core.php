@@ -380,9 +380,7 @@ abstract class X4Model_core
 			
 			if ($this->log && $res[1]) 
 			{
-				$uid = (isset($_SESSION['xuid']))
-					? $_SESSION['xuid']
-					: $_SESSION['uid'];
+				$uid = $this->get_who();
 				$this->logger($uid, $res[0], $t, 'insert');
 			}
 		}
@@ -403,6 +401,25 @@ abstract class X4Model_core
 			$res = $this->db->single_exec($sql, $t);
 		}
 		return $res;
+	}
+	
+	/**
+	 * Set user ID for logger
+	 *
+	 *  @return  integer
+	 */
+	private function get_who()
+	{
+	    if (isset($_SESSION['xuid']))
+	    {
+	        return $_SESSION['xuid'];
+	    }
+	    
+	    if (isset($_SESSION['uid']))
+	    {
+	        return $_SESSION['uid'];
+	    }
+	    return 0;
 	}
 	
 	/**
@@ -436,9 +453,7 @@ abstract class X4Model_core
 			
 			if ($this->log && $res[1]) 
 			{
-				$uid = (isset($_SESSION['xuid']))
-					? $_SESSION['xuid']
-					: $_SESSION['uid'];
+				$uid = $this->get_who();
 				$this->logger($uid, $id, $t, 'update');
 			}
 		}
@@ -486,9 +501,7 @@ abstract class X4Model_core
 			
 			if ($this->log && $res[1]) 
 			{
-				$uid = (isset($_SESSION['xuid']))
-					? $_SESSION['xuid']
-					: $_SESSION['uid'];
+				$uid = $this->get_who();
 				$this->logger($uid, $id, $t, 'delete');
 			}
 			return $res;
@@ -659,16 +672,9 @@ abstract class X4Model_core
 			// do not store logs for $id_what == 0
 			if (intval($id_what) != 0)
 			{
-				$post = array(
-			        'who' => $who,
-			        'what' => $what,
-			        'id_what' => $id_what,
-			        'action' => $action,
-			        'memo' => $log,
-			        'xon' => $xon
-			    );
-			    
-				$res = $this->insert($post, 'logs');
+			    // here we don't use insert to avoid loops
+			    $res = $this->db->single_exec('INSERT INTO logs (updated, who, what, id_what, action, memo, xon) 
+					VALUES (\''.$this->now().'\', '.intval($who).', '.$this->db->escape($what).', '.intval($id_what).', '.$this->db->escape($action).', '.$log.','.intval($xon).')');
 			}
 		}
 		return $res;
