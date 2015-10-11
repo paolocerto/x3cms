@@ -79,7 +79,7 @@ final class X4Db_core
 						: ':'.X4Core_core::$db[$this->name]['db_port'];
 					$this->dsn = 'mongodb://'.X4Core_core::$db[$this->name]['db_user'].':'.X4Core_core::$db[$this->name]['db_pass'].'@'.X4Core_core::$db[$name]['db_host'].$db_port;	// .'/'.X4Core_core::$db[$name]['db_name']
 					$this->sql = false;
-					break;					
+					break;
 			}
 		}
 	}
@@ -155,7 +155,7 @@ final class X4Db_core
 	 * @param   mixed  Error message or error array for MongoDB
 	 * @return  string
 	 */
-	private function print_error($sql = '', $msg = '')	
+	private function print_error($sql = '', $msg = '') 
 	{
 		// If there is an error then take note of it
 		if ($this->sql)
