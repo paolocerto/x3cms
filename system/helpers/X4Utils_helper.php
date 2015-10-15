@@ -497,8 +497,8 @@ class X4Utils_helper
 		
 			// clean 
 			$regex = ($deep)
-			? '/[^a-z0-9-]+/is'
-			: '/[^a-z0-9-\/\.]+/is';
+				? '/[^a-z0-9-]+/is'
+				: '/[^a-z0-9-\/\.]+/is';
 		
 			$res = preg_replace_callback(
 				$regex,
@@ -507,6 +507,15 @@ class X4Utils_helper
 					return '-';
 				},
 				$str);
+			
+			// remove duplicates
+			$res = preg_replace_callback(
+				'/-(-*)/',
+				function($m) 
+				{
+					return '-';
+				},
+				$res);
 		}
 		else
 		{
@@ -515,6 +524,9 @@ class X4Utils_helper
 			$res = ($deep)
 			    ? preg_replace('/[^a-z0-9-\.]+/', '-', $str)
 			    : preg_replace('/[^a-z0-9-\/\.]+/', '-', $str);
+			
+			// remove duplicates
+			$res = preg_replace('/-(-*)/', '-', $res);
 		}
 		
 		return ($negative)
