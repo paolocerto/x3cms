@@ -56,8 +56,8 @@ final class X4Route_core
 	 */
 	public static function set_route($request_uri, $default_config = array())
 	{
-	    // set the URI
-	    self::$uri = $request_uri;
+		// set the URI
+		self::$uri = $request_uri;
 	    
 		// set default
 		if (empty(self::$default)) 
@@ -256,11 +256,16 @@ final class X4Route_core
 	 * get the URI
 	 *
 	 * @static
+	 * @param   boolean $query_string 
 	 * @return  string
 	 */ 
-	public static function get_uri()
+	public static function get_uri($query_string = true)
 	{
-		return self::$protocol.'://'.$_SERVER['SERVER_NAME'].self::$uri;
+	    $uri = ($query_string)
+	        ? self::$uri
+	        : str_replace('?'.self::$query_string, '', self::$uri);
+	        
+		return self::$protocol.'://'.$_SERVER['SERVER_NAME'].$uri;
 	}
 	
 	/**
