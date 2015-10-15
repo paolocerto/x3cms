@@ -152,7 +152,7 @@ class Files_controller extends X3ui_controller
 				
 				echo '<button type="button" name="bulk" id="bulk" class="button" onclick="setForm(\'bulk_action\');">'._DELETE_BULK.'</button>
 				<input type="checkbox" class="bulker vmiddle" name="bulk_selector" id="bulk_selector"  title="'._SELECT_ALL.'" />
-				<form id="searchfile" name="searchfile" action="'.BASE_URL.'files/filter/'.$id_area.$url.'" method="post" onsubmit="return false">
+				<form id="searchfile" name="searchfile" action="'.BASE_URL.'files/filter/'.$id_area.$url.'" method="post" onsubmit="setForm(\'searchfile\');return false;">
 				<input type="text" name="search" id="search" value="'.urldecode($str).'" />
 				<button type="button" name="searcher" class="button" onclick="setForm(\'searchfile\');">'._FIND.'</button>
 				</form>
