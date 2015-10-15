@@ -11,7 +11,9 @@
 // X3CMS - default theme - base view
 header('X-UA-Compatible: IE=edge,chrome=1');
 
-$title = $xkeys = $css = '';
+$title = $css = '';
+$robots = 'index,follow';
+$xkeys = $this->site->site->keywords;
 $description = stripslashes($this->site->site->description);
 if (isset($page)) 
 {
@@ -19,7 +21,10 @@ if (isset($page))
 	$description = (empty($page->description)) 
 		? $description 
 		: stripslashes($page->description);
-	$xkeys = stripslashes($page->xkeys);
+	if (!empty($page->xkeys))
+	{
+		$xkeys .= ','.stripslashes($page->xkeys);
+	}
 	$css = $page->css;
 } 
 
@@ -32,7 +37,11 @@ if (isset($page))
 
 <title><?php echo $title.$this->site->site->title ?></title>
 <meta name="description" content="<?php echo $description ?>">
-<meta name="keywords" content="<?php echo $this->site->site->keywords.','.$xkeys ?>">
+<meta name="robots" content="<?php echo $robots ?>">
+<meta name="keywords" content="<?php echo .$xkeys ?>">
+
+<link rel="canonical" href="<?php echo X4Route_core::get_uri() ?>">
+<link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml">
 
 <link rel="shortcut icon" href="<?php echo THEME_URL ?>favicon.ico" type="images/x-icon">
 <link rel="stylesheet" href="<?php echo THEME_URL ?>css/bootstrap.min.css">
@@ -47,8 +56,6 @@ if (RTL)
 	echo '<link title="normal" rel="stylesheet" href="'.THEME_URL.'css/rtl.css" media="all">';
 }
 ?>
-
-<link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml">
 
 <script src="<?php echo ROOT ?>files/js/jquery/jquery.min.js"></script>
 <script src="<?php echo ROOT ?>files/js/jquery/jquery.cycle2.js"></script>
