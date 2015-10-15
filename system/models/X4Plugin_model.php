@@ -364,4 +364,24 @@ class X4Plugin_model extends X4Model_core
 				searchable = 1');
 	}
 	
+	/**
+	 * Check plugin redirects
+	 *
+	 * @param array		array of models
+	 * @return mixed
+	 */
+	public function check_redirect($array, $url)
+	{
+	    $redirect = null;
+		foreach($array as $i)
+		{
+		    $mod = new $i();
+		    $redirect = $mod->check_redirect($url);
+		    if ($redirect)
+		    {
+		        break;
+		    }
+		}
+		return $redirect;
+	}
 }
