@@ -214,11 +214,11 @@ window.addEvent("domready", function()
 	 */
 	public function detail($id)
 	{
+	    // load dictionaries
+		$this->dict->get_wordarray(array('users', 'form', 'login'));
+		
 		// check permission
 		AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'users', $id, 3);
-		
-		// load dictionaries
-		$this->dict->get_wordarray(array('users', 'form', 'login'));
 		
 		// get page
 		$page = $this->get_page('users/detail');
