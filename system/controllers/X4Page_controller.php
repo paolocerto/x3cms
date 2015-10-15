@@ -56,8 +56,8 @@ class X4Page_controller extends X4Cms_controller
 	 */
 	public function call_plugin($module, $id_area = '', $control = '', $a = '', $b = '', $c = '', $d = '')
 	{
-		$plug = new X4Plugin_model();
-		if ($plug->exists($module, $id_area) && file_exists(PATH.'plugins/'.$module.'/'.$module.'_plugin.php')) 
+		$mod = new X4Plugin_model();
+		if ($mod->exists($module, $id_area) && file_exists(PATH.'plugins/'.$module.'/'.$module.'_plugin.php')) 
 		{
 			X4Core_core::auto_load($module.'/'.$module.'_plugin');
 			$plugin = ucfirst($module.'_plugin');
@@ -66,7 +66,8 @@ class X4Page_controller extends X4Cms_controller
 		}
 		else 
 		{
-			header('Location: '.BASE_URL.'msg/message/_page_not_found');
+		    header('HTTP/1.0 404 Not Found');
+		    header('Location: '.BASE_URL.'msg/message/_page_not_found');
 		}
 	}
 	
@@ -130,7 +131,21 @@ class X4Page_controller extends X4Cms_controller
 		}
 		else 
 		{
+			// check for redirects
+			$url = X4Route_core::get_uri();
+			$mod = new X4Plugin_model();
+			$redirect = $mod->check_redirect(array('Page_model'), $url);
+
+			if (!$redirect)
+			{
+			header('HTTP/1.0 404 Not Found');
 			header('Location: '.BASE_URL.'msg/message/_page_not_found');
+			}
+			else
+			{
+			// redirect to
+			header('Location: '.$this->site->site->domain.'/'.$redirect->url, true, $redirect->redirect_code);
+			}
 		}
 	}
 }
