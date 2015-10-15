@@ -191,7 +191,7 @@ class Articles_controller extends X3ui_controller
                     // add nothing    
                     break;
                 default:
-                    echo '<form id="searchitems" name="searchitems" action="'.BASE_URL.'articles/filter/'.$id_area.'/'.$lang.'/'.$xcase.'/'.$id_what.'/" method="post">
+                    echo '<form id="searchitems" name="searchitems" action="'.BASE_URL.'articles/filter/'.$id_area.'/'.$lang.'/'.$xcase.'/'.$id_what.'/" method="post" onsubmit="setForm(\'searchitems\');return false;">
                         <input type="text" name="search" id="search" value="'.urldecode($str).'" title="'._ARTICLES_SEARCH_MSG.'" />
                         <button type="button" name="searcher" class="button" onclick="setForm(\'searchitems\');">'._FIND.'</button>
                         </form>';
@@ -724,15 +724,27 @@ window.addEvent("domready", function()
 			'name' => 'content'
 		);
 		
-		// content
-		$fields[] = array(
-			'label' => _SCRIPT,
-			'type' => 'textarea', 
-			'value' => htmlentities($m->js),
-			'name' => 'js',
-			'extra' => 'class="NoEditor"',
-			'suggestion' => _SCRIPT_MSG
-		);
+		if (EDITOR_SCRIPTS)
+		{
+            // content
+            $fields[] = array(
+                'label' => _SCRIPT,
+                'type' => 'textarea', 
+                'value' => htmlentities($m->js),
+                'name' => 'js',
+                'extra' => 'class="NoEditor"',
+                'suggestion' => _SCRIPT_MSG
+            );
+        }
+        else
+        {
+            $fields[] = array(
+				'label' => null,
+				'type' => 'hidden',
+				'value' => $m->js,
+				'name' => 'js'
+			);
+        }
 		
 		// plugin section
 		$fields[] = array(
@@ -869,70 +881,73 @@ window.addEvent("domready", function()
 			'extra' => 'class="large"'
 		);
 		
-		// options section
-		$fields[] = array(
-			'label' => null,
-			'type' => 'html', 
-			'value' => '<h2>'._OPTIONS.'</h2>
-						<div class="band clearfix">
-							<div class="one-half sm-one-whole">'
-		);
-		
-		$fields[] = array(
-			'label' => _SHOW_AUTHOR,
-			'type' => 'checkbox', 
-			'value' => $m->show_author,
-			'name' => 'show_author',
-			'checked' => $m->show_author
-		);
-		
-		$fields[] = array(
-			'label' => null,
-			'type' => 'html', 
-			'value' => '</div><div class="one-half sm-one-whole">'
-		);
-		
-		$fields[] = array(
-			'label' => _SHOW_DATE,
-			'type' => 'checkbox', 
-			'value' => $m->show_date,
-			'name' => 'show_date',
-			'checked' => $m->show_date
-		);
-		
-		$fields[] = array(
-			'label' => null,
-			'type' => 'html', 
-			'value' => '</div><div class="one-half sm-one-whole">'
-		);
-		
-		$fields[] = array(
-			'label' => _SHOW_TAGS,
-			'type' => 'checkbox', 
-			'value' => $m->show_tags,
-			'name' => 'show_tags',
-			'checked' => $m->show_tags
-		);
-		
-		$fields[] = array(
-			'label' => null,
-			'type' => 'html', 
-			'value' => '</div><div class="one-half sm-one-whole">'
-		);
-		
-		$fields[] = array(
-			'label' => _SHOW_ACTIONS,
-			'type' => 'checkbox', 
-			'value' => $m->show_actions,
-			'name' => 'show_actions',
-			'checked' => $m->show_actions
-		);
-		
-		$fields[] = array(
-			'label' => null,
-			'type' => 'html',
-			'value' => '</div></div></div></div>'
-		);
+		if (EDITOR_OPTIONS)
+		{
+            // options section
+            $fields[] = array(
+                'label' => null,
+                'type' => 'html', 
+                'value' => '<h2>'._OPTIONS.'</h2>
+                            <div class="band clearfix">
+                                <div class="one-half sm-one-whole">'
+            );
+            
+            $fields[] = array(
+                'label' => _SHOW_AUTHOR,
+                'type' => 'checkbox', 
+                'value' => $m->show_author,
+                'name' => 'show_author',
+                'checked' => $m->show_author
+            );
+            
+            $fields[] = array(
+                'label' => null,
+                'type' => 'html', 
+                'value' => '</div><div class="one-half sm-one-whole">'
+            );
+            
+            $fields[] = array(
+                'label' => _SHOW_DATE,
+                'type' => 'checkbox', 
+                'value' => $m->show_date,
+                'name' => 'show_date',
+                'checked' => $m->show_date
+            );
+            
+            $fields[] = array(
+                'label' => null,
+                'type' => 'html', 
+                'value' => '</div><div class="one-half sm-one-whole">'
+            );
+            
+            $fields[] = array(
+                'label' => _SHOW_TAGS,
+                'type' => 'checkbox', 
+                'value' => $m->show_tags,
+                'name' => 'show_tags',
+                'checked' => $m->show_tags
+            );
+            
+            $fields[] = array(
+                'label' => null,
+                'type' => 'html', 
+                'value' => '</div><div class="one-half sm-one-whole">'
+            );
+            
+            $fields[] = array(
+                'label' => _SHOW_ACTIONS,
+                'type' => 'checkbox', 
+                'value' => $m->show_actions,
+                'name' => 'show_actions',
+                'checked' => $m->show_actions
+            );
+            
+            $fields[] = array(
+                'label' => null,
+                'type' => 'html',
+                'value' => '</div></div></div></div>'
+            );
+        }
 /*
 // TODO: maybe in the future
 		$fields[] = array(
