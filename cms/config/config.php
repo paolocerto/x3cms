@@ -53,6 +53,12 @@ define('MAX_MENU_DEEP', 3);				// keep this lower for better performance
 // logs
 define('LOGS', true);					// disable this for better performance
 
+// scripts in the editor
+define('EDITOR_SCRIPTS', false);        // enable a dedicated field for scripts in the editor
+
+// options in the editor
+define('EDITOR_OPTIONS', false);        // enable a dedicated section for options in the editor
+
 // use APC
 define('APC', false);					// if true the most frequently executed queries will be cached
 
