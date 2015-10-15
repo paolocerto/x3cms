@@ -25,8 +25,9 @@ input.check input.radio {width:4em !important;vertical-align:baseline;}
 .radiobox input.radio.inline + label {display:inline-block;}
 
 select.multiple_select {vertical-align:top;padding:.2em .5em;border:1px solid #ccc;border-radius:4px;}
-button, a.button {background:#B0BEC5;color:#fff;border:none;padding:.5em 1em;border-radius:0;cursor:pointer;}
+button, a.button {background:#B0BEC5;color:#fff;border:none;padding:.5em 1.5em;border-radius:0;cursor:pointer;}
 .buttons {margin-top:1.5em;text-align:center}
+.buttons button {margin:0 .5em;}
 
 /* classes */
 .band {margin:0;}
@@ -61,8 +62,8 @@ button, a.button {background:#B0BEC5;color:#fff;border:none;padding:.5em 1em;bor
 .small {font-size:.85em;}
 .suggestion {font-size:0.85em;margin-left:.5em;}
 .border-top {border-top:1px solid #ccc;}
-.text-center {text-align:center;}
-.text-right {text-align:right;}
+.text-center, .acenter {text-align:center;}
+.text-right, .aright {text-align:right;}
 .pointer {cursor:pointer;}
 
 /* colors */
