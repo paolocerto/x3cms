@@ -95,6 +95,7 @@ interface X3plugin
 	 * @param   mixed	$a
 	 * @param   mixed	$b
 	 * @param   mixed	$c
+	 * @param   mixed	$d
 	 * @return  void
 	 */
 	 public function call_plugin($id_area, $control, $a, $b, $c, $d);
