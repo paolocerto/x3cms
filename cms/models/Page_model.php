@@ -501,6 +501,19 @@ class Page_model extends X4Model_core
 			JOIN areas a ON a.id_theme = t.id
 			WHERE t.xon = 1 AND a.id = '.intval($id_area));
 	}
+	
+	/**
+	 * Check for redirects
+	 *
+	 * @param   string	$url Page URL
+	 * @return  object
+	 */
+	public function check_redirect($url)
+	{
+	    return $this->db->query_row('SELECT p.redirect_code, p.url 
+			FROM pages p
+			WHERE p.xon = 1 AND p.redirect = '.$this->db->escape($url));
+	}
 }
 
 /**
@@ -521,6 +534,10 @@ class Page_obj
 	public $id_menu = 0;
 	public $deep = 0;
 	public $area = '';
+	
+	public $robot = '';
+	public $redirect_code = 0;
+	public $redirect = '';
 	
 	/**
 	 * Constructor
