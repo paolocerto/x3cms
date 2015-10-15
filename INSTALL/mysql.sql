@@ -564,6 +564,11 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'admin', 'pages', '_INIZIALIZE_AREA', 'Inizializza area', 0, 1),
 (NOW(), 'it', 'admin', 'pages', '_SITE_MAP', 'Mappa del sito', 0, 1),
 
+(NOW(), 'it', 'admin', 'pages', '_ROBOT', 'Regole per meta ROBOTS', 0, 1),
+(NOW(), 'it', 'admin', 'pages', '_ROBOT_MSG', 'se vuoto viene usato "index,follow"', 0, 1),
+(NOW(), 'it', 'admin', 'pages', '_REDIRECT_CODE', 'Codice redirect', 0, 1),
+(NOW(), 'it', 'admin', 'pages', '_REDIRECT', 'Redirect URL', 0, 1),
+(NOW(), 'it', 'admin', 'pages', '_REDIRECT_MSG', 'inserire vecchio URL', 0, 1),
 
 (NOW(), 'it', 'admin', 'articles', '_ARTICLE_LIST', 'Elenco articoli', 0, 1),
 (NOW(), 'it', 'admin', 'articles', '_ARTICLES', 'Articoli', 0, 1),
@@ -1129,6 +1134,11 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'admin', 'pages', '_INIZIALIZE_AREA', 'Initialize area', 0, 1),
 (NOW(), 'en', 'admin', 'pages', '_SITE_MAP', 'Site map', 0, 1),
 
+(NOW(), 'en', 'admin', 'pages', '_ROBOT', 'Rule for meta ROBOTS', 0, 1),
+(NOW(), 'en', 'admin', 'pages', '_ROBOT_MSG', 'if empty will be used "index,follow"', 0, 1),
+(NOW(), 'en', 'admin', 'pages', '_REDIRECT_CODE', 'Redirect code', 0, 1),
+(NOW(), 'en', 'admin', 'pages', '_REDIRECT', 'Redirect URL', 0, 1),
+(NOW(), 'en', 'admin', 'pages', '_REDIRECT_MSG', 'insert the old URL', 0, 1),
 
 (NOW(), 'en', 'admin', 'articles', '_ARTICLE_LIST', 'Articles list', 0, 1),
 (NOW(), 'en', 'admin', 'articles', '_ARTICLES', 'Articles', 0, 1),
@@ -2204,6 +2214,9 @@ CREATE TABLE IF NOT EXISTS `pages` (
   `title` varchar(128) NOT NULL,
   `description` varchar(255) NOT NULL,
   `xkeys` text NOT NULL,
+  `robot` varchar(128) NOT NULL,
+  `redirect_code` smallint(4) NOT NULL,
+  `redirect` varchar(255) NOT NULL,
   `id_menu` int(11) NOT NULL,
   `xpos` smallint(2) NOT NULL,
   `deep` smallint(2) NOT NULL,

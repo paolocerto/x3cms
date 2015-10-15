@@ -361,8 +361,8 @@ class Pages_controller extends X3ui_controller
 		$this->dict->get_wordarray(array('form', 'pages'));
 		
 		// get object
-		$pages = new Page_model('', '', $id);
-		$page = $pages->get_page_by_id($id);
+		$mod = new Page_model('', '', $id);
+		$page = $mod->get_page_by_id($id);
 		
 		// build the form
 		$fields = array();
@@ -371,36 +371,6 @@ class Pages_controller extends X3ui_controller
 			'type' => 'hidden', 
 			'value' => $id,
 			'name' => 'id'
-		);
-		$fields[] = array(
-			'label' => _URL,
-			'type' => 'text', 
-			'value' => $page->url,
-			'name' => 'url',
-			'rule' => 'required',
-			'extra' => 'class="large"'
-		);
-		$fields[] = array(
-			'label' => _NAME,
-			'type' => 'text', 
-			'value' => $page->name,
-			'name' => 'name',
-			'rule' => 'required',
-			'extra' => 'class="large"'
-		);
-		$fields[] = array(
-			'label' => _TITLE,
-			'type' => 'text', 
-			'value' => $page->title,
-			'name' => 'title',
-			'rule' => 'required',
-			'extra' => 'class="large"'
-		);
-		$fields[] = array(
-			'label' => _DESCRIPTION,
-			'type' => 'textarea', 
-			'value' => $page->description,
-			'name' => 'description'
 		);
 		
 		$fields[] = array(
@@ -413,7 +383,7 @@ class Pages_controller extends X3ui_controller
 			'label' => _FROM_PAGE,
 			'type' => 'select',
 			'value' => $page->xfrom,
-			'options' => array($pages->get_pages('', 0, $page->url), 'url', 'title'),
+			'options' => array($mod->get_pages('', 0, $page->url), 'url', 'title'),
 			'name' =>'xfrom',
 			'rule' => 'required',
 			'extra' => 'class="large"'
@@ -440,19 +410,143 @@ class Pages_controller extends X3ui_controller
 		);
 		
 		$fields[] = array(
+			'label' => null,
+			'type' => 'html', 
+			'value' => '<div id="accordion" class="gap-top">'
+		);
+		
+		$fields[] = array(
+            'label' => null,
+            'type' => 'html', 
+            'value' => '<h4 class="context">'._TEMPLATE.'</h4><div class="section">'
+        );
+		
+		$fields[] = array(
+			'label' => _TEMPLATE,
+			'type' => 'select',
+			'value' => $page->tpl,
+			'options' => array($mod->get_templates(), 'name', 'description'),
+			'name' =>'tpl',
+			'extra' => 'class="large"'
+		);
+		
+		$fields[] = array(
+            'label' => null,
+            'type' => 'html', 
+            'value' => '</div><h4 class="context">'._SEO_TOOLS.'</h4><div class="section">'
+        );
+		
+		$fields[] = array(
+			'label' => _URL,
+			'type' => 'text', 
+			'value' => $page->url,
+			'name' => 'url',
+			'rule' => 'required',
+			'extra' => 'class="large"'
+		);
+		
+		$fields[] = array(
+			'label' => null,
+			'type' => 'html', 
+			'value' => '<div class="band inner-pad clearfix"><div class="one-half xs-one-whole">'
+		);
+		
+		$fields[] = array(
+			'label' => _NAME,
+			'type' => 'text', 
+			'value' => $page->name,
+			'name' => 'name',
+			'rule' => 'required',
+			'extra' => 'class="large"'
+		);
+		
+		$fields[] = array(
+			'label' => null,
+			'type' => 'html', 
+			'value' => '</div><div class="one-half xs-one-whole">'
+		);
+		
+		$fields[] = array(
+			'label' => _TITLE,
+			'type' => 'text', 
+			'value' => $page->title,
+			'name' => 'title',
+			'rule' => 'required',
+			'extra' => 'class="large"'
+		);
+		
+		$fields[] = array(
+			'label' => null,
+			'type' => 'html', 
+			'value' => '</div></div>'
+		);
+		
+		$fields[] = array(
+			'label' => _DESCRIPTION,
+			'type' => 'textarea', 
+			'value' => $page->description,
+			'name' => 'description'
+		);
+		
+		$fields[] = array(
 			'label' => _KEYS,
 			'type' => 'textarea', 
 			'value' => $page->xkeys,
 			'name' => 'xkeys'
 		);
+
 		$fields[] = array(
-			'label' => _TEMPLATE,
-			'type' => 'select',
-			'value' => $page->tpl,
-			'options' => array($pages->get_templates(), 'name', 'description'),
-			'name' =>'tpl',
+			'label' => _ROBOT,
+			'type' => 'text', 
+			'value' => $page->robot,
+			'name' => 'robot',
+			'suggestion' => _ROBOT_MSG,
 			'extra' => 'class="large"'
 		);
+		
+		$fields[] = array(
+			'label' => null,
+			'type' => 'html', 
+			'value' => '<div class="band inner-pad clearfix"><div class="one-fifth xs-one-whole">'
+		);
+		
+		$codes = array(301, 302);
+		$fields[] = array(
+			'label' => _REDIRECT_CODE,
+			'type' => 'select', 
+			'value' => $page->redirect_code,
+			'name' => 'redirect_code',
+			'options' => array(X4Array_helper::simplearray2obj($codes, 'value', 'option'), 'value', 'option', 0),
+			'extra' => 'class="large"'
+		);
+		
+		$fields[] = array(
+			'label' => null,
+			'type' => 'html', 
+			'value' => '</div><div class="four-fifth xs-one-whole">'
+		);
+		
+		$fields[] = array(
+			'label' => _REDIRECT,
+			'type' => 'text', 
+			'value' => $page->redirect,
+			'name' => 'redirect',
+			'rule' => 'requiredif§redirect_code§!0|url',
+			'suggestion' => _REDIRECT_MSG,
+			'extra' => 'class="large"'
+		);
+
+		$fields[] = array(
+			'label' => null,
+			'type' => 'html', 
+			'value' => '</div></div>'
+		);
+		
+		$fields[] = array(
+            'label' => null,
+            'type' => 'html', 
+            'value' => '</div></div>'
+        );
 		
 		// if submitted
 		if (X4Route_core::$post)
@@ -474,8 +568,18 @@ class Pages_controller extends X3ui_controller
 		$view->title = _SEO_TOOLS;
 		
 		// form builder
-		$view->form = X4Form_helper::doform('editor', BASE_URL.'pages/seo/'.$id, $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '', 
-			'onclick="setForm(\'editor\');"');
+		$view->form = '<div id="scrolled">'.X4Form_helper::doform('editor', BASE_URL.'pages/seo/'.$id, $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '', 
+			'onclick="setForm(\'editor\');"').'</div>';
+		
+		$view->js = '
+<script>
+window.addEvent("domready", function()
+{
+    var myScroll = new Scrollable($("scrolled"));
+	saccordion("accordion", "#accordion h4", "#accordion .section");
+});
+</script>';
+
 		$view->render(TRUE);
 	}
 	
@@ -514,6 +618,9 @@ class Pages_controller extends X3ui_controller
 				'xfrom' => (!in_array($page->url, $no_change)) ? $_post['xfrom'] : $page->xfrom,
 				'hidden' => intval(isset($_post['hidden'])),
 				'xkeys' => $_post['xkeys'],
+				'robot' => $_post['robot'],
+				'redirect_code' => $_post['redirect_code'],
+				'redirect' => $_post['redirect'],
 				'tpl' => $_post['tpl']
 				);
 			
