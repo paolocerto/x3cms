@@ -935,6 +935,7 @@ var windowHeight = function (){
 						var r = new Request.JSON(options);
 						r.send();
 					}
+					chk = false;
 				}
 			});
 	},
