@@ -945,9 +945,15 @@ window.addEvent("domready", function()
             $fields[] = array(
                 'label' => null,
                 'type' => 'html',
-                'value' => '</div></div></div></div>'
+                'value' => '</div></div>'
             );
         }
+        
+        $fields[] = array(
+            'label' => null,
+            'type' => 'html',
+            'value' => '</div></div>'
+        );
 /*
 // TODO: maybe in the future
 		$fields[] = array(
