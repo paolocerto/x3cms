@@ -454,17 +454,22 @@ class Page_model extends X4Model_core
 			
 		$body = '';
 		if ($pages) {
+		    
+		    $domain = (MULTILANGUAGE)
+		        ? $domain.'/'.$i->lang
+		        : $domain;
+		    
 			foreach ($pages as $i)
 			{
 				switch($i->url) {
 				case 'map': 
-					$body .= '<url><loc>'.$domain.'/'.$i->lang.'/map</loc><lastmod>'.date('Y-m-d').'</lastmod></url>'.NL;
+					$body .= '<url><loc>'.$domain.'/map</loc><lastmod>'.date('Y-m-d').'</lastmod></url>'.NL;
 					break;
 				case 'home':
-					$body .= '<url><loc>'.$domain.'/'.$i->lang.'</loc><lastmod>'.$i->updated.'</lastmod></url>'.NL;
+					$body .= '<url><loc>'.$domain.'</loc><lastmod>'.$i->updated.'</lastmod></url>'.NL;
 					break;
 				default:
-					$body .= '<url><loc>'.$domain.'/'.$i->lang.'/'.$i->url.'</loc><lastmod>'.$i->updated.'</lastmod></url>'.NL;
+					$body .= '<url><loc>'.$domain.'/'.$i->url.'</loc><lastmod>'.$i->updated.'</lastmod></url>'.NL;
 				}
 			}
 		}
