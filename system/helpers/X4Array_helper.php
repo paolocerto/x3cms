@@ -163,7 +163,18 @@ class X4Array_helper
 		}
 		return $a;
 	}
-
+	
+	/**
+	 * Sort an array by the length of its values
+	 *
+	 * @param	first value
+	 * @param	second value
+	 * @return boolean
+	 */
+	public static function sort_by_length($a, $b)
+	{
+		return strlen($b) - strlen($a);
+	}
 }
 
 /**
