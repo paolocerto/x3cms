@@ -38,7 +38,7 @@ if (isset($page))
 <title><?php echo $title.$this->site->site->title ?></title>
 <meta name="description" content="<?php echo $description ?>">
 <meta name="robots" content="<?php echo $robots ?>">
-<meta name="keywords" content="<?php echo .$xkeys ?>">
+<meta name="keywords" content="<?php echo $xkeys ?>">
 
 <link rel="canonical" href="<?php echo X4Route_core::get_uri() ?>">
 <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml">
