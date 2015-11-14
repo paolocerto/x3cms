@@ -1382,27 +1382,47 @@ class X4Files_helper
 	 *
 	 * @param string	$file file with path
 	 * @param string	$filename file dname for the download
+	 * @param boolean	$download force the download
 	 * @return file
 	 */
-	public static function get_file($file, $filename = '') 
+	public static function get_file($file, $filename = '', $download = true) 
 	{
 		if (file_exists($file)) 
 		{
 			$download_name = (empty($filename))
 				? basename($file)
 				: X4Utils_helper::unspace($filename);
-		
+			
 			$mime = self::get_mime($file);
-			//$out = file_get_contents($file);
-			header('Content-Description: File Transfer');
-		//	header('Cache-Control: public'); // needed for i.e.
-			header('Content-type: '.$mime);
-			header('Content-Disposition: attachment; filename='.$download_name);
-			header('Content-Transfer-Encoding: Binary');
-			header('Expires: 0');
-			header('Cache-Control: must-revalidate');
-			header('Pragma: public');
-            header('Content-Length:'.filesize($file));
+			if ($download)
+			{
+			    header('Content-Description: File Transfer');
+                header('Cache-Control: private');
+                header('Content-type: '.$mime);
+                header('Content-Disposition: attachment; filename='.$download_name);
+                header('Content-Transfer-Encoding: Binary');
+                header('Expires: 0');
+                header('Cache-Control: must-revalidate');
+                header('Pragma: public');
+                header('Content-Length:'.filesize($file));
+            }
+            else
+            {
+                header('Content-Description: File Transfer');
+                header('Cache-Control: private');
+                header('Content-type: '.$mime);
+                header('Content-Disposition: inline; filename='.$download_name);
+                header('Content-Transfer-Encoding: Binary');
+                header('Expires: 0');
+                header('Cache-Control: must-revalidate');
+                header('Pragma: public');
+                // for adobe reader
+                if ($mime == 'application/pdf')
+                {
+                    header("Content-Range: bytes");
+                }
+                header('Content-Length:'.filesize($file));
+            }
             
             ob_clean();
             flush();
