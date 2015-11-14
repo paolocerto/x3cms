@@ -29,6 +29,7 @@ RewriteBase HTAROOT
 # remove comment redirect all traffic with www and without www to the same domain
 #RewriteCond %{HTTP_HOST} !^WWWDOMAIN [NC]
 #RewriteRule ^(.*)$ HTADOMAIN/$1 [L,R=301]
+RewriteRule ^(.*)/$ $1 [L,R=301]
 
 RewriteRule ^sitemap\.xml$ cms/files/sitemap.xml [L]
 RewriteRule ^cms/files/(.*)$ cms/files/$1 [L]
