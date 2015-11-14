@@ -437,7 +437,7 @@ class Page_model extends X4Model_core
 	private function update_sitemap($domain)
 	{
 		// get pages
-		$pages = $this->db->query('SELECT p.url, p.lang, DATE(a.updated) AS updated 
+		$pages = $this->db->query('SELECT p.url, p.lang, a.updated 
 			FROM pages p
 			JOIN articles a ON a.id_page = p.id
 			JOIN alang l ON l.code = p.lang AND p.id_area = l.id_area
@@ -446,11 +446,7 @@ class Page_model extends X4Model_core
 			ORDER BY p.lang ASC, p.ordinal ASC, a.updated DESC');
 		
 		// build xml
-		$head = '<?xml version=\'1.0\' encoding=\'UTF-8\'?>
-			<urlset xmlns="http://www.google.com/schemas/sitemap/0.84"
-			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-			xsi:schemaLocation="http://www.google.com/schemas/sitemap/0.84
-			http://www.google.com/schemas/sitemap/0.84/sitemap.xsd">'.NL;
+		$head = '<?xml version="1.0" encoding="utf-8"?><urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'.NL;
 			
 		$body = '';
 		if ($pages) {
@@ -463,13 +459,27 @@ class Page_model extends X4Model_core
 			{
 				switch($i->url) {
 				case 'map': 
-					$body .= '<url><loc>'.$domain.'/map</loc><lastmod>'.date('Y-m-d').'</lastmod></url>'.NL;
+					$body .= '<url>
+    <loc>'.$domain.'/map</loc>
+    <lastmod>'.str_replace(' ', 'T', date('Y-m-d H:i:s')).'+01:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+</url>'.NL;
 					break;
 				case 'home':
-					$body .= '<url><loc>'.$domain.'</loc><lastmod>'.$i->updated.'</lastmod></url>'.NL;
+					$body .= '<url>
+    <loc>'.$domain.'</loc>
+    <lastmod>'.str_replace(' ', 'T', $i->updated).'+01:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+</url>'.NL;
 					break;
 				default:
-					$body .= '<url><loc>'.$domain.'/'.$i->url.'</loc><lastmod>'.$i->updated.'</lastmod></url>'.NL;
+					$body .= '<url>
+    <loc>'.$domain.'/'.$i->url.'</loc><lastmod>'.str_replace(' ', 'T', $i->updated).'+01:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>'.NL;
 				}
 			}
 		}
