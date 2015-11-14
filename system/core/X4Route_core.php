@@ -41,11 +41,47 @@ final class X4Route_core
 	 * Areas for IDs
 	 */
 	public static $areas = array(
-			'admin' => 1,
-			'public' => 2,
-			'private' => 3
-		);
-
+        'admin' => 1,
+        'public' => 2,
+        'private' => 3
+    );
+	
+	/*
+	 * Localization options
+	 * Add what you need if is missing
+	 */
+	public static $locales = array(
+	    'sf' => 'af_ZA',
+	    'ar' => 'ar_SA',
+	    'bg' => 'bg_BG',
+	    'cs' => 'cs_CZ',
+        'da' => 'da_DK',
+        'de' => 'de_DE',
+        'el' => 'el_GR',
+        'en' => 'en_US',
+        'fi' => 'fi_FI',
+        'fr' => 'fr_FR',
+        'hi' => 'hi_IN',
+        'hr' => 'hr_HR',
+        'id' => 'id_ID',
+        'it' => 'it_IT',
+        'jp' => 'ja_JP',
+        'lo' => 'lo_LA',
+        'nl' => 'nl_NL',
+        'no' => 'no_NO',
+        'ph' => 'ph_PH',
+        'pt' => 'pt_PT',
+        'ro' => 'ro_RO',
+        'ru' => 'ru_RU',
+        'sp' => 'es_ES',
+        'sv' => 'sv_SE',
+        'th' => 'th_TH',
+        'tr' => 'tr_TR',
+        'uk' => 'uk_UA',
+        'vi' => 'vi_VN',
+        'zh' => 'zh_CN'
+    );
+	
 	/**
 	 * Set the route
 	 *
@@ -61,11 +97,15 @@ final class X4Route_core
 	    
 		// set default
 		if (empty(self::$default)) 
+		{
 			self::$default = $default_config;
+		}
 		
 		// set proptocol
 		if (isset($_SERVER['HTTPS']))
+		{
 			self::$protocol = 'https';
+		}
 		
 		// clean uri string
 		$uri_str = (ROOT != '/') 
@@ -73,14 +113,18 @@ final class X4Route_core
 			: trim($request_uri, '/');
 		
 		// set default route
-		if (empty($uri_str)) 
+		if (empty($uri_str))
+		{
 			$uri_str = $default_config['x3default_route'];
+		}
 		
 		// for querystring
 		$us = explode('?', $uri_str);
 		// sanitize
-		if (isset($us[1])) 
+		if (isset($us[1]))
+		{
 			self::$query_string = $us[1];
+		}
 		
 		// check post
 		self::$post = (isset($_POST) && !empty($_POST));
@@ -89,8 +133,11 @@ final class X4Route_core
 		self::$args = explode('/', $us[0]);
 		
 		// check alternative languages
-		if (strlen(self::$args[0]) == 2) 
+		if (strlen(self::$args[0]) == 2)
+		{
 			self::$lang = array_shift(self::$args);
+			self::set_locale(self::$lang);
+		}
 		
 		// area
 		if (!empty(self::$args)) 
@@ -144,7 +191,22 @@ final class X4Route_core
 	public static function set_lang($code)
 	{
 		if (empty(self::$lang)) 
+		{
 			self::$lang = $code;
+			self::set_locale(self::$lang);
+		}
+	}
+	
+	/**
+	 * set the localization
+	 *
+	 * @static
+	 * @param   string	code lang
+	 * @return  void
+	 */ 
+	public static function set_locale($code)
+	{
+		setlocale(LC_ALL, self::$locales[$code].'.UTF-8');
 	}
 	
 	/**
