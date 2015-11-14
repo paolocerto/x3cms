@@ -777,7 +777,7 @@ img.date_toggler {position:relative;top:4px;margin-left:4px;}
 	.sm-push-none {margin-left:0;}
 	
 	.sm-hidden {display:none;}
-	#simple-modal {width:90% !important;margin:.5em;}
+	#simple-modal {width:90% !important;margin:.5em;position:absolute;}
 }
 
 @media screen and (max-width: 420px) {
@@ -812,8 +812,9 @@ img.date_toggler {position:relative;top:4px;margin-left:4px;}
 	.xs-block {display:block;}
 	
 	#menu {padding-top:0;}
-	#simple-modal {width:90% !important;margin:.5em;}
+	#simple-modal {width:90% !important;margin:.5em;position:absolute;}
 }
 
-
-
+@media screen and (max-height: 600px) {
+    #simple-modal {position:absolute;}
+}
