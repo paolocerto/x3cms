@@ -279,7 +279,7 @@ X3.append({
 				}
 				
 				// User notification
-				if (responseJSON && responseJSON.message_type) {
+				if (responseJSON && responseJSON.message_type && div != 'modal') {
 					if (responseJSON.message_type == 'error') {
 						X3.notification('error', responseJSON, modal);
 					} else {
@@ -917,11 +917,11 @@ var windowHeight = function (){
 			document.write("</ul>")
 		}
 	},
-	sortize = function(id_form, container, sort_info){
+	sortize = function(id_form, container, sort_info) {
 		var sortInput = document.id(sort_info),
 			list = document.id(container),
 			chk = false,
-			s = new Sortables(list,{
+			s = new Sortables(list, {
 				constrain: true,
 				clone: true,
 				revert: true,
@@ -939,7 +939,7 @@ var windowHeight = function (){
 				}
 			});
 	},
-	autocompletize = function(id_input, url){
+	autocompletize = function(id_input, url) {
 		new Autocompleter.Request.JSON(id_input, url, {
 			'postVar': 'input',
 			minLength: 3,
