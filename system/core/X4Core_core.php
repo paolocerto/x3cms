@@ -46,8 +46,10 @@ final class X4Core_core
 		
 		// set db data
 		if (!is_null($db)) 
+		{
 			self::$db = $db;
-		
+		}
+
 		// Start output buffering
 		ob_start(array('X4Core_core', 'output_buffer'));
 		
@@ -99,7 +101,9 @@ final class X4Core_core
 				
 				// if no cache to read
 				if (!X4Cache_core::Start($_SERVER['REQUEST_URI'], CACHE_TIME)) 
+				{
 					self::$caching = true;
+				}
 				else 
 				{
 					self::$inst = false;
@@ -163,13 +167,16 @@ final class X4Core_core
 	public static function shutdown()
 	{
 		// This will flush the buffer
-		if (ob_get_level()) {
+		if (ob_get_level()) 
+		{
 			while (@ob_end_flush());
 		}
 		
 		// close caching
 		if (self::$caching && !defined('NOCACHE')) 
+		{
 			X4Cache_core::End(self::$output);
+		}
 	}
 	
 	/**
@@ -182,7 +189,9 @@ final class X4Core_core
 	public static function auto_load($class)
 	{
 		if (class_exists($class, false)) 
+		{
 			return true;
+		}
 		
 		$what = explode('_', str_replace('-', '_', $class));
 		

@@ -44,8 +44,8 @@ More informations at http://www.x3cms.net/en/public/download_x3cms
 
 REQUIREMENTS
 
-- apache2 with htaccess enabled, mod_rewrite, headers, filter
-- mysql5 or newer
+- apache 2 with htaccess enabled, mod_rewrite, headers, filter
+- mysql 5 or newer
 - php 5.3 or newer with PDO mysql driver, GD, mcrypt, Curl
 
 ---
@@ -135,7 +135,3 @@ DOWNLOAD
 https://github.com/paolocerto/x3cms
 
 Paolo Certo
-
-
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/paolocerto/x3cms/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
-

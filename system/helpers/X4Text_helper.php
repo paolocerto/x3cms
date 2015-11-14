@@ -85,7 +85,7 @@ class X4Text_helper
 				'/\\s+/iu',
 				function($m)
 				{
-					return ' ';	
+					return ' ';
 				}, 
 				$str);
 		}
