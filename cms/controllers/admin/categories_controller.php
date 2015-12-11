@@ -49,6 +49,10 @@ class Categories_controller extends X3ui_controller
 		// load dictionary
 		$this->dict->get_wordarray(array('categories', 'articles'));
 		
+		$lang = (empty($lang)) 
+			? X4Route_core::$lang 
+			: $lang;
+			
 		// get page
 		$page = $this->get_page('categories');
 		$navbar = array($this->site->get_bredcrumb($page), array('articles' => 'xlist/'.$id_area.'/'.$lang));

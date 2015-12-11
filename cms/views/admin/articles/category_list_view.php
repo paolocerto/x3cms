@@ -38,7 +38,7 @@ if ($items)
 		<tr class="first">
 			<th>'._CATEGORIES.'</th>
 			<th style="width:6em;">'._ACTIONS.'</th>
-			<th style="width:4em;"></th>
+			<th style="width:6em;"></th>
 		</tr>';
 	
 	foreach($items as $i)
@@ -69,7 +69,7 @@ if ($items)
 		// check permissions
 		if (($i->level > 1 && $i->xlock == 0) || $i->level == 4) 
 		{
-			$actions = '<a class="bta" href="'.BASE_URL.'categories/edit/'.$i->id_area.'/'.$i->id.'" title="'._EDIT.'"><i class="fa fa-pencil fa-lg"></i></a> ';
+			$actions = '<a class="bta" href="'.BASE_URL.'categories/edit/'.$i->id_area.'/'.$i->lang.'/'.$i->id.'" title="'._EDIT.'"><i class="fa fa-pencil fa-lg"></i></a> ';
 			if ($i->level > 2) 
 			{
 				$actions .= ' <a class="btl" href="'.BASE_URL.'categories/set/xon/'.$i->id.'/'.(($i->xon+1)%2).'" title="'._STATUS.' '.$status.'"><i class="fa fa-lightbulb-o fa-lg '.$on_status.'"></i></a>';
