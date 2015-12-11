@@ -2208,7 +2208,7 @@ CREATE TABLE IF NOT EXISTS `pages` (
   `tpl` varchar(50) NOT NULL,
   `css` varchar(50) NOT NULL,
   `xfrom` varchar(64) NOT NULL,
-  `xid` varchar(16) NOT NULL,
+  `xid` varchar(32) NOT NULL,
   `url` varchar(128) NOT NULL,
   `name` varchar(128) NOT NULL,
   `title` varchar(128) NOT NULL,
