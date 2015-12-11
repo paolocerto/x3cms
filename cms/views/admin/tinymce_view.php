@@ -76,7 +76,7 @@ if (RTL || isset($rtl)) echo 'directionality : "rtl",';
 	
 	relative_urls : false,
 	remove_script_host : true,
-	document_base_url : "<?php echo $this->site->site->domain ?>",
+	document_base_url : "<?php echo (ROOT == '/') ? $this->site->site->domain : str_replace(ROOT, '', $this->site->site->domain.'/') ?>",
 	
 	extended_valid_elements : "article[class],header[class],section[class],div[class],p[class|style],a[href|title|class|onclick|id|name|rel|rev],figure[class],img[id|class|src|alt|style|onmouseover|onmouseout|name],span[class|style],hr[class|style],div[id|class|style],code,em[class],ul[class],ol[class],i[class]",
 	invalid_elements : "script",
