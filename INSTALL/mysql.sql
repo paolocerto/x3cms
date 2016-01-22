@@ -1777,8 +1777,8 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'private', 'form', '_INVALID_CF', 'deve essere un codice fiscale valido', 0, 1),
 (NOW(), 'it', 'private', 'form', '_INVALID_FISCAL_ID', 'deve essere un identificativo fiscale valido', 0, 1),
 (NOW(), 'it', 'private', 'form', '_MUST_BE_A_PERIODICAL', 'deve essere una stringa formata da un numero seguito da uno dei seguenti termini: year, month, week, day, hour', 0, 1),
-(NOW(), 'it', 'private', 'form', '_MUST_BE_AFTER', 'deve essere data successiva', 0, 1),
-(NOW(), 'it', 'private', 'form', '_MUST_BE_BEFORE', 'deve essere data precedente', 0, 1),
+(NOW(), 'it', 'private', 'form', '_MUST_BE_AFTER', 'deve essere data successiva a "XXXRELATEDXXX"', 0, 1),
+(NOW(), 'it', 'private', 'form', '_MUST_BE_BEFORE', 'deve essere data precedente a "XXXRELATEDXXX"', 0, 1),
 (NOW(), 'it', 'private', 'form', '_INVALID_IBAN', 'il codice IBAN inserito non &egrave; valido', 0, 1),
 
 (NOW(), 'it', 'private', 'form', '_CHECKED', 'checked="checked"', 0, 1),
