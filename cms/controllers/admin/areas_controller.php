@@ -34,7 +34,7 @@ class Areas_controller extends X3ui_controller
 	 */
 	public function _default()
 	{
-		$this->xlist();
+		$this->index();
 	}
 	
 	/**
@@ -42,7 +42,7 @@ class Areas_controller extends X3ui_controller
 	 *
 	 * @return  void
 	 */
-	public function xlist()
+	public function index()
 	{
 		// load the dictionary
 		$this->dict->get_wordarray(array('areas'));
@@ -142,10 +142,10 @@ window.addEvent("domready", function()
 		}
 		
 		// get area object
-		$area = new Area_model();
-		$m = ($id) 
-			? $area->get_area_data($id)
-			: $m = new Area_obj();
+		$mod = new Area_model();
+		$item = ($id) 
+			? $mod->get_area_data($id)
+			: new Area_obj();
 		
 		// build the form
 		$fields = array();
@@ -162,7 +162,7 @@ window.addEvent("domready", function()
 			$fields[] = array(
 				'label' => _NAME,
 				'type' => 'text', 
-				'value' => $m->name,
+				'value' => $item->name,
 				'name' => 'name',
 				'rule' => 'required',
 				'extra' => 'class="large"'
@@ -173,12 +173,12 @@ window.addEvent("domready", function()
 			$fields[] = array(
 				'label' => null,
 				'type' => 'html', 
-				'value' => '<h4>'._AREA.': '.$m->name.'</h4>'
+				'value' => '<h4>'._AREA.': '.$item->name.'</h4>'
 			);
 			$fields[] = array(
 				'label' => null,
 				'type' => 'hidden', 
-				'value' => $m->name,
+				'value' => $item->name,
 				'name' => 'name'
 			);
 		}
@@ -186,7 +186,7 @@ window.addEvent("domready", function()
 		$fields[] = array(
 			'label' => _TITLE,
 			'type' => 'text', 
-			'value' => $m->title,
+			'value' => $item->title,
 			'name' => 'title',
 			'rule' => 'required',
 			'extra' => 'class="large"'
@@ -194,7 +194,7 @@ window.addEvent("domready", function()
 		$fields[] = array(
 			'label' => _DESCRIPTION,
 			'type' => 'textarea', 
-			'value' => $m->description,
+			'value' => $item->description,
 			'name' => 'description'
 		);
 		
@@ -226,7 +226,7 @@ window.addEvent("domready", function()
 			$fields[] = array(
 				'label' => _DEFAULT_LANG,
 				'type' => 'select',
-				'value' => $m->code,
+				'value' => $item->code,
 				'options' => array($lang->get_languages(), 'code', 'language'),
 				'name' => 'lang',
 				'rule' => 'inarray§languages',
@@ -243,7 +243,7 @@ window.addEvent("domready", function()
 		$fields[] = array(
 			'label' => null,
 			'type' => 'hidden', 
-			'value' => $m->id_theme,
+			'value' => $item->id_theme,
 			'name' => 'old_id_theme'
 		);
 		
@@ -254,7 +254,7 @@ window.addEvent("domready", function()
 			$fields[] = array(
 				'label' => _THEME,
 				'type' => 'select', 
-				'value' => $m->id_theme,
+				'value' => $item->id_theme,
 				'name' => 'id_theme',
 				'options' => array($theme->get_installed(), 'id', 'description'),
 				'extra' => 'class="large"'
@@ -264,7 +264,7 @@ window.addEvent("domready", function()
 			$fields[] = array(
 				'label' => null,
 				'type' => 'hidden', 
-				'value' => $m->id_theme,
+				'value' => $item->id_theme,
 				'name' => 'id_theme'
 			);
 		}
@@ -280,9 +280,9 @@ window.addEvent("domready", function()
 			$fields[] = array(
 				'label' => _FOLDER,
 				'type' => 'select', 
-				'value' => $m->folder,
+				'value' => $item->folder,
 				'name' => 'folder',
-				'options' => array($area->get_folders(), 'folder', 'folder'),
+				'options' => array($mod->get_folders(), 'folder', 'folder'),
 				'extra' => 'class="large"'
 			);
 			
@@ -297,7 +297,7 @@ window.addEvent("domready", function()
 				'type' => 'checkbox', 
 				'value' => 1,
 				'name' => 'private',
-				'checked' => $m->private
+				'checked' => $item->private
 			);
 		}
 		else 
@@ -305,7 +305,7 @@ window.addEvent("domready", function()
 			$fields[] = array(
 				'label' => null,
 				'type' => 'hidden', 
-				'value' => $m->folder,
+				'value' => $item->folder,
 				'name' => 'folder'
 			);
 			
@@ -318,7 +318,7 @@ window.addEvent("domready", function()
 			$fields[] = array(
 				'label' => null,
 				'type' => 'hidden', 
-				'value' => $m->private,
+				'value' => $item->private,
 				'name' => 'private'
 			);
 		}
