@@ -115,7 +115,11 @@ final class X4Db_core
 							$this->link->sqliteCreateFunction('CONCAT_WS', 'concat_ws', 4);
 							break;
 						case 'mysql':
-							$this->link = new PDO($this->dsn, X4Core_core::$db[$this->name]['db_user'], X4Core_core::$db[$this->name]['db_pass'], array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES '".X4Core_core::$db[$this->name]['charset']."'"));
+							$this->link = new PDO(
+							    $this->dsn, 
+							    X4Core_core::$db[$this->name]['db_user'], 
+							    X4Core_core::$db[$this->name]['db_pass'], 
+							    array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES '".X4Core_core::$db[$this->name]['charset']."'"));
 							break;
 					}
 					$this->link->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);

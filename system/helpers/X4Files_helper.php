@@ -1286,7 +1286,7 @@ class X4Files_helper
 				return $final_name;
 			}
 		}
-		return false;	
+		return false;
 	}
     
 	 /**
