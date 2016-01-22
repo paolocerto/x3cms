@@ -25,9 +25,11 @@ class X4Mailer_helper
 	 * @param string	Email body
 	 * @param array		Associative array of recipients (name, mail)
 	 * @param array		Associative array of attachments (file, filename (optional))
+	 * @param array		Associative array of CC recipients (name, mail)
+	 * @param array		Associative array of BCC recipients (name, mail)
 	 * @return boolean
 	 */
-	public static function mailto($from, $html, $subject, $body, $to, $attached = array())
+	public static function mailto($from, $html, $subject, $body, $to, $attached = array(), $cc = array(), $bcc = array())
 	{
 		X4Core_core::auto_load('swiftmailer_library');
 		
@@ -104,11 +106,17 @@ class X4Mailer_helper
 				$mail->addTo(self::sanitize(strtolower($i['mail'])), self::sanitize($i['name']));
 			}
 			
-			// if you want to set a CC recipient uncomment and configure
-			// $mail->addCc('person@example.org', 'Person Name');
+			// CC recipients
+			foreach($cc as $i) 
+			{
+				$mail->addCc(self::sanitize(strtolower($i['mail'])), self::sanitize($i['name']));
+			}
 			
-			// if you want to add BCC recipient uncomment and configure
-			// $mail->addBcc('person@example.org', 'Person Name');
+			// BCC recipients
+			foreach($bcc as $i) 
+			{
+				$mail->addBcc(self::sanitize(strtolower($i['mail'])), self::sanitize($i['name']));
+			}
 			
 			// if application isn't production STATE
 			$check = (!DEVEL) 
