@@ -42,9 +42,10 @@ class Categories_controller extends X3ui_controller
 	 *
 	 * @param   integer $id_area Area ID
 	 * @param   string 	$lang Language code
+	 * @param   string 	$tag
 	 * @return  void
 	 */
-	public function xlist($id_area, $lang)
+	public function xlist($id_area, $lang, $tag = '')
 	{
 		// load dictionary
 		$this->dict->get_wordarray(array('categories', 'articles'));
@@ -61,10 +62,21 @@ class Categories_controller extends X3ui_controller
 		
 		// content
 		$mod = new Category_model();
+		
+		$tags = $mod->get_tags($id_area, $lang);
+		// if empty get the first available
+		$tag = (empty($tag) && !empty($tags))
+		    ? $tags[0]->tag
+		    : $tag;
+		    
 		$view->content = new X4View_core('articles/category_list');
 		$view->content->page = $page;
 		$view->content->navbar = $navbar;
-		$view->content->items = $mod->get_categories($id_area, $lang);
+		$view->content->items = $mod->get_categories($id_area, $lang, $tag);
+		
+		// tag switcher
+		$view->content->tag = $tag;
+		$view->content->tags = $tags;
 		
 		// area switcher
 		$view->content->id_area = $id_area;
@@ -84,12 +96,12 @@ class Categories_controller extends X3ui_controller
 	 *
 	 * @return  void
 	 */
-	public function filter($id_area, $lang)
+	public function filter($id_area, $lang, $tag = '')
 	{
 		// load the dictionary
 		$this->dict->get_wordarray(array('categories'));
 		
-		echo '<a class="btf" href="'.BASE_URL.'categories/edit/'.$id_area.'/'.$lang.'/-1" title="'._NEW_CATEGORY.'"><i class="fa fa-plus fa-lg"></i></a>
+		echo '<a class="btf" href="'.BASE_URL.'categories/edit/'.$id_area.'/'.$lang.'/'.$tag.'/-1" title="'._NEW_CATEGORY.'"><i class="fa fa-plus fa-lg"></i></a>
 <script>
 window.addEvent("domready", function()
 {
@@ -144,7 +156,7 @@ window.addEvent("domready", function()
 	 * @param   integer	$id Category ID
 	 * @return  void
 	 */
-	public function edit($id_area, $lang, $id = 0)
+	public function edit($id_area, $lang, $tag, $id = 0)
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'categories'));
@@ -161,7 +173,7 @@ window.addEvent("domready", function()
 		$mod = new Category_model();
 		$m = ($id) 
 			? $mod->get_by_id($id)
-			: new Category_obj($id_area, $lang);
+			: new Category_obj($id_area, $lang, $tag);
 		
 		// build the form
 		$fields = array();
@@ -198,6 +210,15 @@ window.addEvent("domready", function()
 			'name' => 'title',
 			'rule' => 'required',
 			'extra' => 'class="large"'
+		);
+		
+		$fields[] = array(
+			'label' => _CATEGORY_TAG,
+			'type' => 'text', 
+			'value' => $m->tag,
+			'name' => 'tag',
+			'extra' => 'class="large"',
+			'suggestion' => _CATEGORY_TAG_MSG
 		);
 		
 		// if submitted
@@ -260,7 +281,8 @@ window.addEvent("domready", function()
 				'id_area' => $_post['id_area'],
 				'lang' => $_post['lang'],
 				'title' => $_post['title'],
-				'name' => X4Utils_helper::unspace($_post['title'])
+				'name' => X4Utils_helper::unspace($_post['title']),
+				'tag' => X4Utils_helper::unspace($_post['tag'])
 			);
 			
 			$mod = new Category_model();
@@ -298,7 +320,7 @@ window.addEvent("domready", function()
 				{
 					$msg->update[] = array(
 						'element' => 'topic', 
-						'url' => BASE_URL.'categories/xlist/'.$post['id_area'].'/'.$post['lang'],
+						'url' => BASE_URL.'categories/xlist/'.$post['id_area'].'/'.$post['lang'].'/'.$post['tag'],
 						'title' => null
 					);
 				}
@@ -320,13 +342,13 @@ window.addEvent("domready", function()
 		
 		// get object
 		$mod = new Category_model();
-		$obj = $mod->get_by_id($id, 'categories', 'id_area, lang, description');
+		$obj = $mod->get_by_id($id, 'categories', 'id_area, lang, tag, title');
 		
 		// build the form
 		$fields = array();
 		$fields[] = array(
 			'label' => null,
-			'type' => 'hidden', 
+			'type' => 'hidden',
 			'value' => $id,
 			'name' => 'id'
 		);
@@ -341,7 +363,7 @@ window.addEvent("domready", function()
 		// contents
 		$view = new X4View_core('delete');
 		$view->title = _DELETE_CATEGORY;
-		$view->item = $obj->description;
+		$view->item = $obj->title;
 		
 		// form builder
 		$view->form = X4Form_helper::doform('delete', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '', 
@@ -380,7 +402,7 @@ window.addEvent("domready", function()
 				// set what update
 				$msg->update[] = array(
 					'element' => 'topic', 
-					'url' => BASE_URL.'categories/xlist/'.$obj->id_area.'/'.$obj->lang,
+					'url' => BASE_URL.'categories/xlist/'.$obj->id_area.'/'.$obj->lang.'/'.$obj->tag,
 					'title' => null
 				);
 			}

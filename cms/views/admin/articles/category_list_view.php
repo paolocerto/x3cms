@@ -29,6 +29,26 @@ foreach($areas as $i)
 }
 echo '</ul></div>';
 
+// tag switcher
+echo '<div class="aright sbox"><ul class="inline-list">';
+
+if (empty($tags))
+{
+    echo '<li>'._NO_CATEGORY_TAG.'</li>';
+}
+
+foreach($tags as $i) 
+{
+	$on = ($i->tag == $tag) ? ' on' : '';
+	
+	$tag_name = (empty($i->tag))
+	    ? _NO_CATEGORY_TAG
+	    : $i->tag;
+	
+	echo '<li><a class="btm'.$on.'" href="'.BASE_URL.'categories/xlist/'.$id_area.'/'.$lang.'/'.$i->tag.'" title="'._CATEGORY_TAG.'">'.$tag_name.'</a></li>';
+}
+echo '</ul></div>';
+
 ?>
 <h1><?php echo _CATEGORY_LIST ?></h1>
 <?php
@@ -99,10 +119,10 @@ else
 <script>
 window.addEvent('domready', function() 
 {
-	X3.content('filters', 'categories/filter/<?php echo $id_area.'/'.$lang ?>', '<?php echo X4Utils_helper::navbar($navbar, ' . ', false) ?>');
+	X3.content('filters', 'categories/filter/<?php echo $id_area.'/'.$lang.'/'.$tag ?>', '<?php echo X4Utils_helper::navbar($navbar, ' . ', false) ?>');
 	buttonize('topic', 'btm', 'topic');
 	buttonize('topic', 'bta', 'modal');
-	actionize('topic', 'btl', 'topic', escape('categories/xlist/<?php echo $id_area.'/'.$lang ?>/0'));
+	actionize('topic', 'btl', 'topic', escape('categories/xlist/<?php echo $id_area.'/'.$lang.'/'.$tag ?>/0'));
 	zebraTable('zebra');
 	linking('ul.inline-list a');
 });

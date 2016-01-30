@@ -161,6 +161,7 @@ CREATE TABLE IF NOT EXISTS `categories` (
   `updated` datetime NOT NULL,
   `id_area` int(11) NOT NULL,
   `lang` char(2) NOT NULL,
+  `tag` varchar(128) NOT NULL,
   `name` varchar(128) NOT NULL,
   `title` varchar(128) NOT NULL,
   `description` text NOT NULL,
@@ -616,10 +617,13 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 
 (NOW(), 'it', 'admin', 'categories', '_CATEGORY_LIST', 'Elenco categorie', 0, 1),
 (NOW(), 'it', 'admin', 'categories', '_CATEGORIES', 'Categorie', 0, 1),
+(NOW(), 'it', 'admin', 'categories', '_CATEGORY_TAG', 'Tag categoria', 0, 1),
+(NOW(), 'it', 'admin', 'categories', '_CATEGORY_TAG_MSG', 'usato internamente, utile per raggruppare categorie collegate a diverse finalità', 0, 1),
 (NOW(), 'it', 'admin', 'categories', '_ADD_CATEGORY', 'Aggiungi un nuova categoria', 0, 1),
 (NOW(), 'it', 'admin', 'categories', '_NEW_CATEGORY', 'Nuovo categoria', 0, 1),
 (NOW(), 'it', 'admin', 'categories', '_EDIT_CATEGORY', 'Modifica categoria', 0, 1),
 (NOW(), 'it', 'admin', 'categories', '_DELETE_CATEGORY', 'Elimina categoria', 0, 1),
+(NOW(), 'it', 'admin', 'categories', '_NO_CATEGORY_TAG', 'Tag vuoto', 0, 1),
 
 
 (NOW(), 'it', 'admin', 'contexts', '_CONTEXT_LIST', 'Elenco contesti', 0, 1),
@@ -1187,10 +1191,13 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 
 (NOW(), 'en', 'admin', 'categories', '_CATEGORY_LIST', 'Category list', 0, 1),
 (NOW(), 'en', 'admin', 'categories', '_CATEGORIES', 'Categories', 0, 1),
+(NOW(), 'en', 'admin', 'categories', '_CATEGORY_TAG', 'Category tag', 0, 1),
+(NOW(), 'en', 'admin', 'categories', '_CATEGORY_TAG_MSG', 'only for internal use, useful to group categories for different things', 0, 1),
 (NOW(), 'en', 'admin', 'categories', '_ADD_CATEGORY', 'Add a new category', 0, 1),
 (NOW(), 'en', 'admin', 'categories', '_NEW_CATEGORY', 'New category', 0, 1),
 (NOW(), 'en', 'admin', 'categories', '_EDIT_CATEGORY', 'Edit category', 0, 1),
 (NOW(), 'en', 'admin', 'categories', '_DELETE_CATEGORY', 'Delete category', 0, 1),
+(NOW(), 'en', 'admin', 'categories', '_NO_CATEGORY_TAG', 'No tag', 0, 1),
 
 
 (NOW(), 'en', 'admin', 'contexts', '_CONTEXT_LIST', 'Context list', 0, 1),
