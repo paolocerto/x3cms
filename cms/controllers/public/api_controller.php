@@ -50,6 +50,8 @@ class Api_controller extends X4Cms_controller
 			$r->handle();
 		}
 		else 
+		{
 			return false;
+		}
 	}
 }

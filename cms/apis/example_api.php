@@ -1,5 +1,4 @@
-<?php 
-defined('ROOT') or die('No direct script access.');
+<?php defined('ROOT') or die('No direct script access.');
 /**
  * X3 CMS - A smart Content Management System
  *
@@ -141,4 +140,3 @@ class SimpleAuth implements iAuthenticate
 		return SimpleAuth::KEY;
 	}
 }
-
