@@ -248,7 +248,7 @@ X3.append({
 	 * @param	string		div to reload
 	 * @param	string		url to reload
 	 */
-	getObject: function(url, div, reload, modal)
+	getObject: function(url, div, reload)
 	{
 		return {
 			url: X3.cleanUrl(url) + '?div=' + div + '&url=' + reload,
@@ -262,7 +262,7 @@ X3.append({
 				X3.spinnerOff();
 				
 				// Error notification
-				X3.notification('error', xhr.responseJSON, modal);
+				X3.notification('error', xhr.responseJSON);
 			},
 			onSuccess: function(responseJSON, responseText) {
 				X3.spinnerOff();
@@ -281,7 +281,7 @@ X3.append({
 				// User notification
 				if (responseJSON && responseJSON.message_type && div != 'modal') {
 					if (responseJSON.message_type == 'error') {
-						X3.notification('error', responseJSON, modal);
+						X3.notification('error', responseJSON);
 					} else {
 						X3.success(responseJSON.message_type, responseJSON.message);
 					}
@@ -452,7 +452,7 @@ X3.append({
 	/**
 	 * X3 notification
 	 *
-	 * @param	string 	type of notification. Can be : error, notice, success
+	 * @param	string 	type of notification. Can be: error, notice, success
 	 * @param	string	Notification message
 	 */
 	notification: function(type, msg, modal)
@@ -654,11 +654,11 @@ var windowHeight = function (){
 			});
 		}
 	},
-	actionize = function(container, type, div, reload, callback, modal) {
+	actionize = function(container, type, div, reload, callback) {
 		if (container != null) {
 			$$('#' + container + ' a.' + type).addEvent('click', function(e) {
 				e.stop();
-				var options = X3.getObject(this.get('href'), div, reload, modal);
+				var options = X3.getObject(this.get('href'), div, reload);
 				var r = new Request.JSON(options);
 				r.send();
 				
