@@ -75,7 +75,7 @@ if (!empty($pages))
 			<input type="hidden" name="id_area" id="id_area" value="'.$page->id_area.'" />
 			<input type="hidden" name="lang" id="lang" value="'.$page->lang.'" />
 			<input type="hidden" name="xfrom" id="xfrom" value="'.$page->url.'" />
-		<div class="titlebar">'.ucfirst(_PAGES).'</div><ul class="nomargin zebra" id="m0">';
+		<div class="titlebar">'.ucfirst(_PAGES).'</div><ul class="nomargin zebra min-height" id="m0">';
 	$sort[0] = '#m0';
 	$memo = $c = 0;
 	foreach($pages as $i)
@@ -141,13 +141,15 @@ if (!empty($pages))
 				{
 					echo '</ul>
 						<input type="hidden" name="sort'.$c.'" id="sort'.$c.'" value="'.implode(', ', $ids).'" />
-						<div class="titlebar">'._MENU.': '.stripslashes($v).'</div><ul class="nomargin zebra" id="m'.$k.'">';
+						<div class="titlebar">'._MENU.': '.stripslashes($v).'</div><ul class="nomargin zebra min-height" id="m'.$k.'">';
 					$c++;
 					$ids = array();
 					$sort[$c] = '#m'.$k;
 					unset($m[$k]);
 					if ($k == $i->id_menu) 
+					{
 						break;
+					}
 				}
 			}
 			// add the id
@@ -169,7 +171,7 @@ if (!empty($pages))
 	{
 		echo '</ul>
 			<input type="hidden" name="sort'.$c.'" id="sort'.$c.'" value="'.implode(', ', $ids).'" />
-			<div class="titlebar">'._MENU.': '.stripslashes($v).'</div><ul class="nomargin" style="min-height:1em;" id="m'.$k.'">';
+			<div class="titlebar">'._MENU.': '.stripslashes($v).'</div><ul class="nomargin min-height" id="m'.$k.'">';
 		$c++;
 		$ids = array();
 		$sort[$c] = '#m'.$k;

@@ -307,6 +307,7 @@ td.formatted ol li.response {border-left:5px solid #e60;}
 .align-right, .aright {text-align:right;}
 .vmiddle {vertical-align:middle;}
 .line-height1 {line-height:1em;}
+.min-height {min-height:1em;}
 .rounded {border-radius:3px;}
 
 .one-whole {width:100%;-moz-border-sizing:border-box;box-sizing:border-box;}
