@@ -50,8 +50,8 @@ if (RTL)
 }
 ?>
 
-<script src="<?php echo ROOT ?>files/js/mootools/MooTools-Core-1.5.2-compat-compressed.js" ></script>
-<script src="<?php echo ROOT ?>files/js/mootools/MooTools-More-1.5.2-compat-compressed.js" ></script>
+<script src="<?php echo ROOT ?>files/js/mootools/MooTools-Core-1.6.0-compat-compressed.js" ></script>
+<script src="<?php echo ROOT ?>files/js/mootools/MooTools-More-1.6.0-compat-compressed.js" ></script>
 <script>var root = "<?php echo $this->site->site->domain ?>";</script>
 <!-- datepicker -->
 <script src="<?php echo ROOT ?>files/js/mootools/datepicker.js"></script>

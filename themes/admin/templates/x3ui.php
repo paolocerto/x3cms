@@ -137,8 +137,8 @@ echo X4Bench_core::info('<p class="xs-hidden xsmall">X4WebApp v. {x4wa_version} 
 
 <div id="modal"></div>
 
-<script src="<?php echo ROOT ?>files/js/mootools/MooTools-Core-1.5.2-compat-compressed.js" charset="UTF-8"></script>
-<script src="<?php echo ROOT ?>files/js/mootools/MooTools-More-1.5.2-compat-compressed.js" charset="UTF-8"></script>
+<script src="<?php echo ROOT ?>files/js/mootools/MooTools-Core-1.6.0-compat-compressed.js" charset="UTF-8"></script>
+<script src="<?php echo ROOT ?>files/js/mootools/MooTools-More-1.6.0-compat-compressed.js" charset="UTF-8"></script>
 <script src="<?php echo ROOT ?>files/js/mootools/MooDropMenu.js" charset="UTF-8"></script>
 <script src="<?php echo ROOT ?>files/js/mootools/simple-modal.js" charset="UTF-8"></script>
 <script>
