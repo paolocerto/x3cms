@@ -34,7 +34,7 @@ class Pages_controller extends X3ui_controller
 	 */
 	public function _default()
 	{
-		$this->xlist(2, '', 'home');
+		$this->index(2, '', 'home');
 	}
 	
 	/**
@@ -48,7 +48,7 @@ class Pages_controller extends X3ui_controller
 	 * @param   string  $xfrom page URL of origin
 	 * @return  void
 	 */
-	public function xlist($id_area, $lang = '', $xfrom = 'home')
+	public function index($id_area, $lang = '', $xfrom = 'home')
 	{
 		// initialize parameters
 		$lang = (empty($lang)) 
@@ -79,11 +79,11 @@ class Pages_controller extends X3ui_controller
 			: new Page_obj($id_area, $lang);
 		
 		$page = $this->get_page('pages');
-		$navbar = array($this->site->get_bredcrumb($page), array('areas' => 'xlist'));
+		$navbar = array($this->site->get_bredcrumb($page), array('areas' => 'index'));
 		$view->content->navbar = $navbar;
 		
 		// referer
-		$view->content->referer = urlencode('pages/xlist/'.$id_area.'/'.$lang.'/'.$xfrom);
+		$view->content->referer = urlencode('pages/index/'.$id_area.'/'.$lang.'/'.$xfrom);
 			
 		// pages to show
 		$view->content->pages = $mod->get_pages($xfrom, $view->content->page->deep);
@@ -340,7 +340,7 @@ class Pages_controller extends X3ui_controller
 				{
 					$msg->update[] = array(
 						'element' => 'topic', 
-						'url' => BASE_URL.'pages/xlist/'.$post['id_area'].'/'.$post['lang'].'/'.str_replace('/', '-', $post['xfrom']),
+						'url' => BASE_URL.'pages/index/'.$post['id_area'].'/'.$post['lang'].'/'.str_replace('/', '-', $post['xfrom']),
 						'title' => null
 					);
 				}
@@ -653,7 +653,7 @@ window.addEvent("domready", function()
 				{
 					$msg->update[] = array(
 						'element' => 'topic', 
-						'url' => BASE_URL.'pages/xlist/'.$page->id_area.'/'.$page->lang.'/'.str_replace('/', '-', $page->xfrom).'/0/',
+						'url' => BASE_URL.'pages/index/'.$page->id_area.'/'.$page->lang.'/'.str_replace('/', '-', $page->xfrom).'/0/',
 						'title' => null
 					);
 				}
@@ -739,7 +739,7 @@ window.addEvent("domready", function()
 			{
 				$msg->update[] = array(
 					'element' => 'topic', 
-					'url' => BASE_URL.'pages/xlist/'.$page->id_area.'/'.$page->lang.'/'.str_replace('/', '-', $page->xfrom),
+					'url' => BASE_URL.'pages/index/'.$page->id_area.'/'.$page->lang.'/'.str_replace('/', '-', $page->xfrom),
 					'title' => null
 				);
 			}

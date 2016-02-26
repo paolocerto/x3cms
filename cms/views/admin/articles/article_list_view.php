@@ -14,7 +14,7 @@ if (MULTILANGUAGE) {
 	foreach($langs as $i) 
 	{
 		$on = ($i->code == $lang) ? ' on' : '';
-		echo '<li><a class="btm'.$on.'" href="'.BASE_URL.'articles/xlist/'.$id_area.'/'.$i->code.'/'.$xcase.'/'.$id_what.'" title="'._SWITCH_LANGUAGE.'">'.ucfirst($i->language).'</a></li>';
+		echo '<li><a class="btm'.$on.'" href="'.BASE_URL.'articles/index/'.$id_area.'/'.$i->code.'/'.$xcase.'/'.$id_what.'" title="'._SWITCH_LANGUAGE.'">'.ucfirst($i->language).'</a></li>';
 	}
 	echo '</ul></div>';
 }
@@ -24,7 +24,7 @@ echo '<div class="aright sbox"><ul class="inline-list">';
 foreach($areas as $i) 
 {
 	$on = ($i->id == $id_area) ? ' on' : '';
-	echo '<li><a class="btm'.$on.'" href="'.BASE_URL.'articles/xlist/'.$i->id.'/'.$lang.'/'.$xcase.'/'.$id_what.'" title="'._SWITCH_AREA.'">'.ucfirst($i->name).'</a></li>';
+	echo '<li><a class="btm'.$on.'" href="'.BASE_URL.'articles/index/'.$i->id.'/'.$lang.'/'.$xcase.'/'.$id_what.'" title="'._SWITCH_AREA.'">'.ucfirst($i->name).'</a></li>';
 }
 echo '</ul></div>';
 
@@ -35,7 +35,7 @@ if (isset($categories) && $categories)
 	foreach($categories as $i) 
 	{
 		$on = ($i->name == $id_what) ? ' on' : '';
-		echo '<li><a class="btm'.$on.'" href="'.BASE_URL.'articles/xlist/'.$id_area.'/'.$lang.'/'.$xcase.'/'.$i->name.'" title="'._SWITCH_CATEGORY.'">'.ucfirst($i->description).'</a></li>';
+		echo '<li><a class="btm'.$on.'" href="'.BASE_URL.'articles/index/'.$id_area.'/'.$lang.'/'.$xcase.'/'.$i->name.'" title="'._SWITCH_CATEGORY.'">'.ucfirst($i->description).'</a></li>';
 	}
 	echo '</ul></div>';
 }
@@ -47,7 +47,7 @@ if (isset($contexts) && $contexts)
 	foreach($contexts as $i) 
 	{
 		$on = ($i->code == $id_what) ? ' on' : '';
-		echo '<li><a class="btm'.$on.'" href="'.BASE_URL.'articles/xlist/'.$id_area.'/'.$lang.'/'.$xcase.'/'.$i->code.'" title="'._SWITCH_CONTEXT.'">'.ucfirst($i->name).'</a></li>';
+		echo '<li><a class="btm'.$on.'" href="'.BASE_URL.'articles/index/'.$id_area.'/'.$lang.'/'.$xcase.'/'.$i->code.'" title="'._SWITCH_CONTEXT.'">'.ucfirst($i->name).'</a></li>';
 	}
 	echo '</ul></div>';
 }
@@ -59,7 +59,7 @@ if (isset($authors) && $authors)
 	foreach($authors as $i) 
 	{
 		$on = ($i->id_editor == $id_what) ? ' on' : '';
-		echo '<li><a class="btm'.$on.'" href="'.BASE_URL.'articles/xlist/'.$id_area.'/'.$lang.'/'.$xcase.'/'.$i->id_editor.'" title="'._SWITCH_AUTHOR.'">'.ucfirst($i->author).'</a></li>';
+		echo '<li><a class="btm'.$on.'" href="'.BASE_URL.'articles/index/'.$id_area.'/'.$lang.'/'.$xcase.'/'.$i->id_editor.'" title="'._SWITCH_AUTHOR.'">'.ucfirst($i->author).'</a></li>';
 	}
 	echo '</ul></div>';
 }
@@ -71,7 +71,7 @@ if (isset($keys) && $keys)
 	foreach($keys as $i) 
 	{
 		$on = ($i->xkeys == $id_what) ? ' on' : '';
-		echo '<li><a class="btm'.$on.'" href="'.BASE_URL.'articles/xlist/'.$id_area.'/'.$lang.'/'.$xcase.'/'.$i->xkeys.'" title="'._SWITCH_KEY.'">'.ucfirst($i->xkeys).'</a></li>';
+		echo '<li><a class="btm'.$on.'" href="'.BASE_URL.'articles/index/'.$id_area.'/'.$lang.'/'.$xcase.'/'.$i->xkeys.'" title="'._SWITCH_KEY.'">'.ucfirst($i->xkeys).'</a></li>';
 	}
 	echo '</ul></div>';
 }
@@ -170,7 +170,7 @@ if ($items[0]) {
 	echo '</table>';
 	
 	// pagination
-	echo '<div id="article_pager" class="pager">'.X4Pagination_helper::pager(BASE_URL.'articles/xlist/'.$id_area.'/'.$lang.'/'.$xcase.'/'.$id_what.'/', $items[1], 5, false, '/'.$str, 'btp').'</div>'; 
+	echo '<div id="article_pager" class="pager">'.X4Pagination_helper::pager(BASE_URL.'articles/index/'.$id_area.'/'.$lang.'/'.$xcase.'/'.$id_what.'/', $items[1], 5, false, '/'.$str, 'btp').'</div>'; 
 }
 else 
 {
@@ -184,7 +184,7 @@ window.addEvent('domready', function()
 	buttonize('article_pager', 'btp', 'topic');
 	buttonize('topic', 'btm', 'topic');
 	buttonize('topic', 'bta', 'modal');
-	actionize('topic', 'btl', 'topic', escape('articles/xlist/<?php echo $id_area.'/'.$lang.'/'.$xcase.'/0/'.$pp ?>/0'));
+	actionize('topic', 'btl', 'topic', escape('articles/index/<?php echo $id_area.'/'.$lang.'/'.$xcase.'/0/'.$pp ?>/0'));
 	zebraTable('zebra');
 });
 </script>

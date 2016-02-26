@@ -34,7 +34,7 @@ class Categories_controller extends X3ui_controller
 	 */
 	public function _default()
 	{
-		$this->xlist(2, X4Route_core::$lang);
+		$this->index(2, X4Route_core::$lang);
 	}
 	
 	/**
@@ -45,7 +45,7 @@ class Categories_controller extends X3ui_controller
 	 * @param   string 	$tag
 	 * @return  void
 	 */
-	public function xlist($id_area, $lang, $tag = '')
+	public function index($id_area, $lang, $tag = '')
 	{
 		// load dictionary
 		$this->dict->get_wordarray(array('categories', 'articles'));
@@ -56,7 +56,7 @@ class Categories_controller extends X3ui_controller
 			
 		// get page
 		$page = $this->get_page('categories');
-		$navbar = array($this->site->get_bredcrumb($page), array('articles' => 'xlist/'.$id_area.'/'.$lang));
+		$navbar = array($this->site->get_bredcrumb($page), array('articles' => 'index/'.$id_area.'/'.$lang));
 		
 		$view = new X4View_core('container');
 		
@@ -320,7 +320,7 @@ window.addEvent("domready", function()
 				{
 					$msg->update[] = array(
 						'element' => 'topic', 
-						'url' => BASE_URL.'categories/xlist/'.$post['id_area'].'/'.$post['lang'].'/'.$post['tag'],
+						'url' => BASE_URL.'categories/index/'.$post['id_area'].'/'.$post['lang'].'/'.$post['tag'],
 						'title' => null
 					);
 				}
@@ -402,7 +402,7 @@ window.addEvent("domready", function()
 				// set what update
 				$msg->update[] = array(
 					'element' => 'topic', 
-					'url' => BASE_URL.'categories/xlist/'.$obj->id_area.'/'.$obj->lang.'/'.$obj->tag,
+					'url' => BASE_URL.'categories/index/'.$obj->id_area.'/'.$obj->lang.'/'.$obj->tag,
 					'title' => null
 				);
 			}

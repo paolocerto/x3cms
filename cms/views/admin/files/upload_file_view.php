@@ -48,6 +48,6 @@ window.addEvent('domready', function()
 });
 
 function setUploadForm(id_form, input_name) {
-	X3.uploadize(id_form, input_name, 'topic', '<?php echo BASE_URL.'files/xlist/'.$id_area.$url ?>');
+	X3.uploadize(id_form, input_name, 'topic', '<?php echo BASE_URL.'files/index/'.$id_area.$url ?>');
 }
 </script>

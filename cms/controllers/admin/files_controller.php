@@ -34,7 +34,7 @@ class Files_controller extends X3ui_controller
 	 */
 	public function _default()
 	{
-		$this->xlist(2);
+		$this->index(2);
 	}
 	
 	/**
@@ -47,7 +47,7 @@ class Files_controller extends X3ui_controller
 	 * @param   integer	$pp pagination index
 	 * @return  void
 	 */
-	public function xlist($id_area = 2, $category = '-', $subcategory = '-', $xtype = -1, $pp = 0, $str = '')
+	public function index($id_area = 2, $category = '-', $subcategory = '-', $xtype = -1, $pp = 0, $str = '')
 	{
 		// load dictionary
 		$this->dict->get_wordarray(array('files'));
@@ -133,7 +133,7 @@ class Files_controller extends X3ui_controller
 				$msg = AdmUtils_helper::set_msg(array(0,1));
 				$msg->update[] = array(
 						'element' => 'topic', 
-						'url' => BASE_URL.'files/xlist/'.$id_area.'/'.$category.'/'.$subcategory.'/-1/0/'.urlencode(trim($_POST['search'])),
+						'url' => BASE_URL.'files/index/'.$id_area.'/'.$category.'/'.$subcategory.'/-1/0/'.urlencode(trim($_POST['search'])),
 						'title' => null
 					);
 				$this->response($msg);
@@ -213,7 +213,7 @@ class Files_controller extends X3ui_controller
 					{
 						$msg->update[] = array(
 							'element' => 'topic',
-							'url' => BASE_URL.'files/xlist/'.$id_area.'/'.$category.'/'.$subcategory.'/'.$xtype,
+							'url' => BASE_URL.'files/index/'.$id_area.'/'.$category.'/'.$subcategory.'/'.$xtype,
 							'title' => null
 						);
 					}
@@ -444,7 +444,7 @@ class Files_controller extends X3ui_controller
 				{
 					$msg->update[] = array(
 						'element' => 'topic', 
-						'url' => BASE_URL.'files/xlist/'.$post[0]['id_area'].'/'.urlencode($post[0]['category']).'/'.urlencode($post[0]['subcategory']),
+						'url' => BASE_URL.'files/index/'.$post[0]['id_area'].'/'.urlencode($post[0]['category']).'/'.urlencode($post[0]['subcategory']),
 						'title' => null
 					);
 				}
@@ -697,7 +697,7 @@ window.addEvent("domready", function()
 			{
 				$msg->update[] = array(
 					'element' => 'topic', 
-					'url' => BASE_URL.'files/xlist/'.$_post['id_area'].'/'.$post['category'].'/'.$post['subcategory'],
+					'url' => BASE_URL.'files/index/'.$_post['id_area'].'/'.$post['category'].'/'.$post['subcategory'],
 					'title' => null
 				);
 			}
@@ -797,7 +797,7 @@ window.addEvent("domready", function()
 				// set what update
 				$msg->update[] = array(
 					'element' => 'topic', 
-					'url' => BASE_URL.'files/xlist/'.$_post['id_area'].'/'.$_post['category'].'/'.$_post['subcategory'],
+					'url' => BASE_URL.'files/index/'.$_post['id_area'].'/'.$_post['category'].'/'.$_post['subcategory'],
 					'title' => null
 				);
 			}

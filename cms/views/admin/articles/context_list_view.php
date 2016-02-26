@@ -15,7 +15,7 @@ if (MULTILANGUAGE)
 	foreach($langs as $i) 
 	{
 		$on = ($i->code == $lang) ? ' on' : '';
-		echo '<li><a class="btm'.$on.'" href="'.BASE_URL.'contexts/xlist/'.$id_area.'/'.$i->code.'" title="'._SWITCH_LANGUAGE.'">'.ucfirst($i->language).'</a></li>';
+		echo '<li><a class="btm'.$on.'" href="'.BASE_URL.'contexts/index/'.$id_area.'/'.$i->code.'" title="'._SWITCH_LANGUAGE.'">'.ucfirst($i->language).'</a></li>';
 	}
 	echo '</ul></div>';
 }
@@ -25,7 +25,7 @@ echo '<div class="aright sbox"><ul class="inline-list">';
 foreach($areas as $i) 
 {
 	$on = ($i->id == $id_area) ? ' on' : '';
-	echo '<li><a class="bta'.$on.'" href="'.BASE_URL.'contexts/xlist/'.$i->id.'/'.$lang.'" title="'._SWITCH_AREA.'">'.ucfirst($i->name).'</a></li>';
+	echo '<li><a class="bta'.$on.'" href="'.BASE_URL.'contexts/index/'.$i->id.'/'.$lang.'" title="'._SWITCH_AREA.'">'.ucfirst($i->name).'</a></li>';
 }
 echo '</ul></div>';
 
@@ -88,7 +88,7 @@ if ($items)
 			}
 		
 			echo '<tr>
-					<td><a class="btm" href="'.BASE_URL.'articles/xlist/'.$i->id_area.'/'.$i->lang.'/context_order/'.$i->code.'" title="'._VIEW_ARTICLES.'">'.$i->name.'</a></td>
+					<td><a class="btm" href="'.BASE_URL.'articles/index/'.$i->id_area.'/'.$i->lang.'/context_order/'.$i->code.'" title="'._VIEW_ARTICLES.'">'.$i->name.'</a></td>
 					<td class="aright">'.$actions.'</td>
 					<td class="aright">'.$delete.'</td>
 					</tr>';
@@ -103,7 +103,7 @@ window.addEvent('domready', function()
 	X3.content('filters', 'contexts/filter/<?php echo $id_area.'/'.$lang ?>', '<?php echo X4Utils_helper::navbar($navbar, ' . ', false) ?>');
 	buttonize('topic', 'btm', 'topic');
 	buttonize('topic', 'bta', 'modal');
-	actionize('topic', 'btl', 'topic', escape('contexts/xlist/<?php echo $id_area.'/'.$lang ?>/0'));
+	actionize('topic', 'btl', 'topic', escape('contexts/index/<?php echo $id_area.'/'.$lang ?>/0'));
 	zebraTable('zebra');
 });
 </script>

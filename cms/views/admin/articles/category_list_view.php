@@ -15,7 +15,7 @@ if (MULTILANGUAGE)
 	foreach($langs as $i) 
 	{
 		$on = ($i->code == $lang) ? ' on' : '';
-		echo '<li><a class="btm'.$on.'" href="'.BASE_URL.'categories/xlist/'.$id_area.'/'.$i->code.'" title="'._SWITCH_LANGUAGE.'">'.ucfirst($i->language).'</a></li>';
+		echo '<li><a class="btm'.$on.'" href="'.BASE_URL.'categories/index/'.$id_area.'/'.$i->code.'" title="'._SWITCH_LANGUAGE.'">'.ucfirst($i->language).'</a></li>';
 	}
 	echo '</ul></div>';
 }
@@ -25,7 +25,7 @@ echo '<div class="aright sbox"><ul class="inline-list">';
 foreach($areas as $i) 
 {
 	$on = ($i->id == $id_area) ? ' on' : '';
-	echo '<li><a class="btm'.$on.'" href="'.BASE_URL.'categories/xlist/'.$i->id.'/'.$lang.'" title="'._SWITCH_AREA.'">'.ucfirst($i->name).'</a></li>';
+	echo '<li><a class="btm'.$on.'" href="'.BASE_URL.'categories/index/'.$i->id.'/'.$lang.'" title="'._SWITCH_AREA.'">'.ucfirst($i->name).'</a></li>';
 }
 echo '</ul></div>';
 
@@ -45,7 +45,7 @@ foreach($tags as $i)
 	    ? _NO_CATEGORY_TAG
 	    : $i->tag;
 	
-	echo '<li><a class="btm'.$on.'" href="'.BASE_URL.'categories/xlist/'.$id_area.'/'.$lang.'/'.$i->tag.'" title="'._CATEGORY_TAG.'">'.$tag_name.'</a></li>';
+	echo '<li><a class="btm'.$on.'" href="'.BASE_URL.'categories/index/'.$id_area.'/'.$lang.'/'.$i->tag.'" title="'._CATEGORY_TAG.'">'.$tag_name.'</a></li>';
 }
 echo '</ul></div>';
 
@@ -103,7 +103,7 @@ if ($items)
 		}
 		
 		echo '<tr>
-				<td><a class="btm" href="'.BASE_URL.'articles/xlist/'.$i->id_area.'/'.$i->lang.'/category_order/'.$i->name.'" title="'._VIEW_ARTICLES.'">'.$i->title.'</a></td>
+				<td><a class="btm" href="'.BASE_URL.'articles/index/'.$i->id_area.'/'.$i->lang.'/category_order/'.$i->name.'" title="'._VIEW_ARTICLES.'">'.$i->title.'</a></td>
 				<td>'.$actions.'</td>
 				<td class="aright">'.$delete.'</td>
 				</tr>';
@@ -122,7 +122,7 @@ window.addEvent('domready', function()
 	X3.content('filters', 'categories/filter/<?php echo $id_area.'/'.$lang.'/'.$tag ?>', '<?php echo X4Utils_helper::navbar($navbar, ' . ', false) ?>');
 	buttonize('topic', 'btm', 'topic');
 	buttonize('topic', 'bta', 'modal');
-	actionize('topic', 'btl', 'topic', escape('categories/xlist/<?php echo $id_area.'/'.$lang.'/'.$tag ?>/0'));
+	actionize('topic', 'btl', 'topic', escape('categories/index/<?php echo $id_area.'/'.$lang.'/'.$tag ?>/0'));
 	zebraTable('zebra');
 	linking('ul.inline-list a');
 });

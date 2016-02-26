@@ -487,7 +487,7 @@ window.addEvent("domready", function()
 					{
 						$msg->update[] = array(
 							'element' => 'topic', 
-							'url' => BASE_URL.'areas/xlist',
+							'url' => BASE_URL.'areas/index',
 							'title' => null
 						);
 					}
@@ -656,7 +656,7 @@ window.addEvent("domready", function()
 			{
 				$msg->update[] = array(
 					'element' => 'topic', 
-					'url' => BASE_URL.'areas/xlist/1',
+					'url' => BASE_URL.'areas/index/1',
 					'title' => null
 				);
 			}
@@ -738,7 +738,7 @@ window.addEvent("domready", function()
 				// set what update
 				$msg->update[] = array(
 					'element' => 'topic', 
-					'url' => BASE_URL.'areas/xlist/1',
+					'url' => BASE_URL.'areas/index/1',
 					'title' => null
 				);
 			}
@@ -813,7 +813,7 @@ window.addEvent("domready", function()
 				</ul>
 				<p>Done!</p>
 				
-				<p>NOTE: this operation acts on the cose system of the CMS, if you use plugins you have to check if they need to be changed.</p>';
+				<p>NOTE: this operation acts on the core system of the CMS, if you use plugins you have to check if they need to be changed.</p>';
 			}
 			else
 			{

@@ -112,7 +112,7 @@ window.addEvent('domready', function()
 	X3.content('filters','templates/filter', null);
 	buttonize('topic', 'btm', 'tdown');
 	buttonize('topic', 'bta', 'modal');
-	actionize('topic',  'btl', 'tdown', escape('templates/xlist/<?php echo $id_theme.'/'.$theme ?>'));
+	actionize('topic',  'btl', 'tdown', escape('templates/index/<?php echo $id_theme.'/'.$theme ?>'));
 	zebraTable('zebra');
 });
 </script>

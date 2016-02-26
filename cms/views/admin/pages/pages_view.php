@@ -15,7 +15,7 @@ if (MULTILANGUAGE)
 	foreach($langs as $i) 
 	{
 		$on = ($i->code == $page->lang) ? 'class="on"' : '';
-		echo '<li><a '.$on.' href="'.BASE_URL.'pages/xlist/'.$page->id_area.'/'.$i->code.'/home/1" title="'._SWITCH_LANGUAGE.'">'.ucfirst($i->language).'</a></li>';
+		echo '<li><a '.$on.' href="'.BASE_URL.'pages/index/'.$page->id_area.'/'.$i->code.'/home/1" title="'._SWITCH_LANGUAGE.'">'.ucfirst($i->language).'</a></li>';
 	}
 	echo '</ul></div>';
 }
@@ -25,7 +25,7 @@ echo '<div class="aright sbox"><ul class="inline-list">';
 foreach($areas as $i) 
 {
 	$on = ($i->id == $id_area) ? 'class="on"' : '';
-	echo '<li><a '.$on.' href="'.BASE_URL.'pages/xlist/'.$i->id.'/'.$lang.'/home/1" title="'._SWITCH_AREA.'">'.ucfirst($i->name).'</a></li>';
+	echo '<li><a '.$on.' href="'.BASE_URL.'pages/index/'.$i->id.'/'.$lang.'/home/1" title="'._SWITCH_AREA.'">'.ucfirst($i->name).'</a></li>';
 }
 echo '</ul></div>';
 
@@ -47,7 +47,7 @@ if (isset($page->url) && $page->url != 'home')
 {
 	// parent page
 	$parent = str_replace('/', '§', $page->xfrom);
-	echo '<p><a class="btm" href="'.BASE_URL.'pages/xlist/'.$page->id_area.'/'.$page->lang.'/'.$parent.'/1" title="'._GO_BACK.'"><i class="fa fa-arrow-left lg"></i> '.stripslashes($page->name).'</a></p>';
+	echo '<p><a class="btm" href="'.BASE_URL.'pages/index/'.$page->id_area.'/'.$page->lang.'/'.$parent.'/1" title="'._GO_BACK.'"><i class="fa fa-arrow-left lg"></i> '.stripslashes($page->name).'</a></p>';
 }
 
 // menu arrangement
@@ -160,7 +160,7 @@ if (!empty($pages))
 				: '';
 				
 			echo '<li '.$inmenu.'><table><tr>
-					<td><a class="btm" href="'.BASE_URL.'pages/xlist/'.$i->id_area.'/'.$i->lang.'/'.str_replace('/', '§', $i->url).'/1" title="'._SUBPAGES.'">'.stripslashes($i->name).'</a></td>
+					<td><a class="btm" href="'.BASE_URL.'pages/index/'.$i->id_area.'/'.$i->lang.'/'.str_replace('/', '§', $i->url).'/1" title="'._SUBPAGES.'">'.stripslashes($i->name).'</a></td>
 					<td class="aright ">'.$actions.$delete.'</td>
 					</tr></table></li>';
 		}
@@ -190,7 +190,7 @@ window.addEvent('domready', function() {
 	buttonize('topic', 'btm2', 'topic', '<?php echo $referer ?>');
 	buttonize('topic', 'bta', 'modal');
 	buttonize('topic', 'btal', 'topic');
-	actionize('topic',  'btl', 'topic', escape('pages/xlist/<?php echo $id_area.'/'.$lang.'/'.$xfrom ?>'));
+	actionize('topic',  'btl', 'topic', escape('pages/index/<?php echo $id_area.'/'.$lang.'/'.$xfrom ?>'));
 	linking('ul.inline-list a');
 	zebraUl('zebra');
 	
@@ -259,7 +259,7 @@ window.addEvent("domready", function() {
 	X3.content("filters", "pages/filter/'.$id_area.'/'.$lang.'/'.$page->url.'", "'.addslashes(X4Utils_helper::navbar($navbar, ' . ')).'");
 	linking("ul.inline-list a");
 	buttonize("topic", "btm", "topic");
-	actionize("topic",  "btl", "topic", escape("pages/xlist/'.$id_area.'/'.$lang.'"));
+	actionize("topic",  "btl", "topic", escape("pages/index/'.$id_area.'/'.$lang.'"));
 });
 </script>';
 }

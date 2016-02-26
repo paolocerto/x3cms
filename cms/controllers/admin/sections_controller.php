@@ -45,7 +45,7 @@ class Sections_controller extends X3ui_controller
 		
 		// get page
 		$page = $this->get_page('sections/compose');
-		$navbar = array($this->site->get_bredcrumb($page), array('pages' => 'xlist/'.$page_to_edit->id_area.'/'.$page_to_edit->lang));
+		$navbar = array($this->site->get_bredcrumb($page), array('pages' => 'index/'.$page_to_edit->id_area.'/'.$page_to_edit->lang));
 		
 		// content
 		$view = new X4View_core('left');

@@ -59,7 +59,7 @@ foreach($map as $i)
 	
 	$len = $ilen;
 	$description = stripslashes($i->description);
-	echo '<li '.$class.'><a class="btm" href="'.BASE_URL.'pages/xlist/'.$area->id.'/'.$i->lang.'/'.str_replace('/', '$', $i->xfrom).'" title="'.$description.'">'.stripslashes($i->name).'</a>'._TRAIT_.$description;
+	echo '<li '.$class.'><a class="btm" href="'.BASE_URL.'pages/index/'.$area->id.'/'.$i->lang.'/'.str_replace('/', '$', $i->xfrom).'" title="'.$description.'">'.stripslashes($i->name).'</a>'._TRAIT_.$description;
 	$openli++;
 }
 

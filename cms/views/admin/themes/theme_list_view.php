@@ -70,8 +70,8 @@ if ($theme_in)
 					<td>'.$area.'</td>
 					<td></td>
 					<td>'.$actions.'
-						<a class="btm" href="'.BASE_URL.'templates/xlist/'.$i->id.'/'.$i->name.'" title="'._TEMPLATES.'"><i class="fa fa-desktop fa-lg"></i></a> 
-						<a class="btm" href="'.BASE_URL.'menus/xlist/'.$i->id.'/'.$i->name.'" title="'._MENUS.'"><i class="fa fa-navicon fa-lg"></i></a>
+						<a class="btm" href="'.BASE_URL.'templates/index/'.$i->id.'/'.$i->name.'" title="'._TEMPLATES.'"><i class="fa fa-desktop fa-lg"></i></a> 
+						<a class="btm" href="'.BASE_URL.'menus/index/'.$i->id.'/'.$i->name.'" title="'._MENUS.'"><i class="fa fa-navicon fa-lg"></i></a>
 						<a class="btl" href="'.BASE_URL.'themes/minimize/'.$i->id.'/'.$i->name.'" title="'._MINIMIZE.'"><i class="fa fa-recycle fa-lg"></i></a></td>
 					<td class="aright">'.$uninstall.'</td>
 					</tr>';

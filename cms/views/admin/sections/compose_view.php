@@ -84,7 +84,7 @@ foreach($codes as $i)
 <div class="band inner-pad clearfix">
 
 	<div class="two-third sm-one-half">
-		<h1><span class="sm-hidden"><?php echo _COMPOSE_EDITOR.' </span><a class="bta" href="'.BASE_URL.'pages/xlist/'.$pagetoedit->id_area.'/'.$pagetoedit->lang.'/'.$pagetoedit->xfrom.'/1" title="">'.$pagetoedit->name.'</a>'._TRAIT_.$pagetoedit->area.'/'.$pagetoedit->lang ?></h1>
+		<h1><span class="sm-hidden"><?php echo _COMPOSE_EDITOR.' </span><a class="bta" href="'.BASE_URL.'pages/index/'.$pagetoedit->id_area.'/'.$pagetoedit->lang.'/'.$pagetoedit->xfrom.'/1" title="">'.$pagetoedit->name.'</a>'._TRAIT_.$pagetoedit->area.'/'.$pagetoedit->lang ?></h1>
 		<h2><?php echo _SECTIONS ?>&nbsp;<span id="alert_box" class="error"></span></h2>
 		<p><?php echo _SECTIONS_MSG ?></p>
 		

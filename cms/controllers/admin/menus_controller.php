@@ -34,13 +34,13 @@ class Menus_controller extends X3ui_controller
 	 * @param   string	$theme_name Theme name
 	 * @return  void
 	 */
-	public function xlist($id_theme, $theme_name)
+	public function index($id_theme, $theme_name)
 	{
 		// load dictionary
 		$this->dict->get_wordarray(array('menus'));
 		
 		// get page
-		$page = $this->get_page('menus/xlist');
+		$page = $this->get_page('menus/index');
 		
 		// content
 		$view = new X4View_core('container');
@@ -242,7 +242,7 @@ window.addEvent("domready", function()
 				$theme = $mod->get_var($post['id_theme'], 'themes', 'name');
 				$msg->update[] = array(
 					'element' => 'tdown', 
-					'url' => BASE_URL.'menus/xlist/'.$post['id_theme'].'/'.$theme,
+					'url' => BASE_URL.'menus/index/'.$post['id_theme'].'/'.$theme,
 					'title' => null
 				);
 			}
@@ -329,7 +329,7 @@ window.addEvent("domready", function()
 				$theme = $mod->get_var($_post['id_theme'], 'themes', 'name');
 				$msg->update[] = array(
 					'element' => 'tdown', 
-					'url' => BASE_URL.'menus/xlist/'.$_post['id_theme'].'/'.$theme,
+					'url' => BASE_URL.'menus/index/'.$_post['id_theme'].'/'.$theme,
 					'title' => null
 				);
 			}

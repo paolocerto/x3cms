@@ -34,13 +34,13 @@ class Templates_controller extends X3ui_controller
 	 * @param   string  $theme_name Theme name
 	 * @return  void
 	 */
-	public function xlist($id_theme, $theme_name)
+	public function index($id_theme, $theme_name)
 	{
 		// load dictionary
 		$this->dict->get_wordarray(array('templates'));
 		
 		// get page
-		$page = $this->get_page('templates/xlist');
+		$page = $this->get_page('templates/index');
 		
 		// content
 		$view = new X4View_core('container');
@@ -243,7 +243,7 @@ class Templates_controller extends X3ui_controller
 				$theme = $mod->get_var($post['id_theme'], 'themes', 'name');
 				$msg->update[] = array(
 					'element' => 'tdown', 
-					'url' => BASE_URL.'templates/xlist/'.$post['id_theme'].'/'.$theme,
+					'url' => BASE_URL.'templates/index/'.$post['id_theme'].'/'.$theme,
 					'title' => null
 				);
 			}
@@ -356,7 +356,7 @@ class Templates_controller extends X3ui_controller
 					$theme = $mod->get_var($_post['id_theme'], 'themes', 'name');
 					$msg->update[] = array(
 						'element' => 'tdown', 
-						'url' => BASE_URL.'templates/xlist/'.$_post['id_theme'].'/'.$theme,
+						'url' => BASE_URL.'templates/index/'.$_post['id_theme'].'/'.$theme,
 						'title' => null
 					);
 				}
@@ -519,7 +519,7 @@ window.addEvent("domready", function()
 				$theme = $mod->get_var($_post['id_theme'], 'themes', 'name');
 				$msg->update[] = array(
 					'element' => 'tdown', 
-					'url' => BASE_URL.'templates/xlist/'.$_post['id_theme'].'/'.$theme,
+					'url' => BASE_URL.'templates/index/'.$_post['id_theme'].'/'.$theme,
 					'title' => null
 				);
 			}

@@ -13,7 +13,7 @@ echo '<div class="aright sbox"><ul class="inline-list">';
 foreach($areas as $i) 
 {
 	$on = ($i->id == $id_area) ? 'class="on"' : '';
-	echo '<li><a '.$on.' href="'.BASE_URL.'modules/xlist/'.$i->id.'/'.$i->name.'" title="'._SWITCH_AREA.'">'.ucfirst($i->name).'</a></li>';
+	echo '<li><a '.$on.' href="'.BASE_URL.'modules/index/'.$i->id.'/'.$i->name.'" title="'._SWITCH_AREA.'">'.ucfirst($i->name).'</a></li>';
 }
 echo '</ul></div>';
 ?>
@@ -138,7 +138,7 @@ window.addEvent('domready', function()
 	X3.content('filters','modules/filter', '<?php echo X4Utils_helper::navbar($navbar, ' . ', false) ?>');
 	buttonize('topic', 'bta', 'modal');
 	buttonize('topic', 'btm', 'topic');
-	actionize('topic',  'btl', 'topic', escape('modules/xlist/<?php echo $id_area.'/'.$area->name ?>'));
+	actionize('topic',  'btl', 'topic', escape('modules/index/<?php echo $id_area.'/'.$area->name ?>'));
 	zebraTable('zebra');
 	linking('ul.inline-list a');
 });

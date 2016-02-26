@@ -13,7 +13,7 @@ echo '<div class="aright sbox"><ul class="inline-list">';
 foreach($areas as $i) 
 {
 	$on = ($i->id == $id_area) ? 'class="on"' : '';
-	echo '<li><a '.$on.' href="'.BASE_URL.'files/xlist/'.$i->id.'/'.urlencode($category).'/'.urlencode($subcategory).'" title="'._SWITCH_AREA.'">'.ucfirst($i->name).'</a></li>';
+	echo '<li><a '.$on.' href="'.BASE_URL.'files/index/'.$i->id.'/'.urlencode($category).'/'.urlencode($subcategory).'" title="'._SWITCH_AREA.'">'.ucfirst($i->name).'</a></li>';
 }
 echo '</ul></div>';
 
@@ -24,7 +24,7 @@ if (!empty($items[0]))
 	foreach($types as $i) 
 	{
 		$on = ($i->value == $xtype) ? 'class="on"' : '';
-		echo '<li><a '.$on.' href="'.BASE_URL.'files/xlist/'.$id_area.'/'.urlencode($category).'/'.urlencode($subcategory).'/'.$i->value.'/" title="'._SWITCH_TYPE.'">'.ucfirst($i->option).'</a></li>';
+		echo '<li><a '.$on.' href="'.BASE_URL.'files/index/'.$id_area.'/'.urlencode($category).'/'.urlencode($subcategory).'/'.$i->value.'/" title="'._SWITCH_TYPE.'">'.ucfirst($i->option).'</a></li>';
 	}
 	echo '</ul></div>';
 }
@@ -35,11 +35,11 @@ if (!empty($categories))
 	echo '<div class="aright sbox"><ul class="inline-list">';
 	
 	$on = (empty($category)) ? 'class="on"' : '';
-	echo '<li><a '.$on.' href="'.BASE_URL.'files/xlist/'.$id_area.'/" title="'._SWITCH_CATEGORY.'">'.ucfirst(_UNCATEGORIZED).'</a></li>';
+	echo '<li><a '.$on.' href="'.BASE_URL.'files/index/'.$id_area.'/" title="'._SWITCH_CATEGORY.'">'.ucfirst(_UNCATEGORIZED).'</a></li>';
 	foreach($categories as $i) 
 	{
 		$on = ($i->ctg == $category) ? 'class="on"' : '';
-		echo '<li><a '.$on.' href="'.BASE_URL.'files/xlist/'.$id_area.'/'.$i->ctg.'" title="'._SWITCH_CATEGORY.'">'.ucfirst($i->ctg).'</a></li>';
+		echo '<li><a '.$on.' href="'.BASE_URL.'files/index/'.$id_area.'/'.$i->ctg.'" title="'._SWITCH_CATEGORY.'">'.ucfirst($i->ctg).'</a></li>';
 	}
 	echo '</ul></div>';
 	
@@ -49,7 +49,7 @@ if (!empty($categories))
 		foreach($subcategories as $i) 
 		{
 			$on = ($i->sctg == $subcategory) ? 'class="on"' : '';
-			echo '<li><a '.$on.' href="'.BASE_URL.'files/xlist/'.$id_area.'/'.$category.'/'.$i->sctg.'" title="'._SWITCH_SUBCATEGORY.'">'.ucfirst($i->sctg).'</a></li>';
+			echo '<li><a '.$on.' href="'.BASE_URL.'files/index/'.$id_area.'/'.$category.'/'.$i->sctg.'" title="'._SWITCH_SUBCATEGORY.'">'.ucfirst($i->sctg).'</a></li>';
 		}
 		echo '</ul></div>';
 	}
@@ -100,7 +100,7 @@ if (!empty($items[0]))
 					$actions .= ' <a class="btl" href="'.BASE_URL.'files/set/xon/'.$i->id.'/'.(($i->xon+1)%2).'" title="'._STATUS.' '.$status.'"><i class="fa fa-lightbulb-o fa-lg '.$on_status.'"></i></a>';
 				}
 				// filter
-				$actions .= ' <a class="btm" href="'.BASE_URL.'files/xlist/'.$id_area.'/'.$i->category.'/'.$i->subcategory.'" title="'._FILE_FILTER.'"><i class="fa fa-filter fa-lg"></i></a>';
+				$actions .= ' <a class="btm" href="'.BASE_URL.'files/index/'.$id_area.'/'.$i->category.'/'.$i->subcategory.'" title="'._FILE_FILTER.'"><i class="fa fa-filter fa-lg"></i></a>';
 				
 				// admin user
 				if ($i->level == 4)
@@ -161,7 +161,7 @@ if (!empty($items[0]))
 	
 	
 	// pagination
-	echo '<div id="file_pager" class="pager">'.X4Pagination_helper::pager(BASE_URL.'files/xlist/'.$id_area.'/'.urlencode($category).'/'.urlencode($subcategory).'/'.$xtype.'/', $items[1], 5, false, '', 'btp').'</div>';
+	echo '<div id="file_pager" class="pager">'.X4Pagination_helper::pager(BASE_URL.'files/index/'.$id_area.'/'.urlencode($category).'/'.urlencode($subcategory).'/'.$xtype.'/', $items[1], 5, false, '', 'btp').'</div>';
 }
 else 
 {
@@ -175,7 +175,7 @@ window.addEvent('domready', function()
 	buttonize('file_pager', 'btp', 'topic');
 	buttonize('topic', 'btm', 'topic');
 	buttonize('topic', 'bta', 'modal');
-	actionize('topic',  'btl', 'topic', escape('files/xlist/<?php echo $id_area.'/'.urlencode($category).'/'.urlencode($subcategory).'/'.$xtype ?>'));
+	actionize('topic',  'btl', 'topic', escape('files/index/<?php echo $id_area.'/'.urlencode($category).'/'.urlencode($subcategory).'/'.$xtype ?>'));
 	linking('ul.inline-list a');
 	blanking();
 });

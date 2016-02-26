@@ -64,7 +64,7 @@ foreach($areas as $i)
 		}
 	}
 	echo '<tr>
-			<td class="hide-x"><a class="btt" href="'.BASE_URL.'pages/xlist/'.$i->id.'/'.X4Route_core::$lang.'/home/1" title="">'.$i->name.'</a> <span class="xs-hidden">'._TRAIT_.$i->description.'</span></td>
+			<td class="hide-x"><a class="btt" href="'.BASE_URL.'pages/index/'.$i->id.'/'.X4Route_core::$lang.'/home/1" title="">'.$i->name.'</a> <span class="xs-hidden">'._TRAIT_.$i->description.'</span></td>
 			<td>'.$actions.'</td>
 			<td class="aright">'.$delete.'</td>
 			</tr>';
@@ -72,12 +72,12 @@ foreach($areas as $i)
 ?>	
 </table>
 <script>
-window.addEvent('domready', function() {
-	X3.content('filters','areas/filter', '<?php echo X4Utils_helper::navbar($navbar, ' . ') ?>');
-	buttonize('topic', 'bta', 'modal');
-	actionize('topic',  'btl', 'topic', escape('areas/xlist'));
-	zebraTable('zebra');
-	linking('table.zebra a.btt');
+window.addEvent("domready", function() {
+	X3.content("filters","areas/filter", "<?php echo X4Utils_helper::navbar($navbar, ' . ', false) ?>");
+	buttonize("topic", "bta", "modal");
+	actionize("topic",  "btl", "topic", escape("areas/index"));
+	zebraTable("zebra");
+	linking("table.zebra a.btt");
 });
 </script>
 

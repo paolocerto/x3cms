@@ -13,7 +13,7 @@
 <?php
 if ($page->url != 'home') 
 {
-	echo '<p><a href="'.BASE_URL.'pages/xlist/'.$page->id_area.'/'.$page->lang.'/'.str_replace('/', '-', $page->xfrom).'" title="'._GO_BACK.'"><<<</a> <strong>Pagina '.$page->name.'</strong></p>';
+	echo '<p><a href="'.BASE_URL.'pages/index/'.$page->id_area.'/'.$page->lang.'/'.str_replace('/', '-', $page->xfrom).'" title="'._GO_BACK.'"><<<</a> <strong>Pagina '.$page->name.'</strong></p>';
 }
 ?>	
 <table class="zebra">

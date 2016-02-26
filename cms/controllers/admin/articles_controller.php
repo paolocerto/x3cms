@@ -19,12 +19,12 @@ class Articles_controller extends X3ui_controller
 	 * tabs cases
 	 */
 	protected $cases = array(
-			'latest_articles' => array('articles/xlist', 'btm'),
+			'latest_articles' => array('articles/index', 'btm'),
 			'by_page' => array('articles/by_page', 'bta'), 
-			'context_order' => array('articles/xlist', 'btm'),
-			'category_order' => array('articles/xlist', 'btm'),
-			'author_order' => array('articles/xlist', 'btm'), 
-			'key_order' => array('articles/xlist', 'btm')
+			'context_order' => array('articles/index', 'btm'),
+			'category_order' => array('articles/index', 'btm'),
+			'author_order' => array('articles/index', 'btm'), 
+			'key_order' => array('articles/index', 'btm')
 		);
 	
 	/**
@@ -46,8 +46,8 @@ class Articles_controller extends X3ui_controller
 	 */
 	public function _default()
 	{
-		// redirect to xlist
-		$this->xlist(2, X4Route_core::$lang);
+		// redirect to index
+		$this->index(2, X4Route_core::$lang);
 	}
 	
 	/**
@@ -63,12 +63,12 @@ class Articles_controller extends X3ui_controller
 	 * @param   string	$str Search string
 	 * @return  void
 	 */
-	public function xlist($id_area = 2, $lang = '' , $case = 'latest_articles', $id_what = 0, $pp = 0, $str = '')
+	public function index($id_area = 2, $lang = '' , $case = 'latest_articles', $id_what = 0, $pp = 0, $str = '')
 	{
 		// load dictionary
 		$this->dict->get_wordarray(array('articles'));
 		
-		$_SESSION['referer'] = 'xlist/'.$id_area.'/'.$lang.'/'.$case.'/'.$id_what.'/'.$pp.'/'.$str;
+		$_SESSION['referer'] = 'index/'.$id_area.'/'.$lang.'/'.$case.'/'.$id_what.'/'.$pp.'/'.$str;
 		
 		// get page
 		$page = $this->get_page('articles');
@@ -173,7 +173,7 @@ class Articles_controller extends X3ui_controller
             $msg = AdmUtils_helper::set_msg(array(0,1));
             $msg->update[] = array(
                     'element' => 'topic', 
-                    'url' => BASE_URL.'articles/xlist/'.$id_area.'/'.$lang.'/'.$xcase.'/'.$id_what.'/0/'.urlencode(trim($_POST['search'])),
+                    'url' => BASE_URL.'articles/index/'.$id_area.'/'.$lang.'/'.$xcase.'/'.$id_what.'/0/'.urlencode(trim($_POST['search'])),
                     'title' => null
                 );
             $this->response($msg);
@@ -308,7 +308,7 @@ window.addEvent("domready", function()
 		// if submitted
 		if (X4Route_core::$post) 
 		{
-			$this->search_list(BASE_URL.'articles/xlist/'.$_POST['id_area'].'/'.$_POST['lang'].'/by_page/'.$_POST['id_page']);
+			$this->search_list(BASE_URL.'articles/index/'.$_POST['id_area'].'/'.$_POST['lang'].'/by_page/'.$_POST['id_page']);
 			die;
 		}
 		
@@ -991,7 +991,7 @@ window.addEvent("domready", function()
 		
 		$ref = (isset($_SESSION['referer']))
 			? $_SESSION['referer']
-			: 'xlist/'.$id_area.'/'.$lang;
+			: 'index/'.$id_area.'/'.$lang;
 		
 		$navbar = array($this->site->get_bredcrumb($page), array('articles' => $ref));
 		
@@ -1000,13 +1000,13 @@ window.addEvent("domready", function()
 		{
 			// simple editing
 			$page = $pmod->get_by_id($id_page);
-			$view->title = _CONTENT_EDITOR.' <a class="bta" href="'.BASE_URL.'pages/xlist/'.$page->id_area.'/'.$page->lang.'/'.$page->xfrom.'/1" title="'._GO_BACK.'">'.stripslashes($page->name).'</a>'._TRAIT_.$lang;
+			$view->title = _CONTENT_EDITOR.' <a class="bta" href="'.BASE_URL.'pages/index/'.$page->id_area.'/'.$page->lang.'/'.$page->xfrom.'/1" title="'._GO_BACK.'">'.stripslashes($page->name).'</a>'._TRAIT_.$lang;
 			$view->down->js = '';
 		}
 		else 
 		{
 			// generic back
-			$back = '<a class="bta" href="'.BASE_URL.'pages/xlist/'.$id_area.'/'.$lang.'/home/1" title="'._GO_BACK.'">'._PAGES.'</a>';
+			$back = '<a class="bta" href="'.BASE_URL.'pages/index/'.$id_area.'/'.$lang.'/home/1" title="'._GO_BACK.'">'._PAGES.'</a>';
 			if ($bid)
 			{
 				if ($m->id_page)
@@ -1015,7 +1015,7 @@ window.addEvent("domready", function()
 					$page = $pmod->get_by_id($m->id_page);
 					$back = (ADVANCED_EDITING)
 						? '<a class="bta" href="'.BASE_URL.'sections/compose/'.$page->id.'" title="'._GO_BACK.'">'.stripslashes($page->name).'</a>'
-						: '<a class="bta" href="'.BASE_URL.'pages/xlist/'.$page->id_area.'/'.$page->lang.'/'.$page->xfrom.'/1" title="'._GO_BACK.'">'.stripslashes($page->name).'</a>';
+						: '<a class="bta" href="'.BASE_URL.'pages/index/'.$page->id_area.'/'.$page->lang.'/'.$page->xfrom.'/1" title="'._GO_BACK.'">'.stripslashes($page->name).'</a>';
 				}
 				$view->title = $back._TRAIT_._EDIT_ARTICLE._TRAIT_.$lang;
 			}
@@ -1445,7 +1445,7 @@ window.addEvent("domready", function()
 			{
 				$msg->update[] = array(
 					'element' => 'topic', 
-					'url' => BASE_URL.'articles/xlist/'.$_post['id_area'].'/'.$_post['lang'],
+					'url' => BASE_URL.'articles/index/'.$_post['id_area'].'/'.$_post['lang'],
 					'title' => null
 				);
 			}

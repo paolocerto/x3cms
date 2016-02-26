@@ -34,7 +34,7 @@ class Modules_controller extends X3ui_controller
 	 */
 	public function _default()
 	{
-		$this->xlist(2, 'public');
+		$this->index(2, 'public');
 	}
 	
 	/**
@@ -44,7 +44,7 @@ class Modules_controller extends X3ui_controller
 	 * @param   string  $area Area name
 	 * @return  void
 	 */
-	public function xlist($id_area = 2, $area = 'public')
+	public function index($id_area = 2, $area = 'public')
 	{
 		// load dictionary
 		$this->dict->get_wordarray(array('modules'));
@@ -343,7 +343,7 @@ var myScroll = new Scrollable($("scrolled"));
 			{
 				$msg->update[] = array(
 					'element' => 'topic', 
-					'url' => BASE_URL.'modules/xlist/'.$_post['id_area'].'/'.$_post['xrif'],
+					'url' => BASE_URL.'modules/index/'.$_post['id_area'].'/'.$_post['xrif'],
 					'title' => null
 				);
 			}
@@ -409,7 +409,7 @@ var myScroll = new Scrollable($("scrolled"));
 					
 					$msg->update[] = array(
 						'element' => 'topic', 
-						'url' => BASE_URL.'modules/xlist/'.$id_area.'/'.$area->name,
+						'url' => BASE_URL.'modules/index/'.$id_area.'/'.$area->name,
 						'title' => null
 					);
 				}
@@ -509,7 +509,7 @@ var myScroll = new Scrollable($("scrolled"));
 				$area = $mod->get_by_id($obj->id_area, 'areas', 'name');
 				$msg->update[] = array(
 					'element' => 'topic', 
-					'url' => BASE_URL.'modules/xlist/'.$obj->id_area.'/'.$area->name,
+					'url' => BASE_URL.'modules/index/'.$obj->id_area.'/'.$area->name,
 					'title' => null
 				);
 			}

@@ -34,7 +34,7 @@ class Contexts_controller extends X3ui_controller
 	 */
 	public function _default()
 	{
-		$this->xlist(2, X4Route_core::$lang);
+		$this->index(2, X4Route_core::$lang);
 	}
 	
 	/**
@@ -44,14 +44,14 @@ class Contexts_controller extends X3ui_controller
 	 * @param   string 	$lang Language code
 	 * @return  void
 	 */
-	public function xlist($id_area, $lang)
+	public function index($id_area, $lang)
 	{
 		// load dictionary
 		$this->dict->get_wordarray(array('contexts', 'articles'));
 		
 		// get page
 		$page = $this->get_page('contexts');
-		$navbar = array($this->site->get_bredcrumb($page), array('articles' => 'xlist/'.$id_area.'/'.$lang));
+		$navbar = array($this->site->get_bredcrumb($page), array('articles' => 'index/'.$id_area.'/'.$lang));
 		
 		$view = new X4View_core('container');
 		
@@ -313,7 +313,7 @@ window.addEvent("domready", function()
 				{
 					$msg->update[] = array(
 						'element' => 'topic', 
-						'url' => BASE_URL.'contexts/xlist/'.$post['id_area'].'/'.$post['lang'],
+						'url' => BASE_URL.'contexts/index/'.$post['id_area'].'/'.$post['lang'],
 						'title' => null
 					);
 				}
@@ -399,7 +399,7 @@ window.addEvent("domready", function()
 				// set what update
 				$msg->update[] = array(
 					'element' => 'topic', 
-					'url' => BASE_URL.'contexts/xlist/'.$obj->id_area.'/'.$obj->lang,
+					'url' => BASE_URL.'contexts/index/'.$obj->id_area.'/'.$obj->lang,
 					'title' => null
 				);
 			}

@@ -48,7 +48,7 @@ if ($items)
 			echo '<span class="rtoggle">'.$i->category.'</span><div class="relement">';
 			$copen = true;
 		}
-		echo '<p><a href="'.BASE_URL.'files/xlist/'.$i->id.'/'.$i->category.'/'.$i->subcategory.'" title="">'.$i->subcategory.'</a></p>';
+		echo '<p><a href="'.BASE_URL.'files/index/'.$i->id.'/'.$i->category.'/'.$i->subcategory.'" title="">'.$i->subcategory.'</a></p>';
 	}
 	
 	if ($copen) echo '</div>';
