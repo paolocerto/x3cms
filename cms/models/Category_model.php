@@ -35,12 +35,16 @@ class Category_model extends X4Model_core
 	 * @param   string 	$tag Category tag
 	 * @return  array	array of category objects
 	 */
-	public function get_categories($id_area, $lang, $tag)
+	public function get_categories($id_area, $lang, $tag = '')
 	{
+	    $where = (empty($tag))
+	        ? ''
+	        : ' AND c.tag = '.$this->db->escape($tag);
+	        
 		return $this->db->query('SELECT c.*, p.level 
 			FROM categories c 
 			JOIN privs p ON p.id_who = '.intval($_SESSION['xuid']).' AND p.what = \'categories\' AND p.id_what = c.id
-			WHERE c.id_area = '.intval($id_area).' AND c.lang = '.$this->db->escape($lang).' AND c.tag = '.$this->db->escape($tag).'
+			WHERE c.id_area = '.intval($id_area).' AND c.lang = '.$this->db->escape($lang).$where.'
 			ORDER BY c.name ASC');
 	}
 	
