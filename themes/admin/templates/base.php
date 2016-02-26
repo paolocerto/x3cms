@@ -20,7 +20,22 @@ if (!empty($sections[1]))
 			echo X4Utils_helper::reset_url(stripslashes($i->content.NL.html_entity_decode($i->js)));
 		}
 		if (!empty($i->module)) 
+		{
 			echo stripslashes(X4Utils_helper::module($this->site, $page, $args, $i->module, $i->param));
+		}
+		
+		// javascript for admin side
+		if ($page->id_area == 1 && $navbar != '')
+		{
+		    // update breadcrumb
+		    echo '
+<script>
+window.addEvent("domready", function() {
+    $("page-title").set("html", "'.addslashes(X4Utils_helper::navbar($navbar, ' . ', false)).'");
+    buttonize("page-title", null, "topic");
+});
+</script>';
+		}
 	}
 }
 // content
