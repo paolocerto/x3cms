@@ -183,12 +183,12 @@ final class X4Db_core
 	 * @param   array  $array
 	 * @return  object
 	 */
-	private function array2obj($array)	
+	private function array2obj($array)
 	{
 		$obj = new stdClass();
 		foreach($array as $k => $v)
 		{
-			$obj->$k = $v;	
+			$obj->$k = $v;
 		}
 		return $obj;
 	}
@@ -718,6 +718,7 @@ final class X4Db_core
 	
 	/**
 	 * Optimize MySQL tables
+	 * Probably useless with InnoDB tables
 	 *
 	 * @return Database_Result  Query result
 	 */

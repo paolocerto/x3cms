@@ -108,7 +108,7 @@ class X4Plugin_model extends X4Model_core
 		// uploaded plugins
 		$plugins = glob(PATH.'plugins/*', GLOB_ONLYDIR);
 		// installed
-		$installed = $this->db->query('SELECT DISTINCT * FROM modules WHERE id_area = '.intval($id_area).' ORDER BY modules.name ASC');
+		$installed = $this->get_installed($id_area);
 		$ed = array();
 		foreach($installed as $i) 
 		{
