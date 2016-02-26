@@ -1246,7 +1246,7 @@ class X4Files_helper
 	 */
 	public static function command_exist($cmd) 
 	{
-		return shell_exec("which $cmd");
+		return (string) @shell_exec("which $cmd");
 	}
     
     /**
