@@ -26,7 +26,7 @@ define('X4VERSION', '0.5.3');
 define('X3VERSION', '0.5.3 STABLE');
 
 // DEFINE THE INSTALL ROOT
-$root = str_replace($_SERVER['DOCUMENT_ROOT'], '', getcwd());
+$root = str_replace($_SERVER['DOCUMENT_ROOT'], '', __DIR__);
 define('INSTALL_ROOT', $root.'/');
 
 // DEFINE PATH
