@@ -452,7 +452,7 @@ class Page_model extends X4Model_core
 		if ($pages) {
 		    
 		    $domain = (MULTILANGUAGE)
-		        ? $domain.'/'.$i->lang
+		        ? $domain.'/'.$pages[0]->lang
 		        : $domain;
 		    
 			foreach ($pages as $i)
