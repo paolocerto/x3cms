@@ -34,4 +34,4 @@ RewriteRule ^(.*)/$ $1 [L,R=301]
 RewriteRule ^sitemap\.xml$ cms/files/sitemap.xml [L]
 RewriteRule ^cms/files/(.*)$ cms/files/$1 [L]
 RewriteRule ^files/js/(.+)$ files/js/$1 [L]
-RewriteRule !\.(htm|html|js|ico|txt|gif|jpg|jpeg|png|css|less|pdf|xml|zip|swf|wmv|rm|mov|flv|mp4|ogv|webm|ttf|eot|woff|woff2|svg)$ page.php
+RewriteRule !\.(htm|html|js|ico|txt|gif|jpg|jpeg|png|css|less|pdf|xml|zip|swf|wmv|rm|mov|flv|mp4|ogv|webm|ttf|eot|woff|woff2|svg|json)$ page.php
