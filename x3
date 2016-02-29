@@ -1,0 +1,50 @@
+#!/usr/bin/env php
+<?php
+/**
+ * X3 CMS - A smart Content Management System
+ *
+ * @author		Paolo Certo
+ * @copyright	(c) 2010-2015 CBlu.net di Paolo Certo
+ * @license		http://www.gnu.org/licenses/agpl.htm
+ * @package		X3CMS
+ */
+
+// X3CMS cli
+
+// get arguments
+if (sizeof($argv) == 1 || $argv[1] == '-h' || $argv[1] == '--help')
+{
+    define('NL', "\n");
+    
+    // print usage
+    echo 'X3CMS Command Line'.NL.'Version 0.1'.NL.NL.'Usage:'.NL;
+    
+    // Options
+    echo 'create: to create controllers, models, views and dictionaries'.NL.
+        ' - The create command require three parameters:'.NL.
+        ' - type of object (controller, model, view or dictionary)'.NL.
+        ' - area name (admin, public, private)'.NL.
+        ' - name (name for the object, enclosed with "" if it contains spaces)'.NL.
+        ' - Example: php x3 create controller public "foo bar"'.NL.NL;
+    
+    echo 'create notes: '.NL.
+        ' - The dictionary option is available only for the admin area.'.NL.
+        ' - You can get a complete set of items for the admin area (controller + model + view + dictionary) using as type of object the key "mvc".'.NL.
+        ' - The creation of the model involves the creation of the related table.'.NL;
+}
+else
+{
+    // remove first argument
+    array_shift($argv);
+    
+    // define cli folder
+    define('X3CLI', '/x3cli/');
+    
+    // build cli URI
+    $cli = X3CLI.implode('/', $argv);
+    
+    // load config
+    require __DIR__.'/page.php';
+    
+    echo NL;
+}

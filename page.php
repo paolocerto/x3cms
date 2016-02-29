@@ -42,7 +42,7 @@ if (!isset($_SESSION['token']))
  * Define ROOT: the path from the Document Root of the server to the folder that contains the site with X3CMS
  * Relative path
  */
-$root = str_replace($_SERVER['DOCUMENT_ROOT'], '', getcwd());
+$root = str_replace($_SERVER['DOCUMENT_ROOT'], '', __DIR__);
 define('ROOT', $root.'/');
 
 /**
@@ -64,7 +64,7 @@ define('SPATH', PATH.$system_path);
 define('APATH', PATH.$app_path);
 
 /**
- * define FPATH: the path to files folder
+ * Define FPATH: the path to files folder
  * Relative path
  */
 define('FPATH', ROOT.$app_path.'files/filemanager/');
@@ -111,5 +111,13 @@ include(SPATH.'core/X4Route_core.php');
  */
 include(SPATH.'core/X4Core_core.php');
 
-// start the core
-X4Core_core::setCore($default, $db_config);
+// Start the core
+if (defined('X3CLI'))
+{
+    // When called from x3
+    X4Core_core::setCore($default, $db_config, $cli);
+}
+else
+{
+    X4Core_core::setCore($default, $db_config);
+}

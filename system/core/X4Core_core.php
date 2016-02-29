@@ -36,10 +36,17 @@ final class X4Core_core
 	 * @static
 	 * @return  void
 	 */
-	public static function setCore($default, $db = NULL)
+	public static function setCore($default, $db = NULL, $cli = '')
 	{
 		// set the route
-		X4Route_core::set_route($_SERVER['REQUEST_URI'], $default);
+		if (defined('X3CLI') && !empty($cli))
+		{
+		    X4Route_core::set_route($cli, $default);
+		}
+		else
+		{
+		    X4Route_core::set_route($_SERVER['REQUEST_URI'], $default);
+		}
 		
 		// check if controller exists
 		self::$controller = X4Route_core::controller_path();

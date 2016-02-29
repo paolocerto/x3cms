@@ -41,10 +41,11 @@ final class X4Route_core
 	 * Areas for IDs
 	 */
 	public static $areas = array(
-        'admin' => 1,
-        'public' => 2,
-        'private' => 3
-    );
+	    'x3cli' => 0,    // for PHP CLI
+            'admin' => 1,
+            'public' => 2,
+            'private' => 3
+        );
 	
 	/*
 	 * Localization options
@@ -145,7 +146,18 @@ final class X4Route_core
 			if (is_dir(APATH.'controllers/'.self::$args[0])) 
 			{
 				// the area has a dedicated folder
-				self::$area = self::$folder = array_shift(self::$args);
+				if (self::$args[0] == 'x3cli')
+				{
+					// check for valid cli call
+					if (defined('X3CLI') && php_sapi_name() === 'cli')
+					{
+						self::$area = self::$folder = array_shift(self::$args);
+					}
+				}
+				else
+				{
+				    self::$area = self::$folder = array_shift(self::$args);
+				}
 			}
 			elseif (isset($default_config[self::$args[0]]))
 			{
