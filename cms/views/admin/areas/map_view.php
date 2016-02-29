@@ -46,7 +46,9 @@ foreach($map as $i)
 	{
 		// normal subpage
 		if ($i->ordinal == 'A') 
+		{
 			echo '<ul>';
+		}
 		else 
 		{
 			echo '</li>';
@@ -55,7 +57,9 @@ foreach($map as $i)
 	}
 	// menus
 	if ($ilen == 2 && $i->id_menu) 
+	{
 		$class = 'class="map"';
+	}
 	
 	$len = $ilen;
 	$description = stripslashes($i->description);
@@ -77,8 +81,8 @@ while ($openli > 0)
 ?>
 </div>
 <script>
-window.addEvent('domready', function()
+window.addEvent("domready", function()
 {
-	buttonize('simple-modal', 'btm', 'topic');
+	buttonize("simple-modal", 'btm', 'topic');
 });
 </script>

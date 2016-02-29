@@ -27,7 +27,7 @@ $default['x3default_route'] = 'public/home';
 //$default['bar_id'] = 5;
 
 // global items
-define('EXT', '.php');					// paranoics could change php files extension
+define('EXT', '.php');					
 define('SEP', '/');					// URL separator (not used)
 define('_TRAIT_', ' - ');				// text separator
 define('BR', '<br />');

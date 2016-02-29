@@ -479,7 +479,7 @@ ul.nomargin li {list-style:none;position:relative;padding:0;margin:0;}
 ul.nomargin li table {margin:0;}
 ul.nomargin li table tr {border-top:none;}
 ul.nomargin li:first-child table tr {border-top:1px solid #ccc;}
-li.items {cursor:move;}
+#menu_manager ul.nomargin li {cursor:move;}
 ul.margin li {padding:2px 5px;border-bottom:1px solid #ccc;}
 
 /* TABS */
@@ -626,6 +626,8 @@ ul.autocompleter-choices li.autocompleter-selected span.autocompleter-queried {c
 .draggable_item.dragging {background:#e80;color:#fff;}
 .draggable_item.resizing {background:#6a0;color:#fff;}
 
+/* SORTABLE ITEMS */
+ul#sortable li:hover {cursor:move;}
 
 /* DATEPICKER */
 img.date_toggler {position:relative;top:4px;margin-left:4px;}
