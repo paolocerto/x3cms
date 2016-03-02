@@ -211,14 +211,16 @@ class '.$uname.'_controller extends X3ui_controller
 		
 		// dummy content
 		$view->content = \'
-<h1>Controller Pinco</h1>
+<h1>'.$uname.' Controller</h1>
 <p>Dummy content for the _default() method</p>
-<p>If you want to fully use this method you have to create:</p>
+<p>Congratulations! You have successful created your controller.<br />
+If you want to fully use this method you have to create:</p>
 <ul>
     <li>a model with the same name (php x3 create model area name)</li>
     <li>a view with the same name (php x3 create view area name)</li>
     <li>a dictionary with the same name (php x3 create dictionary area name)</li>
 </ul>
+<p>After that you can comment this part in the _default() method and redirect it to the index() method.</p>
 
 <h2>Model + View + Controller + Dictionary</h2>
 <p>A faster way to reach the same result: a complete set of controller+model+view+dictionary <b>for the admin area</b> is to use the mvc command (php x3 create mvc area name).</p>
