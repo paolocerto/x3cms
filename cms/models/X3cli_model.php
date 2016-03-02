@@ -126,14 +126,14 @@ class X3cli_model extends X4Model_core
      * Admin dictionary
      */
     protected $admin_dictionary = array(
-        'XXX_SEARCH_MSG' => 'Search by title or description',
-        'XXX_MANAGE' => 'XXX manager',
-        'XXX_ITEMS' => 'XXX items',
-        'XXX_ITEM' => 'XXX item',
-        'XXX_ADD' => 'Add a new XXX',
-        'XXX_NEW' => 'New XXX',
-        'XXX_EDIT' => 'Edit XXX',
-        'XXX_DELETE' => 'Delete XXX',
+        '_XXX_SEARCH_MSG' => 'Search by title or description',
+        '_XXX_MANAGER' => 'XXX manager',
+        '_XXX_ITEMS' => 'XXX items',
+        '_XXX_ITEM' => 'XXX item',
+        '_XXX_ADD' => 'Add a new XXX',
+        '_XXX_NEW' => 'New XXX',
+        '_XXX_EDIT' => 'Edit XXX',
+        '_XXX_DELETE' => 'Delete XXX',
     );
     
 	/**
@@ -157,6 +157,7 @@ class X3cli_model extends X4Model_core
 	public function create_controller($area, $name)
 	{
 	    $uname = ucfirst($name);
+	    $upper_name = strtoupper($name);
 	    
 	    // avoid overwrite
 	    if (!file_exists(APATH.'controllers/'.$area.'/'.$name.'_controller'.EXT))
@@ -206,6 +207,10 @@ class '.$uname.'_controller extends X3ui_controller
 		// /* ------------------------------------------------------------------
 		// start section
 		
+		// load the dictionary
+		// you should have created a section in the dictionary for this controller
+		$this->dict->get_wordarray(array(\'faq\'));
+		
 		// content
 		$view = new X4View_core(\'container\');
 		
@@ -246,7 +251,14 @@ If you want to fully use this method you have to create:</p>
     <li>Removing the sortable the items are automatically paginated.</li>
     <li>If you need to add fields in the table you have to change the '.$name.'_controller for the form in the edit() method and the editing() method where data are saved in the database.</li>
 </ul>
-<p><b>Have fun</b></p>\';
+<div class="buttons acenter"><button type="button" onclick="redirect();" title="\'._'.$upper_name.'_MANAGER.\'">\'._'.$upper_name.'_MANAGER.\'</button></div>
+
+<p><b>Have fun</b></p>
+<script>
+function redirect() {
+    X3.content("topic","\'.BASE_URL.\''.$name.'/index", null);
+}
+</script>\';
 		
 		$view->render(TRUE);
 		
@@ -1145,8 +1157,8 @@ if (MULTIAREA)
 }
 
 // to avoid errors for missing dictionary
-$title = (defined(\'_'.$uname.'_MANAGE\'))
-    ? _'.$uname.'_MANAGE
+$title = (defined(\'_'.$uname.'_MANAGER\'))
+    ? _'.$uname.'_MANAGER
     : \''.ucfirst($name).' Manager\';
 
 $elements = (defined(\'_'.$uname.'_ITEMS\'))
