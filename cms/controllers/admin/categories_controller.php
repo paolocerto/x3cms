@@ -156,7 +156,7 @@ window.addEvent("domready", function()
 	 * @param   integer	$id Category ID
 	 * @return  void
 	 */
-	public function edit($id_area, $lang, $tag, $id = 0)
+	public function edit($id_area, $lang, $tag = '', $id = 0)
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'categories'));

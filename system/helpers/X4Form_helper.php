@@ -372,7 +372,7 @@ class X4Form_helper
 			if (isset($e['folder'])) 
 			{
 				$tmp = ($e['folder'] == 'img') 
-					? '<br /><img class="thumb" src="'.FPATH.$e['folder'].'/'.$e['old'].'" alt="thumb" />' 
+					? '<br /><img class="thumb dblock" src="'.FPATH.$e['folder'].'/'.$e['old'].'" alt="thumb" />' 
 					: '';
 				$tmp .= ' <a href="'.FPATH.$e['folder'].'/'.$e['old'].'" title="">'.$e['old'].'</a>';
 			}
@@ -381,7 +381,10 @@ class X4Form_helper
 				$tmp .= $e['aold'];
 			}
 			else 
+			{
 				$tmp .= $e['old'];
+			}
+			
 			// for removal
 			if (isset($e['delete']) && $req != ' *') 
 			{

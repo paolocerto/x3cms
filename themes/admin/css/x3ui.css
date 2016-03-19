@@ -102,8 +102,8 @@
 /* BASE */
 
 html { font-size:.9em;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;}
-html { font-family:titillium,helvetica,arial,sans-serif;color:#444; }
-body { margin:0;background:#333;line-height:1.4; }
+html { font-family:titillium,helvetica,arial,sans-serif;color:#444;}
+body { margin:0;background:#333;line-height:1.4;}
 
 ::-moz-selection {background:#fe57a1;color:#fff;text-shadow: none; }
 ::selection {background:#fe57a1;color:#fff;text-shadow:none; }
@@ -533,7 +533,7 @@ div.widget:hover .wbox {color:#eee;}
 
 /* SIMPLE MODAL */
 #simple-modal-overlay {position:fixed;display:block;z-index:99997;top:0;left:0;width:100%;height:100%;background:#000;}
-.simple-modal {width:auto;max-height:90% !important;top:2em;position:fixed;margin:0 auto;padding:0;color:#808080;font-size:1em;line-height:2em;background:#fff;box-shadow:0 0 1em rgba(0, 0, 0, 0.6);z-index:99998;}
+.simple-modal {width:auto;max-height:90% !important;top:2em;position:absolute;margin:0 auto;padding:0;color:#808080;font-size:1em;line-height:2em;background:#fff;box-shadow:0 0 1em rgba(0, 0, 0, 0.6);z-index:99998;}
 .simple-modal .simple-modal-header {display:none;}
 .simple-modal .simple-modal-body {padding:2em;font-size:1em;font-weight:normal;color:#444;background:#eee;}
 .simple-modal .simple-modal-body div.contents {margin:0;padding:0;}

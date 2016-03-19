@@ -487,7 +487,7 @@ window.addEvent("domready", function()
 					{
 						$msg->update[] = array(
 							'element' => 'topic', 
-							'url' => BASE_URL.'areas/index',
+							'url' => BASE_URL.'areas',
 							'title' => null
 						);
 					}

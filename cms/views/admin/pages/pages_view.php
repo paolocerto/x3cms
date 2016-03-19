@@ -126,9 +126,13 @@ if (!empty($pages))
 						$delete = '<a class="btl" href="'.BASE_URL.'pages/set/xlock/'.$i->id.'/'.(($i->xlock+1)%2).'" title="'._STATUS.' '.$lock.'"><i class="fa fa-'.$lock_status.' fa-lg"></i></a>';
 						
 						if (!in_array($i->url, $no_del)) 
+						{
 							$delete .= ' <a class="bta" href="'.BASE_URL.'pages/delete/'.$i->id.'" title="'._DELETE.'"><i class="fa fa-trash fa-lg red"></i></a>';
-						else 
+						}
+						else
+						{
 							$delete .= ' <a><i class="fa fa-trash fa-lg invisible"></i></a>';
+						}
 					}
 				}
 			}
