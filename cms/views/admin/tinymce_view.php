@@ -22,23 +22,29 @@ tinyMCE.init({
 	// General options
 	selector: "textarea",
     theme: "modern",
-	skin : "x3",
+	skin : "lightgray",
 	
 	language : "<?php echo X4Route_core::$lang ?>",
 	selector: "textarea:not(.NoEditor)",
+	
+	autosave_interval: "30s",
 	
 <?php
 if (RTL || isset($rtl)) echo 'directionality : "rtl",';
 ?>
 	 plugins: [
-        "advlist autolink lists link image charmap print preview hr anchor pagebreak",
+        "advlist autolink autosave lists link image imagetools charmap print preview hr anchor pagebreak",
         "searchreplace wordcount visualblocks visualchars code fullscreen",
         "insertdatetime media nonbreaking save table contextmenu directionality",
         "emoticons template paste textcolor colorpicker textpattern",
 		"responsivefilemanager importcss youtube"
     ],
     
+    autosave_ask_before_unload: false,
+    
     toolbar1: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | responsivefilemanager | print preview media youtube | forecolor backcolor emoticons",
+    
+    imagetools_toolbar: "rotateleft rotateright | flipv fliph | editimage imageoptions",
     
     toolbar_items_size: 'small',
     
@@ -69,7 +75,7 @@ if (RTL || isset($rtl)) echo 'directionality : "rtl",';
     ],
     visualblocks_default_state: true,
     end_container_on_empty_block: true,
-
+    
     image_advtab: true,
     
 	insertdatetime_formats: ["%H:%M:%S", "%Y-%m-%d", "%d/%m/%Y", "%I:%M:%S %p", "%D"],

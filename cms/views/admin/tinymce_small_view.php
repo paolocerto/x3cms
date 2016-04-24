@@ -22,21 +22,25 @@ tinyMCE.init({
 	// General options
 	selector: "textarea",
     theme: "modern",
-	skin : "x3",
+	skin : "lightgray",
 	
 	language : "<?php echo X4Route_core::$lang ?>",
 	selector: "textarea:not(.NoEditor)",
+	
+	autosave_interval: "30s",
 	
 <?php
 if (RTL || isset($rtl)) echo 'directionality : "rtl",';
 ?>
 	 plugins: [
-        "advlist autolink lists link image charmap print preview hr anchor pagebreak",
+        "advlist autolink autosave lists link image charmap print preview hr anchor pagebreak",
         "searchreplace wordcount visualblocks visualchars code fullscreen",
         "insertdatetime media nonbreaking save table contextmenu directionality",
         "emoticons template paste textcolor colorpicker textpattern",
 		"responsivefilemanager importcss youtube"
     ],
+    
+    autosave_ask_before_unload: false,
     
     toolbar1: "bold italic | alignleft aligncenter alignright alignjustify | bullist numlist | link image",
     //toolbar2: "link image | responsivefilemanager | print preview media youtube",    
