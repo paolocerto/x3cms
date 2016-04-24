@@ -123,7 +123,7 @@ X3.append({
 		if (div != null && reload != null)
 			qs = '?div=' + div + '&url=' + X3.cleanUrl(reload);
 		
-		return {
+		var req = new Request.JSON({
 			url: X3.cleanUrl(url) + qs, 
 			method: 'post',
 			loadMethod: 'xhr',
@@ -163,7 +163,8 @@ X3.append({
 					}
 				}
 			}
-		};
+		}).send();
+		return req;
 	},
 	
 	/**
@@ -438,6 +439,8 @@ X3.append({
 			"param":{
 				"url": X3.cleanUrl(url),
 				"onRequestComplete": function(){ 
+				    var scroll_fx = new Fx.Scroll(window);
+				    scroll_fx.toTop();
 					X3.spinnerOff();
 					$('close-modal').addEvent('click', function(e){
 						e.stop();
@@ -538,11 +541,26 @@ XUI.desktop = function(start_page, start_title){
 	X3.content('filters','home/filter', null);
 };
 
+// link to scroll Up and scroll Down
+window.addEvent('load', function() {
+    var scroll_fx = new Fx.Scroll(window); 
+    var xto_top = new Element('span#xscroll_up.scroll.scroll-to-top.fa.fa-2x.fa-arrow-circle-up').addEvent('click', function() { scroll_fx.toTop(); }).inject(document.body); 
+    var xto_bottom = new Element('span#xscroll_down.scroll.scroll-to-bottom.fa.fa-2x.fa-arrow-circle-down').addEvent('click', function() { scroll_fx.toBottom(); }).inject(document.body); 
+    
+    var checkScroll = function() { 
+	    var body_scroll = document.body.getScroll(); 
+	    xto_top.setStyle('visibility', body_scroll.y > 100 ? 'visible' : 'hidden'); 
+	    xto_bottom.setStyle('visibility', (body_scroll.y + window.getCoordinates().height) < window.getScrollSize().y ? 'visible' : 'hidden'); 
+	};
+    
+    checkScroll(); 
+    window.addEvent('scroll', function(e) { checkScroll(); });
+});
+
 // Initialize when the DOM is ready
 window.addEvent('domready',function(){
 	XUI.desktop(start_page, start_title);
     linking();
-    
 });
 
 //var WINDOW_CHANGE_EVENT = ('onorientationchange' in window) ? 'orientationchange' : 'resize';
