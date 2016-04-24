@@ -119,7 +119,7 @@ final class X4Route_core
 			$uri_str = $default_config['x3default_route'];
 		}
 		
-		// for querystring
+		// handle querystring
 		$us = explode('?', $uri_str);
 		// sanitize
 		if (isset($us[1]))
@@ -161,7 +161,7 @@ final class X4Route_core
 			}
 			elseif (isset($default_config[self::$args[0]]))
 			{
-				// the area not has a dedicated folder
+				// the area has not a dedicated folder
 
 				// set additional area
 				self::$area = array_shift(self::$args);
