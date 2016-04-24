@@ -188,16 +188,16 @@ class Articles_controller extends X3ui_controller
                     echo ' <button type="button" name="bulk" id="bulk" class="button" onclick="setForm(\'bulk_action\');">'._DELETE_BULK.'</button>';
                     break;
                 case '':
-                    // add nothing    
+                    // add nothing
                     break;
                 default:
-                    echo '<form id="searchitems" name="searchitems" action="'.BASE_URL.'articles/filter/'.$id_area.'/'.$lang.'/'.$xcase.'/'.$id_what.'/" method="post" onsubmit="setForm(\'searchitems\');return false;">
+                    echo '<form id="searchitems" name="searchitems" action="'.BASE_URL.'articles/filter/'.$id_area.'/'.$lang.'/'.$xcase.'/'.$id_what.'" method="POST" onsubmit="return false;">
                         <input type="text" name="search" id="search" value="'.urldecode($str).'" title="'._ARTICLES_SEARCH_MSG.'" />
                         <button type="button" name="searcher" class="button" onclick="setForm(\'searchitems\');">'._FIND.'</button>
                         </form>';
                     break;
             }
-		
+            
 			echo '<a class="btf" href="'.BASE_URL.'articles/edit/'.$id_area.'/'.$lang.'" title="'._NEW_ARTICLE.'"><i class="fa fa-plus fa-lg"></i></a>
 			
 <script>
