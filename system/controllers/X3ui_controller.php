@@ -77,7 +77,7 @@ class X3ui_controller extends X4Cms_controller
 	 * @param   string 	$title Dialog title
 	 * @return  void
 	 */
-	public function notice($fields, $title = '_form_not_valid')
+	public function notice($fields, $title = '_form_not_valid', $session = false)
 	{
 		$dict = new X4Dict_model(X4Route_core::$folder, X4Route_core::$lang);
 		$error = $dict->get_word($title, 'form');
@@ -130,9 +130,16 @@ class X3ui_controller extends X4Cms_controller
 			}
 		}
 		
-		// set message
-		$msg = AdmUtils_helper::set_msg(false, $error, $error);
-		
-		$this->response($msg);
+		if ($session)
+		{
+		    $_SESSION['msg'] = $error;
+		}
+		else
+		{
+		    // set message
+		    $msg = AdmUtils_helper::set_msg(false, $error, $error);
+		    
+		    $this->response($msg);
+		}
 	}
 }
