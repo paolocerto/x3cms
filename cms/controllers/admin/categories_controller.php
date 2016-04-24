@@ -184,25 +184,50 @@ window.addEvent("domready", function()
 			'name' => 'id'
 		);
 		
-		$amod = new Area_model();
-		$fields[] = array(
-			'label' => _AREA,
-			'type' => 'select',
-			'value' => $m->id_area,
-			'options' => array($amod->get_areas(), 'id', 'name'),
-			'name' => 'id_area',
-			'extra' => 'class="large"'
-		);
+		if (MULTIAREA)
+		{
+            $amod = new Area_model();
+            $fields[] = array(
+                'label' => _AREA,
+                'type' => 'select',
+                'value' => $m->id_area,
+                'options' => array($amod->get_areas(), 'id', 'name'),
+                'name' => 'id_area',
+                'extra' => 'class="large"'
+            );
+        }
+        else
+        {
+            $fields[] = array(
+                'label' => null,
+                'type' => 'hidden',
+                'value' => $m->id_area,
+                'name' => 'id_area'
+            );
+        }
 		
-		$lmod = new Language_model();
-		$fields[] = array(
-			'label' => _LANGUAGE,
-			'type' => 'select',
-			'value' => $m->lang,
-			'options' => array($lmod->get_languages(), 'code', 'language'),
-			'name' => 'lang',
-			'extra' => 'class="large"'
-		);
+		if (MULTILANGUAGE)
+			{
+		    $lmod = new Language_model();
+		    $fields[] = array(
+		        'label' => _LANGUAGE,
+		        'type' => 'select',
+		        'value' => $m->lang,
+		        'options' => array($lmod->get_languages(), 'code', 'language'),
+		        'name' => 'lang',
+		        'extra' => 'class="large"'
+		    );
+		}
+		else
+		{
+		    $fields[] = array(
+		        'label' => null,
+		        'type' => 'hidden',
+		        'value' => $m->lang,
+		        'name' => 'lang'
+		    );
+		}
+        
 		$fields[] = array(
 			'label' => _TITLE,
 			'type' => 'text', 
