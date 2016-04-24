@@ -138,8 +138,8 @@ class Area_model extends X4Model_core
 			{
 				$tmp = preg_replace('/(.*)\/(.*)/is', '$2', $i, 1);
 			}
-			// exclude admin folder
-			if ($tmp != 'admin') 
+			// exclude admin folder and x3cli
+			if ($tmp != 'admin' && $tmp != 'x3cli') 
 			{
 				$a[] = new Obj_folder($tmp);
 			}
