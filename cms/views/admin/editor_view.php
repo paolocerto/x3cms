@@ -32,7 +32,14 @@ if (isset($msg))
 	echo $msg;
 }
 
-echo '<div id="msg-container"></div>';
+if (isset($msg_error))
+{
+    echo $msg_error;
+}
+else
+{
+    echo '<div id="msg-container"></div>';
+}
 
 echo $form;
 
