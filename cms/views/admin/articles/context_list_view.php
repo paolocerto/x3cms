@@ -25,7 +25,7 @@ echo '<div class="aright sbox"><ul class="inline-list">';
 foreach($areas as $i) 
 {
 	$on = ($i->id == $id_area) ? ' on' : '';
-	echo '<li><a class="bta'.$on.'" href="'.BASE_URL.'contexts/index/'.$i->id.'/'.$lang.'" title="'._SWITCH_AREA.'">'.ucfirst($i->name).'</a></li>';
+	echo '<li><a class="btm '.$on.'" href="'.BASE_URL.'contexts/index/'.$i->id.'/'.$lang.'" title="'._SWITCH_AREA.'">'.ucfirst($i->name).'</a></li>';
 }
 echo '</ul></div>';
 
@@ -72,7 +72,7 @@ if ($items)
 			{
 				if ($i->code > 100) 
 				{
-					$actions = '<a class="bta" href="'.BASE_URL.'contexts/edit/'.$id_area.'/'.$i->id.'" title="'._EDIT.'"><i class="fa fa-pencil fa-lg"></i></a> ';
+					$actions = '<a class="bta" href="'.BASE_URL.'contexts/edit/'.$i->id_area.'/'.$i->lang.'/'.$i->id.'" title="'._EDIT.'"><i class="fa fa-pencil fa-lg"></i></a> ';
 			
 					if ($i->level > 2)
 					{

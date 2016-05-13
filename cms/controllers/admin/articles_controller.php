@@ -198,7 +198,7 @@ class Articles_controller extends X3ui_controller
                     break;
             }
             
-			echo '<a class="btf" href="'.BASE_URL.'articles/edit/'.$id_area.'/'.$lang.'" title="'._NEW_ARTICLE.'"><i class="fa fa-plus fa-lg"></i></a>
+	    echo '<a class="btf" href="'.BASE_URL.'articles/edit/'.$id_area.'/'.$lang.'" title="'._NEW_ARTICLE.'"><i class="fa fa-plus fa-lg"></i></a>
 			
 <script>
 window.addEvent("domready", function()

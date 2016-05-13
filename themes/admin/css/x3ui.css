@@ -332,8 +332,8 @@ td.formatted ol li.response {border-left:5px solid #e60;}
 .push-four-fifth {margin-left:80%;}
 
 
-.zerop {padding:0;}
-.zerom, .nomargin {margin:0;}
+.zerop, .no-pad {padding:0;}
+.zerom, .no-gap, .nomargin {margin:0;}
 .zerop * {margin:0;padding:0;}
 .padded {padding:1em;}
 .double-padded {padding:2em;}
