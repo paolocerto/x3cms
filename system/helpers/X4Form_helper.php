@@ -374,7 +374,7 @@ class X4Form_helper
 				$tmp = ($e['folder'] == 'img') 
 					? '<br /><img class="thumb dblock" src="'.FPATH.$e['folder'].'/'.$e['old'].'" alt="thumb" />' 
 					: '';
-				$tmp .= ' <a href="'.FPATH.$e['folder'].'/'.$e['old'].'" title="">'.$e['old'].'</a>';
+				$tmp .= ' <a href="'.FPATH.$e['folder'].'/'.$e['old'].'" title="">'.$e['old'].'</a><br />';
 			}
 			elseif (isset($e['aold']))
 			{
@@ -390,7 +390,7 @@ class X4Form_helper
 			{
 				$tmp .= '<label class="inline" for="delete_'.$e['name'].'"><input type="checkbox" class="check" name="delete_'.$e['name'].'" id="delete_'.$e['name'].'" value="1" /> '.$e['delete'].'</label>';
 			}
-			$tmp .= '<input type="hidden" name="old_'.$e['name'].'" id="old_'.$e['name'].'" value="'.$e['old'].'" /></p>';
+			$tmp .= '<input type="hidden" name="old_'.$e['name'].'" id="old_'.$e['name'].'" value="'.$e['old'].'" />';
 		}
 
 		return $field.self::suggestion($e).$tmp;

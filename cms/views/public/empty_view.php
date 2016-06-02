@@ -13,11 +13,14 @@
 
 // set redirect
 if (isset($location)) 
+{
+    // set redirect
 	echo 'location.href=\''.$location.'\';';
-
-// set reload
-else 
+}
+else
+{
+    // set reload
 	echo 'window.location.reload();';
-
+}
 ?>
 </script>

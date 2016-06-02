@@ -93,13 +93,17 @@ class X4Auth_model extends X4Model_core
 	{
 		// users are joined to groups
 		if ($this->table == 'users')
+		{
 			return $this->db->query_row('SELECT u.* FROM users u
 				JOIN groups g ON g.id = u.id_group
 				WHERE 
 					g.id_area = '.intval($id_area).' AND 
 					u.mail = '.$this->db->escape($email));
+		}
 		else
+		{
 			return $this->db->query_row('SELECT * FROM '.$this->table.' WHERE id_area = '.intval($id_area).' AND mail = '.$this->db->escape($email));
+		}
 	}
 	
 	/**
@@ -144,26 +148,31 @@ class X4Auth_model extends X4Model_core
 	 */
 	public function rehash($id_area, $hash)
 	{
+	    // to handle generic private area
+	    $tmp_id_area = ($id_area > 3)
+	        ? 3
+	        : $id_area;
+	    
 		$u = $this->log_in_by_hash($id_area, $hash);
-
+		
 		if ($u)
 		{
 			$_SESSION['site'] = SITE;
 			$_SESSION['lang'] = $u->lang;
 			
-			$username = $this->areas_tables[$id_area]['username'];
+			$username = $this->areas_tables[$tmp_id_area]['username'];
 			$_SESSION['nickname'] = $u->$username;
 			
-			$mail = $this->areas_tables[$id_area]['mail'];
+			$mail = $this->areas_tables[$tmp_id_area]['mail'];
 			$_SESSION['mail'] = $u->$mail;
 			
-			$_SESSION[$this->areas_tables[$id_area]['session']] = $u->id;
+			$_SESSION[$this->areas_tables[$tmp_id_area]['session']] = $u->id;
 			$_SESSION['id_area'] = $id_area;
 			//$_SESSION['timer'] = time();
-			$last_in = $this->areas_tables[$id_area]['last_in'];
+			$last_in = $this->areas_tables[$tmp_id_area]['last_in'];
 			$_SESSION['last_in'] = $u->$last_in;
 			
-$this->logger($_SESSION[$this->areas_tables[$id_area]['session']], 1, 'users', 're-log in');			
+$this->logger($_SESSION[$this->areas_tables[$tmp_id_area]['session']], 1, 'users', 're-log in');
 			
 			return true;
 		}
