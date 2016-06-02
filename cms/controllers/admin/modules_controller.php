@@ -546,4 +546,41 @@ window.addEvent("domready", function()
 
 		$view->render(TRUE);
 	}
+	
+	/**
+	 * Duplicate an area for another language (secret method)
+	 * If you need to add another language to an area you can call this script
+	 * /admin/modules/duplicate_area_lang/ID_AREA/OLD_LANG/NEW_LANG
+	 *
+	 * @param   integer $id_area Area ID
+	 * @param   string  $old_lang Old language to copy
+	 * @param   string  $new_lang New language to set
+	 * @return  string
+	 */
+	public function duplicate_area_lang($id_area, $old_lang, $new_lang)
+	{
+		// Comment the next row to enable the method
+		die('Operation disabled!');
+		
+		$mod = new X4Plugin_model();
+		
+		// duplicate
+		$res = $mod->duplicate_modules_lang($id_area, $old_lang, $new_lang);
+			
+        if ($res)
+        {
+            // refactory permissions
+            $mod = new Permission_model();
+            $mod->refactory($_SESSION['xuid']);
+            
+            echo '<h1>CONGRATULATIONS!</h1>';
+            echo '<p>The changes on the database are applied.</p>';
+        }
+        else
+        {
+            echo '<h1>WARNING!</h1>';
+            echo '<p>Something went wrong, changes are not applied.</p>';
+        }
+		die;
+	}
 }

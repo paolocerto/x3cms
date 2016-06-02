@@ -42,7 +42,8 @@ class X4Plugin_model extends X4Model_core
 		return $this->db->query('SELECT DISTINCT m.*, p.level 
 			FROM modules m
 			JOIN privs p ON p.id_who = '.intval($_SESSION['xuid']).' AND p.what = \'modules\' AND p.id_what = m.id
-			WHERE m.id_area = '.intval($id_area).' AND m.xon = 1 '.$where.' ORDER BY m.name ASC');
+			WHERE m.id_area = '.intval($id_area).' AND m.xon = 1 '.$where.' 
+			ORDER BY m.description ASC');
 	}
 	
 	/**
@@ -383,5 +384,168 @@ class X4Plugin_model extends X4Model_core
 		    }
 		}
 		return $redirect;
+	}
+	
+	/**
+	 * Duplicate modules for another language
+	 * This method have to be arranged foe each website
+	 *
+	 * @return  array(array_of_installed_modules, res)
+	 */
+	public function duplicate_modules_lang($id_area, $old_lang, $new_lang)
+	{
+	    // this list have to be adapted for each website
+	    $modules = array(
+	        'x3_banner' => null,
+	        'x3_contacts' => null,
+	        'x3_forms' => null,
+	        'x3_fields' => array('x3_forms' => 'id_form'),
+	        'x3_menu' => null, //array('pages' => 'id_menu'),
+	        'x3_news' => null,
+	        'x3_news_pictures' => array('x3_news' => 'id_news'),
+	        'x3_projects' => null,
+	        'x3_projects_picture' => array('x3_projects' => 'id_project'),
+	        'x3_slideshow' => null,
+	        'x3_slideshow_items' => array('x3_slideshow' => 'id_slideshow'),
+	        'x3_social' => null,
+	        'x3_pro' => null,
+	        'x3_tree' => array('x3_tree' => 'id_from'),
+	        'x3_xpro' => array('x3_tree' => 'id_tree', 'x3_pro' => 'id_pro'),
+	    );
+	    
+	    $no_lang = array('x3_xpro', 'x3_slideshow_items', 'x3_news_pictures', 'x3_projects_picture');
+	    
+	    $images = array(
+	        'x3_banner' => array('img'),
+	        'x3_news_pictures' => array('img', 'thumb'),
+	        'x3_pro' => array('thumb', 'img1', 'img2', 'img3', 'img4', 'img5', 'img6', 'img7', 'img8'),
+	        'x3_projects' => array('img1', 'img2', 'img3', 'img4', 'img5', 'img6', 'img7'),
+	        'x3_projects_pictures' => array('img', 'thumb'),
+	        'x3_slideshow_pictures' => array('img', 'thumb'),
+	        'x3_tree' => array('img')
+	    );
+	    
+	    // those table are empty 'x3_menu_page', 'x3_xtree'
+	    $tables = array();
+	    
+	    $path = APATH.'files/filemanager/img/';
+	    
+	    foreach($modules as $k => $v)
+	    {
+	        
+echo 'MODULE = '.$k.BR;
+	        
+	        if (is_null($v))
+	        {
+	            // simple case
+	            
+	            // get data
+	            $items = $this->db->query('SELECT * FROM '.$k.' WHERE id_area = '.intval($id_area).' AND lang = '.$this->db->escape($old_lang).' ORDER BY id ASC');
+	            
+	            if ($items)
+	            {
+	                foreach($items as $i)
+	                {
+	                    $post = (array) $i;
+	                    
+	                    // remove useless fields
+	                    unset($post['id'], $post['updated']);
+	                    
+	                    // update
+	                    $post['lang'] = $new_lang;
+	                    
+	                    // imges?
+                        if (isset($images[$k]))
+                        {
+                            foreach($images[$k] as $ii)
+                            {
+                                $file = X4Files_helper::get_final_name($path, $i->$ii);
+                                $chk = @copy($path.$i->$ii, $path.$file);
+                                if ($chk)
+                                {
+                                    $post[$ii] = $file;
+                                }
+                            }
+                        }
+	                    
+	                    // insert
+	                    $res = $this->insert($post, $k);
+	                    
+	                    if ($res[1])
+	                    {
+	                        $table[$k][$i->id] = $res[0];
+	                    }
+	                }
+	            }
+	            
+	        }
+	        else
+	        {
+	            // dependency case
+	            
+	            // get data
+	            if (in_array($k, $no_lang))
+	            {
+	                $items = $this->db->query('SELECT * FROM '.$k.' WHERE id_area = '.intval($id_area).' ORDER BY id ASC');
+	            }
+	            else
+	            {
+	                $items = $this->db->query('SELECT * FROM '.$k.' WHERE id_area = '.intval($id_area).' AND lang = '.$this->db->escape($old_lang).' ORDER BY id ASC');
+	            }
+	            
+	            if ($items)
+                {
+                    foreach($items as $i)
+                    {
+                        $post = (array) $i;
+                        
+                        // remove useless fields
+                        unset($post['id'], $post['updated']);
+                        
+                        // update
+                        if (!in_array($k, $no_lang))
+                        {
+                            $post['lang'] = $new_lang;
+                        }
+                        
+                        // relations
+                        foreach($v AS $t => $f)
+                        {
+                            if ($k == 'x3_tree' && $i->id_from == 0)
+                            {
+                                
+                            }
+                            else
+                            {
+                                $post[$f] = $table[$t][$i->$f];
+                            }
+                        }
+                        
+                        // imges?
+                        if (isset($images[$k]))
+                        {
+                            foreach($images[$k] as $ii)
+                            {
+                                $file = X4Files_helper::get_final_name($path, $i->$ii);
+                                $chk = @copy($path.$i->$ii, $path.$file);
+                                if ($chk)
+                                {
+                                    $post[$ii] = $file;
+                                }
+                            }
+                        }
+                        
+                        // insert
+                        $res = $this->insert($post, $k);
+                        
+                        if ($res[1])
+	                    {
+	                        $table[$k][$i->id] = $res[0];
+	                    }
+                    }
+                }
+	        }
+	    }
+	    return 1;
 	}
 }
