@@ -861,4 +861,50 @@ window.addEvent("domready", function()
 		}
 		$this->response($msg);
 	}
+	
+	/**
+	 * Duplicate an area for another language (secret method)
+	 * If you need to add another language to an area you can call this script
+	 * /admin/pages/duplicate_area_lang/ID_AREA/OLD_LANG/NEW_LANG
+	 *
+	 * @param   integer $id_area Area ID
+	 * @param   string  $old_lang Old language to copy
+	 * @param   string  $new_lang New language to set
+	 * @return  string
+	 */
+	public function duplicate_area_lang($id_area, $old_lang, $new_lang)
+	{
+		// Comment the next row to enable the method
+		//die('Operation disabled!');
+		
+		$mod = new Page_model();
+		
+		// duplicate
+		$res = $mod->duplicate_area_lang($id_area, $old_lang, $new_lang);
+			
+        if ($res[1])
+        {
+            // refactory permissions
+            $mod = new Permission_model();
+            $mod->refactory($_SESSION['xuid']);
+				
+            echo '<h1>CONGRATULATIONS!</h1>';
+            echo '<p>The changes on the database are applied.</p>';
+            
+            // print instructions for manual changes
+            echo '<p>Follow this instructions to perform manual changes.</p>
+            <ul>
+                <li>Install the following modules: '.implode(', ', $res[0]).' and configure them if needed</li>
+            </ul>
+            <p>Done!</p>
+            
+            <p>NOTE: this operation acts on the pages and articles of the CMS, if you use plugins you have to check if you need to duplicate contents.</p>';
+        }
+        else
+        {
+            echo '<h1>WARNING!</h1>';
+            echo '<p>Something went wrong, changes are not applied.</p>';
+        }
+		die;
+	}
 }

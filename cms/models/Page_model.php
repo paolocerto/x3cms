@@ -529,6 +529,139 @@ class Page_model extends X4Model_core
 			FROM pages p
 			WHERE p.xon = 1 AND p.redirect = '.$this->db->escape($url));
 	}
+	
+	// FOR DUPLICATING
+	
+	/**
+	 * Duplicate area for another language
+	 *
+	 * @return  array(array_of_installed_modules, res)
+	 */
+	public function duplicate_area_lang($id_area, $old_lang, $new_lang)
+	{
+		// get pages in the old
+		$old = X4Array_helper::indicize($this->db->query('SELECT *
+			FROM pages
+			WHERE id_area = '.intval($id_area).' AND lang = '.$this->db->escape($old_lang).'
+			ORDER BY ordinal ASC'), 'url');
+		
+		// get pages already in new to avoid duplicates
+		$new = X4Array_helper::indicize($this->db->query('SELECT *
+			FROM pages
+			WHERE id_area = '.intval($id_area).' AND lang = '.$this->db->escape($new_lang).'
+			ORDER BY ordinal ASC'), 'url');
+		
+		// memo for modules
+		$modules = array();
+		$res = 0;
+		
+		// insert pages
+		foreach($old as $k => $v)
+		{
+		    $old_id_page = $v->id;
+		    $id_page = 0;
+		    
+		    if (!in_array($k, $new))
+		    {
+		        // create the new page
+		        $post = (array) $v;
+		        
+		        unset($post['id'], $post['updated']);
+		        
+		        $post['lang'] = $new_lang;
+		        
+                $res = $this->insert($post, 'pages');
+                
+                if ($res[1])
+                {
+                    $id_page = $res[0];
+                }
+            }
+		    else
+		    {
+		        // check for contents
+		        $id_page = $new[$k]->id;
+		    }
+		    
+		    if ($id_page)
+		    {
+		        // get sections
+		        $sections = $this->db->query('SELECT *
+                    FROM sections
+                    WHERE id_area = '.intval($id_area).' AND id_page = '.intval($old_id_page).'
+                    ORDER BY progressive ASC');
+                
+                if ($sections)
+                {
+                    foreach($sections as $i)
+                    {
+                        $articles = explode('|', $i->articles);
+                        $bids = array();
+                        
+                        if (!empty($articles))
+                        {
+                            foreach($articles as $ii)
+                            {
+                                if (!empty($ii))
+                                {
+                                    // get the article
+                                    $art = $this->db->query_row('SELECT *
+                                        FROM articles
+                                        WHERE 
+                                            id_area = '.intval($id_area).' AND 
+                                            lang = '.$this->db->escape($old_lang).' AND 
+                                            bid = '.$this->db->escape($ii).' AND 
+                                            xon = 1
+                                        ORDER BY id DESC');
+
+                                    if ($art)
+                                    {
+                                        $bid = md5($art->id.time().'-'.$_SESSION['xuid']);
+                                        
+                                        // insert the article
+                                        $post = (array) $art;
+                                        
+                                        unset($post['id'], $post['updated']);
+                                        
+                                        $post['bid'] = $bid;
+                                        $post['lang'] = $new_lang;
+                                        $post['id_page'] = $id_page;
+                                        $post['id_editor'] = $_SESSION['xuid'];
+                                        
+                                        $res = $this->insert($post, 'articles');
+                                        
+                                        if ($res[1])
+                                        {
+                                            // memo for bid
+                                            $bids[] = $bid;
+                                            
+                                            // modules
+                                            if (!empty($i->module) && !in_array($i->module, $modules))
+                                            {
+                                                $modules[] = $i->module;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        
+                        // create section
+                        $post = array(
+                            'id_area' => $id_area,
+                            'id_page' => $id_page,
+                            'progressive' => $i->progressive,
+                            'articles' => implode('|', $bids),
+                            'xon' => 1
+                        );
+                        
+                        $res = $this->insert($post, 'sections');
+                    }
+                }
+            }
+		}
+		return array($modules, $res);
+	}
 }
 
 /**
