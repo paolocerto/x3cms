@@ -875,7 +875,7 @@ window.addEvent("domready", function()
 	public function duplicate_area_lang($id_area, $old_lang, $new_lang)
 	{
 		// Comment the next row to enable the method
-		//die('Operation disabled!');
+		die('Operation disabled!');
 		
 		$mod = new Page_model();
 		

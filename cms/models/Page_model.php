@@ -539,6 +539,32 @@ class Page_model extends X4Model_core
 	 */
 	public function duplicate_area_lang($id_area, $old_lang, $new_lang)
 	{
+	    // sync contexts
+	    $old = X4Array_helper::indicize($this->db->query('SELECT *
+			FROM contexts
+			WHERE id_area = '.intval($id_area).' AND lang = '.$this->db->escape($old_lang).'
+			ORDER BY code ASC'), 'code');
+	    
+		$new = X4Array_helper::indicize($this->db->query('SELECT *
+			FROM contexts
+			WHERE id_area = '.intval($id_area).' AND lang = '.$this->db->escape($new_lang).'
+			ORDER BY code ASC'), 'code');
+		
+		// insert contexts
+		foreach($old as $k => $v)
+		{
+		    if (!in_array($k, $new))
+		    {
+		        // create the new context
+		        $post = (array) $v;
+		        unset($post['id'], $post['updated']);
+		        $post['lang'] = $new_lang;
+		        $res = $this->insert($post, 'contexts');
+            }
+		}
+		
+		// sync pages
+		
 		// get pages in the old
 		$old = X4Array_helper::indicize($this->db->query('SELECT *
 			FROM pages
@@ -565,12 +591,9 @@ class Page_model extends X4Model_core
 		    {
 		        // create the new page
 		        $post = (array) $v;
-		        
 		        unset($post['id'], $post['updated']);
-		        
 		        $post['lang'] = $new_lang;
-		        
-                $res = $this->insert($post, 'pages');
+		        $res = $this->insert($post, 'pages');
                 
                 if ($res[1])
                 {
