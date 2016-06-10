@@ -21,13 +21,34 @@ class X4Time_helper
 	 * you should already loaded the calendar or cal dictionary
 	 *
 	 * @static
+	 * @param boolean	$long 
+	 * @param boolean	$keys 
 	 * @return array
 	 */
-	public static function months_array($long = true)
+	public static function months_array($long = true, $keys = false)
 	{
 		if ($long)
 		{
-			return array('', _JANUARY, _FEBRUARY, _MARCH, _APRIL, _MAY, _JUNE, _JULY, _AUGUST, _SEPTEMBER, _OCTOBER, _NOVEMBER, _DECEMBER);
+		    if ($keys)
+		    {
+		        return array(
+		            'January' => _JANUARY, 
+		            'February' => _FEBRUARY, 
+		            'March' => _MARCH, 
+		            'April' => _APRIL, 
+		            'May' => _MAY, 
+		            'June' => _JUNE, 
+		            'July' => _JULY, 
+		            'August' => _AUGUST, 
+		            'September' => _SEPTEMBER, 
+		            'October' => _OCTOBER, 
+		            'November' => _NOVEMBER, 
+		            'December' => _DECEMBER);
+		    }
+		    else
+		    {
+		        return array('', _JANUARY, _FEBRUARY, _MARCH, _APRIL, _MAY, _JUNE, _JULY, _AUGUST, _SEPTEMBER, _OCTOBER, _NOVEMBER, _DECEMBER);
+		    }
 		}
 		else
 		{
@@ -314,11 +335,32 @@ class X4Time_helper
 	}
 	
 	/**
+	 * Convert minutes to time
+	 *
+	 * @static
+	 * @param integer	$minutes
+	 * @return string	time (00:00:00)
+	 */
+	public static function minute2time($minutes)
+	{
+		if ($minutes > 0)
+		{
+		    $h = floor($minutes/60);
+		    $m = $minutes % 60;
+		    return str_pad($h, 2, '0', STR_PAD_LEFT).':'.str_pad($m, 2, '0', STR_PAD_LEFT).':00';
+		}
+		else
+		{
+		    return '00:00:00';
+		}
+	}
+	
+	/**
 	 * Get elapsed time from 2 times
 	 *
 	 * @static
-	 * @param string	at time
-	 * @param string	et time 
+	 * @param string	at available time
+	 * @param string	et end time 
 	 * @return string	time or days + time
 	 */
 	public static function elapsed_time($at, $et)
@@ -364,8 +406,7 @@ class X4Time_helper
 	 */
 	public static function time2sec($time)
 	{
-		$t = explode(':', $time);
-		rsort($t);
+		$t = array_reverse(explode(':', $time));
 		
 		$s = $t[0];
 		if (isset($t[1]))
