@@ -71,7 +71,7 @@ if (RTL)
 <?php
 // sidebar menu
 $sbm = array(
-	'sites' => '<a href="'.BASE_URL.'sites/show/1" title="'._SETTINGS.'"><i class="fa fa-cog fa-lg"></i></a>'		
+	'sites' => '<a href="'.BASE_URL.'sites/show/1" title="'._SETTINGS.'"><i class="fa fa-cog fa-lg"></i></a>'
 );
 
 if (!empty($menus['sidebar']))
