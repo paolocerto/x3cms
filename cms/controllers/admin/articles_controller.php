@@ -528,21 +528,21 @@ window.addEvent("domready", function()
 		}
 		
 		// get object
-		$m = ($bid && $bid != 'x3') 
+		$item = ($bid && $bid != 'x3') 
 			? $mod->get_by_bid($bid) 
 			: new Article_obj($id_area, $lang, $code_context);
 		
 		// dedicated page when called from composer
 		if ($bid == 'x3')
 		{
-			$m->id_page = $id_page;
+			$item->id_page = $id_page;
 		}
 		
 		// if duplicate reset bid
 		if ($duplicate)
 		{
-			$m->name = _COPY_OF.' '.$m->name;
-			$m->bid = $mod->get_new_bid();
+			$item->name = _COPY_OF.' '.$item->name;
+			$item->bid = $mod->get_new_bid();
 		}
 		
 		// build the form
@@ -561,7 +561,7 @@ window.addEvent("domready", function()
 		$fields[] = array(
 			'label' => null,
 			'type' => 'hidden', 
-			'value' => $m->bid,
+			'value' => $item->bid,
 			'name' => 'bid'
 		);
 		
@@ -581,7 +581,7 @@ window.addEvent("domready", function()
 			$fields[] = array(
 				'label' => _AREA,
 				'type' => 'select',
-				'value' => $m->id_area,
+				'value' => $item->id_area,
 				'options' => array($amod->get_areas(), 'id', 'name'),
 				'name' => 'id_area',
 				'extra' => 'class="large spinner spin2"'
@@ -603,7 +603,7 @@ window.addEvent("domready", function()
 			$fields[] = array(
 				'label' => _LANGUAGE,
 				'type' => 'select',
-				'value' => $m->lang,
+				'value' => $item->lang,
 				'options' => array($lmod->get_languages(), 'code', 'language'),
 				'name' => 'lang',
 				'extra' => 'class="large spinner spin2"'
@@ -627,8 +627,8 @@ window.addEvent("domready", function()
 			$fields[] = array(
 				'label' => _CONTEXT,
 				'type' => 'select',
-				'value' => $m->code_context,
-				'options' => array($cmod->get_contexts($m->id_area, $m->lang), 'code', 'name'),
+				'value' => $item->code_context,
+				'options' => array($cmod->get_contexts($item->id_area, $item->lang), 'code', 'name'),
 				'name' => 'code_context',
 				'extra' => 'class="large spin2"'
 			);
@@ -636,7 +636,7 @@ window.addEvent("domready", function()
 			$fields[] = array(
 				'label' => null,
 				'type' => 'hidden', 
-				'value' => $m->code_context,
+				'value' => $item->code_context,
 				'name' => 'old_context'
 			);
 			
@@ -657,8 +657,8 @@ window.addEvent("domready", function()
 			$fields[] = array(
 				'label' => _PAGE,
 				'type' => 'select',
-				'value' => $m->id_page,
-				'options' => ($m->id_page) ? array($cmod->get_pages($m->id_area, $m->lang, 1), 'id', 'name') : array(),
+				'value' => $item->id_page,
+				'options' => ($item->id_page) ? array($cmod->get_pages($item->id_area, $item->lang, 1), 'id', 'name') : array(),
 				'name' => 'id_page',
 				'extra' => 'class="large"'
 			);
@@ -677,31 +677,31 @@ window.addEvent("domready", function()
 			$fields[] = array(
 				'label' => null,
 				'type' => 'hidden',
-				'value' => $m->id_area,
+				'value' => $item->id_area,
 				'name' => 'id_area'
 			);
 			$fields[] = array(
 				'label' => null,
 				'type' => 'hidden',
-				'value' => $m->lang,
+				'value' => $item->lang,
 				'name' => 'lang'
 			);
 			$fields[] = array(
 				'label' => null,
 				'type' => 'hidden',
-				'value' => $m->code_context,
+				'value' => $item->code_context,
 				'name' => 'code_context'
 			);
 			$fields[] = array(
 				'label' => null,
 				'type' => 'hidden', 
-				'value' => $m->code_context,
+				'value' => $item->code_context,
 				'name' => 'old_context'
 			);
 			$fields[] = array(
 				'label' => null,
 				'type' => 'hidden',
-				'value' => $m->id_page,
+				'value' => $item->id_page,
 				'name' => 'id_page'
 			);
 		}
@@ -710,7 +710,7 @@ window.addEvent("domready", function()
 		$fields[] = array(
 			'label' => _NAME,
 			'type' => 'text', 
-			'value' => stripslashes($m->name),
+			'value' => stripslashes($item->name),
 			'name' => 'name',
 			'rule' => 'required',
 			'extra' => 'class="large"'
@@ -720,7 +720,7 @@ window.addEvent("domready", function()
 		$fields[] = array(
 			'label' => _CONTENT,
 			'type' => 'textarea', 
-			'value' => $m->content,
+			'value' => $item->content,
 			'name' => 'content'
 		);
 		
@@ -730,7 +730,7 @@ window.addEvent("domready", function()
             $fields[] = array(
                 'label' => _SCRIPT,
                 'type' => 'textarea', 
-                'value' => htmlentities($m->js),
+                'value' => htmlentities($item->js),
                 'name' => 'js',
                 'extra' => 'class="NoEditor"',
                 'suggestion' => _SCRIPT_MSG
@@ -741,7 +741,7 @@ window.addEvent("domready", function()
             $fields[] = array(
 				'label' => null,
 				'type' => 'hidden',
-				'value' => $m->js,
+				'value' => $item->js,
 				'name' => 'js'
 			);
         }
@@ -759,20 +759,20 @@ window.addEvent("domready", function()
 		$fields[] = array(
 			'label' => null,
 			'type' => 'hidden',
-			'value' => $m->module,
+			'value' => $item->module,
 			'name' => 'old_module'
 		);
 		$fields[] = array(
 			'label' => null,
 			'type' => 'hidden',
-			'value' => $m->param,
+			'value' => $item->param,
 			'name' => 'old_param'
 		);
 		
 		$fields[] = array(
 			'label' => _MODULE,
 			'type' => 'select',
-			'value' => $m->module,
+			'value' => $item->module,
 			'options' => array($plugin->get_modules($id_area, 0), 'name', 'description', ''),
 			'name' => 'module',
 			'extra' => 'class="large"'
@@ -787,7 +787,7 @@ window.addEvent("domready", function()
 		$fields[] = array(
 			'label' => _PARAM,
 			'type' => 'text',
-			'value' => $m->param,
+			'value' => $item->param,
 			'name' => 'param',
 			'extra' => 'class="large"'
 		);
@@ -808,13 +808,13 @@ window.addEvent("domready", function()
 		$fields[] = array(
 			'label' => null,
 			'type' => 'hidden', 
-			'value' => $m->date_in,
+			'value' => $item->date_in,
 			'name' => 'old_date_in'
 		);
 		$fields[] = array(
 			'label' => _START_DATE,
 			'type' => 'text', 
-			'value' => date('Y-m-d', $m->date_in),
+			'value' => date('Y-m-d', $item->date_in),
 			'name' => 'date_in',
 			'rule' => 'required|date',
 			'extra' => 'class="date date_toggled large"'
@@ -829,7 +829,7 @@ window.addEvent("domready", function()
 		$fields[] = array(
 			'label' => _END_DATE,
 			'type' => 'text', 
-			'value' => ($m->date_out == 0) ? '' : date('Y-m-d', $m->date_out),
+			'value' => ($item->date_out == 0) ? '' : date('Y-m-d', $item->date_out),
 			'name' => 'date_out',
 			'rule' => 'date',
 			'extra' => 'class="date date_toggled large"',
@@ -848,8 +848,8 @@ window.addEvent("domready", function()
 		$fields[] = array(
 			'label' => _CATEGORY,
 			'type' => 'select',
-			'value' => $m->category,
-			'options' => array($camod->get_categories($m->id_area, $m->lang), 'name', 'description', 0),
+			'value' => $item->category,
+			'options' => array($camod->get_categories($item->id_area, $item->lang), 'name', 'description', 0),
 			'name' => 'category',
 			'extra' => 'class="large"'
 		);
@@ -857,7 +857,7 @@ window.addEvent("domready", function()
 		$fields[] = array(
 			'label' => _KEYS,
 			'type' => 'text', 
-			'value' => $m->xkeys,
+			'value' => $item->xkeys,
 			'name' => 'xkeys',
 			'extra' => 'class="large"'
 		);
@@ -866,7 +866,7 @@ window.addEvent("domready", function()
 		$fields[] = array(
 			'label' => _TAGS,
 			'type' => 'text', 
-			'value' => $m->tags,
+			'value' => $item->tags,
 			'name' => 'tags',
 			'extra' => 'class="large"'
 		);
@@ -875,7 +875,7 @@ window.addEvent("domready", function()
 		$fields[] = array(
 			'label' => _AUTHOR,
 			'type' => 'text', 
-			'value' => empty($m->author) ? $_SESSION['mail'] : $m->author,
+			'value' => empty($item->author) ? $_SESSION['mail'] : $item->author,
 			'name' => 'author',
 			'rule' => 'required',
 			'extra' => 'class="large"'
@@ -895,9 +895,9 @@ window.addEvent("domready", function()
             $fields[] = array(
                 'label' => _SHOW_AUTHOR,
                 'type' => 'checkbox', 
-                'value' => $m->show_author,
+                'value' => $item->show_author,
                 'name' => 'show_author',
-                'checked' => $m->show_author
+                'checked' => $item->show_author
             );
             
             $fields[] = array(
@@ -909,9 +909,9 @@ window.addEvent("domready", function()
             $fields[] = array(
                 'label' => _SHOW_DATE,
                 'type' => 'checkbox', 
-                'value' => $m->show_date,
+                'value' => $item->show_date,
                 'name' => 'show_date',
-                'checked' => $m->show_date
+                'checked' => $item->show_date
             );
             
             $fields[] = array(
@@ -923,9 +923,9 @@ window.addEvent("domready", function()
             $fields[] = array(
                 'label' => _SHOW_TAGS,
                 'type' => 'checkbox', 
-                'value' => $m->show_tags,
+                'value' => $item->show_tags,
                 'name' => 'show_tags',
-                'checked' => $m->show_tags
+                'checked' => $item->show_tags
             );
             
             $fields[] = array(
@@ -937,9 +937,9 @@ window.addEvent("domready", function()
             $fields[] = array(
                 'label' => _SHOW_ACTIONS,
                 'type' => 'checkbox', 
-                'value' => $m->show_actions,
+                'value' => $item->show_actions,
                 'name' => 'show_actions',
-                'checked' => $m->show_actions
+                'checked' => $item->show_actions
             );
             
             $fields[] = array(
@@ -959,7 +959,7 @@ window.addEvent("domready", function()
 		$fields[] = array(
 			'label' => _SCHEMA,
 			'type' => 'textarea', 
-			'value' => $m->xschema,
+			'value' => $item->xschema,
 			'name' => 'xschema',
 			'extra' => 'class="mceNoEditor"'
 		);
@@ -971,7 +971,7 @@ window.addEvent("domready", function()
 			$e = X4Validation_helper::form($fields, 'editor');
 			if ($e) 
 			{
-				$this->editing($m->id, $_POST);
+				$this->editing($item, $_POST);
 			}
 			else
 			{
@@ -1009,10 +1009,10 @@ window.addEvent("domready", function()
 			$back = '<a class="bta" href="'.BASE_URL.'pages/index/'.$id_area.'/'.$lang.'/home/1" title="'._GO_BACK.'">'._PAGES.'</a>';
 			if ($bid)
 			{
-				if ($m->id_page)
+				if ($item->id_page)
 				{
 					// back to the right page
-					$page = $pmod->get_by_id($m->id_page);
+					$page = $pmod->get_by_id($item->id_page);
 					$back = (ADVANCED_EDITING)
 						? '<a class="bta" href="'.BASE_URL.'sections/compose/'.$page->id.'" title="'._GO_BACK.'">'.stripslashes($page->name).'</a>'
 						: '<a class="bta" href="'.BASE_URL.'pages/index/'.$page->id_area.'/'.$page->lang.'/'.$page->xfrom.'/1" title="'._GO_BACK.'">'.stripslashes($page->name).'</a>';
@@ -1072,17 +1072,17 @@ window.addEvent("domready", function()
 	 * Register New / Edit article data
 	 *
 	 * @access	private
-	 * @param   integer $id Article ID
+	 * @param   object $item Article
 	 * @param   array	$_post _POST array
 	 * @return  void
 	 */
-	private function editing($id, $_post)
+	private function editing($item, $_post)
 	{
 		$msg = null;
 		// check permission
-		if ($id) 
+		if ($item->id) 
 		{
-			$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'articles', $id, 2);
+			$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'articles', $item->id, 2);
 		}
 		
 		if (is_null($msg))
@@ -1118,7 +1118,7 @@ window.addEvent("domready", function()
 			);
 			
 			// adjust date_in value in case of set or update
-			if ($id == 0 || $_post['date_in'] != date('Y-m-d', $_post['old_date_in'])) 
+			if ($item->id == 0 || $_post['date_in'] != date('Y-m-d', $_post['old_date_in'])) 
 			{
 				$post['date_in'] = strtotime($_post['date_in']) + (date('G')*60 + date('i'))*60 + date('s');
 			}
@@ -1132,7 +1132,8 @@ window.addEvent("domready", function()
 			
 			// check for context
 			// if the code_context is changed we assign a new bid to the article 
-			if ($_post['old_context'] > -1 && $_post['old_context'] != $_post['code_context'])
+			// if the id page is changed we assign a new bid
+			if (($_post['old_context'] > -1 && $_post['old_context'] != $_post['code_context']) || $item->id_page != $_post['id_page'])
 			{
 				$post['bid'] = $mod->get_new_bid();
 			}
@@ -1205,7 +1206,7 @@ window.addEvent("domready", function()
 		// left
 		$mod = new Article_model();
 		$view->content->art = $mod->get_by_bid($bid);
-		$view->content->history = $mod->get_history($bid);
+		$view->content->history = $mod->get_history($id_area, $bid);
 		$view->render(TRUE);
 	}
 	

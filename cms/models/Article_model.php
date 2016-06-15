@@ -303,15 +303,16 @@ class Article_model extends X4Model_core
 	/**
 	 * Get article history by bid (unique ID for articles)
 	 *
+	 * @param   integer	$id_area Area ID
 	 * @param   string 	$bid, article unique ID
 	 * @return  array 	array of article objects
 	 */
-	public function get_history($bid)
+	public function get_history($id_area, $bid)
 	{
 		return $this->db->query('SELECT a.*, p.level 
 			FROM articles a
 			JOIN privs p ON p.id_who = '.intval($_SESSION['xuid']).' AND p.what = \'articles\' AND p.id_what = a.id
-			WHERE a.bid = '.$this->db->escape($bid).' 
+			WHERE a.id_area = '.intval($id_area).' AND a.bid = '.$this->db->escape($bid).' 
 			ORDER BY a.id DESC');
 	}
 	
