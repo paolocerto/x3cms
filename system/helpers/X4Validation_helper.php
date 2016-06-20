@@ -383,7 +383,7 @@ class X4Validation_helper
 					// for files
 					if (!isset($field['old']) || empty($field['old'])) 
 					{
-						if (!empty($_files) && is_array($_files[$field['name']])) 
+						if (!empty($_files) && isset($_files[$field['name']]) && is_array($_files[$field['name']])) 
 						{
 							if (!isset($_files[$field['name']]['tmp_name'][0]) || $_files[$field['name']]['tmp_name'][0] == '' || strlen($_files[$field['name']]['name'][0]) == 0) 
 							{
@@ -393,7 +393,7 @@ class X4Validation_helper
 								$e = false;
 							}
 						}
-						else if (empty($_files) || $_files[$field['name']]['tmp_name'] == '' || strlen($_files[$field['name']]['name']) == 0) 
+						else if (empty($_files) || (isset($_files[$field['name']]) && ($_files[$field['name']]['tmp_name'] == '' || strlen($_files[$field['name']]['name']) == 0))) 
 						{
 							$field['error'][] = '_requiredif';
 							$field['related'][$field['name']] = $tok[1];
