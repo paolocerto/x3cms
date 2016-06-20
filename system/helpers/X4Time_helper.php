@@ -245,8 +245,10 @@ class X4Time_helper
 	 * Get time between two datetime
 	 *
 	 * @static
-	 * @param string	start datetime
-	 * @param string	end datetime 
+	 * @param string	$start datetime
+	 * @param string	$end datetime 
+	 * @param string	$out switcher to select output
+	 * @param boolean   $absolute get an absolute value
 	 * @return string	time
 	 */
 	public static function datetime_diff($start, $end = 0, $out = 'time', $absolute = true)
