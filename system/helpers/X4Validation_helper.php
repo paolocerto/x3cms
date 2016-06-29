@@ -1269,7 +1269,7 @@ class X4Validation_helper
 	 *
 	 * @static
 	 * @param string	$name	Field to check name
-	 * @return boolean	Return true if not set 
+	 * @return boolean	Return true if not set
 	 */
 	public static function is_empty($name)
 	{
@@ -1308,6 +1308,12 @@ class X4Validation_helper
 								// empty value (zero is a value)
 								$res = empty(self::$data[$name]);
 							}
+						}
+						elseif (isset($i['multiple']))
+						{
+						    // multiple
+						    // not set if array is empty or the first value is empty
+							$res = (empty(self::$data[$i['name']]) || empty(self::$data[$i['name']][0]));
 						}
 						break;
 				}
