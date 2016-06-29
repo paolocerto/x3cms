@@ -349,18 +349,21 @@ window.addEvent("domready", function()
 	public function menu($id, $holder, $orders)
 	{
 		$msg = null;
-		// check permission
-		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'pages', $id, 3);
-		
-		if (is_null($msg))
+		if (!is_null($id) && is_numeric($id))
 		{
-			// refresh order
-			$menu = new Menu_model();
-			$result = $menu->menu($id, substr($holder, 1), $orders);
-			
-			// set message
-			$this->dict->get_words();
-			$msg = AdmUtils_helper::set_msg($result);
+		    // check permission
+		    $msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'pages', $id, 3);
+		    
+		    if (is_null($msg))
+		    {
+		        // refresh order
+		        $menu = new Menu_model();
+		        $result = $menu->menu($id, substr($holder, 1), $orders);
+		        
+		        // set message
+		        $this->dict->get_words();
+		        $msg = AdmUtils_helper::set_msg($result);
+		    }
 		}
 		$this->response($msg);
 	}
