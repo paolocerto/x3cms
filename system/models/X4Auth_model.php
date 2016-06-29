@@ -124,7 +124,9 @@ class X4Auth_model extends X4Model_core
 			return intval($result[1]);
 		}
 		else 
+		{
 			return 0;
+		}
 	}
 	
 	/**
