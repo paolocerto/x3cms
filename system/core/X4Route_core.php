@@ -233,6 +233,18 @@ final class X4Route_core
 	}
 	
 	/**
+	 * get area name by ID
+	 *
+	 * @static
+	 * @return  string
+	 */ 
+	public static function get_area_by_id($id_area)
+	{
+	    $tmp = array_flip(self::$areas);
+		return $tmp[$id_area];
+	}
+	
+	/**
 	 * get query string
 	 *
 	 * @static
