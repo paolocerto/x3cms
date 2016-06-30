@@ -16,7 +16,6 @@
  */
 final class X4Core_core
 {
-	
 	// controller path
 	private static $controller = '';
 	// The singleton instance of the controller

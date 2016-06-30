@@ -694,7 +694,7 @@ abstract class X4Model_core
 		}
 		else
 		{
-			return '';	
+			return '';
 		}
 	}
 }

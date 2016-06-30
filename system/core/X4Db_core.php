@@ -172,7 +172,7 @@ final class X4Db_core
 			print_r($sql);
 			echo '</b><br /><br />ERROR: ';
 			print_r($msg);
-			echo '</blockquote><br /><br />';	
+			echo '</blockquote><br /><br />';
 		}
 	}
 	
@@ -217,7 +217,7 @@ final class X4Db_core
 		if ($this->sql)
 		{
 			// MySQL
-			try 
+			try
 			{
 				$sth = $this->link->prepare($sql);
 				$sth->execute();
@@ -225,9 +225,9 @@ final class X4Db_core
 				$res = $sth->fetchAll();
 				$sth = null;
 			}
-			catch (PDOException $e) 
+			catch (PDOException $e)
 			{
-				if (DEBUG) 
+				if (DEBUG)
 				{
 					$this->print_error($sql, $e->getMessage());
 					die;
@@ -253,20 +253,20 @@ final class X4Db_core
 					{
 						if (!empty($sort))
 						{
-							$res->sort($sort);	
+							$res->sort($sort);
 						}
 						// return an array
 						$res = iterator_to_array($res);
 					}
 					else
 					{
-						$res = array();	
+						$res = array();
 					}
 				}
 			}
 			catch (Exception $e)
 			{
-				if (DEBUG) 
+				if (DEBUG)
 				{
 					$this->print_error($sql, $e->getMessage());
 					die;
