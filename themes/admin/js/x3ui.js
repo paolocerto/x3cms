@@ -48,7 +48,7 @@ X3.append({
 			if (url.substr(0,7) == 'http://' || url.substr(0,8) == 'https://'){
 				return url;
 			} else {
-				url = url.replace(root, '');
+				url = url.replace(new RegExp('^('+root+')'), '');
 				return root + url;
 			}
 		} else {
