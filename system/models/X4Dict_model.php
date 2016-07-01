@@ -128,7 +128,19 @@ class X4Dict_model extends X4Model_core
 	 */
 	public function build_message($title, $msg)
 	{
-		$msg = urldecode($msg);
+		if (isset($_SESSION[$msg.'_msg']))
+		{
+		    // this is for complex HTML encoded messages
+		    $msg = $_SESSION[$msg.'_msg'];
+		    unset($_SESSION[$msg.'_msg']);
+		}
+		else
+		{
+		   $msg = urldecode($msg);
+		}
+		
+		// handle break line
+		$msg = str_replace(array('<br/>', '<br>'), '<br />', $msg);
 		$m = (strstr($msg, '<br />') != '')
 			? $msg
 			: nl2br($msg);
