@@ -58,7 +58,9 @@ class X3get_by_key_plugin extends X4Plugin_core implements X3plugin
 				$out .= '<div class="block"><h3>'._TAG.': '.htmlentities($tag).'</h3></div>';
 			}
 			else 
+			{
 				$items = X4Pagination_helper::paginate($this->site->get_articles_by_key($page->id_area, $page->lang, $param), $pp);
+			}
 			
 			// use pagination
 			if ($items[0]) 
@@ -106,7 +108,9 @@ class X3get_by_key_plugin extends X4Plugin_core implements X3plugin
 				$out .= '<div id="pager">'.X4Pagination_helper::pager(BASE_URL.$page->url.'/', $items[1]).'</div>'; 
 			}
 			else 
+			{
 				$out .= '<div class="block"><p>'._NO_ITEMS.'</p></div>';
+			}
 		}
 		return $out;
 	}

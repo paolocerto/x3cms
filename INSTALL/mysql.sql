@@ -599,6 +599,11 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'admin', 'articles', '_SCRIPT_MSG', 'tutti gli script inclusi nei contenuti sono rimossi al fine di evitare inclusioni non desiderate. Eventuali script, compresi di tag di apertura e chiusura, vanno inseriti qui', 0, 1),
 (NOW(), 'it', 'admin', 'articles', '_MODULE', 'Modulo', 0, 1),
 (NOW(), 'it', 'admin', 'articles', '_PARAM', 'Parametro', 0, 1),
+(NOW(), 'it', 'admin', 'articles', '_ARTICLE_PARAM_SETTING', 'Configurazione parametro', 0, 1),
+(NOW(), 'it', 'admin', 'articles', '_ARTICLE_PARAM_SETTING_NOT_REQUIRED', 'Questo modulo non richiede parametro', 0, 1),
+(NOW(), 'it', 'admin', 'articles', '_ARTICLE_PARAM_DEFAULT_MSG', 'Seleziona una delle opzioni disponibili', 0, 1),
+(NOW(), 'it', 'admin', 'articles', '_ARTICLE_PARAM_OPTIONS', 'Opzioni modulo', 0, 1),
+
 (NOW(), 'it', 'admin', 'articles', '_CONTENT_EDITOR', 'Editor pagina', 0, 1),
 (NOW(), 'it', 'admin', 'articles', '_CONTEXT', 'Contesto', 0, 1),
 (NOW(), 'it', 'admin', 'articles', '_SCHEMA', 'Schema articolo', 0, 1),
@@ -731,7 +736,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'admin', 'modules', '_INSTRUCTIONS', 'Istruzioni', 0, 1),
 (NOW(), 'it', 'admin', 'modules', '_HIDDEN', 'Modulo nascosto', 0, 1),
 (NOW(), 'it', 'admin', 'modules', '_VISIBLE', 'Modulo visibile', 0, 1),
-
+(NOW(), 'it', 'admin', 'modules', '_PLUGGABLE', 'Modulo inseribile', 0, 1),
 
 (NOW(), 'it', 'admin', 'groups', '_ADD_GROUP', 'Aggiungi un gruppo', 0, 1),
 (NOW(), 'it', 'admin', 'groups', '_EDIT_GROUP', 'Modifica un gruppo', 0, 1),
@@ -1172,6 +1177,11 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'admin', 'articles', '_SCRIPT_MSG', 'all the scripts included in the contents will be removed in order to avoid unwanted inclusions. Any scripts, including the opening and closing tags, must be inserted here', 0, 1),
 (NOW(), 'en', 'admin', 'articles', '_MODULE', 'Module', 0, 1),
 (NOW(), 'en', 'admin', 'articles', '_PARAM', 'Parameter', 0, 1),
+(NOW(), 'en', 'admin', 'articles', '_ARTICLE_PARAM_SETTING', 'Parameter setting', 0, 1),
+(NOW(), 'en', 'admin', 'articles', '_ARTICLE_PARAM_SETTING_NOT_REQUIRED', 'No parameter is required for this plugin', 0, 1),
+(NOW(), 'en', 'admin', 'articles', '_ARTICLE_PARAM_DEFAULT_MSG', 'Select an option', 0, 1),
+(NOW(), 'en', 'admin', 'articles', '_ARTICLE_PARAM_OPTIONS', 'Plugin options', 0, 1),
+
 (NOW(), 'en', 'admin', 'articles', '_CONTENT_EDITOR', 'Page editor', 0, 1),
 (NOW(), 'en', 'admin', 'articles', '_CONTEXT', 'Context', 0, 1),
 (NOW(), 'en', 'admin', 'articles', '_SCHEMA', 'Article schema', 0, 1),
@@ -1303,7 +1313,8 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'admin', 'modules', '_MODULE_INSTRUCTIONS', 'Plugin instructions', 0, 1),
 (NOW(), 'en', 'admin', 'modules', '_INSTRUCTIONS', 'Istructions', 0, 1),
 (NOW(), 'en', 'admin', 'modules', '_HIDDEN', 'Hidden plugin', 0, 1),
-(NOW(), 'en', 'admin', 'modules', '_VISIBLE', 'Visible pugin', 0, 1),
+(NOW(), 'en', 'admin', 'modules', '_VISIBLE', 'Visible plugin', 0, 1),
+(NOW(), 'en', 'admin', 'modules', '_PLUGGABLE', 'Pluggable plugin', 0, 1),
 
 (NOW(), 'en', 'admin', 'groups', '_ADD_GROUP', 'Add a group', 0, 1),
 (NOW(), 'en', 'admin', 'groups', '_EDIT_GROUP', 'Edit group', 0, 1),
@@ -2195,6 +2206,7 @@ CREATE TABLE IF NOT EXISTS `modules` (
   `mappable` tinyint(1) NOT NULL,
   `widget` tinyint(1) NOT NULL,
   `hidden` tinyint(1) NOT NULL,
+  `pluggable` tinyint(1) NOT NULL,
   `version` varchar(16) NOT NULL,
   `xlock` tinyint(1) NOT NULL,
   `xon` tinyint(1) NOT NULL,

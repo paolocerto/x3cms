@@ -27,4 +27,4 @@ $required = array();
 $sql0 = $sql1 = array();
 
 // module
-$sql1[] = "INSERT INTO modules (updated, id_area, name, description, configurable, admin, searchable, version, xon) VALUES (NOW(), $id_area, '$mod_name', 'Area map', 0, 0, 0, $version, 0)";
+$sql1[] = "INSERT INTO modules (updated, id_area, name, description, configurable, admin, searchable, pluggable, version, xon) VALUES (NOW(), $id_area, '$mod_name', 'Area map', 0, 0, 0, 1, $version, 0)";

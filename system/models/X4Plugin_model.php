@@ -42,7 +42,7 @@ class X4Plugin_model extends X4Model_core
 		return $this->db->query('SELECT DISTINCT m.*, p.level 
 			FROM modules m
 			JOIN privs p ON p.id_who = '.intval($_SESSION['xuid']).' AND p.what = \'modules\' AND p.id_what = m.id
-			WHERE m.id_area = '.intval($id_area).' AND m.xon = 1 '.$where.' 
+			WHERE m.id_area = '.intval($id_area).' AND m.pluggable = 1 AND m.xon = 1 '.$where.' 
 			ORDER BY m.description ASC');
 	}
 	

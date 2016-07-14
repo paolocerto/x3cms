@@ -40,4 +40,4 @@ $sql1[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock,
 $sql1[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'en', '".$area->name."', 'x3search', '_X3SEARCH_BUTTON', 'Search', 0, 1)";
 
 // module
-$sql1[] = "INSERT INTO modules (updated, id_area, name, description, configurable, admin, searchable, version, xon) VALUES (NOW(), $id_area, '$mod_name', 'Search form', 1, 0, 0, '$version', 0)";
+$sql1[] = "INSERT INTO modules (updated, id_area, name, description, configurable, admin, searchable, pluggable, version, xon) VALUES (NOW(), $id_area, '$mod_name', 'Search form', 1, 0, 0, 1, '$version', 0)";

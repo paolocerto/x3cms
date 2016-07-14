@@ -1052,6 +1052,25 @@ window.addEvent("domready", function()
 	X3.content("filters","articles/filter/'.$id_area.'/'.$lang.'", "'.addslashes(X4Utils_helper::navbar($navbar, ' . ')).'");
 	buttonize("tabber", "bta", "topic");
 	pickerize(1);
+	
+	$("module").addEvent("change", function(event, target){
+    	event.preventDefault();
+    	v = this.get("value");
+    	if (v.length == 0) {
+    	   $("param").set("value", "");
+    	} else {
+    	   X3.modal("", "'._ARTICLE_PARAM_SETTING.'", "'.BASE_URL.'articles/param/'.$id_area.'/'.$lang.'/"+v);
+    	}
+    });
+    
+    $("param").addEvent("focus", function(event, target){
+    	event.preventDefault();
+    	m = $("module").get("value");
+    	if (m != "") {
+            v = this.get("value");
+            X3.modal("", "'._ARTICLE_PARAM_SETTING.'", "'.BASE_URL.'articles/param/'.$id_area.'/'.$lang.'/"+m+"/"+v);
+        }
+    });
 });
 </script>';
 		
@@ -1064,6 +1083,86 @@ window.addEvent("domready", function()
 		// rtl
 		if ($lmod->rtl($lang)) 
 			$view->down->tinymce->rtl = 1;
+		
+		$view->render(TRUE);
+	}
+	
+	/**
+	 * Article param setting
+	 *
+	 * @param   integer $id_area Area ID
+	 * @param   string $lang Language code
+	 * @param   string $module Module name
+	 * @param   string $param Parameter value
+	 * @return  void
+	 */
+	public function param($id_area, $lang, $module, $param = '')
+	{
+		// load dictionaries
+		$this->dict->get_wordarray(array('form', 'articles', $module));
+		
+		// get configurator
+		$module = ucfirst($module).'_model';
+		$mod = new $module();
+		
+		// build the form
+		$fields = $mod->configurator($id_area, $lang, $param);
+		
+		// if submitted
+		if (X4Route_core::$post)
+		{
+			$e = X4Validation_helper::form($fields, 'configurator');
+			if ($e) 
+			{
+			    // handle POST data
+			    $p = array();
+			    
+			    if (isset($_POST['no_options']))
+			    {
+			        $result = array(0, 1);
+			    }
+			    else
+			    {
+                    // get the cases
+                    $cases = explode('§', $_POST['options']);
+                    foreach($cases as $case)
+                    {
+                        $parts = explode('|', $case);
+                        foreach($parts as $i)
+                        {
+                            if (isset($_POST[$i]) && !empty($_POST[$i]))
+                            {
+                                $p[] = $_POST[$i];
+                            }
+                        }
+                    }
+                    
+                    $result = array(0, !empty($p));
+                }
+                
+				// set message
+				$msg = AdmUtils_helper::set_msg($result);
+				
+				if (!empty($p))
+				{
+				    $msg->command = '$("param").set("value", "'.implode('|', $p).'");';
+				}
+				$this->response($msg);
+			}
+			else
+			{
+				$this->notice($fields);
+			}
+			die;
+		}
+		
+		// contents
+		$view = new X4View_core('editor');
+		$view->title = _ARTICLE_PARAM_SETTING;
+		
+		// form builder
+		$view->form = X4Form_helper::doform('configurator', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '', 
+			'onclick="setForm(\'configurator\', null, \'simple-modal\');"');
 		
 		$view->render(TRUE);
 	}

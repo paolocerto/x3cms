@@ -27,6 +27,69 @@ class X3get_by_key_model extends X4Model_core
 	}
 	
 	/**
+	 * Build the form array required to set the parameter
+	 * This method have to be updated with the plugin options
+	 *
+	 * @param	integer $id_area Area ID
+	 * @param	string	$lang Language code
+	 * @param	string	$param Parameter
+	 * @return	array
+	 */
+	public function configurator($id_area, $lang, $param)
+	{
+	    $p = (empty($param))
+	        ? array('', '', '')
+	        : explode('|', urldecode($param));
+	    
+	    $fields = array();
+	    
+	    $fields[] = array(
+			'label' => null,
+			'type' => 'html',
+			'value' => '<p>'._X3GET_BY_KEY_CONFIGURATOR_MSG.'</p>'
+		);
+		
+		// options field store all possible cases and parts
+		// cases are separated by §
+		// parts are separated by |
+		$fields[] = array(
+			'label' => null,
+			'type' => 'hidden',
+			'value' => 'param1|param2',
+			'name' => 'options'
+		);
+		
+		// plugin option
+		$fields[] = array(
+			'label' => _X3GET_BY_KEY_OPTION,
+			'type' => 'select',
+			'value' => $p[0],
+			'options' => array($this->get_keys($id_area, $lang), 'xkeys', 'xkeys', ''),
+			'name' => 'param1',
+			'rule' => 'required',
+			'extra' => 'class="large"'
+		);
+		
+		return $fields;
+	}
+	
+	/**
+	 * Get keys
+	 *
+	 * @param integer	$id_area Area ID
+	 * @param string	$lang 	Language code
+	 * @return array	array
+	 */
+	private function get_keys($id_area, $lang)
+	{
+		return $this->db->query('SELECT xkeys 
+		        FROM articles 
+				WHERE xkeys != \'\' AND id_area = '.intval($id_area).' AND lang = '.$this->db->escape($lang).' AND xon = 1 AND date_in <= NOW() AND (date_out = 0 OR date_out >= NOW())
+				GROUP BY xkeys
+				ORDER BY xkeys ASC');
+	}
+	
+	/**
 	 * Get articles by key and tag
 	 *
 	 * @param integer	$id_area Area ID
@@ -41,7 +104,7 @@ class X3get_by_key_model extends X4Model_core
 				(
 				SELECT * 
 				FROM articles 
-				WHERE id_area = '.intval($id_area).' AND lang = '.$this->db->escape($lang).' AND xon = 1 AND date_in <= '.$this->now.' AND (date_out = 0 OR date_out >= '.$this->now.') ORDER BY date_in DESC, updated DESC
+				WHERE id_area = '.intval($id_area).' AND lang = '.$this->db->escape($lang).' AND xon = 1 AND date_in <= NOW() AND (date_out = 0 OR date_out >= NOW()) ORDER BY date_in DESC, updated DESC
 				) a
 			WHERE a.xkeys = '.$this->db->escape($key).' AND a.tags LIKE '.$this->db->escape('%'.$tag.'%').' 
 			GROUP BY a.bid

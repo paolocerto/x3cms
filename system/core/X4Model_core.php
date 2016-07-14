@@ -58,6 +58,46 @@ abstract class X4Model_core
 	}
 	
 	/**
+	 * Build the form array required to set the parameter
+	 * This method have to be updated with the plugin options
+	 *
+	 * @param	integer $id_area Area ID
+	 * @param	string	$lang Language code
+	 * @param	string	$param Parameter
+	 * @return	array
+	 */
+	public function configurator($id_area, $lang, $param)
+	{
+	    $fields = array();
+	    
+	    $fields[] = array(
+			'label' => null,
+			'type' => 'html',
+			'value' => '<p>'._ARTICLE_PARAM_SETTING_NOT_REQUIRED.'</p>'
+		);
+		
+		$fields[] = array(
+			'label' => null,
+			'type' => 'hidden',
+			'value' => 1,
+			'name' => 'no_options'
+		);
+		
+		// options field store all possible cases and parts
+		// cases are separated by §
+		// parts are separated by |
+		
+		$fields[] = array(
+			'label' => null,
+			'type' => 'hidden',
+			'value' => '',
+			'name' => 'options'
+		);
+		
+		return $fields;
+	}
+	
+	/**
 	 * Close connection
 	 *
 	 * @return	void
