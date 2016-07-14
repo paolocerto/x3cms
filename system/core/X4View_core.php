@@ -53,13 +53,21 @@ class X4View_core
 			{
 				// plugin
 				if (!empty($mod) && file_exists(PATH.'plugins/'.$mod.'/views/'.$name.'_view'.$type)) 
+				{
 					$this->filename = PATH.'plugins/'.$mod.'/views/'.$name.'_view'.$type;
-				elseif (file_exists(APATH.'views/'.X4Route_core::$folder.'/'.$name.'_view'.$type)) 
+				}
+				elseif (file_exists(APATH.'views/'.X4Route_core::$folder.'/'.$name.'_view'.$type))
+				{
 					$this->filename = APATH.'views/'.X4Route_core::$folder.'/'.$name.'_view'.$type;
-				elseif (file_exists(APATH.'views/'.$name.'_view'.$type)) 
+				}
+				elseif (file_exists(APATH.'views/'.$name.'_view'.$type))
+				{
 					$this->filename = APATH.'views/'.$name.'_view'.$type;
-				else 
+				}
+				else
+				{
 					$this->filename = SPATH.'views/X4Default.php';
+				}
 			}
 		}
 		
@@ -80,7 +88,9 @@ class X4View_core
 	public function __set($key, $value)
 	{
 		if (!isset($this->$key))
+		{
 			$this->local_data[$key] = $value;
+		}
 	}
 	
 	/**
@@ -92,13 +102,17 @@ class X4View_core
 	public function __get($key)
 	{
 		if (isset($this->local_data[$key]))
+		{
 			return $this->local_data[$key];
-		
+		}
 		if (isset(self::$global_data[$key]))
+		{
 			return self::$global_data[$key];
-		
+		}
 		if (isset($this->$key))
+		{
 			return $this->$key;
+		}
 	}
 	
 	/**
@@ -131,7 +145,9 @@ class X4View_core
 			echo $output;
 		}
 		else
+		{
 			return $output;
+		}
 	}
 
 } // End View_core

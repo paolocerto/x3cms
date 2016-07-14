@@ -581,12 +581,15 @@ class X4Site_model extends X4Model_core
 				WHERE p.xrif = '.$this->db->escape($plugin_name).' AND p.id_area = '.intval($id_area).'
 				ORDER BY p.id ASC');
 			
-			foreach($res as $i) {
+			foreach($res as $i) 
+			{
 				$conf[$i->name] = $i->xvalue;
 			}
 			
 			if (APC)
+			{
 				apc_store(SITE.'mod_param'.$plugin_name.$id_area, $conf);
+			}
 		}
 		return $conf;
 	}
@@ -614,7 +617,9 @@ class X4Site_model extends X4Model_core
 				WHERE p.xrif = '.$this->db->escape($plugin_name).' AND p.id_area = '.intval($id_area).' AND p.name = '.$this->db->escape($param));
 			
 			if (APC)
+			{
 				apc_store(SITE.'mod_param'.$plugin_name.$id_area.$param, $value);
+			}
 		}
 		return $value;
 	}
