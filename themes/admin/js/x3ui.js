@@ -120,8 +120,9 @@ X3.append({
 		}
 		
 		var qs = '';
-		if (div != null && reload != null)
+		if (div != null && reload != null) {
 			qs = '?div=' + div + '&url=' + X3.cleanUrl(reload);
+		}
 		
 		var req = new Request.JSON({
 			url: X3.cleanUrl(url) + qs, 
@@ -135,9 +136,8 @@ X3.append({
 			onFailure: function(xhr) 
 			{
 				X3.spinnerOff();
-				
 				// Error notification
-				X3.notification('error', xhr.responseJSON);
+				X3.notification('error', xhr.responseJSON, div);
 			},
 			onSuccess: function(responseJSON, responseText){
 				X3.spinnerOff();
@@ -153,12 +153,16 @@ X3.append({
 					X3.execCallbacks(responseJSON.callback);
 				}
 				
+				// JS Command
+				if (responseJSON && responseJSON.command) {
+					X3.execCommands(responseJSON.command);
+				}
+				
 				// User notification
 				if (responseJSON && responseJSON.message_type){
 					if (responseJSON.message_type == 'error'){
-						X3.notification('error', responseJSON);
-					}
-					else{
+						X3.notification('error', responseJSON, div);
+					} else {
 						X3.success(responseJSON.message_type, responseJSON.message);
 					}
 				}
@@ -230,6 +234,11 @@ X3.append({
 					X3.execCallbacks(responseJSON.callback);
 				}
 				
+				// JS Command
+				if (responseJSON && responseJSON.command) {
+					X3.execCommands(responseJSON.command);
+				}
+				
 				// User notification
 				if (responseJSON && responseJSON.message_type) {
 					if (responseJSON.message_type == 'error') {
@@ -277,6 +286,11 @@ X3.append({
 				// JS Callback
 				if (responseJSON && responseJSON.callback) {
 					X3.execCallbacks(responseJSON.callback);
+				}
+				
+				// JS Command
+				if (responseJSON && responseJSON.command) {
+					X3.execCommands(responseJSON.command);
 				}
 				
 				// User notification
@@ -458,12 +472,17 @@ X3.append({
 	 * @param	string 	type of notification. Can be: error, notice, success
 	 * @param	string	Notification message
 	 */
-	notification: function(type, msg, modal)
+	notification: function(type, msg, div)
 	{
-		if ($('msg-container') != null) {
-			$('msg-container').set('html', '<p class="' + type + '">'+msg.message+'</p>');
-			$('msg-container').addClass('msg');
-			$('msg-container').setStyle('margin', '40px -3px 40px -3px');
+	    if (div != null) {
+	        container = document.getElementById(div).getElementsByClassName("msg-container")[0];
+	        container.set('html', '<p class="' + type + '">'+msg.message+'</p>');
+			container.addClass('msg');
+			container.setStyle('margin', '40px -3px 40px -3px');
+	    } else if ($('.msg-container') != null) {
+		    $('.msg-container').set('html', '<p class="' + type + '">'+msg.message+'</p>');
+			$('.msg-container').addClass('msg');
+			$('.msg-container').setStyle('margin', '40px -3px 40px -3px');
 		} else {
 			X3.unscroll();
 			SM = new SimpleModal();
@@ -528,6 +547,26 @@ X3.append({
 			}
 			func.delay(100, obj, item.args);
 		});
+	},
+	
+	/**
+	 * Execute commands
+	 *
+	 * @param	Mixed.	Action or array of actions
+	 */
+	execCommands: function(args)
+	{
+		var commands = new Array();
+
+		// More than one command
+		if (typeOf(args) == 'array') {
+			commands = args;
+		} else {
+			commands.push(args);
+		}
+		
+		var tmpFunc = new Function(commands.join(';'));
+		tmpFunc();
 	}
 	
 });

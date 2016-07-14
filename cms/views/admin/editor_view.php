@@ -38,7 +38,7 @@ if (isset($msg_error))
 }
 else
 {
-    echo '<div id="msg-container"></div>';
+    echo '<div class="msg-container"></div>';
 }
 
 echo $form;
