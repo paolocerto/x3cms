@@ -76,7 +76,9 @@ class Info_controller extends X3ui_controller
 			$view->down->content->case = $case;
 			
 			if ($case == 'mysql')
+			{
 				$view->down->content->sinfo = $mod->get_attribute('SERVER_INFO');
+			}
 		}
 		else
 		{
@@ -87,7 +89,9 @@ class Info_controller extends X3ui_controller
 			$view->content->case = $case;
 			
 			if ($case == 'mysql')
+			{
 				$view->content->sinfo = $mod->get_attribute('SERVER_INFO');
+			}
 		}
 		
 		$view->render(TRUE);
