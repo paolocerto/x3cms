@@ -103,8 +103,16 @@ class X4Utils_helper
 	{
 		if (!$xon && !isset($_SESSION['site']) && X4Route_core::$control != 'offline') 
 		{
-			header('Location: '.$url);
-			die;
+		    if (X4Route_core::$control != 'offline')
+		    {
+		        header('Location: '.$url);
+		        die;
+		    }
+		    else
+		    {
+		        header('HTTP/1.1 503 Service Temporarily Unavailable');
+		        header('Retry-After: 10800');
+		    }
 		}
 	}
 	
@@ -1020,7 +1028,28 @@ class X4Utils_helper
 		}
 		return $a;
 	}
-
+	
+	/**
+	 * Return Client IP address
+	 *
+	 * @return string
+	 */
+	public static function get_ip()
+	{
+		if (!empty($_SERVER['HTTP_CLIENT_IP'])) 
+		{
+			$ip = $_SERVER['HTTP_CLIENT_IP'];
+		} 
+		elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) 
+		{
+			$ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+		} 
+		else 
+		{
+			$ip = $_SERVER['REMOTE_ADDR'];
+		}
+		return $ip;
+	}
 }
 
 /**
