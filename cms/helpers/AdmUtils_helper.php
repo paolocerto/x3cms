@@ -270,6 +270,7 @@ class Msg
 {
 	public $id;
 	public $message_type = 'error';
+	public $message_close = '';
 	public $message = '';
 	public $command = array();
 	public $update = array();

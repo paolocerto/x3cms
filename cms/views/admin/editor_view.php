@@ -14,6 +14,12 @@ if (isset($tinymce))
 	echo $tinymce;
 }
 
+
+if (isset($js))
+{
+	echo $js;
+}
+
 // close button
 if (!isset($close))
 {
@@ -42,8 +48,3 @@ else
 }
 
 echo $form;
-
-if (isset($js))
-{
-	echo $js;
-}

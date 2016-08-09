@@ -1082,8 +1082,9 @@ window.addEvent("domready", function()
 		
 		// rtl
 		if ($lmod->rtl($lang)) 
+		{
 			$view->down->tinymce->rtl = 1;
-		
+		}
 		$view->render(TRUE);
 	}
 	
