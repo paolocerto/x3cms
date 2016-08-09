@@ -928,6 +928,153 @@ class X4Utils_helper
 	}
 	
 	/**
+	 * Build a botstrap nested menu
+	 *
+	 * @static
+	 * @param string	$ordinal ordinal of visualized page
+	 * @param array		$items menu array
+	 * @param integer	$levels number of levels to display
+	 * @return string
+	 */
+	public static function build_bootstrap_menu($ordinal, $items, $levels = 1)
+	{
+		$menu = '';
+		$sub = '';
+		$deep = 1;
+		$r = 1;
+		
+		if (is_array($items)) 
+		{
+		    $c = 0;
+		    $n = sizeof($items);;
+		    $min = 4 + $deep*4;
+			$tmp_deep = $deep - 1;
+			
+			foreach($items as $i)
+			{
+				// check related
+				if ($tmp_deep == $deep)
+				{
+				    // if sub ordinal is equal is a subpage
+					$r = substr($i->ordinal, 0, $min) == substr($ordinal, 0, $min);
+				}
+				
+				// check if item is in the right range of deep
+				if ($i->deep == $deep || ($r && $i->deep <= $levels)) 
+				{
+					// check if you need open an ul
+					if ($tmp_deep < $i->deep)
+					{
+						$tmp_deep++;
+						if (!empty($menu) && $tmp_deep > $deep)
+						{
+						    // is a sub
+							$menu .= '<ul class="dropdown-menu">';
+						}
+						else
+						{
+							// First ul
+							$menu .= '<ul class="nav navbar-nav">';
+						}
+					}
+					// close opened ul
+					else if ($tmp_deep > $i->deep) 
+					{
+						for($ii = $tmp_deep; $ii > $i->deep; $ii--)
+						{
+							$menu .= '</li></ul>';
+							$tmp_deep--;
+						}
+						$menu .= '</li>';
+					}
+					// close li
+					else 
+					{
+						$menu .= '</li>';
+					}
+				}
+				else
+				{
+				    // sub levels
+				    if ($tmp_deep < $i->deep)
+					{
+						$tmp_deep++;
+						if (!empty($menu) && $tmp_deep > $deep)
+						{
+						    // is a sub
+							$menu .= '<ul class="dropdown-menu" data-dropdown-in="fadeIn" data-dropdown-out="fadeOut">';
+						}
+					}
+					// close opened ul
+					else if ($tmp_deep > $i->deep) 
+					{
+						for($ii = $tmp_deep; $ii > $i->deep; $ii--)
+						{
+							$menu .= '</li></ul>';
+							$tmp_deep--;
+						}
+						$menu .= '</li>';
+					}
+					// close li
+					else 
+					{
+						$menu .= '</li>';
+					}
+				}
+				
+				// detect active pages
+                $active = (
+                    $i->ordinal == $ordinal || // is the active page
+                    (
+                        $i->deep == $deep &&	// you are in a nested level
+                        substr($i->ordinal, 0, $min) == substr($ordinal, 0, $min)) // with the same ordinal prefix
+                    ) 
+                        ? ' class="active" ' 
+                        : ' ';
+                
+                // handle inside and outside
+                if (!is_numeric($i->hidden))
+                {
+                    if (is_numeric($i->url))
+                    {
+                        $url = '#" onclick="$(\'#sn'.$i->url.'\').animatescroll();';
+                    }
+                    else
+                    {
+                        $url = (substr($i->url, 0, 4) == 'http')
+                            ? $i->url
+                            : BASE_URL.$i->url;
+                    }
+                }
+                else
+                {
+                    $url = BASE_URL.$i->url;
+                }
+                
+                // check for dropdown
+                if ($c < $n && isset($items[$c+1]) && $items[$c+1]->deep > $i->deep)
+                {
+                    $menu .= '<li class="dropdown dropdown-submenu"><a  href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">'.stripslashes($i->name).' <span class="caret"></span></a>';
+                }
+                else
+                {
+                    $menu .= '<li'.$active.'><a href="'.$url.'" title="'.stripslashes($i->title).'">'.stripslashes($i->name).'</a>';
+                }
+                $c++;
+            }
+			
+			// close onpened ul
+			for($ii = $tmp_deep; $ii >= $deep; $ii--)
+			{
+				// handle inside and outside
+				$menu .= '</li></ul>';
+				$tmp_deep--;
+			}
+		}
+		return $menu;
+	}
+	
+	/**
 	 * Change date format (European to MySQL  and vice versa)
 	 *
 	 * @static
