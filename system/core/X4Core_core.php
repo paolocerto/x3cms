@@ -214,6 +214,9 @@ final class X4Core_core
 		case 'core':
 			$dirs = array(SPATH.'core/');
 			break;
+		case 'driver':
+			$dirs = array(SPATH.'drivers/');
+			break;
 		case 'helper':
 			$dirs = array(
 				SPATH.'helpers/',

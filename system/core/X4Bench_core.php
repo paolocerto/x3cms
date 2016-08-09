@@ -29,6 +29,9 @@ final class X4Bench_core
 		$memory = (memory_get_usage() - X4START_MEMORY) / 1024 / 1024;
 		// page execution time
 		$time = microtime(TRUE) - X4START_TIME;
+		// Default DB
+		$driver = 'X4'.X4Core_core::$db['default']['db_type'].'_driver';
+		$db = new $driver('default');
 		
 		$out = str_replace(
 			array
@@ -45,7 +48,7 @@ final class X4Bench_core
 				number_format($time, 4),
 				number_format($memory, 2).'MB',
 				count(get_included_files()),
-				X4Db_core::$queries
+				$db::$queries
 			),
 			$output
 		);

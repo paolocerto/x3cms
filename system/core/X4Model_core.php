@@ -51,15 +51,17 @@ abstract class X4Model_core
 	{
 		if ((is_object($this->db) && X4Db_core::$instances[$db_name] != $this->db) || !is_object($this->db)) 
 		{
+			// set the driver
+			$driver = 'X4'.X4Core_core::$db[$db_name]['db_type'].'_driver';
 			// Load the database
-			$this->db = new X4Db_core($db_name);
+			$this->db = new $driver($db_name);
 		}
 		$this->table = $table_name;
 	}
 	
 	/**
 	 * Build the form array required to set the parameter
-	 * This method have to be updated with the plugin options
+	 * This method have to be overrided with the plugin options
 	 *
 	 * @param	integer $id_area Area ID
 	 * @param	string	$lang Language code
@@ -736,5 +738,144 @@ abstract class X4Model_core
 		{
 			return '';
 		}
+	}
+}
+
+/**
+ * Abstract class for X3CMS database drivers
+ */
+abstract class X3db_driver
+{
+	// Database instances
+	protected $name = '';
+	public static $instances = array();
+	// DSN
+	protected $dsn = '';
+	// query counter
+	public static $queries = 0;
+	// the connection
+	protected $link;
+	// last query memo
+	public $latest_query = '';
+	
+	/**
+	 * @var Switcher for NoSQL DBs
+	 */
+	public $sql = null;
+	
+	/**
+	 * Returns a singleton instance of Database.
+	 *
+	 * @static
+	 * @param   string	DB name
+	 * @return  X4Db driver object
+	 */
+	public static function & instance($name = 'default')
+	{
+		if (!isset(self::$instances[$name]))
+		{
+			// Create a new instance
+			if (isset(X4Core_core::$db[$name]))
+			{
+				$driver = 'X4'.X4Core_core::$db[$name]['db_type'].'_driver';
+				self::$instances[$name] = new $driver(X4Core_core::$db[$name]);
+			}
+		}
+		return self::$instances[$name];
+	}
+	
+	/**
+	 * Simple connect method to get the database queries up and running.
+	 *
+	 * @return  void
+	 */
+	abstract function connect();
+	
+	/**
+	 * A primitive debug system
+	 *
+	 * @param   mixed  SQL query to execute
+	 * @param   mixed  Error message
+	 * @return  string
+	 */
+	abstract function print_error($sql, $msg);
+	
+	/**
+	 * Runs a query and returns the result.
+	 *
+	 * @param   mixed  SQL query to execute or array for MongoDB
+	 * @param   string  Collection name for Mongo DB
+	 * @param   array	fields array for Mongo DB
+	 * @param   array	sorting rules for Mongo DB
+	 * @return  Database_Result
+	 */
+	abstract public function query($sql, $collection = '', $fields = array(), $sort = array());
+	
+	/**
+	 * Runs a query and returns the first result row.
+	 *
+	 * @param   mixed  SQL query to execute or array for MongoDB
+	 * @param   string  Collection name for Mongo DB
+	 * @param	array	Fields array for Mongo DB 
+	 * @param	array	Sorting array for Mongo DB 
+	 * @return  Database_Result
+	 */
+	abstract public function query_row($sql, $collection = '', $fields = array(), $sort = array());
+	
+	/**
+	 * Runs a query and returns the first value.
+	 *
+	 * @param   mixed  SQL query to execute or array for MongoDB
+	 * @param   string  Collection name for Mongo DB
+	 * @param   string  Field name to retrieve for Mongo DB
+	 * @param   array	sort array for Mongo DB
+	 * @return  Database_Result
+	 */
+	abstract public function query_var($sql, $collection = '', $field = '', $sort = array());
+	
+	/**
+	 * Compiles an exec query and runs it.
+	 *
+	 * @param   mixed  SQL query to execute or array for MongoDB
+	 * @param   string  Collection name for Mongo DB or a string to force the return of the last Inserted ID 
+	 * @param   array  Query options for Mongo DB ('fsync' => true, 'timeout' => 10000)
+	 * @return  Database_Result  Query result
+	 */
+	abstract public function single_exec($sql = '', $collection = '', $options = array());
+	
+	/**
+	 * Compiles an array of exec query and runs it.
+	 *
+	 * @param   array of queries  sql
+	 * @param   string  Collection name for Mongo DB
+	 * @return  Database_Result  Query result
+	 */
+	abstract public function multi_exec($sql, $collection = '');
+	
+	/**
+	 * Escapes a value for a query.
+	 *
+	 * @param   mixed   value to escape
+	 * @return  string
+	 */
+	abstract public function escape($value);
+	
+	/**
+	 * Returns the last query run.
+	 *
+	 * @return  string SQL
+	 */
+	public function last_query()
+	{
+	   return $this->latest_query;
+	}
+	
+	/**
+	 * close db connection
+	 */
+	public function close()
+	{
+		// close db
+		$this->link = null;
 	}
 }
