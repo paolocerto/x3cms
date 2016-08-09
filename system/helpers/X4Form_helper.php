@@ -542,20 +542,23 @@ class X4Form_helper
 		$tmp = '';
 		if (!empty($e['options'][0])) 
 		{
+			$v = $e['options'][1];
+			$o = $e['options'][2];
+			
 			$c = 0;
 			foreach($e['options'][0] as $i)
 			{
-				$checked = (isset($e['checked']) && $e['checked'] == $i->$e['options'][1]) 
+				$checked = (isset($e['checked']) && $e['checked'] == $i->$v) 
 					? 'checked="checked"' 
 					: '';
 					
 				if ($inline)
 				{
-					$tmp .= '<div class="radiobox"><input type="radio" '.$class.' name="'.$e['name'].'" id="'.$e['name'].'_'.$c.'" value="'.$i->$e['options'][1].'" '.$checked.' /> <label for="'.$e['name'].'_'.$c.'">'.stripslashes($i->$e['options'][2]).'</label></div>';
+					$tmp .= '<div class="radiobox"><input type="radio" '.$class.' name="'.$e['name'].'" id="'.$e['name'].'_'.$c.'" value="'.$i->$v.'" '.$checked.' /> <label for="'.$e['name'].'_'.$c.'">'.stripslashes($i->$o).'</label></div>';
 				}
 				else
 				{
-					$tmp .= '<div class="radiobox"><label for="'.$e['name'].'_'.$c.'"><input type="radio" '.$class.' name="'.$e['name'].'" id="'.$e['name'].'_'.$c.'" value="'.$i->$e['options'][1].'" '.$checked.' /> '.stripslashes($i->$e['options'][2]).'</label> </div>';
+					$tmp .= '<div class="radiobox"><label for="'.$e['name'].'_'.$c.'"><input type="radio" '.$class.' name="'.$e['name'].'" id="'.$e['name'].'_'.$c.'" value="'.$i->$v.'" '.$checked.' /> '.stripslashes($i->$o).'</label> </div>';
 				}
 				$c++;
 			}
@@ -673,7 +676,6 @@ class X4Form_helper
 						? 'selected="selected"' 
 						: '';
 				}
-						
 				
 				$tmp .= '<option value="'.$e['options'][3][0].'" '.$sel.'>'.$e['options'][3][1].'</option>';
 			}
@@ -687,7 +689,7 @@ class X4Form_helper
 				$tmp .= '<option value="'.$e['options'][3].'" '.$sel.'></option>';
 			}
 		}
-			
+		
 		// option 4: sections
 		$section = (isset($e['options'][4]))
 			? $e['options'][4]
@@ -740,16 +742,19 @@ class X4Form_helper
 					}
 				}
 				
+				$v = $e['options'][1];
+				$o = $e['options'][2];
+				
 				// check for selected value
 				if (is_array($e['value']))
 				{
-					$sel = (in_array($ii->$e['options'][1], $e['value'])) 
+					$sel = (in_array($ii->$v, $e['value'])) 
 						? 'selected="selected"' 
 						: '';
 				}
 				else
 				{
-					$sel = ($e['value'] == $ii->$e['options'][1]) 
+					$sel = ($e['value'] == $ii->$v) 
 						? 'selected="selected"' 
 						: '';
 				}
@@ -762,9 +767,9 @@ class X4Form_helper
 				
 				if (!empty($sign))
 				{
-					
+					// to do if needed
 				}
-				$tmp .= '<option value="'.$ii->$e['options'][1].'" '.$sel.$dis.'>'.$sign.' '.stripslashes($ii->$e['options'][2]).'</option>';
+				$tmp .= '<option value="'.$ii->$v.'" '.$sel.$dis.'>'.$sign.' '.stripslashes($ii->$o).'</option>';
 				
 			}
 		}

@@ -20,7 +20,8 @@ if ($tabs)
 		// array of objects
 		foreach($tabs as $i)
 		{
-			$class = ($i->$tkeys[2] == $tkeys[3])
+			$url = $tkeys[2];
+			$class = ($i->$url == $tkeys[3])
 				? ' class="on"'
 				: '';
 			
@@ -28,7 +29,9 @@ if ($tabs)
 				? 'id="'.$tkeys[4].'"'
 				: '';
 			
-			echo '<li '.$id.' '.$class.'><a class="btt" href="'.BASE_URL.$i->$tkeys[1].'" title="'.$i->$tkeys[0].'">'.$i->$tkeys[0].'</a></li>';
+			$url = $tkeys[1];
+			$title = $tkeys[0];
+			echo '<li '.$id.' '.$class.'><a class="btt" href="'.BASE_URL.$i->$url.'" title="'.$i->$title.'">'.$i->$title.'</a></li>';
 		}
 	}
 	else
