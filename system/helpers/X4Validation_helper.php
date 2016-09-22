@@ -916,6 +916,7 @@ class X4Validation_helper
 			if(!$res) 
 			{
 				$field['error'][] = '_must_be_a_date';
+				$field['related'][$field['name']] = '['.$date_format.']';
 				$e = false;
 			}
 			else 

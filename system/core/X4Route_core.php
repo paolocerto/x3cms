@@ -271,7 +271,7 @@ final class X4Route_core
 						// is a multiselect, get an array
 						$a[$ms] = $_GET[$ms];
 					}
-					else
+					elseif (isset($tok[1]))
 					{
 						$a[$tok[0]] = trim($tok[1]);
 					}

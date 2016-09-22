@@ -148,10 +148,12 @@ class AdmUtils_helper
 		{
 			$dict = new X4Dict_model(X4Route_core::$folder, X4Route_core::$lang);
 			$msg = $dict->get_word('_NOT_PERMITTED', 'msg');
-			return self::set_msg(false, '',$msg);
+			return self::set_msg(false, '', $msg);
 		}
 		else
+		{
 			return null;
+		}
 	}
 	
 	/**
@@ -174,10 +176,12 @@ class AdmUtils_helper
 		{
 			$dict = new X4Dict_model(X4Route_core::$folder, X4Route_core::$lang);
 			$msg = $dict->get_word('_NOT_PERMITTED', 'msg');
-			return self::set_msg(false, '',$msg);
+			return self::set_msg(false, '', $msg);
 		}
 		else
+		{
 			return null;
+		}
 	}
 	
 	/**
@@ -194,10 +198,12 @@ class AdmUtils_helper
 		{
 			$dict = new X4Dict_model(X4Route_core::$folder, X4Route_core::$lang);
 			$msg = $dict->get_word('_NOT_WRITEABLE', 'msg');
-			return self::set_msg(false, '',$msg.' <b>'.$path.'</b>');
+			return self::set_msg(false, '', $msg.' <b>'.$path.'</b>');
 		}
 		else
+		{
 			return null;
+		}
 	}
 	
 	/**
@@ -246,7 +252,6 @@ class AdmUtils_helper
 	public static function get_opt($array, $value, $name, $selected = '')
 	{
 		$opt = '';
-		
 		foreach($array as $i) 
 		{
 			// check for selected

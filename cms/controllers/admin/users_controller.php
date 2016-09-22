@@ -379,6 +379,7 @@ window.addEvent("domready", function()
 			'type' => 'textarea', 
 			'value' => $u->description,
 			'name' => 'description',
+			'sanitize' => 'string',
 			'rule' => 'required'
 		);
 		

@@ -828,7 +828,7 @@ class X4Form_helper
 				$btn_name = $e['name'];
 				break;
 		}
-					
+		
 		return '<button name="'.$btn_name.'" type="'.$e['value'].'">'.$e['label'].'</button>';
 	}
 	
