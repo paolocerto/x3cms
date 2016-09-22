@@ -37,18 +37,19 @@ class X4Cms_controller extends X4Controller_core
 		$this->site = new X4Site_model();
 		$this->dict = new X4Dict_model(X4Route_core::$area, X4Route_core::$lang);
 		
+		// set the lang if required
+		$lang = (MULTILANGUAGE)
+		    ? X4Route_core::$lang.'/'
+		    : '';
+		
 		// define BASE_URL
 		if (X4Route_core::$area != 'public') 
 		{
-			define('BASE_URL', ROOT.X4Route_core::$lang.'/'.X4Route_core::$area.'/');
-		}
-		else if (MULTILANGUAGE)
-		{
-			define('BASE_URL', ROOT.X4Route_core::$lang.'/');
+			define('BASE_URL', ROOT.$lang.X4Route_core::$area.'/');
 		}
 		else
 		{
-			define('BASE_URL', ROOT);
+			define('BASE_URL', ROOT.$lang);
 		}
 		
 		define('RTL', $this->site->site->rtl);
@@ -75,7 +76,7 @@ class X4Cms_controller extends X4Controller_core
 		else
 		{
 			// page not found
-			$this->__call();
+			$this->__call('', array());
 		}
 	}
 	
