@@ -474,21 +474,26 @@ X3.append({
 	 */
 	notification: function(type, msg, div)
 	{
-	    if (div != null) {
+	    $("xscroll_up").fireEvent("click");
+	    if (div != undefined) {
 	        container = document.getElementById(div).getElementsByClassName("msg-container")[0];
 	        container.set('html', '<p class="' + type + '">'+msg.message+'</p>');
 			container.addClass('msg');
 			container.setStyle('margin', '40px -3px 40px -3px');
-	    } else if ($('.msg-container') != null) {
-		    $('.msg-container').set('html', '<p class="' + type + '">'+msg.message+'</p>');
-			$('.msg-container').addClass('msg');
-			$('.msg-container').setStyle('margin', '40px -3px 40px -3px');
+	    } else if ($$('.msg-container').length) {
+	        mc = $$('.msg-container')[0];
+		    mc.set('html', '<p class="' + type + '">'+msg.message+'</p>');
+			mc.addClass('msg');
+			mc.setStyle('margin', '40px -3px 40px -3px');
 		} else {
 			X3.unscroll();
 			SM = new SimpleModal();
+			var close = (msg.hasOwnProperty('message_close'))
+				? msg.message_close
+				: '';
 			SM.show({
 				model: type,
-				contents: '<div class="' + type + ' zerom">' + msg.message_close + '<p>'+msg.message+'</p></div>'
+				contents: '<div class="' + type + ' zerom">' + close + '<p>'+msg.message+'</p></div>'
 			});
 			
 			$('close-modal').addEvent('click', function(e){
