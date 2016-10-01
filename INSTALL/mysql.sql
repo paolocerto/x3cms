@@ -686,7 +686,8 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'admin', 'dictionary', '_SECTION', 'Sezione', 0, 1),
 (NOW(), 'it', 'admin', 'dictionary', '_SECTIONS_LIST', 'Elenco sezioni', 0, 1),
 (NOW(), 'it', 'admin', 'dictionary', '_WORDS_LIST', 'Elenco espressioni', 0, 1),
-
+(NOW(), 'it', 'admin', 'dictionary', '_DICTIONARY_SEARCH_MSG', 'Cerca per chiave in tutte le lingue', 0, 1),
+(NOW(), 'it', 'admin', 'dictionary', '_DICTIONARY_SEARCH_RESULT', 'Risultato della ricerca', 0, 1),
 
 (NOW(), 'it', 'admin', 'users', '_GROUP', 'Gruppo', 0, 1),
 (NOW(), 'it', 'admin', 'users', '_USERS_LIST', 'Elenco utenti', 0, 1),
@@ -1264,7 +1265,8 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'admin', 'dictionary', '_SECTION', 'Section', 0, 1),
 (NOW(), 'en', 'admin', 'dictionary', '_SECTIONS_LIST', 'Sections list', 0, 1),
 (NOW(), 'en', 'admin', 'dictionary', '_WORDS_LIST', 'Words list', 0, 1),
-
+(NOW(), 'en', 'admin', 'dictionary', '_DICTIONARY_SEARCH_MSG', 'Search by key in any language', 0, 1),
+(NOW(), 'en', 'admin', 'dictionary', '_DICTIONARY_SEARCH_RESULT', 'Results of the search', 0, 1),
 
 (NOW(), 'en', 'admin', 'users', '_GROUP', 'Group', 0, 1),
 (NOW(), 'en', 'admin', 'users', '_USERS_LIST', 'Users list', 0, 1),
@@ -1437,6 +1439,10 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'public', 'global', '_EDIT_ARTICLE', 'Modifica articolo', 0, 1),
 (NOW(), 'it', 'public', 'global', '_PRINTFRIENDLY', 'Stampa una versione ottimizzata di questa pagina o genera un PDF', 0, 1),
 
+(NOW(), 'it', 'public', 'global', '_INLINE_EDITING_MODE', 'Editor inline', 0, 1),
+(NOW(), 'it', 'public', 'global', '_INLINE_EDITING_MODE_MSG', '<p>Attiva l\'editor clickando sulle sezioni bordate di rosso.<br />Click fuori dalla sezione per salvare le modifiche.</p>', 0, 1),
+
+
 (NOW(), 'it', 'public', 'msg', '_UNKNOW_ERROR', 'Si &egrave; verificato un errore.', 0, 1),
 (NOW(), 'it', 'public', 'msg', '_PAGE_NOT_FOUND', 'La pagina richiesta non &egrave; disponibile.', 0, 1),
 (NOW(), 'it', 'public', 'msg', '_OFFLINE', 'Sito in manutenzione<br />Ci scusiamo per il disagio.', 0, 1),
@@ -1589,6 +1595,9 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'public', 'global', '_EDIT', 'Edit', 0, 1),
 (NOW(), 'en', 'public', 'global', '_EDIT_ARTICLE', 'Edit article', 0, 1),
 (NOW(), 'en', 'public', 'global', '_PRINTFRIENDLY', 'Print an optimized version of this web page or generate PDF', 0, 1),
+
+(NOW(), 'en', 'public', 'global', '_INLINE_EDITING_MODE', 'Inline editing mode', 0, 1),
+(NOW(), 'en', 'public', 'global', '_INLINE_EDITING_MODE_MSG', '<p>Enable the editor clicking on red bordered sections in the page.<br />Click out of the section to save the changes.</p>', 0, 1),
 
 (NOW(), 'en', 'public', 'msg', '_UNKNOW_ERROR', 'An error occurred', 0, 1),
 (NOW(), 'en', 'public', 'msg', '_PAGE_NOT_FOUND', 'This page is not available', 0, 1),
@@ -2414,6 +2423,7 @@ CREATE TABLE IF NOT EXISTS `param` (
 
 INSERT INTO `param` (`updated`, `id_area`, `xrif`, `name`, `description`, `xtype`, `xvalue`, `required`, `xlock`, `xon`) VALUES
 (NOW(), 0, 'site', 'notices', 'Enable/disable notices', '0|1', '1', 1, 0, 1),
+(NOW(), 0, 'site', 'online', 'Enable/disable online editing', '0|1', '0', 1, 0, 1),
 (NOW(), 0, 'site', 'inline', 'Enable/disable inline editing', '0|1', '0', 1, 0, 1),
 (NOW(), 0, 'site', 'debug', 'Enable/disable debug', '0|1', '1', 1, 0, 1),
 (NOW(), 0, 'site', 'devel', 'Enable/disable development state', '0|1', '1', 1, 0, 1),
