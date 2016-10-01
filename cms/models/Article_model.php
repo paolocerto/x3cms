@@ -158,14 +158,21 @@ class Article_model extends X4Model_core
 	{
 	    $where = $this->get_where($str);
 	    
-		return $this->db->query('SELECT a.*, c.name AS context, pa.name AS page, p.level 
-			FROM articles a
+	    return $this->db->query('SELECT a.*, c.name AS context, pa.name AS page, p.level 
+			FROM (
+				SELECT * 
+				FROM articles
+				WHERE 
+				    id_area = '.intval($id_area).' AND
+				    lang = '.$this->db->escape($lang).'
+				    ORDER BY date_in DESC, updated DESC, id DESC
+			) a
 			LEFT JOIN pages pa ON pa.id = a.id_page
 			JOIN contexts c ON c.id_area = a.id_area AND c.lang = a.lang AND c.code = a.code_context
 			JOIN privs p ON p.id_who = '.intval($_SESSION['xuid']).' AND p.what = \'articles\' AND p.id_what = a.id
-			WHERE a.id_area = '.intval($id_area).' AND a.lang = '.$this->db->escape($lang).' AND c.code = '.intval($code_context).$where.'
+			WHERE c.code = '.intval($code_context).$where.'
 			GROUP BY a.bid
-			ORDER BY a.updated DESC');
+			ORDER BY a.date_in DESC, a.updated DESC, a.id DESC');
 	}
 	
 	/**
@@ -188,7 +195,7 @@ class Article_model extends X4Model_core
 			JOIN privs p ON p.id_who = '.intval($_SESSION['xuid']).' AND p.what = \'articles\' AND p.id_what = a.id
 			WHERE a.id_area = '.intval($id_area).' AND a.lang = '.$this->db->escape($lang).' AND c.name = '.$this->db->escape($ctg).$where.'
 			GROUP BY a.bid
-			ORDER BY a.updated DESC');
+			ORDER BY a.updated DESC, a.id DESC');
 	}
 	
 	/**
@@ -215,7 +222,7 @@ class Article_model extends X4Model_core
 				JOIN privs p ON p.id_who = '.intval($_SESSION['xuid']).' AND p.what = \'articles\' AND p.id_what = a.id
 				WHERE a.id_area = '.intval($id_area).' AND a.lang = '.$this->db->escape($lang).' AND a.id_editor = '.intval($id_author).$where.'
 				GROUP BY a.bid
-				ORDER BY a.updated DESC');
+				ORDER BY a.updated DESC, a.id DESC');
 		}
 	}
 	
@@ -257,7 +264,7 @@ class Article_model extends X4Model_core
 				JOIN privs p ON p.id_who = '.intval($_SESSION['xuid']).' AND p.what = \'articles\' AND p.id_what = a.id
 				WHERE a.id_area = '.intval($id_area).' AND a.lang = '.$this->db->escape($lang).' AND a.xkeys = '.$this->db->escape($key).$where.'
 				GROUP BY a.bid
-				ORDER BY a.updated DESC');
+				ORDER BY a.updated DESC, a.id DESC');
 	}
 	
 	/**
@@ -280,7 +287,7 @@ class Article_model extends X4Model_core
 				JOIN privs p ON p.id_who = '.intval($_SESSION['xuid']).' AND p.what = \'articles\' AND p.id_what = a.id
 				WHERE a.id_area = '.intval($id_area).' AND a.lang = '.$this->db->escape($lang).' AND a.id_page = '.intval($id_page).$where.'
 				GROUP BY a.bid
-				ORDER BY a.updated DESC');
+				ORDER BY a.updated DESC, a.id DESC');
 	}
 	
 	/**
@@ -375,7 +382,7 @@ class Article_model extends X4Model_core
 			) a
 			JOIN contexts c ON c.id_area = a.id_area AND c.lang = a.lang AND c.code = a.code_context AND c.xkey = '.$this->db->escape($context).'
 			GROUP BY a.bid
-			ORDER BY a.date_in DESC
+			ORDER BY a.date_in DESC, a.id DESC
 			LIMIT 0, '.$limit);
 	}
 	
@@ -492,7 +499,7 @@ class Article_model extends X4Model_core
 			JOIN contexts c ON c.id_area = a.id_area AND c.lang = a.lang AND c.code = a.code_context AND c.xkey = '.$this->db->escape($context).'
 			WHERE a.xkeys = '.$this->db->escape($key).' 
 			GROUP BY a.bid
-			ORDER BY a.date_in DESC');
+			ORDER BY a.date_in DESC, a.id DESC');
 	}
 	
 	/**
@@ -517,7 +524,7 @@ class Article_model extends X4Model_core
 			JOIN contexts c ON c.id_area = a.id_area AND c.lang = a.lang AND c.code = a.code_context AND c.xkey = '.$this->db->escape($context).'
 			WHERE a.tags LIKE '.$this->db->escape('%'.$tag.'%').' 
 			GROUP BY a.bid
-			ORDER BY a.date_in DESC');
+			ORDER BY a.date_in DESC, a.id DESC');
 	}
 	
 	/**
