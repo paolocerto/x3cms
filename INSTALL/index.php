@@ -4,7 +4,7 @@
  * Installer
  *
  * @author		Paolo Certo
- * @copyright	(c) 2010-2015 CBlu.net di Paolo Certo
+ * @copyright	(c) CBlu.net di Paolo Certo
  * @license		http://www.gnu.org/licenses/agpl.htm
  * @package		X3CMS
  */

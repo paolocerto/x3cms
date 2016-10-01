@@ -1,3 +1,16 @@
+<?php defined('ROOT') or die('No direct script access.');
+/**
+ * X3 CMS - A smart Content Management System
+ *
+ * @author		Paolo Certo
+ * @copyright	(c) CBlu.net di Paolo Certo
+ * @license		http://www.gnu.org/licenses/agpl.htm
+ * @package		X3CMS
+ */
+
+// X3CMS - admin theme - mail view
+
+?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="it" lang="it">
 	<head>

@@ -3,7 +3,7 @@
  * X3 CMS - A smart Content Management System
  *
  * @author		Paolo Certo
- * @copyright	(c) 2010-2015 CBlu.net di Paolo Certo
+ * @copyright	(c) CBlu.net di Paolo Certo
  * @license		http://www.gnu.org/licenses/agpl.htm
  * @package		X3CMS
  */
@@ -24,7 +24,7 @@ class X3cli_model extends X4Model_core
  * X3 CMS - A smart Content Management System
  *
  * @author		Paolo Certo
- * @copyright	(c) 2010-2015 CBlu.net di Paolo Certo
+ * @copyright	(c) CBlu.net di Paolo Certo
  * @license		http://www.gnu.org/licenses/agpl.htm
  * @package		X3CMS
  */
@@ -40,7 +40,7 @@ class X3cli_model extends X4Model_core
     
     The X3CMS is a complex environment. Almost always a part of the CMS is connected and depends from a lot of other parts.
     
-    Usually we have a controller for each table (with the same name of the controller), a model for each controller (to interact with the table) and in most cases at least a view to display your data.
+    Usually we have a controller for each table (with the same name of the controller), a model for each controller (to interact with the table) and in most cases at least one view to display your data.
     
     If you plan to use this controller in the CMS probably you have to create a page from the admin side, this way you will have a menu item to call the controller
     and it will be integrated in the CMS structure (breadcrumb, site map and so on).
@@ -62,7 +62,7 @@ class X3cli_model extends X4Model_core
     
     The X3CMS is a complex environment. Almost always a part of the CMS is connected and depends from a lot of other parts.
     
-    Usually we have a controller for each table (with the same name of the controller), a model for each controller (to interact with the table) and in most cases at least a view to display your data.
+    Usually we have a controller for each table (with the same name of the controller), a model for each controller (to interact with the table) and in most cases at least one view to display your data.
     
     A model usually is related to a table. If a table with the same name of the model was found the CLI will use it as related table, if not the CLI will create a default table in the default database.
     Below the SQL to create a very basic table for X3 CMS, replace the table name SET_HERE_YOUR_TABLE_NAME to fit your needs.
@@ -97,7 +97,7 @@ class X3cli_model extends X4Model_core
     
     The X3CMS is a complex environment. Almost always a part of the CMS is connected and depends from a lot of other parts.
     
-    Usually we have a controller for each table (with the same name of the controller), a model for each controller (to interact with the table) and in most cases at least a view to display your data.
+    Usually we have a controller for each table (with the same name of the controller), a model for each controller (to interact with the table) and in most cases at least one view to display your data.
     
     The view is the part where we collect and organize our data in the HTML code and, if required, Javascript.
     

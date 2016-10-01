@@ -1,5 +1,4 @@
-<?php
-defined('ROOT') or die('No direct script access.');
+<?php defined('ROOT') or die('No direct script access.');
 /**
  * GAPI - Google Analytics PHP Interface
  * 

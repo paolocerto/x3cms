@@ -3,7 +3,7 @@
  * X3 CMS - A smart Content Management System
  *
  * @author		Paolo Certo
- * @copyright	(c) 2010-2015 CBlu.net di Paolo Certo
+ * @copyright	(c) CBlu.net di Paolo Certo
  * @license		http://www.gnu.org/licenses/agpl.htm
  * @package		X3CMS
  */
@@ -14,8 +14,9 @@
 
 // set message
 if (isset($msg)) 
+{
 	echo '<h3>'._WARNING.'</h3><p>'.$msg.'</p>';
-
+}
 echo $form;
 ?>
 </div>
