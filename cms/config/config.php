@@ -21,6 +21,7 @@ $default['x3default_route'] = 'public/home';
 //$default['x3default_error'] = 'error';
 
 // here you can set association by extra areas and existent folders
+// >>>> WARNING: REMEMBER TO UPDATE X4Auth_model <<<<
 //$default['foo'] = 'public';
 //$default['foo_id'] = 4;
 //$default['bar'] = 'private';
@@ -40,6 +41,8 @@ define('SITE', 'sitekey');				// site key used for checking login status: use an
 
 // security
 define('HASH', 'md5');					// hash method (md5, sha1, sha512 or whatever you want, up to 128 char) DO NOT CHANGE AFTER INSTALLATION!
+
+define('SALT', 'aLongSecretComplexString');
 
 // localization
 define('TIMEZONE', 'Europe/Rome');		// set time zone (see http://www.php.net/manual/en/timezones.php for a list of supported timezones)
