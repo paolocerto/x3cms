@@ -8,68 +8,106 @@
  * @package		X3CMS
  */
 
-$now = time();
-
 ?>
 <!-- TinyMCE -->
-<script src="<?php echo ROOT ?>files/js/tiny_mce/tiny_mce.js"></script>
 <script>
+// reset
+try {
+tinyMCE.remove('textarea');
+} catch (e) {}
+
+setTimeout(function(){Tinit();},2);
+
+// init
+function Tinit() {
 	tinyMCE.init({
 		// General options
+		selector: "textarea",
+		theme: "modern",
+		skin : "lightgray",
+	
 		language : "<?php echo X4Route_core::$lang ?>",
-		mode : "specific_textareas",
-		editor_deselector : "NoEditor",
-		theme : "advanced",
+		selector: "textarea:not(.NoEditor)",
+	
+		autosave_interval: "30s",
+	
 <?php
-if (RTL) echo 'directionality : "rtl",';
+if (RTL || isset($rtl)) echo 'directionality : "rtl",';
 ?>
-
-		plugins : "safari,pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,media,preview,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template",
-
-		// Theme options
-		theme_advanced_buttons1 : "cut,copy,paste,pastetext,pasteword,|,search,replace,|,undo,redo,|,removeformat,visualaid,|,fullscreen,preview,|,link,unlink,anchor,image,media,cleanup,code",
-		theme_advanced_buttons2 : "bold,italic,underline,strikethrough,cite,del,ins,|,justifyleft,justifycenter,justifyright,justifyfull,formatselect,|,bullist,numlist,|,outdent,indent,blockquote,|,sub,sup",
-		theme_advanced_buttons3 : "tablecontrols,|,insertdate,inserttime,|,pagebreak,|,charmap,iespell,hr,|,template",
-		theme_advanced_buttons4 : "",
-		theme_advanced_toolbar_location : "top",
-		theme_advanced_toolbar_align : "left",
-		theme_advanced_statusbar_location : "bottom",
-		theme_advanced_resizing : true,
+		 plugins: [
+		    "advlist autolink autosave lists link image imagetools charmap print preview hr anchor pagebreak",
+		    "searchreplace wordcount visualblocks visualchars code fullscreen",
+		    "insertdatetime media nonbreaking save table contextmenu directionality",
+		    "emoticons template paste textcolor colorpicker textpattern",
+			"responsivefilemanager importcss youtube"
+		],
 		
-		plugin_insertdate_dateFormat : "%d/%m/%Y",
-		plugin_insertdate_timeFormat : "%H:%M:%S",
+		autosave_ask_before_unload: false,
+		
+		toolbar1: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | responsivefilemanager | print preview media youtube | forecolor backcolor emoticons",
+		
+		imagetools_toolbar: "rotateleft rotateright | flipv fliph | editimage imageoptions",
+		
+		toolbar_items_size: 'small',
+		
+		style_formats: [
+		    {title: 'Headers', items: [
+		        {title: 'h1', block: 'h1'},
+		        {title: 'h2', block: 'h2'},
+		        {title: 'h3', block: 'h3'},
+		        {title: 'h4', block: 'h4'},
+		        {title: 'h5', block: 'h5'},
+		        {title: 'h6', block: 'h6'}
+		    ]},
+
+		    {title: 'Blocks', items: [
+		        {title: 'p', block: 'p'},
+		        {title: 'div', block: 'div'},
+		        {title: 'pre', block: 'pre'}
+		    ]},
+
+		    {title: 'Containers', items: [
+		        {title: 'section', block: 'section', wrapper: true, merge_siblings: false},
+		        {title: 'article', block: 'article', wrapper: true, merge_siblings: false},
+		        {title: 'blockquote', block: 'blockquote', wrapper: true},
+		        {title: 'hgroup', block: 'hgroup', wrapper: true},
+		        {title: 'aside', block: 'aside', wrapper: true},
+		        {title: 'figure', block: 'figure', wrapper: true}
+		    ]}
+		],
+		visualblocks_default_state: true,
+		end_container_on_empty_block: true,
+		
+		image_advtab: true,
+		
+		insertdatetime_formats: ["%H:%M:%S", "%Y-%m-%d", "%d/%m/%Y", "%I:%M:%S %p", "%D"],
+	
 		relative_urls : false,
 		remove_script_host : true,
-		document_base_url : "<?php echo substr(ROOT, 0, -1) ?>",
-		
-		extended_valid_elements : "a[href|title|class|onclick|id|name],img[class|src|alt|style|onmouseover|onmouseout|name],span[class|style],hr[class|style],code",
-		
+		document_base_url : "<?php echo (ROOT == '/') ? $this->site->site->domain : str_replace(ROOT, '', $this->site->site->domain.'/') ?>",
+	
+		extended_valid_elements : "article[class],header[class],section[class],div[class],p[class|style],a[href|title|class|onclick|id|name|rel|rev],figure[class],img[id|class|src|alt|style|onmouseover|onmouseout|name],span[class|style],hr[class|style],div[id|class|style],code,em[class],ul[class],ol[class],i[class]",
+		invalid_elements : "script",
+	
 		// Example content CSS (should be your site CSS)
+		importcss_append: true,
 		content_css : "<?php echo THEME_URL ?>css/tinymce.css",
-
+	
+		template_selected_content_classes: ".fake",
+	
 		// Drop lists for link/image/media/template dialogs
-		template_external_list_url : "<?php echo ROOT ?>cms/files/js/template_list.js?t=<?php echo $now ?>",
-		external_link_list_url : "<?php echo ROOT ?>cms/files/js/link_list.js?t=<?php echo $now ?>",
-		external_image_list_url : "<?php echo ROOT ?>cms/files/js/image_list.js?t=<?php echo $now ?>",
-		media_external_list_url : "<?php echo ROOT ?>cms/files/js/media_list.js?t=<?php echo $now ?>",
-		
-		pagebreak_separator : "<!--pagebreak-->"
-<?php
-if ($tb) {
-?>
-		,file_browser_callback : "tinyBrowser"
-<?php
-}
-?>
-		
+		templates : "<?php echo BASE_URL.'admin/files/js/'.$id_area.'/template' ?>",
+		link_list : "<?php echo BASE_URL.'admin/files/js/'.$id_area.'/files' ?>",
+		image_list : "<?php echo BASE_URL.'admin/files/js/'.$id_area.'/img' ?>",
+		media_list : "<?php echo BASE_URL.'admin/files/js/'.$id_area.'/media' ?>",
+	
+		pagebreak_separator : "<!--pagebreak-->",
+	
+		external_filemanager_path : "<?php echo ROOT ?>files/js/filemanager/",
+		filemanager_title : "Filemanager" ,
+		filemanager_access_key : "myPrivateKey" 
+	
 	});
-	
-	function toggleEditor(id) {
-		if (!tinyMCE.get(id))
-			tinyMCE.execCommand('mceAddControl', false, id);
-		else
-			tinyMCE.execCommand('mceRemoveControl', false, id);
-	}
-	
+}
 </script>
 <!-- /TinyMCE -->
