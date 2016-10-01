@@ -8,47 +8,25 @@
  * @package		X3CMS
  */
 
- // language switcher
-if (MULTILANGUAGE) 
-{
-	echo '<div class="aright sbox"><ul class="inline-list">';
-	foreach($langs as $i) 
-	{
-		$on = ($i->code == $lang) ? 'on' : '';
-		echo '<li><a class="btm '.$on.'" href="'.BASE_URL.'dictionary/keys/'.$i->code.'/'.$area.'/'.$what.'" title="'._SWITCH_LANGUAGE.'">'.ucfirst($i->language).'</a></li>';
-	}
-	echo '</ul></div>';
-}
-
 // area switcher
 echo '<div class="aright sbox"><ul class="inline-list">';
 foreach($areas as $i) 
 {
 	$on = ($i->name == $area) ? 'on' : '';
-	echo '<li><a class="btm '.$on.'" href="'.BASE_URL.'dictionary/keys/'.$lang.'/'.$i->name.'/'.$what.'" title="'._SWITCH_AREA.'">'.ucfirst($i->name).'</a></li>';
+	echo '<li><a class="btm '.$on.'" href="'.BASE_URL.'dictionary/keys/'.$lang.'/'.$i->name.'/'.$what.'/'.$str.'" title="'._SWITCH_AREA.'">'.ucfirst($i->name).'</a></li>';
 }
 echo '</ul></div>';
-
-// keys switcher
-if ($keys)
-{
-	echo '<div class="aright sbox"><ul class="inline-list">';
-	foreach($keys as $i) 
-	{
-		$on = ($i->what == $what) ? 'on' : '';
-		echo '<li><a class="btm '.$on.'" href="'.BASE_URL.'dictionary/keys/'.$lang.'/'.$area.'/'.$i->what.'" title="'._SWITCH_AREA.'">'.ucfirst($i->what).'</a></li>';
-	}
-	echo '</ul></div>';
-}
 ?>
-<h2><?php echo _WORDS_LIST.': '.$lang.'/'.$area.'/'.$what ?></h2>
+<h2><?php echo _DICTIONARY_SEARCH_RESULT.': "'.$str ?>"</h2>
 <?php
 if ($items) 
 {
 	echo '<table class="zebra">
 			<tr class="first">
-				<th style="width:20em;">'._KEY.'/'._WORD.'</th>
-				<th></th>
+			    <th style="width:6em;">'._LANGUAGE.'</th>
+				<th style="width:15em;">'._SECTION.'</th>
+				<th style="width:20em;">'._KEY.'</th>
+				<th>'._WORD.'</th>
 				<th style="width:6em;">'._ACTIONS.'</th>
 				<th style="width:6em;"></th>
 			</tr>';
@@ -97,6 +75,8 @@ if ($items)
 		}
 		
 		echo '<tr>
+		    <td>'.$i->lang.'</td>
+			<td>'.$i->what.'</td>
 			<td>'.$i->xkey.'</td>
 			<td>'.$i->xval.'</td>
 			<td>'.$actions.'</td>
@@ -113,10 +93,10 @@ else
 <script>
 window.addEvent('domready', function()
 {
-	X3.content('filters','dictionary/filter/<?php echo $lang.'/'.$area.'/'.$what ?>', null);
+	X3.content('filters','dictionary/filter/<?php echo $lang.'/'.$area.'/'.$what.'/'.$str ?>', null);
 	buttonize('topic', 'btm', 'tdown');
 	buttonize('topic', 'bta', 'modal');
-	actionize('topic',  'btl', 'tdown', escape('dictionary/keys/<?php echo $lang.'/'.$area.'/'.$what ?>'));
+	actionize('topic',  'btl', 'tdown', escape('dictionary/keys/<?php echo $lang.'/'.$area.'/'.$what.'/'.$str ?>'));
 	zebraTable('zebra');
 	linking('ul.inline-list a', 'tdown');
 });

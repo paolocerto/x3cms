@@ -46,63 +46,93 @@ class Dictionary_controller extends X3ui_controller
 	 * @param   string 	$what Dictionary key
 	 * @return  void
 	 */
-	public function keys($code = '', $area = 'public', $what = '')
+	public function keys($code = '', $area = 'public', $what = '', $str = '')
 	{
-		// load dictionary
+	    // load dictionary
 		$this->dict->get_wordarray(array('dictionary'));
 		
-		$code = (empty($code))
-			? X4Route_core::$lang
-			: $code;
-		
-		// get page
-		$page = $this->get_page('dictionary/keys');
-		
-		// content
-		$view = new X4View_core('container');
-		
-		$view->content = new X4View_core('languages/words');
-		$view->content->page = $page;
-		
-		// keys
-		$dict = new Dictionary_model();
-		$keys = $dict->get_keys($code, $area);
-		$view->content->keys = $keys;
-		
-		// check empty what
-		if (empty($what) && !empty($keys)) 
+		if (empty($str))
 		{
-			$what = $keys[0]->what;
-		}
-		$view->content->items = $dict->get_words($code, $area, $what);
-		$view->content->what = $what;
-		
-		// area switcher
-		$view->content->area = $area;
-		$area = new Area_model();
-		$view->content->areas = $area->get_areas();
-		
-		// language switcher
-		$view->content->lang = $code;
-		$lang = new Language_model();
-		$view->content->langs = $lang->get_languages();
-		
-		header('Content-Type: text/html; charset=utf-8');
-		
-		$view->render(TRUE);
+            $code = (empty($code))
+                ? X4Route_core::$lang
+                : $code;
+            
+            // get page
+            $page = $this->get_page('dictionary/keys');
+            
+            // content
+            $view = new X4View_core('container');
+            
+            $view->content = new X4View_core('languages/words');
+            $view->content->page = $page;
+            
+            // keys
+            $dict = new Dictionary_model();
+            $keys = $dict->get_keys($code, $area);
+            $view->content->keys = $keys;
+            
+            // check empty what
+            if (empty($what) && !empty($keys)) 
+            {
+                $what = $keys[0]->what;
+            }
+            $view->content->items = $dict->get_words($code, $area, $what);
+            $view->content->what = $what;
+            $view->content->str = '';
+            
+            // area switcher
+            $view->content->area = $area;
+            $area = new Area_model();
+            $view->content->areas = $area->get_areas();
+            
+            // language switcher
+            $view->content->lang = $code;
+            $lang = new Language_model();
+            $view->content->langs = $lang->get_languages();
+            
+            header('Content-Type: text/html; charset=utf-8');
+            
+            $view->render(TRUE);
+        }
+        else
+        {
+            $this->search($code, $area, $what, $str);
+        }
 	}
 	
 	/**
 	 * Dictionary filter
 	 *
-	 * @return  void
+	 * @param   string 	$code Language code
+	 * @param   string 	$area Area name
+	 * @param   string 	$what Dictionary key
+	 * @param   string 	$str  Searched string
+	 * @return  string
 	 */
-	public function filter($lang, $area)
+	public function filter($lang, $area, $what, $str = '')
 	{
 		// load the dictionary
 		$this->dict->get_wordarray(array('dictionary'));
 		
-		echo '
+		if (X4Route_core::$post)
+		{
+		    // set message
+            $msg = AdmUtils_helper::set_msg(array(0,1));
+            $msg->update[] = array(
+                    'element' => 'tdown', 
+                    'url' => BASE_URL.'dictionary/keys/'.$lang.'/'.$area.'/'.$what.'/'.urlencode(trim($_POST['search'])),
+                    'title' => null
+                );
+            $this->response($msg);
+		}
+		else
+		{
+		    echo '<form id="searchitems" name="searchitems" action="'.BASE_URL.'dictionary/filter/'.$lang.'/'.$area.'/'.$what.'" method="POST" onsubmit="return false;">
+                <input type="text" name="search" id="search" value="'.urldecode($str).'" title="'._DICTIONARY_SEARCH_MSG.'" />
+                <button type="button" name="searcher" class="button" onclick="setForm(\'searchitems\');">'._FIND.'</button>
+                </form>';
+                
+            echo '
 		<a class="btf" href="'.BASE_URL.'dictionary/import/'.$lang.'/'.$area.'" title="'._IMPORT_KEYS.'"><i class="fa fa-download fa-lg"></i></a>
 		<a class="btf" href="'.BASE_URL.'dictionary/add/'.$lang.'/'.$area.'" title="'._NEW_WORD.'"><i class="fa fa-plus fa-lg"></i></a>
 <script>
@@ -111,6 +141,46 @@ window.addEvent("domready", function()
 	buttonize("filters", "btf", "modal");
 });
 </script>';
+        }
+	}
+	
+	/**
+	 * Show search results on dictionary words
+	 *
+	 * @param   string 	$code Language code
+	 * @param   string 	$area Area name
+	 * @param   string 	$what Dictionary key
+	 * @param   string 	$str  Searched string
+	 * @return  void
+	 */
+	public function search($code, $area, $what, $str)
+	{
+	    // load dictionary
+		$this->dict->get_wordarray(array('dictionary'));
+		
+        // get page
+        $page = $this->get_page('dictionary/keys');
+        
+        // content
+        $view = new X4View_core('container');
+        
+        $view->content = new X4View_core('languages/search');
+        $view->content->page = $page;
+        
+        $dict = new Dictionary_model();
+        $view->content->items = $dict->search_words($area, $str);
+        $view->content->lang = $code;
+        $view->content->what = $what;
+        $view->content->str = $str;
+        
+        // area switcher
+        $view->content->area = $area;
+        $area = new Area_model();
+        $view->content->areas = $area->get_areas();
+        
+        header('Content-Type: text/html; charset=utf-8');
+        
+        $view->render(TRUE);
 	}
 	
 	/**

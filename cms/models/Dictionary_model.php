@@ -174,4 +174,24 @@ class Dictionary_model extends X4Model_core
 				xkey = '.$this->db->escape($post['xkey']));
 	}
 	
+	/**
+	 * Search dictionary words by area name, and string
+	 * Join with privs table
+	 *
+	 * @param   string	$lang Language code
+	 * @param   string	$area Area name
+	 * @return  array	array of objects
+	 */
+	public function search_words($area, $str)
+	{
+		return $this->db->query('SELECT d.*, p.level 
+			FROM dictionary d
+			JOIN privs p ON p.id_who = '.intval($_SESSION['xuid']).' AND p.what = \'dictionary\' AND p.id_what = d.id
+			WHERE 
+				d.area = '.$this->db->escape($area).' AND 
+				d.xkey LIKE '.$this->db->escape('%'.strtoupper($str).'%').'
+			GROUP BY d.id
+			ORDER BY d.xkey ASC, d.lang ASC');
+	}
+	
 }
