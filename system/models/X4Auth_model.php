@@ -50,25 +50,31 @@ class X4Auth_model extends X4Model_core
 		// where
 		$where = '';
 		foreach($conditions as $k => $v)
+		{
 			if ($this->table == 'users' && $k == 'id_area')
+			{
 				$where .= ' AND g.'.$k.' = '.intval($v);
+			}
 			else
+			{
 				$where .= ' AND u.'.$k.' = '.$this->db->escape($v);
+			}
+		}
 		
 		// users are joined to groups
 		if ($this->table == 'users')
-			return $this->db->query_row('SELECT u.'.$keys.', g.id_area
+		{
+		    return $this->db->query_row('SELECT u.'.$keys.', g.id_area
 				FROM users u 
 				JOIN groups g ON g.id = u.id_group
-				WHERE 
-					u.xon = 1'.$where
-				);
+				WHERE u.xon = 1'.$where);
+		}
 		else
+		{
 			return $this->db->query_row('SELECT u.'.$keys.'
 				FROM '.$this->table.' u
-				WHERE 
-					u.xon = 1'.$where
-				);
+				WHERE u.xon = 1'.$where);
+		}
 	}
 	
 	/**
@@ -176,6 +182,13 @@ class X4Auth_model extends X4Model_core
 			
 $this->logger($_SESSION[$this->areas_tables[$tmp_id_area]['session']], 1, 'users', 're-log in');
 			
+            // level
+            if ($id_area == 1)
+            {
+                $_SESSION['username'] = $u->$username;
+                $_SESSION['level'] = $u->level;
+            }
+            
 			return true;
 		}
 		else
