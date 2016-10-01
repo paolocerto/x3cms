@@ -198,8 +198,7 @@ class Articles_controller extends X3ui_controller
                     break;
             }
             
-	    echo '<a class="btf" href="'.BASE_URL.'articles/edit/'.$id_area.'/'.$lang.'" title="'._NEW_ARTICLE.'"><i class="fa fa-plus fa-lg"></i></a>
-			
+            echo '<a class="btf" href="'.BASE_URL.'articles/edit/'.$id_area.'/'.$lang.'" title="'._NEW_ARTICLE.'"><i class="fa fa-plus fa-lg"></i></a>
 <script>
 window.addEvent("domready", function()
 {
@@ -1233,7 +1232,7 @@ window.addEvent("domready", function()
 			// check for context
 			// if the code_context is changed we assign a new bid to the article 
 			// if the id page is changed we assign a new bid
-			if (($_post['old_context'] > -1 && $_post['old_context'] != $_post['code_context']) || $item->id_page != $_post['id_page'])
+			if (($_post['old_context'] > -1 && $_post['old_context'] != $_post['code_context']) || (isset($_post['id_page']) && $item->id_page != $_post['id_page']))
 			{
 				$post['bid'] = $mod->get_new_bid();
 			}
