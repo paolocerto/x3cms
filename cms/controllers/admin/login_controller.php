@@ -231,8 +231,8 @@ class Login_controller extends X4Cms_controller
 				'users', 
 				$conditions, 
 				$fields, 
-				true, 
-				false
+				true,   // last login
+				true    // haskey
 			);
 			
 			if ($login)
