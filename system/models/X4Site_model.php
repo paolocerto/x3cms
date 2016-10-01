@@ -239,14 +239,20 @@ class X4Site_model extends X4Model_core
 			
 		if (empty($c))
 		{
-			$c = $this->db->query_row('SELECT a.* FROM 
+		    $c = $this->db->query_row('SELECT a.* FROM 
 					(
 					SELECT * 
 					FROM articles 
-					WHERE id_area = '.intval($id_area).' AND lang = '.$this->db->escape($lang).' AND xon = 1 AND date_in <= '.$this->now.' AND (date_out = 0 OR date_out >= '.$this->now.') ORDER BY updated DESC
+					WHERE 
+					    id_area = '.intval($id_area).' AND 
+					    lang = '.$this->db->escape($lang).' AND 
+					    xon = 1 AND 
+					    date_in <= '.$this->now.' AND 
+					    (date_out = 0 OR date_out >= '.$this->now.') 
+					    ORDER BY updated DESC, id DESC
 					) a
 				WHERE a.bid = '.$this->db->escape($bid).' 
-				ORDER BY a.date_in DESC');
+				ORDER BY a.date_in DESC, a.updated DESC, a.id DESC');
 			
 			if (APC)
 				apc_store(SITE.'abid'.$id_area.$lang.$bid, $c);
@@ -289,7 +295,13 @@ class X4Site_model extends X4Model_core
 				(
 				SELECT * 
 				FROM articles 
-				WHERE id_area = '.intval($id_area).' AND lang = '.$this->db->escape($lang).' AND xon = 1 AND date_in <= '.$this->now.' AND (date_out = 0 OR date_out >= '.$this->now.') ORDER BY date_in DESC, updated DESC
+				WHERE 
+				    id_area = '.intval($id_area).' AND 
+				    lang = '.$this->db->escape($lang).' AND 
+				    xon = 1 AND 
+				    date_in <= '.$this->now.' AND 
+				    (date_out = 0 OR date_out >= '.$this->now.') 
+				    ORDER BY date_in DESC, updated DESC, id DESC
 				) a
 			JOIN contexts c ON c.code = a.code_context
 			WHERE c.xkey = '.$this->db->escape($context).' 
@@ -554,7 +566,9 @@ class X4Site_model extends X4Model_core
 			$c = $this->db->query_var($sql);
 			
 			if (APC)
+			{
 				apc_store(SITE.'pageto'.$id_area.$lang.$modname.$param, $c);
+			}
 		}
 		return $c;
 	}
@@ -575,7 +589,7 @@ class X4Site_model extends X4Model_core
 			
 		if (empty($conf))
 		{
-			$res = $this->db->query('SELECT p.name, p.xvalue
+		    $res = $this->db->query('SELECT p.name, p.xvalue
 				FROM param p
 				JOIN modules m ON m.name = p.xrif AND m.id_area = p.id_area
 				WHERE p.xrif = '.$this->db->escape($plugin_name).' AND p.id_area = '.intval($id_area).'
