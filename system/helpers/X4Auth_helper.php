@@ -43,12 +43,12 @@ class X4Auth_helper
 			// update last login field
 			if ($last_in)
 			{
-				$mod->last_in($user->id);
+			    $mod->last_in($user->id);
 			}
 			
 			if ($hash)
 			{
-				$new_hash = md5($conditions['username'].$conditions['password'].time());
+				$new_hash = md5($conditions['username'].$conditions['password'].time().SALT);
 				$res = $mod->update($user->id, array('hashkey' => $new_hash), 'users');
 				
 				if ($res[1])
