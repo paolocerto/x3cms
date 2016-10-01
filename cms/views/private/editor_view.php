@@ -10,15 +10,20 @@
 
 // tiny MCE
 if (isset($tinymce)) 
+{
 	echo $tinymce;
+}
 
 echo '<div class="block">';
 
 // title
 if (isset($title)) 
+{
 	echo '<h2>'.$title.'</h2>';
+}
 
 if (isset($msg)) 
+{
 	echo '<p>'.$msg.'</p>';
-
+}
 echo $form.'</div>';

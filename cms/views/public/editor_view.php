@@ -9,13 +9,15 @@
  */
 
 // tiny MCE
-if (isset($tinymce)) 
+if (isset($tinymce))
+{
 	echo $tinymce;
+}
 
 // msg
 if (isset($_SESSION['msg']) && !empty($_SESSION['msg']))
 {
-	echo '<div id="msg"><p>'.$_SESSION['msg'].'</p></div>';
+	echo '<div id="msg" class="warning"><p>'.$_SESSION['msg'].'</p></div>';
 	unset($_SESSION['msg']);
 }
 
