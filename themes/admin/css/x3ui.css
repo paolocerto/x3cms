@@ -795,6 +795,7 @@ img.date_toggler {position:relative;top:4px;margin-left:4px;}
 	
 	.sm-hidden {display:none;}
 	#simple-modal {width:90% !important;margin:.5em;position:absolute;}
+	.simple-modal {top:0;}
 }
 
 @media screen and (max-width: 420px) {

@@ -219,22 +219,146 @@ class X4Utils_helper
 	}
 	
 	/**
-	 * Create inline editing link
+	 * Create online editing link
+	 * Each section can be edited in a separated page
 	 *
 	 * @static
 	 * @param object	$obj article object
 	 * @param integer	$n section number
 	 * @return string
 	 */
-	public static function inline_edit($obj, $n)
+	public static function online_edit($obj, $n)
 	{
 		$section = ($n) 
 			? _TRAIT_.'<span class="xbig">Section '.$n.'</span>' 
 			: '';
 			
-		return (INLINE && isset($obj->xlock) && isset($_SESSION['xuid']) && $_SESSION['site'] == SITE && $obj->xlock == 0) 
+		return (ONLINE && isset($obj->xlock) && isset($_SESSION['xuid']) && $_SESSION['site'] == SITE && $obj->xlock == 0) 
 			? '<div class="edit"><a href="'.ROOT.X4Route_core::$lang.'/admin" title="'._GOTO_ADMIN.'">'._ADMIN.'</a>'._TRAIT_.'<a href="'.BASE_URL.'x3admin/edit/'.$obj->id.'" title="'._EDIT_ARTICLE.'">'._EDIT.'</a>'.$section.'</div>' 
 			: '';
+	}
+	
+	/**
+	 * Create inline editing link
+	 * Each section can be edit in place (less powerful and complete than online edit)
+	 *
+	 * @static
+	 * @param integer	$id_area
+	 * @param string	$domain
+	 * @return string
+	 */
+	public static function inline_edit($id_area, $domain)
+	{
+		if (isset($_SESSION['xuid']) && INLINE)
+        {
+            $base_url = (ROOT == '/') 
+                ? $domain 
+                : str_replace(ROOT, '', $domain.'/');
+            
+            echo '<script src="'.ROOT.'files/js/tinymce/tinymce.min.js"></script>
+<script>
+var abid = null;
+$(document).ready(function() {
+    // remove edit boxes if present
+    $("div.edit").remove();
+    
+    // add borders
+    $(".block").addClass("inline_editing");
+    
+    ie_instruction("'._INLINE_EDITING_MODE_MSG.'", 1);
+    
+    // enable inline
+    tinymce_inline();
+});
+
+function ie_instruction(msg, delay) {
+    $("#x3_inline_editor").fadeOut();
+    setTimeout(function(){ 
+        $("#x3_inline_editor").html("<b>'._INLINE_EDITING_MODE.':</b>" + msg).fadeIn();
+    }, delay*1000);
+}
+
+function tinymce_inline() {
+    tinymce.init({
+        selector: ".block",
+        theme: "inlite",
+        plugins: "image table advlist lists link paste contextmenu textpattern autolink media youtube visualblocks", 
+        insert_toolbar: "undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent blockquote | link image | media youtube",
+        selection_toolbar: "undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent blockquote | link image | media youtube",
+        inline: true,
+        //paste_data_images: true,
+        relative_urls: false,
+        remove_script_host: true,
+        document_base_url: "'.$base_url.'",
+        
+        style_formats: [
+		    {title: "Headers", items: [
+		        {title: "h1", block: "h1"},
+		        {title: "h2", block: "h2"},
+		        {title: "h3", block: "h3"},
+		        {title: "h4", block: "h4"},
+		        {title: "h5", block: "h5"},
+		        {title: "h6", block: "h6"}
+		    ]},
+
+		    {title: "Blocks", items: [
+		        {title: "p", block: "p"},
+		        {title: "div", block: "div"},
+		        {title: "pre", block: "pre"}
+		    ]},
+
+		    {title: "Containers", items: [
+		        {title: "section", block: "section", wrapper: true, merge_siblings: false},
+		        {title: "article", block: "article", wrapper: true, merge_siblings: false},
+		        {title: "blockquote", block: "blockquote", wrapper: true},
+		        {title: "hgroup", block: "hgroup", wrapper: true},
+		        {title: "aside", block: "aside", wrapper: true},
+		        {title: "figure", block: "figure", wrapper: true}
+		    ]}
+		],
+        
+		importcss_append: true,
+		content_css : "'.ROOT.'themes/admin/css/tinymce.css",
+		
+        //templates: "'.BASE_URL.'admin/files/js/'.$id_area.'/template",
+        link_list: "'.BASE_URL.'admin/files/js/'.$id_area.'/files",
+        image_list: "'.BASE_URL.'admin/files/js/'.$id_area.'/img",
+        media_list: "'.BASE_URL.'admin/files/js/'.$id_area.'/media",
+        
+        setup: function(ed) {
+            ed.on("focus", function (e) {
+              abid = ed.id;
+            });
+            ed.on("blur", function(e){
+                save_article(abid, ed.getContent());
+            });
+        }
+    });
+}
+
+function save_article(bid, content) {
+    $.ajax({
+        type:"POST",
+        url: root+"/x3admin/update/"+bid,
+        data: {"content": content},
+        success: function(msg) {
+            if (msg.length > 0) {
+                ie_instruction("<p>"+msg+"</p>", 1);
+                ie_instruction("'._INLINE_EDITING_MODE_MSG.'", 4);
+            }
+        },
+        error: function(xhr, textStatus, errorThrown){
+            ie_instruction("<p>"+textStatus+"</p>");
+            ie_instruction("'._INLINE_EDITING_MODE_MSG.'", 4);
+        }
+    });
+}
+</script>';
+        }
+        else
+        {
+            return '';
+        }
 	}
 	
 	/**

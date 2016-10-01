@@ -69,7 +69,7 @@ class X3get_by_key_plugin extends X4Plugin_core implements X3plugin
 				{
 					if (!empty($i->content)) 
 					{
-						$out .= '<div class="block">'.X4Utils_helper::inline_edit($i, 0);
+						$out .= '<div class="block">'.X4Utils_helper::online_edit($i, 0);
 						// options
 						$out .= X4Utils_helper::get_block_options($i);
 						

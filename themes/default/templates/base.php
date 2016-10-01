@@ -65,9 +65,18 @@ if (RTL)
 var root = "<?php echo $this->site->site->domain ?>";
 </script>
 <script src="<?php echo THEME_URL ?>js/jqready.js"></script>
+<?php
+echo X4Utils_helper::inline_edit($page->id_area, $this->site->site->domain);
+?>
 </head>
 
 <body>
+<?php 
+if (INLINE)
+{
+    echo '<div id="x3_inline_editor"></div>';
+}
+?>
 <div class="container-fluid bwhite">
 	<div id="main" class="container">
 		<div class="row pad-bottom">
@@ -158,7 +167,7 @@ else
 		{
 			if (!empty($i->content))
 			{
-				echo '<div class="block clearfix">';
+				echo '<div class="block clearfix">'.X4Utils_helper::online_edit($i, 2);
 				echo X4Utils_helper::reset_url(stripslashes($i->content));
 				echo '</div>';
 			}
@@ -179,7 +188,7 @@ else
 		{
 			if (!empty($i->content))
 			{
-				echo '<div class="block clearfix">'.X4Utils_helper::inline_edit($i, 1);
+				echo '<div class="block clearfix" id="'.$i->bid.'">'.X4Utils_helper::online_edit($i, 1);
 				// options
 				echo X4Utils_helper::get_block_options($i);
 				echo X4Utils_helper::reset_url(stripslashes($i->content));
@@ -226,7 +235,7 @@ if (!empty($sections[3]))
 					: $widths[$n];
 				echo '</div><div class="row">';
 			}
-			echo '<div class="col-xs-12 col-sm-6 col-md-'.$class.'">'.X4Utils_helper::inline_edit($i, 3).X4Utils_helper::get_block_options($i);
+			echo '<div class="col-xs-12 col-sm-6 col-md-'.$class.' block"  id="'.$i->bid.'">'.X4Utils_helper::online_edit($i, 3).X4Utils_helper::get_block_options($i);
 			echo X4Utils_helper::reset_url(stripslashes($i->content));
 			// module
 			if (!empty($i->module))

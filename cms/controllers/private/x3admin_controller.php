@@ -47,7 +47,9 @@ class X3admin_controller extends X4Cms_controller
 	public function edit($id = 0)
 	{
 		if ($id == 0) 
+		{
 			$this->_default();
+		}
 		else 
 		{
 			// load dictionaries
@@ -160,7 +162,9 @@ class X3admin_controller extends X4Cms_controller
 				die;
 			}
 			else 
+			{
 				X4Utils_helper::set_error($fields);
+			}
 		}
 		
 		// get page
@@ -181,7 +185,7 @@ class X3admin_controller extends X4Cms_controller
 		$view->content->title = _EDIT_ARTICLE;
 		
 		// form builder
-		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'xcenter'));
+		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'));
 		
 		if (empty($i->xschema)) 
 		{
@@ -196,7 +200,8 @@ class X3admin_controller extends X4Cms_controller
 	 * Register article
 	 *
 	 * @access	private
-	 * @param   integer $id article ID
+	 * @param   string	$what Dictionary what
+	 * @param   integer $id article id
 	 * @param   array 	$_post _POST array
 	 * @return  void
 	 */
@@ -256,5 +261,73 @@ class X3admin_controller extends X4Cms_controller
 		// redirect
 		header('Location: '.$_post['from']);
 		die;
+	}
+	
+	/**
+	 * Save article
+	 *
+	 * @param   string	$bid
+	 * @return  void
+	 */
+	public function update($bid)
+	{
+	    // load dictionaries
+		$this->dict->get_words();
+		
+	    // get article id
+	    $mod = new Article_model();
+	    $item = $mod->get_by_bid($bid);
+	    
+		// check permission
+		AdmUtils_helper::chklevel($_SESSION['xuid'], 'articles', $item->id, 2);
+		
+		// only if there are differences
+		if ($item->content != $_POST['content'])
+		{
+		    // tinymce
+            $post = array(
+                'bid' => $bid,
+                'id_area' => $item->id_area,
+                'lang' => $item->lang,
+                'code_context' => $item->code_context,
+                'id_page' => $item->id_page,
+                'date_in' => time(),
+                'xkeys' => $item->xkeys,
+                'name' => $item->name,
+                'content' => $_POST['content'],
+                'excerpt' => 0,
+                'author' => $_SESSION['mail'],
+                'module' => $item->module,
+                'param' => $item->param,
+                'id_editor' => $_SESSION['xuid'],
+                'xon' => AUTOREFRESH
+            );
+            
+            // insert new article's version
+            $result = $mod->insert($post);
+            
+            if ($result[1]) 
+            {
+                // add permission
+                $perm = new Permission_model();
+                // privs permissions
+                $array[] = array(
+                        'action' => 'insert', 
+                        'id_what' => $result[0], 
+                        'id_user' => $_SESSION['xuid'], 
+                        'level' => 4);
+                $res = $perm->pexec('articles', $array, $item->id_area);
+            }
+            
+            // set message
+            X4Utils_helper::set_msg($result);
+            
+            echo $_SESSION['msg'];
+            unset($_SESSION['msg']);
+        }
+        else
+        {
+            echo '';
+        }
 	}
 }

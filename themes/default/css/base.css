@@ -115,6 +115,11 @@ button, a.button {background:#B0BEC5;color:#fff;border:none;padding:.5em 1.5em;b
 #footer a {color:#333;}
 #footer a:hover {color:#ee6600;}
 
+/* online editor */
+.edit {font-size:.85em;font-weight:bold;padding:.5em 0;}
+.inline_editing:hover {border:1px solid red;}
+#x3_inline_editor {position:fixed;top:0;right:0;padding:1em 2em;background:#f80;color:#fff;font-size:.9em;display:none;}
+
 /* plugins */
 
 #sitemap ul {margin-top:.2em;}
