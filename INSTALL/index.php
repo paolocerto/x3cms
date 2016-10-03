@@ -329,7 +329,15 @@ switch($step)
 			$apache = OK;
 			// check modules
 			$apache_modules = '<li>Apache Modules<ul>';
-			$mod = array('mod_php5', 'mod_rewrite', 'mod_headers');
+			$mod = array('mod_rewrite', 'mod_headers');
+			if (phpversion() >= 7)
+			{
+			    $mod[] = 'mod_php7';
+			}
+			else
+			{
+			    $mod[] = 'mod_php5';
+			}
 			foreach ($mod AS $m) 
 			{
 				if (apache_is_module_loaded($m)) 
@@ -363,7 +371,11 @@ switch($step)
 				'<li>PHP Memory allocated: <span class="error">'.ini_get('memory_limit').'</span> (minimum 16M)';
 			// check extensions
 			$php_ext .= '<li>PHP Extensions<ul>';
-			$ext = array('session', 'date', 'PDO', 'pdo_mysql', 'mysql', 'gd', 'mbstring', 'apc');
+			$ext = array('session', 'date', 'PDO', 'pdo_mysql', 'gd', 'mbstring', 'apc');
+			if (phpversion() < 7)
+			{
+			    $mod[] = 'mysql';
+			}
 			foreach ($ext AS $e) 
 			{
 				if (php_is_extension_loaded($e)) 
