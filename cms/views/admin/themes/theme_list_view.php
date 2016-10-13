@@ -13,8 +13,8 @@
 		<th style="width:24em;"><?php echo _THEME ?></th>
 		<th><?php echo _AREA ?></th>
 		<th></th>
-		<th style="width:10em;"><?php echo _ACTIONS ?></th>
-		<th style="width:6em;"></th>
+		<th style="width:12em;"><?php echo _ACTIONS ?></th>
+		<th style="width:4em;"></th>
 	</tr>
 	
 <?php

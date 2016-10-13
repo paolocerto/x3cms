@@ -14,7 +14,7 @@
 	<tr class="first">
 		<th><?php echo _AREA ?></th>
 		<th><?php echo _GROUP ?></th>
-		<th style="width:9em;"><?php echo _ACTIONS ?></th>
+		<th style="width:12em;"><?php echo _ACTIONS ?></th>
 		<th style="width:6em;"></th>
 	</tr>
 <?php
