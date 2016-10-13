@@ -269,6 +269,10 @@ $(document).ready(function() {
     
     // enable inline
     tinymce_inline();
+    
+    $(document).on("click", "#x3_inline_editor", function(e) {
+        $(this).fadeOut();
+    });
 });
 
 function ie_instruction(msg, delay) {
