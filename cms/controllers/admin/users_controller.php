@@ -251,11 +251,13 @@ window.addEvent("domready", function()
 		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'login', 'users'));
 		
+		$lang = X4Route_core::$lang;
+		
 		// get object
 		$user = new User_model();
 		$u = ($id) 
 			? $user->get_by_id($id)
-			: new User_obj($id_group);
+			: new User_obj($id_group, $lang);
 		
 		// get group
 		$group = new Group_model();
@@ -882,11 +884,13 @@ window.addEvent("domready", function()
 			
 			// set update
 			if ($result[1])
+			{
 				$msg->update[] = array(
 					'element' => $qs['div'],
 					'url' => urldecode($qs['url']),
 					'title' => null
 				);
+			}
 		}
 		$this->response($msg);
 	}
