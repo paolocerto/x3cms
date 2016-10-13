@@ -70,19 +70,6 @@ class User_model extends X4Model_core
 	}
 	
 	/**
-	 * Get user permission's level on an item
-	 *
-	 * @param   integer	$id_user User ID
-	 * @param   string	$what item (Table name)
-	 * @param   integer	$id_what Item ID in the table
-	 * @return  integer	
-	 */
-	public function check_priv($id_user, $what, $id_what) 
-	{
-		return (int) $this->db->query_var('SELECT level FROM privs WHERE id_who = '.intval($id_user).' AND what = '.$this->db->escape($what).' AND id_what = '.intval($id_what));
-	}
-	
-	/**
 	 * Check if username and email address are already used by another user
 	 *
 	 * @param   string	$username
@@ -127,8 +114,9 @@ class User_obj
 	 * @param   integer	$id_group Group ID
 	 * @return  void
 	 */
-	public function __construct($id_group)
+	public function __construct($id_group, $lang)
 	{
 		$this->id_group = $id_group;
+		$this->lang = $lang;
 	}
 }

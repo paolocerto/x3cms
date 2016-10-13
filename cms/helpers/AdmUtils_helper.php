@@ -78,9 +78,9 @@ class AdmUtils_helper
 	 * @param   integer	$id_what Item ID
 	 * @return  integer	Permission level
 	 */
-	public static function get_level($id_who, $what, $id_what)
+	public static function get_priv_level($id_who, $what, $id_what)
 	{
-		$mod = new User_model();
+		$mod = new Permission_model();
 		$level = $mod->check_priv($id_who, $what, $id_what);
 		return $level;
 	}
@@ -93,10 +93,10 @@ class AdmUtils_helper
 	 * @param   string	$what Privilege type
 	 * @return  integer	Permission level
 	 */
-	public static function get_ulevel($id_who, $what)
+	public static function get_ulevel($id_area, $id_who, $what)
 	{
 		$mod = new Permission_model();
-		$level = $mod->get_upriv($id_who, $what, $id_what);
+		$level = $mod->get_upriv($id_area, $id_who, $what);
 		return $level;
 	}
 	
@@ -117,7 +117,7 @@ class AdmUtils_helper
 		if ($_SESSION['level'] < 4 || $force) 
 		{
 			// get level
-			$level = self::get_level($id_who, $what, $id_what);
+			$level = self::get_priv_level($id_who, $what, $id_what);
 			
 			// if level lower than required redirect
 			if ($level < $value) 
@@ -141,7 +141,7 @@ class AdmUtils_helper
 	public static function chk_priv_level($id_who, $what, $id_what, $value)
 	{
 		// get level
-		$level = self::get_level($id_who, $what, $id_what);
+		$level = self::get_priv_level($id_who, $what, $id_what);
 		
 		// if level lower than required redirect
 		if ($level < $value) 
@@ -160,16 +160,17 @@ class AdmUtils_helper
 	 * Check User permission level on a record of a table
 	 *
 	 * @static
+	 * @param   integer	$id_area Area ID
 	 * @param   integer	$id_who User ID
 	 * @param   string	$what Privilege type
 	 * @param   integer	$id_what Item ID
 	 * @param   integer	$value Privilege value
 	 * @return  null or object
 	 */
-	public static function chk_upriv_level($id_who, $what, $value)
+	public static function chk_upriv_level($id_area, $id_who, $what, $value)
 	{
 		// get level
-		$level = self::get_ulevel($id_who, $what);
+		$level = self::get_ulevel($id_area, $id_who, $what);
 		
 		// if level lower than required redirect
 		if ($level < $value) 

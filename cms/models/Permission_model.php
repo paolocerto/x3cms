@@ -77,6 +77,19 @@ class Permission_model extends X4Model_core
 	}
 	
 	/**
+	 * Get user permission's level on an item
+	 *
+	 * @param   integer	$id_user User ID
+	 * @param   string	$what item (Table name)
+	 * @param   integer	$id_what Item ID in the table
+	 * @return  integer	
+	 */
+	public function check_priv($id_user, $what, $id_what) 
+	{
+		return (int) $this->db->query_var('SELECT level FROM privs WHERE id_who = '.intval($id_user).' AND what = '.$this->db->escape($what).' AND id_what = '.intval($id_what));
+	}
+	
+	/**
 	 * Get user priv on a table
 	 *
 	 * @param   integer	$id_area Area ID
@@ -86,7 +99,7 @@ class Permission_model extends X4Model_core
 	 */
 	public function get_upriv($id_area, $id_user, $what) 
 	{
-		return $this->db->query_row('SELECT id, level FROM uprivs WHERE id_area = '.intval($id_area).' AND id_who = '.intval($id_user).' AND what = '.$this->db->escape($what));
+		return $this->db->query_row('SELECT id, level FROM uprivs WHERE id_area = '.intval($id_area).' AND id_user = '.intval($id_user).' AND privtype = '.$this->db->escape($what));
 	}
 	
 	/**
@@ -322,7 +335,7 @@ class Permission_model extends X4Model_core
 			{
 				$sql[] = 'DELETE u.*, p.* FROM uprivs u 
 					JOIN privs p ON u.id_user = p.id_who AND u.privtype = p.what AND u.id_area = p.id_area 
-					WHERE u.level = '.$v.' AND p.id_who = '.$id_user.' AND p.what = \''.$k.'\' AND p.id_area = '.$i->id_area;
+					WHERE u.id = '.$v.' AND p.id_who = '.$id_user.' AND p.what = \''.$k.'\' AND p.id_area = '.$i->id_area;
 			}
 		}
 		
@@ -472,7 +485,11 @@ class Permission_model extends X4Model_core
 		}
 		
 		// Some tables require special treatment
-		switch($table) 
+		$sql = '';
+		// excluded tables
+	    	$excluded = array('x4', 'x5');
+	    	$prefix = substr($table, 0, 2);
+        	switch($table) 
 		{
 		case 'areas':
 			$sql = 'SELECT a.id_area AS id FROM aprivs a 
@@ -516,8 +533,9 @@ class Permission_model extends X4Model_core
 			// modules and others generic tables
 			if ($table != 'privs' && $table != 'logs') 
 			{
-				if (substr($table, 0, 3) == 'x5_')
+				if (in_array($prefix, $excluded))
 				{
+				    // Modules without table and
 					// Mongo DB collections are not connected with privs table
 					return array();
 				}

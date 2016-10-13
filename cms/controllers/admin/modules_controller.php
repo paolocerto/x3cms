@@ -60,16 +60,27 @@ class Modules_controller extends X3ui_controller
 		$view->content->page = $page;
 		
 		$area = new Area_model();
+		// check if user can see this area
+		$areas = X4Array_helper::indicize($area->get_areas(), 'id');
+		if (!isset($areas[$id_area]))
+		{
+		    $tmp = array_keys($areas);
+		    $id_area = array_shift($tmp);
+		}
 		$view->content->id_area = $id_area;
 		$view->content->area = $area->get_by_id($id_area);
 		
 		// get installed and installable plugins
-		$plug = new X4Plugin_model();
-		$view->content->plugged = $plug->get_installed($id_area);
-		$view->content->pluggable = $plug->get_installable($id_area);
+		$mod = new X4Plugin_model();
+		$view->content->plugged = $mod->get_installed($id_area);
+		
+		$chk = AdmUtils_helper::get_ulevel(1, $_SESSION['xuid'], '_module_install');
+		$view->content->pluggable = (!$chk || $chk->level < 4)
+		    ? array()
+		    : $mod->get_installable($id_area);
 		
 		// area switcher
-		$view->content->areas = $area->get_areas();
+		$view->content->areas = $areas;
 		
 		$view->render(TRUE);
 	}

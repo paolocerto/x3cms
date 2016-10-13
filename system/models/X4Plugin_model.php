@@ -92,9 +92,14 @@ class X4Plugin_model extends X4Model_core
 	 */
 	public function get_installed($id_area)
 	{
-		return $this->db->query('SELECT DISTINCT m.*, p.level 
+	    return $this->db->query('SELECT DISTINCT m.*, p.level 
 			FROM modules m
 			JOIN privs p ON p.id_who = '.intval($_SESSION['xuid']).' AND p.what = \'modules\' AND p.id_what = m.id
+			JOIN uprivs up ON up.id_user = '.intval($_SESSION['xuid']).' AND (
+			    REPLACE(up.privtype, \'x3_\', \'x3\') = m.name OR
+			    REPLACE(up.privtype, \'x4_\', \'x4\') = m.name OR
+			    REPLACE(up.privtype, \'x5_\', \'x5\') = m.name
+			) AND up.level > 1
 			WHERE p.id_area = '.intval($id_area).' ORDER BY m.name ASC');
 	}
 	
