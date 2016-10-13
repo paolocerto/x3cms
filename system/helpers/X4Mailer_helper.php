@@ -60,12 +60,19 @@ class X4Mailer_helper
 		$check = true;
 		
 		$body = stripslashes($body);
+
+		// Force conversion to utf-8
+		$body = iconv(mb_detect_encoding($body, mb_detect_order(), true), "UTF-8", $body);
+		
 		
 		// build mail obj
 		try 
 		{
 			// create an empty mail
 			$mail = Swift_Message::newInstance();
+			
+			// set charset
+			$mail->setCharset('utf-8');
 			
 			// Set the From address with an associative array
 			$mail->setFrom(array(MAIL => SERVICE));
