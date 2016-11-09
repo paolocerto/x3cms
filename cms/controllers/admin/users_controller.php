@@ -443,7 +443,7 @@ window.addEvent("domready", function()
 			'label' => _DOMAIN,
 			'type' => 'select',
 			'value' => X4Utils_helper::obj2array($perm->get_aprivs($id), null, 'id_area'),
-			'options' => array($area->get_areas($g->id_area), 'id', 'name'),
+			'options' => array($area->get_areas($g->id_area, false), 'id', 'name'),
 			'multiple' => 4,
 			'name' => 'domain',
 			'extra' => 'class="large"'

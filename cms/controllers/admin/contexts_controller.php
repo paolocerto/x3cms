@@ -49,6 +49,9 @@ class Contexts_controller extends X3ui_controller
 		// load dictionary
 		$this->dict->get_wordarray(array('contexts', 'articles'));
 		
+		$area = new Area_model();
+		list($id_area, $areas) = $area->get_my_areas($id_area);
+	    
 		// get page
 		$page = $this->get_page('contexts');
 		$navbar = array($this->site->get_bredcrumb($page), array('articles' => 'index/'.$id_area.'/'.$lang));
@@ -64,8 +67,7 @@ class Contexts_controller extends X3ui_controller
 		
 		// area switcher
 		$view->content->id_area = $id_area;
-		$area = new Area_model();
-		$view->content->areas = $area->get_areas();
+		$view->content->areas = $areas;
 		
 		// language switcher
 		$view->content->lang = $lang;
@@ -277,7 +279,9 @@ window.addEvent("domready", function()
 					
 					// check if dictionary name for the context already exists
 					if ($result[1]) 
+					{
 						$mod->check_dictionary($post);
+					}
 				}
 				else 
 				{

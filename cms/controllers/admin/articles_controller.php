@@ -68,6 +68,9 @@ class Articles_controller extends X3ui_controller
 		// load dictionary
 		$this->dict->get_wordarray(array('articles'));
 		
+		$area = new Area_model();
+	    list($id_area, $areas) = $area->get_my_areas($id_area);
+	    
 		$_SESSION['referer'] = 'index/'.$id_area.'/'.$lang.'/'.$case.'/'.$id_what.'/'.$pp.'/'.$str;
 		
 		// get page
@@ -141,8 +144,7 @@ class Articles_controller extends X3ui_controller
 		
 		// area switcher
 		$view->content->id_area = $id_area;
-		$area = new Area_model();
-		$view->content->areas = $area->get_areas();
+		$view->content->areas = $areas;
 		
 		// language switcher
 		$view->content->lang = $lang;

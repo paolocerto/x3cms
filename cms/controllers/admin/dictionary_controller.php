@@ -51,6 +51,14 @@ class Dictionary_controller extends X3ui_controller
 	    // load dictionary
 		$this->dict->get_wordarray(array('dictionary'));
 		
+		$area_mod = new Area_model();
+		list($id_area, $areas) = $area_mod->get_my_areas(2);
+		
+		if ($id_area != 2)
+		{
+			$area = $area_mod->get_var($id_area, 'areas', 'name');
+		}
+		
 		if (empty($str))
 		{
             $code = (empty($code))
@@ -82,8 +90,8 @@ class Dictionary_controller extends X3ui_controller
             
             // area switcher
             $view->content->area = $area;
-            $area = new Area_model();
-            $view->content->areas = $area->get_areas();
+            
+            $view->content->areas = $areas;
             
             // language switcher
             $view->content->lang = $code;

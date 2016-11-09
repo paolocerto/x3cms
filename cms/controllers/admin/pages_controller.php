@@ -50,12 +50,15 @@ class Pages_controller extends X3ui_controller
 	 */
 	public function index($id_area, $lang = '', $xfrom = 'home')
 	{
+	    $area = new Area_model();
+	    list($id_area, $areas) = $area->get_my_areas($id_area);
+	    
 		// initialize parameters
 		$lang = (empty($lang)) 
 			? X4Route_core::$lang 
 			: $lang;
+			
 		$xfrom = str_replace('§', '/', urldecode($xfrom));
-		
 		
 		// load dictionary
 		$this->dict->get_wordarray(array('pages'));
@@ -94,8 +97,8 @@ class Pages_controller extends X3ui_controller
 		$lang = new Language_model();
 		$view->content->langs = $lang->get_languages();
 		// area switcher
-		$area = new Area_model();
-		$view->content->areas = $area->get_areas();
+		
+		$view->content->areas = $areas;
 		
 		$view->render(TRUE);
 	}

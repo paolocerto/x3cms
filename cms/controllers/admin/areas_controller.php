@@ -58,7 +58,8 @@ class Areas_controller extends X3ui_controller
 		$view->content->page = $page;
 		$view->content->navbar = $navbar;
 		$mod = new Area_model();
-		$view->content->areas = $mod->get_areas();
+		list($id_area, $areas) = $mod->get_my_areas();
+		$view->content->areas = $areas;
 		
 		$view->render(TRUE);
 	}
@@ -113,11 +114,13 @@ window.addEvent("domready", function()
 			
 			// set update
 			if ($result[1])
+			{
 				$msg->update[] = array(
 					'element' => $qs['div'],
 					'url' => urldecode($qs['url']),
 					'title' => null
 				);
+			}
 		}
 		$this->response($msg);
 	}

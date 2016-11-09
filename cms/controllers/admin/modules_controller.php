@@ -49,7 +49,10 @@ class Modules_controller extends X3ui_controller
 		// load dictionary
 		$this->dict->get_wordarray(array('modules'));
 		
-		$view = new X4View_core('container');
+		$area = new Area_model();
+	    list($id_area, $areas) = $area->get_my_areas($id_area);
+	    
+	    $view = new X4View_core('container');
 		
 		$view->content = new X4View_core('modules/module_list');
 		
@@ -59,14 +62,6 @@ class Modules_controller extends X3ui_controller
 		$view->content->navbar = $navbar;
 		$view->content->page = $page;
 		
-		$area = new Area_model();
-		// check if user can see this area
-		$areas = X4Array_helper::indicize($area->get_areas(), 'id');
-		if (!isset($areas[$id_area]))
-		{
-		    $tmp = array_keys($areas);
-		    $id_area = array_shift($tmp);
-		}
 		$view->content->id_area = $id_area;
 		$view->content->area = $area->get_by_id($id_area);
 		

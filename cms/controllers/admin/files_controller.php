@@ -52,6 +52,9 @@ class Files_controller extends X3ui_controller
 		// load dictionary
 		$this->dict->get_wordarray(array('files'));
 		
+		$amod = new Area_model();
+	    list($id_area, $areas) = $amod->get_my_areas($id_area);
+	    
 		// get page
 		$page = $this->get_page('files');
 		$navbar = array($this->site->get_bredcrumb($page));
@@ -77,8 +80,7 @@ class Files_controller extends X3ui_controller
 		$view->content->file_path = $mod->file_path;
 		
 		// area switcher
-		$amod = new Area_model();
-		$view->content->areas = $amod->get_areas();
+		$view->content->areas = $areas;
 		// type switcher
 		$view->content->types = $mod->get_types();
 		

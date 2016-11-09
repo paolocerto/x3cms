@@ -59,20 +59,75 @@ class Area_model extends X4Model_core
 	 * @param   integer $id_area Area ID
 	 * @return  array	array of area objects
 	 */
-	public function get_areas($id_area = 1) 
+	public function get_areas($id_area = 1, $priv = true) 
 	{
 		// condition
 		$where = ($id_area == 1) 
 			? '' 
 			: 'WHERE a.id = '.intval($id_area);
 			
-		$sql = 'SELECT a.*, p.level
-			FROM areas a
-			JOIN privs p ON p.id_who = '.intval($_SESSION['xuid']).' AND p.what = \'areas\' AND p.id_what = a.id AND p.level > 0
-			'.$where.'
-			ORDER BY a.id ASC';
-			
+		$join = ($priv)
+		    ? ''
+		    : 'LEFT';
+		
+        $sql = 'SELECT a.*, p.level
+            FROM areas a
+            '.$join.' JOIN privs p ON p.id_who = '.intval($_SESSION['xuid']).' AND p.what = \'areas\' AND p.id_what = a.id AND p.level > 0
+            '.$where.'
+            ORDER BY a.id ASC';
+		
 		return $this->db->query($sql);
+	}
+	
+	/**
+	 * Get areas data as an array
+	 * Join with privs table
+	 *
+	 * @param   integer $id_area Area ID
+	 * @return  array	array
+	 */
+	public function get_my_areas($id_area = 0) 
+	{
+	    $items = X4Array_helper::indicize($this->get_areas(), 'id');
+		
+	    // check user group
+	    $id_group = $this->get_var($_SESSION['xuid'], 'users', 'id_group');
+	    
+	    if ($id_group > 1)
+	    {
+	        unset($items[1]);
+	    }
+	    
+	    if ($id_area && !isset($items[$id_area]))
+	    {
+	        reset($items);
+	        $id_area = key($items);
+	    }
+	    
+	    return array($id_area, $items);
+	}
+	
+	/**
+	 * Create a tmp file where store extra areas data
+	 *
+	 * @return  void
+	 */
+	public function extra_areas() 
+	{
+		$items = $this->db->query('SELECT id, name, private FROM areas WHERE id > 3  AND xon = 1 ORDER BY id ASC');
+		
+		$a = array();
+		foreach($items as $i)
+		{
+		    $a[$i->name] = ($i->private) 
+		        ? 'private'
+		        : 'public';
+		    
+		    $a[$i->name.'_id'] = $i->id;
+		}
+		
+		$file = serialize($a);
+		file_put_contents(APATH.'files/'.SFOLDER.'/'.SFOLDER.'.txt', $file);
 	}
 	
 	/**
