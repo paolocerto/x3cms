@@ -92,7 +92,7 @@ class X4Plugin_model extends X4Model_core
 	 */
 	public function get_installed($id_area)
 	{
-	    return $this->db->query('SELECT DISTINCT m.*, p.level 
+	    return $this->db->query('SELECT DISTINCT m.*, up.level, p.level AS admin 
 			FROM modules m
 			JOIN privs p ON p.id_who = '.intval($_SESSION['xuid']).' AND p.what = \'modules\' AND p.id_what = m.id
 			JOIN uprivs up ON up.id_user = '.intval($_SESSION['xuid']).' AND (
