@@ -105,6 +105,8 @@ class Sites_controller extends X3ui_controller
 	 */
 	public function offline($id, $value = 0)
 	{
+	    $this->dict->get_words();
+	    
 		$msg = null;
 		// check permissions
 		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'sites', $id, 4);
@@ -122,7 +124,6 @@ class Sites_controller extends X3ui_controller
 			}
 			
 			// set message
-			$this->dict->get_words();
 			$msg = AdmUtils_helper::set_msg($result);
 			
 			// set update
