@@ -1009,6 +1009,9 @@ var windowHeight = function (){
 			autoSubmit: false,
 			cache: true,
 			delay: 300,
+			onSelection: function() {
+			    $(id_input).fireEvent('blur');
+			},
 			onRequest: function() {
 				$(id_input).setStyle('background', '#ddd');
 			},
