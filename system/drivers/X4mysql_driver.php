@@ -234,6 +234,10 @@ final class X4mysql_driver extends X3db_driver
 		try 
 		{
 			$res = $this->link->exec($sql);
+			
+			// check res
+			$res = intval(!($res === false));
+			
 			// to avoid errors with query without ID, like create table
 			$result = (empty($collection))
 				? array($this->link->lastInsertId(), $res)
