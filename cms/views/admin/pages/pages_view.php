@@ -55,12 +55,16 @@ $m = array();
 if ($page->url == 'home') 
 {
 	foreach($menus as $i) 
+	{
 		$m[$i->id] = $i->description;
+	}
 }
 else 
 {
 	foreach($menus as $i) 
+	{
 		if ($i->id == $page->id_menu) $m[$i->id] = $i->description;
+	}
 }
 
 if (!empty($pages)) 
@@ -120,6 +124,10 @@ if (!empty($pages))
 						
 					$actions .= ' <a class="bta" href="'.BASE_URL.'pages/seo/'.$i->id.'" title="'._SEO_TOOLS.'"><i class="fa fa-cogs fa-lg"></i></a>' ;
 					
+					if ($area != 'admin')
+					{
+					    $actions .= '<a class="bta" href="'.BASE_URL.'x3pages/edit/'.$i->id_area.'/'.$i->lang.'/'.$i->id.'/'.$i->url.'" title="'._EDIT.'"><i class="fa fa-bars fa-lg"></i></a> ';
+					}
 					// admin user
 					if ($i->level == 4) 
 					{
@@ -165,7 +173,7 @@ if (!empty($pages))
 				
 			echo '<li '.$inmenu.'><table><tr>
 					<td><a class="btm" href="'.BASE_URL.'pages/index/'.$i->id_area.'/'.$i->lang.'/'.str_replace('/', '§', $i->url).'/1" title="'._SUBPAGES.'">'.stripslashes($i->name).'</a></td>
-					<td class="aright ">'.$actions.$delete.'</td>
+					<td class="aright" style="width:10em;">'.$actions.$delete.'</td>
 					</tr></table></li>';
 		}
 	}
