@@ -65,6 +65,11 @@ if ($theme_in)
 		if ($tmp != $i->id) 
 		{
 			$tmp = $i->id;
+			
+			$minify = ($i->level == 4)
+			    ? '<a class="btl" href="'.BASE_URL.'themes/minimize/'.$i->id.'/'.$i->name.'" title="'._MINIMIZE.'"><i class="fa fa-recycle fa-lg"></i></a></td>'
+			    : '';
+			
 			echo '<tr>
 					<td><strong>'.$i->name.'</strong> <span class="xs-hidden"> - '.$i->description.'</span></td>
 					<td>'.$area.'</td>
@@ -72,7 +77,7 @@ if ($theme_in)
 					<td>'.$actions.'
 						<a class="btm" href="'.BASE_URL.'templates/index/'.$i->id.'/'.$i->name.'" title="'._TEMPLATES.'"><i class="fa fa-desktop fa-lg"></i></a> 
 						<a class="btm" href="'.BASE_URL.'menus/index/'.$i->id.'/'.$i->name.'" title="'._MENUS.'"><i class="fa fa-navicon fa-lg"></i></a>
-						<a class="btl" href="'.BASE_URL.'themes/minimize/'.$i->id.'/'.$i->name.'" title="'._MINIMIZE.'"><i class="fa fa-recycle fa-lg"></i></a></td>
+						'.$minify.'
 					<td class="aright">'.$uninstall.'</td>
 					</tr>';
 		}
