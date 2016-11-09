@@ -20,8 +20,7 @@ class X4Auth_model extends X4Model_core
 	 * In the table we should have a field named "hashkey" VARCHAR(32) 
 	 */
 	protected $areas_tables = array(
-		1 => array('table' => 'users', 'session' => 'xuid', 'username' => 'username', 'mail' => 'mail', 'last_in' => 'last_in'),
-		3 => array('table' => 'x3_members', 'session' => 'uid', 'username' => 'title', 'mail' => 'email', 'last_in' => 'last_in')
+		1 => array('table' => 'users', 'session' => 'xuid', 'username' => 'username', 'mail' => 'mail', 'last_in' => 'last_in')
 	);
 	
 	/**
@@ -33,6 +32,13 @@ class X4Auth_model extends X4Model_core
 	public function __construct($table_name)
 	{
 		parent::__construct($table_name);
+		
+		// update areas tables
+		$areas = $this->db->query('SELECT id FROM areas WHERE id > 1 AND private = 1');
+		foreach($areas as $i)
+		{
+		    $this->areas_tables[$i->id] = array('table' => 'x3_members', 'session' => 'uid', 'username' => 'title', 'mail' => 'mail', 'last_in' => 'last_in');
+		}
 	}
 	
 	/**
