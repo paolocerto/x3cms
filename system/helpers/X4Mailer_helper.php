@@ -64,7 +64,6 @@ class X4Mailer_helper
 		// Force conversion to utf-8
 		$body = iconv(mb_detect_encoding($body, mb_detect_order(), true), "UTF-8", $body);
 		
-		
 		// build mail obj
 		try 
 		{

@@ -340,8 +340,10 @@ class Page_model extends X4Model_core
 			
 			// build query for related article
 			if ($res[1])
+			{
 				$sql[] = "INSERT INTO `articles` (`updated`, `bid`, `id_area`, `lang`, `code_context`, `name`, `id_page`, `id_editor`, `date_in`, `date_out`, `content`, `module`, `param`, `xlock`, `xon`) VALUES
 					(NOW(), '".md5(time().'-'.$_SESSION['xuid'].$res[0])."', $id_area, '$lang', 1, '".$i[0]."', ".$res[0].", ".$_SESSION['xuid'].", UNIX_TIMESTAMP(), 0, '', '', '', 0, 1)";
+			}
 		}
 		
 		// performs insertion of articles

@@ -42,10 +42,10 @@ final class X4Route_core
 	 */
 	public static $areas = array(
 	    'x3cli' => 0,    // for PHP CLI
-            'admin' => 1,
-            'public' => 2,
-            'private' => 3
-        );
+        'admin' => 1,
+        'public' => 2,
+        'private' => 3
+    );
 	
 	/*
 	 * Localization options

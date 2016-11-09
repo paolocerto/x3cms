@@ -41,13 +41,13 @@ echo $form;
 			
 ?>
 <script>
-window.addEvent('domready', function()
+window.addEvent("domready", function()
 {
-	X3.droppize('upload', 'xname', '<?php echo _DROP_MSG ?>');
-	X3.single_upload('upload', 'xname');
+	X3.droppize("upload", "xname", "<?php echo _DROP_MSG ?>");
+	X3.single_upload("upload", "xname");
 });
 
 function setUploadForm(id_form, input_name) {
-	X3.uploadize(id_form, input_name, 'topic', '<?php echo BASE_URL.'files/index/'.$id_area.$url ?>');
+	X3.uploadize(id_form, input_name, "topic", "<?php echo BASE_URL.'files/index/'.$id_area.$url ?>");
 }
 </script>

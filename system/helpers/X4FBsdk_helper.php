@@ -48,8 +48,8 @@ class X4FBsdk_helper
         catch(Exception $e) 
         {
             // user not found
-            echo 'User not found';
-            die;
+            //echo 'User not found';
+            //die;
             return false;
         }
         
