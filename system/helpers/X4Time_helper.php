@@ -278,7 +278,7 @@ class X4Time_helper
 			// number of days
 			if ($absolute)
 			{
-				return $time->d;
+				return $time->days;
 			}
 			else
 			{
@@ -288,7 +288,7 @@ class X4Time_helper
 		case 'elapsed':
 			// incremental 
 			$dict = new X4Dict_model(X4Route_core::$folder, X4Route_core::$lang);
-			$d = $time->d;
+			$d = $time->days;
 			if ($d)
 			{
 				if ($d < 30)
