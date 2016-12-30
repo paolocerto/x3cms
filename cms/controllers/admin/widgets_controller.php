@@ -138,7 +138,8 @@ window.addEvent("domready", function()
 				'name' => 'id',
 				'options' => array($items, 'id', 'what', ''),
 				'disabled' => 'wid', 
-				'rule' => 'required'
+				'rule' => 'required',
+				'extra' => 'class="large"'
 			);
 			
 			// if submitted

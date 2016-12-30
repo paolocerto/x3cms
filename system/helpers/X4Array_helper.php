@@ -59,7 +59,10 @@ class X4Array_helper
 			{
 				foreach($array as $k => $v) 
 				{
-					$o[] = new Obj_opt2($k, $v);
+				    if (!is_null($v))
+				    {
+				        $o[] = new Obj_opt2($k, $v);
+				    }
 				}
 			}
 		}

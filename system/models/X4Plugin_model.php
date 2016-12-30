@@ -98,7 +98,8 @@ class X4Plugin_model extends X4Model_core
 			JOIN uprivs up ON up.id_user = '.intval($_SESSION['xuid']).' AND (
 			    REPLACE(up.privtype, \'x3_\', \'x3\') = m.name OR
 			    REPLACE(up.privtype, \'x4_\', \'x4\') = m.name OR
-			    REPLACE(up.privtype, \'x5_\', \'x5\') = m.name
+			    REPLACE(up.privtype, \'x5_\', \'x5\') = m.name OR 
+			    up.privtype = \'x3_plugins\'
 			) AND up.level > 1
 			WHERE p.id_area = '.intval($id_area).' ORDER BY m.name ASC');
 	}
