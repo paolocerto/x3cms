@@ -9,11 +9,11 @@
  */
  
 /**
- * X3search model
+ * x4search model
  *
  * @package		X3CMS
  */
-class X3search_model extends X4Model_core 
+class x4search_model extends X4Model_core 
 {
 	/**
 	 * Constructor

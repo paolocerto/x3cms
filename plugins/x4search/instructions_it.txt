@@ -1,4 +1,4 @@
-X3SEARCH
+X4SEARCH
 
 REQUISITI: nessuno
 ---
@@ -6,7 +6,7 @@ COSA FA: visualizza form di ricerca nel sito
 ---
 COME FUNZIONA: la soluzione ideale &egrave; quella di inserirlo nel template
 <?php
-	echo X4Utils_helper::module($this->site, $page, $args, 'x3search', '');
+	echo X4Utils_helper::module($this->site, $page, $args, 'x4search', '');
 ?>
 ---
 CONFIGURAZIONE

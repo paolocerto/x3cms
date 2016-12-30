@@ -8,10 +8,12 @@
  * @package		X3CMS
  */
 
-// x3get_by_key area_uninstall
+// x4get_by_key global_uninstall
 
-$mod_name = 'x3get_by_key';
+$mod_name = 'x4get_by_key';
 $required = array();
 $sql = array();
+
+$sql[] = 'DELETE FROM dictionary WHERE what = \''.$mod_name.'\'';
 
 $sql[] = 'DELETE FROM modules WHERE id = '.intval($id);

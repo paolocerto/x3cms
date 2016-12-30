@@ -9,11 +9,11 @@
  */
 
 /**
- * X3get_by_key plugin
+ * x4get_by_key plugin
  *
  * @package		X3CMS
  */
-class X3get_by_key_plugin extends X4Plugin_core implements X3plugin
+class x4get_by_key_plugin extends X4Plugin_core implements X3plugin
 {
 	/**
 	 * Constructor
@@ -53,7 +53,7 @@ class X3get_by_key_plugin extends X4Plugin_core implements X3plugin
 		{
 			if ($tag) 
 			{
-				$mod = new X3get_by_key_model();
+				$mod = new x4get_by_key_model();
 				$items = X4Pagination_helper::paginate($mod->get_articles_by_key_and_tag($page->id_area, $page->lang, $param, $tag), $pp);
 				$out .= '<div class="block"><h3>'._TAG.': '.htmlentities($tag).'</h3></div>';
 			}

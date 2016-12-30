@@ -8,12 +8,15 @@
  * @package		X3CMS
  */
 
-// x3get_by_key global_uninstall
+// x4search area_uninstall
 
-$mod_name = 'x3get_by_key';
+$mod_name = 'x4search';
 $required = array();
 $sql = array();
 
-$sql[] = 'DELETE FROM dictionary WHERE what = \''.$mod_name.'\'';
+$a = new Area_model();
+$area = $a->get_by_id($plugin->id_area);
 
+$sql[] = 'DELETE FROM param WHERE xrif = \''.$mod_name.'\' AND id_area = '.$area->id;
+$sql[] = 'DELETE FROM dictionary WHERE what = \''.$mod_name.'\' AND area = \''.$area->name.'\'';
 $sql[] = 'DELETE FROM modules WHERE id = '.intval($id);

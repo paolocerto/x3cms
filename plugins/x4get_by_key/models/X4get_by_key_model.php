@@ -9,11 +9,11 @@
  */
 
 /**
- * Model for X3get_by_key
+ * Model for X4get_by_key
  *
  * @package X3CMS
  */
-class X3get_by_key_model extends X4Model_core 
+class X4get_by_key_model extends X4Model_core 
 {
 	/**
 	 * Constructor
@@ -46,7 +46,7 @@ class X3get_by_key_model extends X4Model_core
 	    $fields[] = array(
 			'label' => null,
 			'type' => 'html',
-			'value' => '<p>'._X3GET_BY_KEY_CONFIGURATOR_MSG.'</p>'
+			'value' => '<p>'._X4GET_BY_KEY_CONFIGURATOR_MSG.'</p>'
 		);
 		
 		// options field store all possible cases and parts
@@ -61,7 +61,7 @@ class X3get_by_key_model extends X4Model_core
 		
 		// plugin option
 		$fields[] = array(
-			'label' => _X3GET_BY_KEY_OPTION,
+			'label' => _X4GET_BY_KEY_OPTION,
 			'type' => 'select',
 			'value' => $p[0],
 			'options' => array($this->get_keys($id_area, $lang), 'xkeys', 'xkeys', ''),

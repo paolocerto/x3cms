@@ -9,11 +9,11 @@
  */
 
 /**
- * X3search plugin
+ * x4search plugin
  *
  * @package		X3CMS
  */
-class X3search_plugin extends X4Plugin_core implements X3plugin
+class x4search_plugin extends X4Plugin_core implements X3plugin
 {
 	/**
 	 * Constructor
@@ -40,19 +40,19 @@ class X3search_plugin extends X4Plugin_core implements X3plugin
 	public function get_module($page, $args, $param = '')
 	{
 		// load dictionary
-		$this->dict->get_wordarray(array('x3search'));
+		$this->dict->get_wordarray(array('x4search'));
 		
 		// get plugin configuration
-		$conf = $this->site->get_module_param('x3search', $page->id_area);
+		$conf = $this->site->get_module_param('x4search', $page->id_area);
 		
 		// set label
 		$label = ($conf['label']) 
-			? '<label for="search">'._X3SEARCH_LABEL.'</label>'
+			? '<label for="search">'._X4SEARCH_LABEL.'</label>'
 			: '';
 			
 		// set placeholder
 		$placeholder = ($conf['placeholder']) 
-			? 'placeholder="'._X3SEARCH_PLACEHOLDER.'"' 
+			? 'placeholder="'._X4SEARCH_PLACEHOLDER.'"' 
 			: '';
 		
 		$out = '<form id="fsearch" method="post" action="'.BASE_URL.'search">
@@ -61,10 +61,10 @@ class X3search_plugin extends X4Plugin_core implements X3plugin
 						<div class="col-xs-8 no-pad">
 							<input type="text" class="large" name="search" id="search" '.$placeholder.' />
 						</div>
-						<button class="col-xs-4" type="submit">'._X3SEARCH_BUTTON.'</button>
+						<button class="col-xs-4" type="submit">'._X4SEARCH_BUTTON.'</button>
 					</div>
 				</form>';
-		return '<div id="x3search" class="sm-hidden">'.$out.'</div>';
+		return '<div id="x4search" class="sm-hidden">'.$out.'</div>';
 	}
 	
 	/**

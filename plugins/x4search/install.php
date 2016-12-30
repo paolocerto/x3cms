@@ -8,7 +8,7 @@
  * @package		X3CMS
  */
 
-// X3search module installer
+// x4search module installer
 
 // plugin version
 $version = '0.3';
@@ -17,7 +17,7 @@ $version = '0.3';
 $compatibility = '0.5 STABLE';
 
 // plugin name
-$mod_name = 'x3search';
+$mod_name = 'x4search';
 
 // requirements
 $required = array();
@@ -31,13 +31,13 @@ $sql1[] = "INSERT INTO param (updated, id_area, xrif, name, description, xtype, 
 $sql1[] = "INSERT INTO param (updated, id_area, xrif, name, description, xtype, xvalue, required, xlock, xon) VALUES (NOW(), $id_area, '$mod_name', 'placeholder', 'Show placeholder', '0|1', '1', 1, 0, 1)";
 
 // dictionary
-$sql1[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'it', '".$area->name."', 'x3search', '_X3SEARCH_LABEL', 'Cerca nel sito', 0, 1)";
-$sql1[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'it', '".$area->name."', 'x3search', '_X3SEARCH_PLACEHOLDER', 'Cerca nel sito', 0, 1)";
-$sql1[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'it', '".$area->name."', 'x3search', '_X3SEARCH_BUTTON', 'Cerca', 0, 1)";
+$sql1[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'it', '".$area->name."', 'x4search', '_X4SEARCH_LABEL', 'Cerca nel sito', 0, 1)";
+$sql1[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'it', '".$area->name."', 'x4search', '_X4SEARCH_PLACEHOLDER', 'Cerca nel sito', 0, 1)";
+$sql1[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'it', '".$area->name."', 'x4search', '_X4SEARCH_BUTTON', 'Cerca', 0, 1)";
 // en
-$sql1[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'en', '".$area->name."', 'x3search', '_X3SEARCH_LABEL', 'Search', 0, 1)";
-$sql1[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'en', '".$area->name."', 'x3search', '_X3SEARCH_PLACEHOLDER', 'Search in the website', 0, 1)";
-$sql1[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'en', '".$area->name."', 'x3search', '_X3SEARCH_BUTTON', 'Search', 0, 1)";
+$sql1[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'en', '".$area->name."', 'x4search', '_X4SEARCH_LABEL', 'Search', 0, 1)";
+$sql1[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'en', '".$area->name."', 'x4search', '_X4SEARCH_PLACEHOLDER', 'Search in the website', 0, 1)";
+$sql1[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'en', '".$area->name."', 'x4search', '_X4SEARCH_BUTTON', 'Search', 0, 1)";
 
 // module
 $sql1[] = "INSERT INTO modules (updated, id_area, name, description, configurable, admin, searchable, pluggable, version, xon) VALUES (NOW(), $id_area, '$mod_name', 'Search form', 1, 0, 0, 1, '$version', 0)";
