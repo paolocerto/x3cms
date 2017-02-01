@@ -22,7 +22,7 @@ class X4Files_helper
 	private static $mmedia = array('video/quicktime', 'application/vnd.rn-realmedia', 'audio/x-pn-realaudio', 'application/vnd.adobe.flash.movie', 'application/x-shockwave-flash', 'video/x-ms-wmv', 'video/avi', 'video/msvideo', 'video/x-msvideo','video/mpeg', 'video/mp4', 'video/3gpp', 'video/x-flv', 'video/ogg', 'application/ogg');
 	private static $mtemplate = array('text/html');
 // TODO: this must be defined in the administration
-	private static $mfiles = array('application/vnd.ms-excel', 'application/pdf', 'application/zip', 'application/x-zip', 'application/x-zip-compressed', 'binary/octet-stream', 'audio/mpeg', 'audio/wav', 'audio/x-wav', 'application/x-compress', 'application/x-compressed', 'multipart/x-zip');
+	private static $mfiles = array('text/plain', 'application/vnd.ms-excel', 'application/pdf', 'application/zip', 'application/x-zip', 'application/x-zip-compressed', 'binary/octet-stream', 'audio/mpeg', 'audio/wav', 'audio/x-wav', 'application/x-compress', 'application/x-compressed', 'multipart/x-zip');
 	private static $file = array();
 	
 	private static function phpv()
