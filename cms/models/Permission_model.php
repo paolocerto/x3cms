@@ -38,6 +38,14 @@ class Permission_model extends X4Model_core
 	);
 	
 	/**
+	 * @var array	tables to not set privs
+	 */
+	protected $no_privs = array(
+		'privs',
+		'logs',
+	);
+	
+	/**
 	 * Constructor: set reference table
 	 *
 	 * @return  void
@@ -531,7 +539,7 @@ class Permission_model extends X4Model_core
 		default:
 			
 			// modules and others generic tables
-			if ($table != 'privs' && $table != 'logs') 
+			if (!in_array($table, $this->no_privs)) 
 			{
 				if (in_array($prefix, $excluded))
 				{
