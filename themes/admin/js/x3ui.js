@@ -112,6 +112,8 @@ X3.append({
 	 *
 	 * @param	string		URL to send the form data. With or without the base URL prefix. Will be cleaned.
 	 * @param	mixed		Form data
+	 * @param	string		ID of the DOM container
+	 * @param	string		URL to reload the container
 	 */
 	getFormObject: function(url, data, div, reload)
 	{
@@ -129,12 +131,10 @@ X3.append({
 			method: 'post',
 			loadMethod: 'xhr',
 			data: data,
-			onRequest: function()
-			{
+			onRequest: function() {
 				X3.spinnerOn();
 			},
-			onFailure: function(xhr) 
-			{
+			onFailure: function(xhr) {
 				X3.spinnerOff();
 				// Error notification
 				X3.notification('error', xhr.responseJSON, div);
@@ -1024,27 +1024,30 @@ var windowHeight = function (){
 		var bulker = $(selector),
 			checkboxes = $$('.' + field_class);
 		$(button).setStyle('display','none');
-		bulker.addEvent('click', function() {
-			checkboxes.each(function(el) { 
-				el.checked = bulker.checked;
-			});
-			checkize(checkboxes, button);
-		});
 		
-		checkboxes.each(function(e) {
-			e.addEvent('change', function(e) {
-				checkize(checkboxes, button);
-			});
-		});
-		
-		function checkize(items, button) {
-			var chk = false;
-			items.each(function(e) {
-				if (e.checked) chk = true;
-			});
-			if (chk) $(button).setStyle('display','inline');
-			else $(button).setStyle('display','none');
-		}
+            if (bulker != null) {
+            bulker.addEvent('click', function() {
+                checkboxes.each(function(el) { 
+                    el.checked = bulker.checked;
+                });
+                checkize(checkboxes, button);
+            });
+            
+            checkboxes.each(function(e) {
+                e.addEvent('change', function(e) {
+                    checkize(checkboxes, button);
+                });
+            });
+            
+            function checkize(items, button) {
+                var chk = false;
+                items.each(function(e) {
+                    if (e.checked) chk = true;
+                });
+                if (chk) $(button).setStyle('display','inline');
+                else $(button).setStyle('display','none');
+            }
+        }
 	},
 	saccordion = function(container, toggle_class, elementClass) {
 		new Fx.Accordion($(container), toggle_class, elementClass, {
