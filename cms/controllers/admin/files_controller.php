@@ -170,7 +170,9 @@ class Files_controller extends X3ui_controller
 			}
 		}
 		else
+		{
 			echo '';
+		}
 	}
 	
 	/**
