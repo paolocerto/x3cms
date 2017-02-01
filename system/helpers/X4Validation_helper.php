@@ -33,6 +33,7 @@ class X4Validation_helper
 		array('value' => 'maxlength', 	'option' => 'maxlength: check the maximum value length', 												'param' => array(0, 'integer')),
 		array('value' => 'equal', 		'option' => 'equal: check if a value is equal to another field',										'param' => array(1, 0)),
 		array('value' => 'different', 	'option' => 'different: check if a value is different to another field', 								'param' => array(1, 0)),
+		array('value' => 'alpha',       'option' => 'alpha: check if a value contains only alphabetic chars', 						            'param' => array(0, 'text')),
 		array('value' => 'alphanumeric', 'option' => 'alphanumeric: check if a value contains only alphanumeric chars', 						'param' => array(0, 0)),
 		array('value' => 'numeric', 	'option' => 'numeric: check if a value contains only numbers', 											'param' => array(0, 0)),
 		array('value' => 'greater', 	'option' => 'greater: check if a value is greater than a value in another field', 						'param' => array(1, 0)),
@@ -104,7 +105,7 @@ class X4Validation_helper
 			
 		$e = true;
 		// check x4token
-		if (!empty($form_name) && (!isset(self::$data['x4token']) || self::$data['x4token'] != md5($_SESSION['token'].$form_name))) 
+		if (!empty($form_name) && (!isset(self::$data['x4token']) || self::$data['x4token'] != md5($_SESSION['token'].$form_name)))
 		{
 			$e = false;
 			$_SESSION['token'] = uniqid(rand(),TRUE);
@@ -306,13 +307,13 @@ class X4Validation_helper
 					{
 						if (!isset($_files[$field['name']]['tmp_name'][0]) || $_files[$field['name']]['tmp_name'][0] == '' || strlen($_files[$field['name']]['name'][0]) == 0) 
 						{
-							$field['error'][] = '_required';
+							$field['error'][] = array('msg' => '_required');
 							$e = false;
 						}
 					}
 					else if (empty($_files) || $_files[$field['name']]['tmp_name'] == '' || strlen($_files[$field['name']]['name']) == 0) 
 					{
-						$field['error'][] = '_required';
+						$field['error'][] = array('msg' => '_required');
 						$e = false;
 					}
 				}
@@ -321,15 +322,25 @@ class X4Validation_helper
 				// special case
 				if (!isset($_post[$field['name']]) || !$_post[$field['name']]) 
 				{
-					$field['error'][] = '_required';
+					$field['error'][] = array('msg' => '_required');
 					$e = false;
 				}
 				break;
-			default:		
-				if (!isset($_post[$field['name']]) || empty($_post[$field['name']])) 
+			default:
+			    
+				if (!isset($_post[$field['name']])) 
 				{
-					$field['error'][] = '_required';
+					$field['error'][] = array('msg' => '_required');
 					$e = false;
+				}
+				else
+				{
+				    $str = trim(X4Text_helper::empty_rows($_post[$field['name']]));
+				    if (empty($str))
+				    {
+				        $field['error'][] = array('msg' => '_required');
+				        $e = false;
+				    }
 				}
 				break;
 		}
@@ -387,17 +398,21 @@ class X4Validation_helper
 						{
 							if (!isset($_files[$field['name']]['tmp_name'][0]) || $_files[$field['name']]['tmp_name'][0] == '' || strlen($_files[$field['name']]['name'][0]) == 0) 
 							{
-								$field['error'][] = '_requiredif';
-								$field['related'][$field['name']] = $tok[1];
-								$field['relatedvalue'][$field['name']] = $_post[$tok[1]];
+								$field['error'][] = array(
+								    'msg' => '_requiredif',
+								    'related' => $tok[1],
+								    'relatedvalue' => $_post[$tok[1]]
+								);
 								$e = false;
 							}
 						}
 						else if (empty($_files) || (isset($_files[$field['name']]) && ($_files[$field['name']]['tmp_name'] == '' || strlen($_files[$field['name']]['name']) == 0))) 
 						{
-							$field['error'][] = '_requiredif';
-							$field['related'][$field['name']] = $tok[1];
-							$field['relatedvalue'][$field['name']] = $_post[$tok[1]];
+							$field['error'][] = array(
+                                'msg' => '_requiredif',
+                                'related' => $tok[1],
+                                'relatedvalue' => $_post[$tok[1]]
+                            );
 							$e = false;
 						}
 					}
@@ -405,9 +420,11 @@ class X4Validation_helper
 				else if (!isset($_post[$field['name']]) || empty($_post[$field['name']])) 
 				{
 					// for all other inputs
-					$field['error'][] = '_requiredif';
-					$field['related'][$field['name']] = $tok[1];
-					$field['relatedvalue'][$field['name']] = $_post[$tok[1]];
+					$field['error'][] = array(
+                        'msg' => '_requiredif',
+                        'related' => $tok[1],
+                        'relatedvalue' => $_post[$tok[1]]
+                    );
 					$e = false;
 				}
 			}
@@ -433,8 +450,10 @@ class X4Validation_helper
 				self::is_empty($field['name'])			// also the item is not set  
 			)
 		{
-			$field['error'][] = '_ifempty';
-			$field['related'][$field['name']] = $tok[1];
+			$field['error'][] = array(
+			    'msg' => '_ifempty',
+			    'related' => $tok[1]
+			);
 			$e = false;
 		}
 	}
@@ -455,8 +474,10 @@ class X4Validation_helper
 	{
 		if ($_post[$field['name']] != $_post[$tok[1]]) 
 		{
-			$field['error'][] = '_must_be_equal';
-			$field['related'][$field['name']] = $tok[1];
+			$field['error'][] = array(
+			    'msg' => '_must_be_equal',
+			    'related' => $tok[1]
+			);
 			$e = false;
 		}
 	}
@@ -477,8 +498,10 @@ class X4Validation_helper
 	{
 		if ($_post[$field['name']] == $_post[$tok[1]]) 
 		{
-			$field['error'][] = '_must_be_different';
-			$field['related'][$field['name']] = $tok[1];
+			$field['error'][] = array(
+			    'msg' => '_must_be_different',
+			    'related' => $tok[1]
+			);
 			$e = false;
 		}
 	}
@@ -502,7 +525,7 @@ class X4Validation_helper
 			$sizes = getImageSize($_files[$field['name']]['tmp_name']);
 			if ($sizes[0] > intval($tok[1]) || $sizes[1] > $tok[2]) 
 			{
-				$field['error'][] = '_image_size_is_too_big';
+				$field['error'][] = array('msg' => '_image_size_is_too_big');
 				$e = false;
 			}
 		}
@@ -526,7 +549,7 @@ class X4Validation_helper
 		{
 			if ($_files[$field['name']]['size'] > intval($tok[1])) 
 			{
-				$field['error'][] = '_file_weight_is_too_big';
+				$field['error'][] = array('msg' => '_file_weight_is_too_big');
 				$e = false;
 			}
 		}
@@ -548,7 +571,7 @@ class X4Validation_helper
 	{
 		if (!isset($_SESSION['captcha']) || strtolower($_post[$field['name']]) != strtolower($_SESSION['captcha'])) 
 		{
-			$field['error'][] = '_captcha_error';
+			$field['error'][] = array('msg' => '_captcha_error');
 			$e = false;
 		}
 	}
@@ -573,7 +596,7 @@ class X4Validation_helper
 		{
 			if (!X4Checker_helper::check_email($m)) 
 			{
-				$field['error'][] = '_invalid_mail';
+				$field['error'][] = array('msg' => '_invalid_mail');
 				$e = false;
 			}
 		}
@@ -596,7 +619,7 @@ class X4Validation_helper
 		$url = trim($_post[$field['name']]);
 		if (!X4Checker_helper::check_url($url)) 
 		{
-			$field['error'][] = '_invalid_url';
+			$field['error'][] = array('msg' => '_invalid_url');
 			$e = false;
 		}
 	}
@@ -618,7 +641,7 @@ class X4Validation_helper
 		$val = str_replace(array(' ', '-', '/'), '', $_post[$field['name']]);
 		if (!preg_match('/^([0-9])*?$/', $val)) 
 		{
-			$field['error'][] = '_must_contain_only_numbers';
+			$field['error'][] = array('msg' => '_must_contain_only_numbers');
 			$e = false;
 		}
 	}
@@ -639,8 +662,10 @@ class X4Validation_helper
 	{
 		if (!isset($_post[$tok[1]]) || strlen($_post[$tok[1]]) == 0) 
 		{
-			$field['error'][] = '_depends';
-			$field['related'][$field['name']] = $tok[1];
+			$field['error'][] = array(
+			    'msg' => '_depends',
+			    'related' => $tok[1]
+			);
 			$e = false;
 		}
 	}
@@ -661,7 +686,7 @@ class X4Validation_helper
 	{
 		if (!isset($_post[$tok[1]]) || !is_array($_post[$tok[1]]) || (!in_array($_post[$field['name']], self::$data[$tok[1]]))) 
 		{
-			$field['error'][] = '_inarray';
+			$field['error'][] = array('msg' => '_inarray');
 			$e = false;
 		}
 	}
@@ -683,7 +708,10 @@ class X4Validation_helper
 		$len = strlen($_post[$field['name']]);
 		if ($len != $tok[1]) 
 		{
-			$field['error'][] = '_wrong_length';
+			$field['error'][] = array(
+			    'msg' => '_wrong_length',
+			    'related' => $tok[1]
+			);
 			$e = false;
 		}
 	}
@@ -705,8 +733,10 @@ class X4Validation_helper
 		$len = strlen($_post[$field['name']]);
 		if ($len < $tok[1]) 
 		{
-			$field['error'][] = '_too_short';
-			$field['related'][$field['name']] = $tok[1];
+			$field['error'][] = array(
+			    'msg' => '_too_short',
+			    'related' => $tok[1]
+			);
 			$e = false;
 		}
 	}
@@ -728,10 +758,47 @@ class X4Validation_helper
 		$len = strlen($_post[$field['name']]);
 		if ($len > $tok[1]) 
 		{
-			$field['error'][] = '_too_long';
-			$field['related'][$field['name']] = $tok[1];
+			$field['error'][] = array(
+			    'msg' => '_too_long',
+			    'related' => $tok[1]
+			);
 			$e = false;
 		}
+	}
+	
+	/**
+	 * Alphabetic rule
+	 * if the value contains not alphabetic chars then catch an error
+	 *
+	 * @static
+	 * @param array		$field	Array of the field form (passed as reference)
+	 * @param array		$tok	Array of the rule parameters (rule_name, param1, param2...)
+	 * @param boolean	$e		Error status
+	 * @param array		$_post	_POST array
+	 * @param array		$_files	_FILES array
+	 * @return void
+	 */
+	private static function _alpha(&$field, $tok, &$e, $_post, $_files)
+	{
+		if (sizeof($tok) > 1)
+		{
+		    if (!preg_match('/^(['.$tok[1].']*)$/', $_post[$field['name']])) 
+            {
+                $field['error'][] = array(
+                    'msg' => '_must_contain_only',
+                    'related' => $tok[1]
+                );
+                $e = false;
+            }
+		}
+		else
+		{
+            if (!preg_match('/^([a-zA-Z]*)$/', $_post[$field['name']])) 
+            {
+                $field['error'][] = array('msg' => '_must_be_alphabetic');
+                $e = false;
+            }
+        }
 	}
 	
 	/**
@@ -750,7 +817,7 @@ class X4Validation_helper
 	{
 		if (!preg_match('/^([a-zA-Z0-9._-]*)$/', $_post[$field['name']])) 
 		{
-			$field['error'][] = '_must_be_alphanumeric';
+			$field['error'][] = array('msg' => '_must_be_alphanumeric');
 			$e = false;
 		}
 	}
@@ -772,7 +839,7 @@ class X4Validation_helper
 		$val = str_replace(',', '.', $_post[$field['name']]);
 		if (!is_numeric($val)) 
 		{
-			$field['error'][] = '_must_be_numeric';
+			$field['error'][] = array('msg' => '_must_be_numeric');
 			$e = false;
 		}
 		else 
@@ -797,7 +864,7 @@ class X4Validation_helper
 	{
 		if (!preg_match('/^\#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$/', $_post[$field['name']])) 
 		{
-			$field['error'][] = '_is_not_a_valid_color';
+			$field['error'][] = array('msg' => '_is_not_a_valid_color');
 			$e = false;
 		}
 	}
@@ -818,8 +885,10 @@ class X4Validation_helper
 	{
 		if ($_post[$field['name']] <= $_post[$tok[1]]) 
 		{
-			$field['error'][] = '_greater_than';
-			$field['related'][$field['name']] = $tok[1];
+			$field['error'][] = array(
+			    'msg' => '_greater_than',
+			    'related' => $tok[1]
+			);
 			$e = false;
 		}
 	}
@@ -840,8 +909,10 @@ class X4Validation_helper
 	{
 		if ($_post[$field['name']] > $_post[$tok[1]]) 
 		{
-			$field['error'][] = '_lower_than';
-			$field['related'][$field['name']] = $tok[1];
+			$field['error'][] = array(
+			    'msg' => '_lower_than',
+			    'related' => $tok[1]
+			);
 			$e = false;
 		}
 	}
@@ -862,8 +933,10 @@ class X4Validation_helper
 	{
 		if (is_numeric($_post[$field['name']]) && $_post[$field['name']] > floatval($tok[1])) 
 		{
-			$field['error'][] = '_lower_than';
-			$field['related'][$field['name']] = $tok[1];
+			$field['error'][] = array(
+			    'msg' => '_lower_than',
+			    'related' => $tok[1]
+			);
 			$e = false;
 		}
 	}
@@ -884,8 +957,10 @@ class X4Validation_helper
 	{
 		if (is_numeric($_post[$field['name']]) && $_post[$field['name']] < floatval($tok[1])) 
 		{
-			$field['error'][] = '_greater_than';
-			$field['related'][$field['name']] = $tok[1];
+			$field['error'][] = array(
+			    'msg' => '_greater_than',
+			    'related' => $tok[1]
+			);
 			$e = false;
 		}
 	}
@@ -915,8 +990,10 @@ class X4Validation_helper
 			$res = X4Checker_helper::isDateTime($val, 'date', $date_format); 
 			if(!$res) 
 			{
-				$field['error'][] = '_must_be_a_date';
-				$field['related'][$field['name']] = '['.$date_format.']';
+				$field['error'][] = array(
+				    'msg' => '_must_be_a_date',
+				    'related' => '['.$date_format.']'
+				);
 				$e = false;
 			}
 			else 
@@ -942,7 +1019,7 @@ class X4Validation_helper
 	{
 		if(!preg_match('/^([01][0-9]|2[0-3]):([0-5][0-9])$/', $_post[$field['name']])) 
 		{
-			$field['error'][] = '_must_be_a_time';
+			$field['error'][] = array('msg' => '_must_be_a_time');
 			$e = false;
 		}
 	}
@@ -963,7 +1040,7 @@ class X4Validation_helper
 	{
 		if(!preg_match('/^(([0-9])*):([0-5][0-9])((:([0-5][0-9]))*)$/', $_post[$field['name']])) 
 		{
-			$field['error'][] = '_must_be_a_timer';
+			$field['error'][] = array('msg' => '_must_be_a_timer');
 			$e = false;
 		}
 	}
@@ -998,7 +1075,7 @@ class X4Validation_helper
 			$res = X4Checker_helper::isDateTime($val, 'datetime', $datetime_format); 
 			if(!$res) 
 			{
-				$field['error'][] = '_must_be_a_datetime';
+				$field['error'][] = array('msg' => '_must_be_a_datetime');
 				$e = false;
 			}
 			else 
@@ -1046,8 +1123,10 @@ class X4Validation_helper
 		
 		if (strtotime($after) <= strtotime($before)) 
 		{
-			$field['error'][] = '_must_be_after';
-			$field['related'][$field['name']] = $tok[1];
+			$field['error'][] = array(
+			    'msg' => '_must_be_after',
+			    'related' => $tok[1]
+			);
 			$e = false;
 		}
 	}
@@ -1090,8 +1169,10 @@ class X4Validation_helper
 		
 		if (strtotime($after) < strtotime($before)) 
 		{
-			$field['error'][] = '_must_be_after_or_equal';
-			$field['related'][$field['name']] = $tok[1];
+			$field['error'][] = array(
+			    'msg' => '_must_be_after_or_equal',
+			    'related' => $tok[1]
+			);
 			$e = false;
 		}
 	}
@@ -1126,8 +1207,10 @@ class X4Validation_helper
 		
 		if (strtotime($before) >= strtotime($after)) 
 		{
-			$field['error'][] = '_must_be_before';
-			$field['related'][$field['name']] = $tok[1];
+			$field['error'][] = array(
+			    'msg' => '_must_be_before',
+			    'related' => $tok[1]
+			);
 			$e = false;
 		}
 	}
@@ -1148,7 +1231,7 @@ class X4Validation_helper
 	{
 		if (!preg_match('/^([0-9]) (year|month|week|day)$/', $_post[$field['name']])) 
 		{
-			$field['error'][] = '_must_be_a_periodical';
+			$field['error'][] = array('msg' => '_must_be_a_periodical');
 			$e = false;
 		}
 	}
@@ -1171,16 +1254,16 @@ class X4Validation_helper
 		switch(strlen($tmp)) 
 		{
 		case 16:
-			if (!X4Checker_helper::isCF($tmp)) 
+			if (!X4Checker_helper::isCF($tmp))
 			{
-				$field['error'][] = '_invalid_cf';
+				$field['error'][] = array('msg' => '_invalid_cf');
 				$e = false;
 			}
 			break;
 		default:
-			if (!X4Checker_helper::isPIVA($tmp)) 
+			if (!X4Checker_helper::isPIVA($tmp))
 			{
-				$field['error'][] = '_invalid_fiscal_id';
+				$field['error'][] = array('msg' => '_invalid_fiscal_id');
 				$e = false;
 			}
 			break;
@@ -1201,9 +1284,9 @@ class X4Validation_helper
 	 */
 	private static function _iban(&$field, $tok, &$e, $_post, $_files)
 	{
-		if (!X4Checker_helper::verify_iban(trim($_post[$field['name']]))) 
+		if (!X4Checker_helper::verify_iban(trim($_post[$field['name']])))
 		{
-			$field['error'][] = '_invalid_iban';
+			$field['error'][] = array('msg' => '_invalid_iban');
 			$e = false;
 		}
 	}
@@ -1224,7 +1307,7 @@ class X4Validation_helper
 	{
 		if (!X4Checker_helper::isEAN(trim($_post[$field['name']]))) 
 		{
-			$field['error'][] = '_invalid_ean';
+			$field['error'][] = array('msg' => '_invalid_ean');
 			$e = false;
 		}
 	}
@@ -1245,7 +1328,7 @@ class X4Validation_helper
 	{
 		if (!is_dir(trim($_post[$field['name']])))
 		{
-			$field['error'][] = '_invalid_directory';
+			$field['error'][] = array('msg' => '_invalid_directory');
 			$e = false;
 		}
 	}

@@ -88,7 +88,7 @@ class X3ui_controller extends X4Cms_controller
 		{
 			if (isset($i['error']))
 			{
-				foreach($i['error'] as $ii)
+				foreach($i['error'] as $e)
 				{
 					// set the available label
 					$label = ((is_null($i['label']) && isset($i['alabel'])) || isset($i['alabel']))
@@ -96,12 +96,12 @@ class X3ui_controller extends X4Cms_controller
 						: $i['label'];
 					
 					// for related fields
-					if (isset($i['related'][$i['name']]))
+					if (isset($e['related']))
 					{
 						$src = array('XXXRELATEDXXX');
 						$rpl = array();
 						
-						$related = $i['related'][$i['name']];
+						$related = $e['related'];
 						if (isset($fields[$related]))
 						{
 							// if is a related field
@@ -115,17 +115,17 @@ class X3ui_controller extends X4Cms_controller
 							$rpl[] = $related;
 						}
 						
-						if (isset($i['relatedvalue'][$i['name']]))
+						if (isset($e['relatedvalue']))
 						{
 							$src[] = 'XXXVALUEXXX';
-							$rpl[] = $i['relatedvalue'][$i['name']];
+							$rpl[] = $e['relatedvalue'];
 						}
 									
-						$error .= '<br /><u>'.$label.'</u> '.str_replace($src, $rpl, $dict->get_word($ii, 'form'));
+						$error .= '<br /><u>'.$label.'</u> '.str_replace($src, $rpl, $dict->get_word($e['msg'], 'form'));
 					}
 					else
 					{
-						$error .= '<br /><u>'.$label.'</u> '.$dict->get_word($ii, 'form');
+						$error .= '<br /><u>'.$label.'</u> '.$dict->get_word($e['msg'], 'form');
 					}
 				}
 			}

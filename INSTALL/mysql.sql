@@ -409,6 +409,8 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'admin', 'form', '_IMAGE_SIZE_IS_TOO_BIG', 'le dimensioni, in pixel, sono superiori al consentito', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_FILE_WEIGHT_IS_TOO_BIG', 'le dimensioni, in Kilobyte, sono superiori al consentito', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_MUST_CONTAIN_ONLY_NUMBERS', 'deve contenere solo numeri', 0, 1),
+(NOW(), 'it', 'admin', 'form', '_MUST_CONTAIN_ONLY', 'deve contenere solo "XXXRELATEDXXX"', 0, 1),
+(NOW(), 'it', 'admin', 'form', '_MUST_BE_ALPHABETIC', 'deve contenere solo lettere dell\'alfabeto', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_MUST_BE_ALPHANUMERIC', 'deve contenere solo numeri e lettere', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_MUST_BE_A_TIME', 'deve essere un orario nel formato HH:MM', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_MUST_BE_A_TIMER', 'deve essere un numero di ore e minuti nel formato H:MM', 0, 1),
@@ -420,7 +422,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'admin', 'form', '_MUST_BE_AFTER', 'deve essere data successiva a "XXXRELATEDXXX"', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_MUST_BE_AFTER_OR_EQUAL', 'deve essere una data successiva o al limite uguale a "XXXRELATEDXXX"', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_MUST_BE_BEFORE', 'deve essere data precedente a "XXXRELATEDXXX"', 0, 1),
-(NOW(), 'it', 'admin', 'form', '_WRONG_LENGTH', 'numero di caratteri sbagliato', 0, 1),
+(NOW(), 'it', 'admin', 'form', '_WRONG_LENGTH', 'numero di caratteri sbagliato (XXXRELATEDXXX)', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_GREATER_THAN', 'deve essere maggiore di "XXXRELATEDXXX".', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_LOWER_THAN', 'deve essere minore di "XXXRELATEDXXX".', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_IS_NOT_A_VALID_COLOR', 'non &egrave; un colore valido', 0, 1),
@@ -988,6 +990,8 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'admin', 'form', '_IMAGE_SIZE_IS_TOO_BIG', 'the size in pixel of uploading file is too big', 0, 1),
 (NOW(), 'en', 'admin', 'form', '_FILE_WEIGHT_IS_TOO_BIG', 'the weight in kilobyte of uploading file is too big', 0, 1),
 (NOW(), 'en', 'admin', 'form', '_MUST_CONTAIN_ONLY_NUMBERS', 'can contain only numbers', 0, 1),
+(NOW(), 'en', 'admin', 'form', '_MUST_CONTAIN_ONLY', 'can contain only "XXXRELATEDXXX"', 0, 1),
+(NOW(), 'en', 'admin', 'form', '_MUST_BE_ALPHABETIC', 'can contain only alphabetic chars', 0, 1),
 (NOW(), 'en', 'admin', 'form', '_MUST_BE_ALPHANUMERIC', 'can contains only alphanumeric', 0, 1),
 (NOW(), 'en', 'admin', 'form', '_MUST_BE_A_TIME', 'must be a time HH:MM format', 0, 1),
 (NOW(), 'en', 'admin', 'form', '_MUST_BE_A_TIMER', 'must be a number of hours and minutes in H:MM format', 0, 1),
@@ -999,7 +1003,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'admin', 'form', '_MUST_BE_AFTER', 'must be a later date than "XXXRELATEDXXX"', 0, 1),
 (NOW(), 'en', 'admin', 'form', '_MUST_BE_AFTER_OR_EQUAL', 'must be a later date or at least equal than "XXXRELATEDXXX"', 0, 1),
 (NOW(), 'en', 'admin', 'form', '_MUST_BE_BEFORE', 'must be an earlier date than "XXXRELATEDXXX"', 0, 1),
-(NOW(), 'en', 'admin', 'form', '_WRONG_LENGTH', 'wrong length', 0, 1),
+(NOW(), 'en', 'admin', 'form', '_WRONG_LENGTH', 'wrong length (XXXRELATEDXXX)', 0, 1),
 (NOW(), 'en', 'admin', 'form', '_GREATER_THAN', 'have to be greater than "XXXRELATEDXXX".', 0, 1),
 (NOW(), 'en', 'admin', 'form', '_LOWER_THAN', 'have to be lower than "XXXRELATEDXXX"', 0, 1),
 (NOW(), 'en', 'admin', 'form', '_IS_NOT_A_VALID_COLOR', 'is not a valid color', 0, 1),
@@ -1471,7 +1475,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'public', 'form', '_IMAGE_SIZE_IS_TOO_BIG', 'le dimensioni, in pixel, sono superiori al consentito', 0, 1),
 (NOW(), 'it', 'public', 'form', '_FILE_WEIGHT_IS_TOO_BIG', 'le dimensioni, in Kilobyte, sono superiori al consentito', 0, 1),
 
-(NOW(), 'it', 'public', 'form', '_WRONG_LENGTH', 'numero di caratteri sbagliato', 0, 1),
+(NOW(), 'it', 'public', 'form', '_WRONG_LENGTH', 'numero di caratteri sbagliato (XXXRELATEDXXX)', 0, 1),
 (NOW(), 'it', 'public', 'form', '_TOO_SHORT', 'ha una lunghezza inferiore a quella richiesta [XXXRELATEDXXX].', 0, 1),
 (NOW(), 'it', 'public', 'form', '_TOO_LONG', 'ha una lunghezza superiore a quella richiesta [XXXRELATEDXXX].', 0, 1),
 (NOW(), 'it', 'public', 'form', '_MUST_BE_EQUAL', 'non coincide con "XXXRELATEDXXX".', 0, 1),
@@ -1484,6 +1488,9 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'public', 'form', '_MUST_CONTAIN_ONLY_NUMBERS', 'deve contenere solo numeri', 0, 1),
 (NOW(), 'it', 'public', 'form', '_MUST_BE_A_DATE', 'deve essere una data nel formato aaaa-mm-gg', 0, 1),
 (NOW(), 'it', 'public', 'form', '_CAPTCHA_ERROR', 'Il codice di controllo con corrisponde.', 0, 1),
+
+(NOW(), 'it', 'public', 'form', '_MUST_CONTAIN_ONLY', 'deve contenere solo "XXXRELATEDXXX"', 0, 1),
+(NOW(), 'it', 'public', 'form', '_MUST_BE_ALPHABETIC', 'deve contenere solo lettere dell\'alfabeto', 0, 1),
 
 (NOW(), 'it', 'public', 'form', '_MUST_BE_ALPHANUMERIC', 'deve contenere solo numeri e lettere', 0, 1),
 (NOW(), 'it', 'public', 'form', '_MUST_BE_A_TIME', 'deve essere un orario nel formato HH:MM', 0, 1),
@@ -1629,7 +1636,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'public', 'form', '_IMAGE_SIZE_IS_TOO_BIG', 'the size in pixel of uploading file is too big', 0, 1),
 (NOW(), 'en', 'public', 'form', '_FILE_WEIGHT_IS_TOO_BIG', 'the weight in kilobyte of uploading file is too big', 0, 1),
 
-(NOW(), 'en', 'public', 'form', '_WRONG_LENGTH', 'wrong length', 0, 1),
+(NOW(), 'en', 'public', 'form', '_WRONG_LENGTH', 'wrong length (XXXRELATEDXXX)', 0, 1),
 (NOW(), 'en', 'public', 'form', '_TOO_SHORT', 'is too short [XXXRELATEDXXX].', 0, 1),
 (NOW(), 'en', 'public', 'form', '_TOO_LONG', 'is too long [XXXRELATEDXXX].', 0, 1),
 (NOW(), 'en', 'public', 'form', '_MUST_BE_EQUAL', 'is different from "XXXRELATEDXXX".', 0, 1),
@@ -1642,6 +1649,9 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'public', 'form', '_MUST_CONTAIN_ONLY_NUMBERS', 'can contain only numbers', 0, 1),
 (NOW(), 'en', 'public', 'form', '_MUST_BE_A_DATE', 'expected aaaa-mm-gg format', 0, 1),
 (NOW(), 'en', 'public', 'form', '_CAPTCHA_ERROR', 'captcha is wrong.', 0, 1),
+
+(NOW(), 'en', 'public', 'form', '_MUST_CONTAIN_ONLY', 'can contain only "XXXRELATEDXXX"', 0, 1),
+(NOW(), 'en', 'public', 'form', '_MUST_BE_ALPHABETIC', 'can contain only alphabetic chars', 0, 1),
 
 (NOW(), 'en', 'public', 'form', '_MUST_BE_ALPHANUMERIC', 'can contains only alphanumeric', 0, 1),
 (NOW(), 'en', 'public', 'form', '_MUST_BE_A_TIME', 'must be a time HH:MM format', 0, 1),
@@ -1796,6 +1806,8 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'private', 'form', '_FILE_WEIGHT_IS_TOO_BIG', 'le dimensioni, in Kilobyte, sono superiori al consentito', 0, 1),
 (NOW(), 'it', 'private', 'form', '_MUST_CONTAIN_ONLY_NUMBERS', 'deve contenere solo numeri', 0, 1),
 
+(NOW(), 'it', 'private', 'form', '_MUST_CONTAIN_ONLY', 'deve contenere solo "XXXRELATEDXXX"', 0, 1),
+(NOW(), 'it', 'private', 'form', '_MUST_BE_ALPHABETIC', 'deve contenere solo lettere dell\'alfabeto', 0, 1),
 (NOW(), 'it', 'private', 'form', '_MUST_BE_ALPHANUMERIC', 'deve contenere solo numeri e lettere', 0, 1),
 (NOW(), 'it', 'private', 'form', '_MUST_BE_A_TIME', 'deve essere un orario nel formato HH:MM', 0, 1),
 (NOW(), 'it', 'private', 'form', '_MUST_BE_A_TIMER', 'deve essere un numero di ore e minuti nel formato H:MM', 0, 1),
@@ -1928,6 +1940,9 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'private', 'form', '_IMAGE_SIZE_IS_TOO_BIG', 'the size in pixel of uploading file is too big', 0, 1),
 (NOW(), 'en', 'private', 'form', '_FILE_WEIGHT_IS_TOO_BIG', 'the weight in kilobyte of uploading file is too big', 0, 1),
 (NOW(), 'en', 'private', 'form', '_MUST_CONTAIN_ONLY_NUMBERS', 'can contain only numbers', 0, 1),
+
+(NOW(), 'en', 'private', 'form', '_MUST_CONTAIN_ONLY', 'can contain only "XXXRELATEDXXX"', 0, 1),
+(NOW(), 'en', 'private', 'form', '_MUST_BE_ALPHABETIC', 'can contain only alphabetic chars', 0, 1)
 
 (NOW(), 'en', 'private', 'form', '_MUST_BE_ALPHANUMERIC', 'can contains only alphanumeric', 0, 1),
 (NOW(), 'en', 'private', 'form', '_MUST_BE_A_TIME', 'must be a time HH:MM format', 0, 1),
