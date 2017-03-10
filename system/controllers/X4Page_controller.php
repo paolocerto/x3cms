@@ -138,13 +138,13 @@ class X4Page_controller extends X4Cms_controller
 
 			if (!$redirect)
 			{
-			header('HTTP/1.0 404 Not Found');
-			header('Location: '.BASE_URL.'msg/message/_page_not_found');
+                header('HTTP/1.0 404 Not Found');
+                header('Location: '.BASE_URL.'msg/message/_page_not_found');
 			}
 			else
 			{
 			// redirect to
-			header('Location: '.$this->site->site->domain.'/'.$redirect->url, true, $redirect->redirect_code);
+			    header('Location: '.$this->site->site->domain.'/'.$redirect->url, true, $redirect->redirect_code);
 			}
 		}
 	}
