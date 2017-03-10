@@ -719,13 +719,14 @@ class Restler
             //echo PHP_EOL."Found $url ";
             //print_r($call);
             $p = $call->defaults;
+            
             foreach ($call->arguments as $key => $value) {
                 //echo "$key => $value \n";
                 if (isset($params[$key])) {
                     $p[$value] = $params[$key];
                 }
             }
-            $call->arguments = $p;
+            $call->arguments = array_filter($p);
             return $call;
         }
 
