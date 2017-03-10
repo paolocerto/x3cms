@@ -335,12 +335,24 @@ class X4Validation_helper
 				}
 				else
 				{
-				    $str = trim(X4Text_helper::empty_rows($_post[$field['name']]));
-				    if (empty($str))
+				    if (is_array($_post[$field['name']]))
 				    {
-				        $field['error'][] = array('msg' => '_required');
-				        $e = false;
+				        $arr = array_filter($_post[$field['name']]);
+				        if (empty($arr))
+                        {
+                            $field['error'][] = array('msg' => '_required');
+                            $e = false;
+                        }
 				    }
+				    else
+				    {
+                        $str = trim(X4Text_helper::empty_rows($_post[$field['name']]));
+                        if (empty($str))
+                        {
+                            $field['error'][] = array('msg' => '_required');
+                            $e = false;
+                        }
+                    }
 				}
 				break;
 		}
