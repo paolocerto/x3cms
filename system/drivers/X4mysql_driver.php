@@ -25,7 +25,7 @@ final class X4mysql_driver extends X3db_driver
 	 * Sets up the database configuration
 	 *
 	 */
-	public function __construct($name = 'default')
+	public function __construct($name = 'default', $adb = '')
 	{
 		if (isset(X4Core_core::$db[$name]))
 		{

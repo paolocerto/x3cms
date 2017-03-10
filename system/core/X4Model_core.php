@@ -45,16 +45,17 @@ abstract class X4Model_core
 	 *
 	 * @param   string	table name
 	 * @param   string	database name
+	 * @param   string	alternative database name
 	 * @return  void
 	 */
-	public function __construct($table_name, $db_name = 'default')
+	public function __construct($table_name, $db_name = 'default', $adb = '')
 	{
 		if ((is_object($this->db) && X4Db_core::$instances[$db_name] != $this->db) || !is_object($this->db)) 
 		{
 			// set the driver
 			$driver = 'X4'.X4Core_core::$db[$db_name]['db_type'].'_driver';
 			// Load the database
-			$this->db = new $driver($db_name);
+			$this->db = new $driver($db_name, $adb);
 		}
 		$this->table = $table_name;
 	}
