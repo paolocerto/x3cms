@@ -14,7 +14,7 @@
 		<th><?php echo _AREA ?></th>
 		<th></th>
 		<th style="width:12em;"><?php echo _ACTIONS ?></th>
-		<th style="width:4em;"></th>
+		<th style="width:6em;"></th>
 	</tr>
 	
 <?php
@@ -78,7 +78,7 @@ if ($theme_in)
 						<a class="btm" href="'.BASE_URL.'templates/index/'.$i->id.'/'.$i->name.'" title="'._TEMPLATES.'"><i class="fa fa-desktop fa-lg"></i></a> 
 						<a class="btm" href="'.BASE_URL.'menus/index/'.$i->id.'/'.$i->name.'" title="'._MENUS.'"><i class="fa fa-navicon fa-lg"></i></a>
 						'.$minify.'
-					<td class="aright">'.$uninstall.'</td>
+					<td>'.$uninstall.'</td>
 					</tr>';
 		}
 		else 
@@ -88,7 +88,7 @@ if ($theme_in)
 					<td></td>
 					<td>'.$area.'</td>
 					<td></td>
-					<td class="aright"></td>
+					<td></td>
 					</tr>';
 		}
 	}
