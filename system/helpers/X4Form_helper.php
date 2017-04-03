@@ -374,7 +374,7 @@ class X4Form_helper
 				$tmp = ($e['folder'] == 'img') 
 					? '<br /><img class="thumb dblock" src="'.FPATH.$e['folder'].'/'.$e['old'].'" alt="thumb" />' 
 					: '';
-				$tmp .= ' <a href="'.FPATH.$e['folder'].'/'.$e['old'].'" title="">'.$e['old'].'</a><br />';
+				$tmp .= ' <a target="_blank" href="'.FPATH.$e['folder'].'/'.$e['old'].'" title="">'.$e['old'].'</a><br />';
 			}
 			elseif (isset($e['aold']))
 			{
