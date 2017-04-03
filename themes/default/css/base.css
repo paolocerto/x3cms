@@ -12,11 +12,11 @@ ul {list-style-type:square;}
 ul, ol {margin-left:1em;padding-left:0;list-style-position:inside;}
 
 /* form */
-form {padding:0;}
+form {padding:0;width:100%;}
 label {display:block;margin-top:1em;}
 textarea {width:100%;height:100px;padding:.5em 1em;}
-input[type=text], select {min-width:50%;padding:.5em 1em;}
-input.large {width:100%;}
+input[type=text], select {min-width:50%;padding:.4em 1em;}
+input.large, select.large, textarea.large, button.large {width:100%;}
 input.check input.radio {width:4em !important;vertical-align:baseline;}
  
 .radiobox {min-width:20%;display:inline-block;padding:0 10px;}
@@ -28,6 +28,11 @@ select.multiple_select {vertical-align:top;padding:.2em .5em;border:1px solid #c
 button, a.button {background:#B0BEC5;color:#fff;border:none;padding:.5em 1.5em;border-radius:0;cursor:pointer;}
 .buttons {margin-top:1.5em;text-align:center}
 .buttons button {margin:0 .5em;}
+
+table {border:none;width:100%;}
+tr {border-bottom:1px solid #ccc;}
+th {padding:.2em 1em;text-align:center;color:#333;font-weight:bold;background:#eee;}
+td {color:#333;padding:.2em 1em;vertical-align:top;}
 
 /* classes */
 .band {margin:0;}
@@ -41,6 +46,14 @@ button, a.button {background:#B0BEC5;color:#fff;border:none;padding:.5em 1.5em;b
 .dblock {display:block;}
 .hidden {display:none;}
 
+.clearfix:after {
+    content: ".";
+    display: block;
+    clear: both;
+    visibility: hidden;
+    line-height: 0;
+    height: 0;
+}
 .no-pad {padding:0;}
 .padded {padding:1em;}
 .pad-top {padding-top:1em;}
@@ -60,6 +73,7 @@ button, a.button {background:#B0BEC5;color:#fff;border:none;padding:.5em 1.5em;b
 .triple-gap-top {margin-top:3em;}
 
 .small {font-size:.85em;}
+.xsmall {font-size:.8em;}
 .suggestion {font-size:0.85em;margin-left:.5em;}
 .border-top {border-top:1px solid #ccc;}
 .text-center, .acenter {text-align:center;}
@@ -74,7 +88,7 @@ button, a.button {background:#B0BEC5;color:#fff;border:none;padding:.5em 1.5em;b
 .borange {background:#fe8702;}
 .blightblue {background:#0dcdfe;}
 .bred {background:#e00;}
-
+.blightgray {background:#eee;}
 .red {color:#e00;} 
 
 /* containers */
@@ -114,6 +128,14 @@ button, a.button {background:#B0BEC5;color:#fff;border:none;padding:.5em 1.5em;b
 #footer {clear:both;margin-top:2em;color:#999;}
 #footer a {color:#333;}
 #footer a:hover {color:#ee6600;}
+
+/* pager */
+.pager {text-align:center;}
+.pager_item {padding:.3em .6em;color:#eee;background:#7e8890;margin-right:.2em;border-radius:2px}
+.pager_arrow {padding:.3em .8em;color:#eee;background:#7e8890;margin-right:.2em;border-radius:2px}
+.pager_item:hover, .pager_arrow:hover {color:#7e8890;background:#f3f2f2;text-decoration:none;}
+.pager_active {padding:.3em .6em;color:#7e8890;background:#f3f2f2;margin-right:.2em;border-radius:2px}
+
 
 /* online editor */
 .edit {font-size:.85em;font-weight:bold;padding:.5em 0;}
