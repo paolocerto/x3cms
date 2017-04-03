@@ -84,7 +84,7 @@ if ($plugged || $pluggable)
                 $actions = '<a class="btl" href="'.BASE_URL.'modules/set/xon/'.$i->id.'/'.(($i->xon+1)%2).'" title="'._STATUS.' '.$status.'"><i class="fa fa-lightbulb-o fa-lg '.$on_status.'"></i></a>';
                 
                 // admin user
-                if ($i->level == 4 && $i->admin > 1) 
+                if ($i->level == 4 && $i->administrator > 1) 
                 {
                     $uninstall ='<a class="btl" href="'.BASE_URL.'modules/set/xlock/'.$i->id.'/'.(($i->xlock+1)%2).'" title="'._STATUS.' '.$lock.'"><i class="fa fa-'.$lock_status.' fa-lg"></i></a> 
                         <a class="bta" href="'.BASE_URL.'modules/uninstall/'.$i->id.'" title="'._UNINSTALL.'"><i class="fa fa-upload fa-lg"></i></a>';
