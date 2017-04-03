@@ -1942,7 +1942,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'private', 'form', '_MUST_CONTAIN_ONLY_NUMBERS', 'can contain only numbers', 0, 1),
 
 (NOW(), 'en', 'private', 'form', '_MUST_CONTAIN_ONLY', 'can contain only "XXXRELATEDXXX"', 0, 1),
-(NOW(), 'en', 'private', 'form', '_MUST_BE_ALPHABETIC', 'can contain only alphabetic chars', 0, 1)
+(NOW(), 'en', 'private', 'form', '_MUST_BE_ALPHABETIC', 'can contain only alphabetic chars', 0, 1),
 
 (NOW(), 'en', 'private', 'form', '_MUST_BE_ALPHANUMERIC', 'can contains only alphanumeric', 0, 1),
 (NOW(), 'en', 'private', 'form', '_MUST_BE_A_TIME', 'must be a time HH:MM format', 0, 1),
