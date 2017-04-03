@@ -22,7 +22,13 @@ class X4Files_helper
 	private static $mmedia = array('video/quicktime', 'application/vnd.rn-realmedia', 'audio/x-pn-realaudio', 'application/vnd.adobe.flash.movie', 'application/x-shockwave-flash', 'video/x-ms-wmv', 'video/avi', 'video/msvideo', 'video/x-msvideo','video/mpeg', 'video/mp4', 'video/3gpp', 'video/x-flv', 'video/ogg', 'application/ogg');
 	private static $mtemplate = array('text/html');
 // TODO: this must be defined in the administration
-	private static $mfiles = array('text/plain', 'application/vnd.ms-excel', 'application/pdf', 'application/zip', 'application/x-zip', 'application/x-zip-compressed', 'binary/octet-stream', 'audio/mpeg', 'audio/wav', 'audio/x-wav', 'application/x-compress', 'application/x-compressed', 'multipart/x-zip');
+	private static $mfiles = array('text/plain', 'application/pdf', 
+	    'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 
+	    'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+	    'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+	    'application/zip', 'application/x-zip', 'application/x-zip-compressed', 
+	    'application/vnd.oasis.opendocument.text', 'application/vnd.oasis.opendocument.presentation', 'application/vnd.oasis.opendocument.spreadsheet',
+	    'binary/octet-stream', 'audio/mpeg', 'audio/wav', 'audio/x-wav', 'application/x-compress', 'application/x-compressed', 'multipart/x-zip');
 	private static $file = array();
 	
 	private static function phpv()
@@ -82,6 +88,14 @@ class X4Files_helper
 					}
 					break;
 				case 'xls':
+				case 'xlsx':
+				case 'doc':
+				case 'docx':
+				case 'ppt':
+				case 'pptx':
+				case 'odt':
+				case 'odp':
+				case 'ods':
 				default:
 					return ($folder)
 						? 'files'
@@ -139,6 +153,14 @@ class X4Files_helper
 					: 3;
 				break;
 			case 'xls':
+            case 'xlsx':
+            case 'doc':
+            case 'docx':
+            case 'ppt':
+            case 'pptx':
+            case 'odt':
+            case 'odp':
+            case 'ods':
 			default:
 				return ($folder)
 					? 'files'
