@@ -124,10 +124,6 @@ if (!empty($pages))
 						
 					$actions .= ' <a class="bta" href="'.BASE_URL.'pages/seo/'.$i->id.'" title="'._SEO_TOOLS.'"><i class="fa fa-cogs fa-lg"></i></a>' ;
 					
-					if ($area != 'admin')
-					{
-					    $actions .= '<a class="bta" href="'.BASE_URL.'x3pages/edit/'.$i->id_area.'/'.$i->lang.'/'.$i->id.'/'.$i->url.'" title="'._EDIT.'"><i class="fa fa-bars fa-lg"></i></a> ';
-					}
 					// admin user
 					if ($i->level == 4) 
 					{
