@@ -64,7 +64,7 @@ class Area_model extends X4Model_core
 		// condition
 		$where = ($id_area == 1) 
 			? '' 
-			: 'WHERE a.id = '.intval($id_area);
+			: ' AND a.id = '.intval($id_area);
 			
 		$join = ($priv)
 		    ? ''
@@ -73,7 +73,7 @@ class Area_model extends X4Model_core
         $sql = 'SELECT a.*, p.level
             FROM areas a
             '.$join.' JOIN privs p ON p.id_who = '.intval($_SESSION['xuid']).' AND p.what = \'areas\' AND p.id_what = a.id AND p.level > 0
-            '.$where.'
+            WHERE a.xon = 1 '.$where.'
             ORDER BY a.id ASC';
 		
 		return $this->db->query($sql);
