@@ -104,6 +104,7 @@ CREATE TABLE IF NOT EXISTS `articles` (
   `name` varchar(255) NOT NULL,
   `tags` text NOT NULL,
   `content` text NOT NULL,
+  `ftext` text NOT NULL,
   `js` text NOT NULL,
   `excerpt` tinyint(1) NOT NULL,
   `author` varchar(255) NOT NULL,
