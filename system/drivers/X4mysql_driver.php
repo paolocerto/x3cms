@@ -312,9 +312,17 @@ final class X4mysql_driver extends X3db_driver
 	 */
 	public function escape($value)
 	{
-		$value = trim($value);
-		$this->link or $this->connect();
-		return $this->link->quote($value);
+		if (is_array($value))
+		{
+		    //print_r($value);
+		    //die;
+		}
+		else
+		{
+		    $value = trim($value);
+		    $this->link or $this->connect();
+		    return $this->link->quote($value);
+		}
 	}
 	
 	/**
