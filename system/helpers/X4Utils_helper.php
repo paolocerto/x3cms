@@ -425,14 +425,14 @@ function save_article(bid, content) {
 					$label = ((is_null($i['label']) && isset($i['alabel'])) || isset($i['alabel']))
 						? $i['alabel']
 						: $i['label'];
-						
+					
 					// for related fields
-					if (isset($i['related'][$i['name']]))
+					if (isset($ii['related']))
 					{
 						$src = array('XXXRELATEDXXX');
 						$rpl = array();
 						
-						$related = $i['related'][$i['name']];
+						$related = $ii['related'];
 						if (isset($fields[$related]))
 						{
 							// if is a related field
