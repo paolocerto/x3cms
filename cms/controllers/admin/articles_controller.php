@@ -850,7 +850,7 @@ window.addEvent("domready", function()
 			'label' => _CATEGORY,
 			'type' => 'select',
 			'value' => $item->category,
-			'options' => array($camod->get_categories($item->id_area, $item->lang), 'name', 'description', 0),
+			'options' => array($camod->get_categories($item->id_area, $item->lang), 'name', 'title', 0),
 			'name' => 'category',
 			'extra' => 'class="large"'
 		);
