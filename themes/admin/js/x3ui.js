@@ -341,6 +341,9 @@ X3.append({
 	
 	uploadize: function(id_form, id_file_input, div, reload){
 		if ('FormData' in window && X3.inputFiles !=  null) {
+		    if (X3.form == null) {
+		        X3.form = document.id(id_form);
+		    }
 			var req_options = X3.getFormUploadObject(X3.form.get('action'), id_form, div, reload);
 			var uploadReq = new Request.File(req_options);
 			var inputname = X3.input.get('name');
