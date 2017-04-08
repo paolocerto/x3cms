@@ -292,8 +292,10 @@ class Page_model extends X4Model_core
 				'id_page' => $res[0], 
 				'name' => $array['name'],
 				'code_context' => 1,
+				'content' => '<h1>'.$array['name'].'</h1>',
 				'date_in' => time(),
-				'id_editor' => $_SESSION['xuid']
+				'id_editor' => $_SESSION['xuid'],
+				'xon' => 1
 			);
 			
 			// insert empty article
