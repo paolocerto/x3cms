@@ -446,17 +446,18 @@ function save_article(bid, content) {
 							$rpl[] = $related;
 						}
 						
-						if (isset($i['relatedvalue'][$i['name']]))
+						if (isset($ii['relatedvalue']))
 						{
 							$src[] = 'XXXVALUEXXX';
-							$rpl[] = $i['relatedvalue'][$i['name']];
+							$rpl[] = $ii['relatedvalue'];
 						}
-									
-						$msg .= '<br /><u>'.$label.'</u> '.str_replace($src, $rpl, $dict->get_word($ii, 'form'));
+						
+						$msg .= '<br /><u>'.$label.'</u> '.str_replace($src, $rpl, $dict->get_word($ii['msg'], 'form'));
 					}
 					else
 					{
-						$msg .= '<br /><u>'.$label.'</u> '.$dict->get_word($ii, 'form');
+					    
+						$msg .= '<br /><u>'.$label.'</u> '.$dict->get_word($ii['msg'], 'form');
 					}
 				}
 			}
@@ -492,9 +493,9 @@ function save_article(bid, content) {
 				foreach($i['error'] as $ii)
 				{
 					// for related fields
-					if (isset($i['related'][$i['name']]))
+					if (isset($ii['related']))
 					{
-						$related = $i['related'][$i['name']];
+						$related = $ii['related'];
 						if (isset($fields[$related]))
 						{
 							// if is a related field
@@ -508,11 +509,11 @@ function save_article(bid, content) {
 							$rpl = $related;
 						}
 									
-						$msg = str_replace('XXXRELATEDXXX', $rpl, $dict->get_word($ii, 'form'));
+						$msg = str_replace('XXXRELATEDXXX', $rpl, $dict->get_word($ii['msg'], 'form'));
 					}
 					else
 					{
-						$msg = $dict->get_word($ii, 'form');
+						$msg = $dict->get_word($ii['msg'], 'form');
 					}
 					
 					$error[$i['name']] = addslashes(html_entity_decode($msg));
@@ -693,7 +694,9 @@ function save_article(bid, content) {
 			return $m->get_module($page, $args, $param);
 		}
 		else 
+		{
 			return '';
+		}
 	}
 	
 	/**
@@ -722,7 +725,9 @@ function save_article(bid, content) {
 		foreach($sections as $i)
 		{
 			if (!empty($i))
+			{
 				return false;
+			}
 		}
 		return true;
 	}
@@ -1064,7 +1069,7 @@ function save_article(bid, content) {
 	 * @param integer	$levels number of levels to display
 	 * @return string
 	 */
-	public static function build_bootstrap_menu($ordinal, $items, $levels = 1)
+	public static function build_bootstrap_menu($ordinal, $items, $levels = 1, $home = false)
 	{
 		$menu = '';
 		$sub = '';
@@ -1103,6 +1108,16 @@ function save_article(bid, content) {
 						{
 							// First ul
 							$menu .= '<ul class="nav navbar-nav">';
+							
+							// home
+							if ($tmp_deep == 1 && $home)
+							{
+								$active = ($ordinal == 'A')
+									? ' class="active" ' 
+									: ' ';
+								
+								$menu .= '<li '.$active.'><a href="'.BASE_URL.'" title="Home page">'._HOME_PAGE.'</a></li>';
+							}
 						}
 					}
 					// close opened ul
@@ -1156,9 +1171,9 @@ function save_article(bid, content) {
                     (
                         $i->deep == $deep &&	// you are in a nested level
                         substr($i->ordinal, 0, $min) == substr($ordinal, 0, $min)) // with the same ordinal prefix
-                    ) 
+                    )
                         ? ' class="active" ' 
-                        : ' ';
+                        : '';
                 
                 // handle inside and outside
                 if (!is_numeric($i->hidden))
@@ -1182,7 +1197,11 @@ function save_article(bid, content) {
                 // check for dropdown
                 if ($c < $n && isset($items[$c+1]) && $items[$c+1]->deep > $i->deep)
                 {
-                    $menu .= '<li class="dropdown dropdown-submenu"><a  href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">'.stripslashes($i->name).' <span class="caret"></span></a>';
+                    $active = (!empty($active))
+                        ? 'active'
+                        : '';
+                    
+                    $menu .= '<li class="dropdown dropdown-submenu '.$active.'"><a  href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">'.stripslashes($i->name).' <span class="caret"></span></a>';
                 }
                 else
                 {
