@@ -181,6 +181,7 @@ class Search_controller extends X4Cms_controller
 		$sections = $this->site->get_sections($page->id);
 		$sections[1] = array($msg);
 		$view->sections = $sections;
+		$view->args = array('_default');
 		
 		$view->render(TRUE);
 	}
