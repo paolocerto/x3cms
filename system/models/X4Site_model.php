@@ -109,7 +109,9 @@ class X4Site_model extends X4Model_core
 				WHERE s.id = 1 AND l.id_area = '.intval($id_area));
 			
 			if (APC)
+			{
 				apc_store(SITE.'site'.$id_area, $c);
+			}
 		}
 		return $c;
 	}
@@ -150,7 +152,9 @@ class X4Site_model extends X4Model_core
 				WHERE pa.xrif = \'site\' AND pa.id_area = 0 ORDER BY pa.id ASC');
 			
 			if (APC)
+			{
 				apc_store(SITE.'param'.$id_site, $c);
+			}
 		}
 		return $c;
 	}
@@ -217,7 +221,9 @@ class X4Site_model extends X4Model_core
 			}
 			
 			if (APC)
+			{
 				apc_store(SITE.'sections'.$id_page, $sections);
+			}
 		}
 		return $sections;
 	}
@@ -255,7 +261,9 @@ class X4Site_model extends X4Model_core
 				ORDER BY a.date_in DESC, a.updated DESC, a.id DESC');
 			
 			if (APC)
+			{
 				apc_store(SITE.'abid'.$id_area.$lang.$bid, $c);
+			}
 		}
 		return $c;
 	}
@@ -397,7 +405,9 @@ class X4Site_model extends X4Model_core
 			}
 			
 			if (APC)
+			{
 				apc_store(SITE.'menu'.$id_area, $c);
+			}
 		}
 		return $c;
 	}
@@ -427,7 +437,9 @@ class X4Site_model extends X4Model_core
 				ORDER BY ordinal ASC');
 			
 			if (APC)
+			{
 				apc_store(SITE.'breadcrumb'.$page->id, $c);
+			}
 		}
 		return $c;
 	}
@@ -477,7 +489,9 @@ class X4Site_model extends X4Model_core
 				ORDER BY a.ordinal ASC');
 			
 			if (APC)
+			{
 				apc_store(SITE.'map'.$page->lang.$ordinal, $c);
+			}
 		}
 		return $c;
 	}

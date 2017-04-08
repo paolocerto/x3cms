@@ -95,6 +95,7 @@ class X4Dict_model extends X4Model_core
 	    $lang = (empty($lang)) 
 	        ? $this->lang 
 	        : $lang;
+	    
 	    return $this->db->query_var('SELECT xval FROM dictionary WHERE area = \''.$this->area.'\' AND lang = \''.$lang.'\' AND what = '.$this->db->escape($what).' AND xon = 1 AND xkey = '.$this->db->escape($key));
 	}
 	
