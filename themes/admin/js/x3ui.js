@@ -221,7 +221,8 @@ X3.append({
 				
 				responseJSON = JSON.decode(responseText, true);
 				// Update the elements transmitted through JSON
-				if (responseJSON && qs.length > 0) {
+				// && qs.length > 0
+				if (responseJSON && responseJSON.update) {
 					if (responseJSON.message_type == 'success') {
 						X3.reset_files();
 					}
