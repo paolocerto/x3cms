@@ -120,7 +120,7 @@ class X3ui_controller extends X4Cms_controller
 							$src[] = 'XXXVALUEXXX';
 							$rpl[] = $e['relatedvalue'];
 						}
-									
+						
 						$error .= '<br /><u>'.$label.'</u> '.str_replace($src, $rpl, $dict->get_word($e['msg'], 'form'));
 					}
 					else
