@@ -1301,6 +1301,8 @@ window.addEvent("domready", function()
 		// left
 		$view->content = new X4View_core('articles/history');
 		$view->content->page = $page;
+		$view->content->id_area = $id_area;
+		$view->content->lang = $lang;
 		$view->content->bid = $bid;
 		$view->content->navbar = array($this->site->get_bredcrumb($page), array('articles' => $_SESSION['referer']));
 		

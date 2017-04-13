@@ -10,7 +10,7 @@
 ?>
 
 <h1><?php echo _ARTICLE_HISTORY.': '.$art->name ?></h1>
-<form name="bulk_action" id="bulk_action" onsubmit="return false;" method="post" action="<?php echo BASE_URL.'articles/bulk/'.$page->id_area.'/'.$page->lang.'/'.$bid ?>">
+<form name="bulk_action" id="bulk_action" onsubmit="return false;" method="post" action="<?php echo BASE_URL.'articles/bulk/'.$id_area.'/'.$lang.'/'.$bid ?>">
 
 <input type="hidden" name="action" value="delete" />
 <table class="zebra">
@@ -86,10 +86,10 @@ foreach($history as $i)
 <script>
 window.addEvent('domready', function()
 {
-	X3.content('filters','articles/filter/<?php echo $page->id_area.'/'.$page->lang ?>/bulk', '<?php echo X4Utils_helper::navbar($navbar, ' . ', false) ?>');
+	X3.content('filters','articles/filter/<?php echo $id_area.'/'.$lang ?>/bulk', '<?php echo X4Utils_helper::navbar($navbar, ' . ', false) ?>');
 	buttonize('topic', 'btm', 'topic');
 	buttonize('topic', 'bta', 'modal');
-	actionize('topic',  'btl', 'topic', escape('articles/history/<?php echo $page->id_area.'/'.$page->lang.'/'.$bid ?>/0'));
+	actionize('topic',  'btl', 'topic', escape('articles/history/<?php echo $id_area.'/'.$lang.'/'.$bid ?>/0'));
 	zebraTable('zebra');
 });
 </script>
