@@ -716,8 +716,8 @@ class X4Form_helper
 				// $e['disabled'] contains the field name
 				if (isset($e['disabled'])) 
 				{
-				    $disabled_label = $e['disabled'];
-					if ($ii->$disabled_label > 0) 
+				    $o = $e['disabled'];
+					if ($ii->$o > 0) 
 					{
 						$dis = ' disabled="disabled"';
 						$sign = (isset($e['disabled_sign']))
