@@ -78,7 +78,7 @@ if ($theme_in)
 						<a class="btm" href="'.BASE_URL.'templates/index/'.$i->id.'/'.$i->name.'" title="'._TEMPLATES.'"><i class="fa fa-desktop fa-lg"></i></a> 
 						<a class="btm" href="'.BASE_URL.'menus/index/'.$i->id.'/'.$i->name.'" title="'._MENUS.'"><i class="fa fa-navicon fa-lg"></i></a>
 						'.$minify.'
-					<td>'.$uninstall.'</td>
+					<td class="aright">'.$uninstall.'</td>
 					</tr>';
 		}
 		else 
