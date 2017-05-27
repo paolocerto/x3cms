@@ -29,7 +29,17 @@ class X4Page_controller extends X4Cms_controller
 	public function __construct()
 	{
 		parent::__construct();
-		X4Utils_helper::offline($this->site->site->xon, ROOT.X4Route_core::$lang.'/offline');
+		
+		$url = (MULTILANGUAGE)
+		    ? X4Route_core::$lang.'/offline'
+		    : 'offline';
+		    
+		if (isset($_SESSION['uid']))
+		{
+		    $url = str_replace('offline', 'logout', $url);
+		}
+		    
+		X4Utils_helper::offline($this->site->site->xon, BASE_URL.$url);
 	}
 	
 	/**
