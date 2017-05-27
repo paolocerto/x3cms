@@ -101,7 +101,7 @@ class X4Utils_helper
 	 */
 	public static function offline($xon, $url)
 	{
-		if (!$xon && !isset($_SESSION['site']) && X4Route_core::$control != 'offline') 
+		if (!$xon && !isset($_SESSION['xuid']) && X4Route_core::$control != 'offline') 
 		{
 		    if (X4Route_core::$control != 'offline')
 		    {
