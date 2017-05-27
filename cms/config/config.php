@@ -53,6 +53,9 @@ define('DATETIME_FORMAT', 'd/m/Y H:i');
 // multilevel menu
 define('MAX_MENU_DEEP', 3);				// keep this lower for better performance
 
+// google analytics
+define('ANALYTICS', 'UA-XXXXXX-XX');
+
 // logs
 define('LOGS', true);					// disable this for better performance
 
