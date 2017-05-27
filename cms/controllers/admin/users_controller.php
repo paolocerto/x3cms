@@ -513,17 +513,21 @@ window.addEvent("domready", function()
 			
 			// update password
 			if (!empty($_post['password'])) 
+			{
 				$post['password'] = X4Utils_helper::hashing($_post['password']);
+			}
 			
 			// check if an user with the same username or password already exists
 			$user = new User_model();
 			$check = (boolean) $user->exists($post['username'], $post['mail'], $id);
 			
 			if ($check) 
+			{
 				$msg = AdmUtils_helper::set_msg(false, '', $this->dict->get_word('_USER_ALREADY_EXISTS', 'msg'));
+			}
 			else 
 			{
-				$perm = new Permission_model();
+			    $perm = new Permission_model();
 				if ($id) 
 				{
 					// update
