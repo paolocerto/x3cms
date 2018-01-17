@@ -314,8 +314,9 @@ class Pages_controller extends X3ui_controller
 				$post['css'] = $css;
 				
 				// set xrif for admin pages
-				if ($_post['id_area'] == 1) 
-					$post['xid'] = 'pages';
+				$post['xid'] = ($_post['id_area'] == 1) 
+					 ? 'pages'
+					 : '';
 				
 				// insert the new page
 				$result = $mod->insert_page($post, $this->site->site->domain);

@@ -1,12 +1,11 @@
 # Global to ignore 
 DOCS/*
-INSTALL/*
 puphet/*
 vendor/*
 
 # Config
 cms/config/config.php
-cms/files/sitemap.xml
+cms/files/
 .htaccess
 robot.txt
 humans.txt
@@ -15,6 +14,7 @@ humans.txt
 # Trash box
 box/
 *.*~
+.*~
 
 # Vagrant
 .vagrant/*

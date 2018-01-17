@@ -1,3 +1,4 @@
 User-agent: * 
 Disallow: /files/
 Disallow: /admin/
+Disallow: /cms/files/

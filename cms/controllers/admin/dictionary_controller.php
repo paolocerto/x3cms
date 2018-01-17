@@ -49,15 +49,15 @@ class Dictionary_controller extends X3ui_controller
 	public function keys($code = '', $area = 'public', $what = '', $str = '')
 	{
 	    // load dictionary
-		$this->dict->get_wordarray(array('dictionary'));
+	    $this->dict->get_wordarray(array('dictionary'));
 		
-		$area_mod = new Area_model();
-		list($id_area, $areas) = $area_mod->get_my_areas(2);
-		
-		if ($id_area != 2)
-		{
-			$area = $area_mod->get_var($id_area, 'areas', 'name');
-		}
+	    $area_mod = new Area_model();
+	    list($id_area, $areas) = $area_mod->get_my_areas(2);
+	    
+	    if ($id_area != 2)
+	    {
+	        $area = $area_mod->get_var($id_area, 'areas', 'name');
+	    }
 		
 		if (empty($str))
 		{

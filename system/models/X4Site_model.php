@@ -566,7 +566,7 @@ class X4Site_model extends X4Model_core
 				: ' AND a.param = '.$this->db->escape($param);
 			
 			$sql = 'SELECT p.url FROM pages p 
-					JOIN articles a ON a.id_page = p.id
+					JOIN articles a ON a.id_area = p.id_area AND a.id_page = p.id
 					WHERE p.xon = 1 AND 
 						p.id_area = '.$id_area.' AND
 						p.lang = '.$this->db->escape($lang).' AND
