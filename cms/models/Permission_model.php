@@ -286,12 +286,12 @@ class Permission_model extends X4Model_core
 	 * @param	mixed	$force if null leaves priv personalizations else (integer) set to default
 	 * @return  array	Array(0, boolean)
 	 */
-	public function refactory($id_user, $force = false)
+	public function refactory($id_user, $force = null)
 	{
 		// action areas
 		$areas = $this->get_aprivs($id_user);
 		// refresh user permissions syncronize with group permissions
-		$res = $this->sync_upriv($id_user, $areas, $force);
+		$res = $this->sync_upriv($id_user, $areas);
 		
 		if ($res[1]) 
 		{
@@ -310,7 +310,7 @@ class Permission_model extends X4Model_core
 	 * @param	array	$areas array of area objects
 	 * @return  array	Array(0, boolean)
 	 */
-	private function sync_upriv($id_user, $areas, $force = false)
+	private function sync_upriv($id_user, $areas)
 	{
 		// get group's privilege types
 		$group = new Group_model();
@@ -321,19 +321,14 @@ class Permission_model extends X4Model_core
 		foreach($areas as $i)
 		{
 			// get User privilege types on area
-			$up = X4Array_helper::indicize($this->get_uprivs($id_user, $i->id_area), 'privtype');
+			$up = X4Utils_helper::obj2array($this->get_uprivs($id_user, $i->id_area), 'privtype', 'id');
 			
 			// check group privilege types
 			foreach($gp as $k => $v)
 			{
 				if (isset($up[$k])) 
 				{
-				    if ($force && $up[$k]->level != $v)
-				    {
-				        // if user don't have then add the missing privilege type
-				        $sql[] = 'UPDATE uprivs SET level = '.$v.' WHERE id_area = '.$i->id_area.' AND id_user = '.$id_user.' AND privtype = \''.$k.'\'';
-				    }
-					// remove to not delete
+					// if user have a group's privilege do none
 					unset($up[$k]);
 				}
 				else if ($i->id_area == 1 || !in_array($k, $this->admin_privtypes))
@@ -348,9 +343,10 @@ class Permission_model extends X4Model_core
 			{
 				$sql[] = 'DELETE u.*, p.* FROM uprivs u 
 					JOIN privs p ON u.id_user = p.id_who AND u.privtype = p.what AND u.id_area = p.id_area 
-					WHERE u.id = '.$v->id.' AND p.id_who = '.$id_user.' AND p.what = \''.$k.'\' AND p.id_area = '.$i->id_area;
+					WHERE u.id = '.$v.' AND p.id_who = '.$id_user.' AND p.what = \''.$k.'\' AND p.id_area = '.$i->id_area;
 			}
 		}
+		
 		return (empty($sql)) 
 			? array(0,1) 
 			: $this->db->multi_exec($sql);
@@ -366,7 +362,7 @@ class Permission_model extends X4Model_core
 	 * @param	mixed	$force if null leaves privs personalizations (only add missing privs) else (integer) set to default
 	 * @return  array	Array(0, boolean)
 	 */
-	private function sync_priv($id_user, $areas, $force = false)
+	private function sync_priv($id_user, $areas, $force = null)
 	{
 		$sql = array();
 		foreach($areas as $i)
@@ -401,7 +397,7 @@ class Permission_model extends X4Model_core
 					else 
 					{
 						// set case
-						$case = (!$force) 
+						$case = (is_null($force)) 
 							? null 
 							: $v;
 							
@@ -417,7 +413,7 @@ class Permission_model extends X4Model_core
 				// if there are something to handle
 				if ($items) 
 				{
-					if (!$force) 
+					if (is_null($force)) 
 					{
 						// no forcing, only insert missing permissions
 						foreach($items as $ii) 
