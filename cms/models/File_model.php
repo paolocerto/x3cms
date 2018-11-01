@@ -294,11 +294,11 @@ class File_model extends X4Model_core
 			
 			if ($type == 'template')
 			{
-				$txt .= NL.'{title: \''.addslashes($i->alt).'\', url: \''.FPATH.$type.'/'.$i->name.'\', description: \''.$i->alt.'\'}';
+				$txt .= NL.'{"title": "'.addslashes($i->alt).'", "url": "'.FPATH.$type.'/'.$i->name.'", "description": "'.$i->alt.'"}';
 			}
 			else
 			{
-				$txt .= NL.'{title: \''.addslashes($i->alt).'\', value: \''.FPATH.$type.'/'.$i->name.'\'}';
+				$txt .= NL.'{"title": "'.addslashes($i->alt).'", "value": "'.FPATH.$type.'/'.$i->name.'"}';
 			}
 			$c++;
 		}
