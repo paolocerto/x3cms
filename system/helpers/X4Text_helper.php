@@ -71,6 +71,26 @@ class X4Text_helper
 	}
 	
 	/**
+	 * Remove empty tags from html string
+	 *
+	 * @static
+	 * @param string	$str string to clean
+	 * @return string
+	 */
+	public static function empty_tags($html)
+	{
+		$html = str_replace( '&nbsp;', ' ', $html );
+		do 
+		{
+			$tmp = $html;
+			$html = preg_replace(
+				'#<([^ >]+)[^>]*>[[:space:]]*</\1>#', '', $html );
+		} while ( $html !== $tmp );
+	
+		return $html;
+	}
+	
+	/**
 	 * Remove from a string duplicate spaces or tabs
 	 *
 	 * @static
@@ -140,16 +160,16 @@ class X4Text_helper
 	 */
 	public static function random_string($len)
 	{
-	   $chars = array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k',
+	    $chars = array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k',
 				   'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
 				   'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G',
 				   'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
 				   'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '1', '2',
 				   '3', '4', '5', '6', '7', '8', '9');
 	   
-	   shuffle($chars);
-	   $string = implode('', array_slice($chars, 0, $len));
-	   return $string;
+	    shuffle($chars);
+	    $string = implode('', array_slice($chars, 0, $len));
+	    return $string;
 	}
 	
 	/**
@@ -192,7 +212,7 @@ class X4Text_helper
 								{
 									$protocol = $match[1]; 
 									$link = $match[2] ?: $match[3]; 
-									return '<' . array_push($links, "<a $attr href=\"$protocol://$link\">$link</a>") . '>'; 
+									return '<' . array_push($links, "<a target=\"_blank\" $attr href=\"$protocol://$link\">$link</a>") . '>'; 
 								}
 							}, 
 							$value); 
@@ -202,7 +222,7 @@ class X4Text_helper
 							'~([^\s<]+?@[^\s<]+?\.[^\s<]+)(?<![\.,:])~', 
 							function ($match) use (&$links, $attr) 
 							{
-								return '<' . array_push($links, "<a $attr href=\"mailto:{$match[1]}\">{$match[1]}</a>") . '>'; 
+								return '<' . array_push($links, "<a target=\"_blank\" $attr href=\"mailto:{$match[1]}\">{$match[1]}</a>") . '>'; 
 							}, 
 							$value); 
 						break;
@@ -211,7 +231,7 @@ class X4Text_helper
 							'~(?<!\w)[@#](\w++)~', 
 							function ($match) use (&$links, $attr) 
 							{ 
-								return '<' . array_push($links, "<a $attr href=\"https://twitter.com/" . ($match[0][0] == '@' ? '' : 'search/%23') . $match[1]  . "\">{$match[0]}</a>") . '>'; 
+								return '<' . array_push($links, "<a target=\"_blank\" $attr href=\"https://twitter.com/" . ($match[0][0] == '@' ? '' : 'search/%23') . $match[1]  . "\">{$match[0]}</a>") . '>'; 
 							}, 
 							$value); 
 						break;
@@ -220,7 +240,7 @@ class X4Text_helper
 							'~' . preg_quote($protocol, '~') . '://([^\s<]+?)(?<![\.,:])~i', 
 							function ($match) use ($protocol, &$links, $attr) 
 							{ 
-								return '<' . array_push($links, "<a $attr href=\"$protocol://{$match[1]}\">{$match[1]}</a>") . '>'; 
+								return '<' . array_push($links, "<a target=\"_blank\" $attr href=\"$protocol://{$match[1]}\">{$match[1]}</a>") . '>'; 
 							},
 							$value); 
 						break;
@@ -398,6 +418,81 @@ class X4Text_helper
 			}
 		}
 		return $a;
+	}
+	
+	/**
+	 * remove unwanted tags and content
+	 *
+	 * @param   string	$text
+	 * @param   array	$tags
+	 * @param   boolean	$invert
+	 * @return  string
+	 */
+	public static function strip_tags_content($text, $tags, $invert = FALSE) 
+	{ 
+
+		//preg_match_all('/<(.+?)[\s]*\/?[\s]*>/si', trim($tags), $tags); 
+		//$tags = array_unique($tags[1]); 
+		
+		if(is_array($tags) AND count($tags) > 0) 
+		{ 
+			if($invert == FALSE) 
+			{ 
+			  return preg_replace('@<(?!(?:'. implode('|', $tags) .')\b)(\w+)\b.*?>.*?</\1>@si', '', $text); 
+			} 
+			else 
+			{ 
+			  return preg_replace('@<('. implode('|', $tags) .')\b.*?>.*?</\1>@si', '', $text); 
+			} 
+		} 
+		elseif($invert == FALSE) 
+		{ 
+			return preg_replace('@<(\w+)\b.*?>.*?</\1>@si', '', $text); 
+		} 
+		return $text; 
+	}
+	
+	/**
+	 * remove unwanted tags and remove unwanted attributes
+	 *
+	 * @param   string	$text
+	 * @param   array	$allowed_tags List the tags you want to allow here, NOTE you MUST allow html and body otherwise entire string will be cleared
+	 * @param   array	$allowed_attrs List the attributes you want to allow here
+	 * @return  string
+	 */
+	public static function stripUnwantedTagsAndAttrs($html_str, $allowed_tags = array("html", "body", "b", "br", "em", "hr", "i", "li", "ol", "p", "blockquote", "s", "span", "table", "tr", "td", "u", "ul"), $allowed_attrs = array ("class", "id", "style"))
+	{
+		$xml = new DOMDocument();
+		
+		//Suppress warnings: proper error handling is beyond scope of example
+		libxml_use_internal_errors(true);
+		
+		if (!strlen($html_str))
+		{
+			return false;
+		}
+		
+		if ($xml->loadHTML($html_str, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD))
+		{
+			foreach ($xml->getElementsByTagName("*") as $tag)
+			{
+				if (!in_array($tag->tagName, $allowed_tags))
+				{
+					$tag->parentNode->removeChild($tag);
+				}
+				else
+				{
+					foreach ($tag->attributes as $attr)
+					{
+						if (!in_array($attr->nodeName, $allowed_attrs))
+						{
+							$tag->removeAttribute($attr->nodeName);
+						}
+					}
+				}
+			}
+		}
+		return $xml->saveHTML();
 	}
 }
 
