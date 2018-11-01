@@ -189,7 +189,7 @@ window.addEvent("domready", function()
 	 */
 	public function compositing()
 	{
-		$msg = null;
+	    $msg = null;
 		// check permission
 		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'pages', $_POST['id_page'], 3);
 		
@@ -206,15 +206,20 @@ window.addEvent("domready", function()
 			// handle _POST for each section 
 			for($i = 1; $i <= $_POST['snum']; $i++)
 			{
-				$post['progressive'] = $i;
-				
-				// delete first comma
-				$articles = (substr($_POST['sort'.$i], 0, 1) == ',') 
-					? substr($_POST['sort'.$i], 1) 
-					: $_POST['sort'.$i];
-				
-				$post['articles'] = str_replace(',', '|', $articles);
-				$sections[] = $post;
+			    $sort = $_POST['sort'.$i];
+			    // disable strange behaviour
+			    if (strlen($sort) >= 32)
+			    {
+                    $post['progressive'] = $i;
+                    
+                    // delete first comma
+                    $articles = (substr($sort, 0, 1) == ',') 
+                        ? substr($_POST['sort'.$i], 1) 
+                        : $_POST['sort'.$i];
+                    
+                    $post['articles'] = str_replace(',', '|', $articles);
+                    $sections[] = $post;
+                }
 			}
 			
 			// register composition
