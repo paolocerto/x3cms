@@ -266,9 +266,10 @@ class X4Files_helper
 	 * @param boolean	zip the file  if it not an image and is set to true
 	 * @param array		the array contains (maximum width, maximum height, action_string, maximum file weight (kBytes) for images, maximum file weight (KBytes) for others documents). Possibles values for the action string are: 'NONE', 'CROP', 'RESIZE'
 	 * @param array		the array contains valid mime types
+	 * @param boolean   force resize for files not stored in canonical places
 	 * @return mixed	the filename string if upload only a file, an array of filename if upload many files
 	 */
-	public static function upload($file, $path, $prefix = '', $zip = 0, $limits = array(MAX_W, MAX_H, 'NONE', MAX_IMG, MAX_DOC), $mimes = array())
+	public static function upload($file, $path, $prefix = '', $zip = 0, $limits = array(MAX_W, MAX_H, 'NONE', MAX_IMG, MAX_DOC), $mimes = array(), $force_resize = false)
 	{
 		if (isset($_GET[$file]))
 		{
@@ -279,7 +280,7 @@ class X4Files_helper
 		{
 			return (is_array($_FILES[$file]['name'])) 
 				? X4Files_helper::upload_files($file, $path, $prefix, $zip, $limits, $mimes) 
-				: X4Files_helper::upload_file($file, $path, $prefix, $zip, $limits, $mimes);
+				: X4Files_helper::upload_file($file, $path, $prefix, $zip, $limits, $mimes, $force_resize);
 		}
 	}
 	
@@ -444,7 +445,7 @@ class X4Files_helper
 	}
 	
 // TODO: merge with upload_files
-	private static function upload_file($file, $path, $prefix, $zip, $limits, $mimes)
+	private static function upload_file($file, $path, $prefix, $zip, $limits, $mimes, $force_resize)
 	{
 		$names = '';
 		$errors = array();
@@ -462,7 +463,7 @@ class X4Files_helper
 			$action = '';
 			
 			// checks for canonical files 
-			if ($path == APATH.self::$file_path)
+			if ($path == APATH.self::$file_path || $force_resize)
 			{
 				if ($type == 'img') 
 				{
@@ -1486,6 +1487,61 @@ class X4Files_helper
 		
 		return $chk;
 	}
+	
+	/**
+	 * Copy file from
+	 *
+	 * @param string	the name of the field
+	 * @param string	the path where to store the file
+	 * @return mixed	the filename string if
+	 */
+	public static function copy_file_from($old_file, $path)
+	{
+		if (file_exists($old_file) && !empty($path))
+		{
+		    $info = pathinfo($old_file);
+		    $name = self::get_final_name($path, X4Utils_helper::unspace($info['filename']).'.'.$info['extension']);
+
+		    $chk = copy($old_file, $path.$name);
+		    if ($chk)
+		    {
+		        chmod($path.$name, 0777);
+		        return $name;
+		    }
+		}
+		return null;
+	}
+	
+	/**
+	 * Get icon
+	 *
+	 * @param string	filename
+	 * @param string	size
+	 * @return mixed	the filename string if
+	 */
+	public static function get_icon($file, $size= 'fa-2x')
+	{
+	    $ext = substr($file, -3);
+	    switch ($ext)
+	    {
+	        case 'doc':
+	        case 'docx':
+	            $icon = '<span class="fa fa-file-word-o '.$size.'" aria-hidden="true"></span>';
+	            break;
+	        case 'xls':
+	        case 'xlsx':
+	            $icon = '<span class="fa fa-file-excel-o '.$size.'" aria-hidden="true"></span>';
+	            break;
+	        case 'pdf':
+	            $icon = '<span class="fa fa-file-pdf-o '.$size.'" aria-hidden="true"></span>';
+	            break;
+	        default:
+	            $icon = '<span class="fa fa-file-o '.$size.'" aria-hidden="true"></span>';
+	            break;
+	    }
+	    return $icon;
+	}
+	            
 }
 
 /**
