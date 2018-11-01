@@ -204,8 +204,16 @@ final class X4Route_core
 	{
 		if (empty(self::$lang)) 
 		{
-			self::$lang = $code;
-			self::set_locale(self::$lang);
+		    if (isset(self::$locales[$code]))
+		    {
+                self::$lang = $code;
+                self::set_locale(self::$lang);
+            }
+            else
+            {
+                self::$lang = 'it';
+                self::set_locale(self::$lang);
+            }
 		}
 	}
 	
@@ -218,7 +226,10 @@ final class X4Route_core
 	 */ 
 	public static function set_locale($code)
 	{
-		setlocale(LC_ALL, self::$locales[$code].'.UTF-8');
+	    if (isset(self::$locales[$code]))
+	    {
+	        setlocale(LC_ALL, self::$locales[$code].'.UTF-8');
+	    }
 	}
 	
 	/**
@@ -229,7 +240,8 @@ final class X4Route_core
 	 */ 
 	public static function get_id_area()
 	{
-		return self::$areas[X4Route_core::$area];
+	    $mod = new Log_model();
+	    return $mod->find('areas', 'id', array('name' => X4Route_core::$area));
 	}
 	
 	/**
@@ -240,8 +252,10 @@ final class X4Route_core
 	 */ 
 	public static function get_area_by_id($id_area)
 	{
-	    $tmp = array_flip(self::$areas);
-		return $tmp[$id_area];
+	    $mod = new Log_model();
+	    $area = $mod->get_var($id_area, 'areas', 'name');
+	    //$tmp = array_flip(self::$areas);
+		return $area;
 	}
 	
 	/**
@@ -297,7 +311,11 @@ final class X4Route_core
 			? '' 
 			: self::$area.'/';
 			
-		return self::$lang.'/'.$area.self::$control.'/'.self::$method.$param;
+		$lang = (MULTILANGUAGE)
+			? '/'.self::$lang
+			: '';
+			
+		return $lang.'/'.$area.self::$control.'/'.self::$method.$param;
 	}
 	
 	/**
