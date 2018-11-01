@@ -47,6 +47,7 @@ define('SALT', 'aLongSecretComplexString');
 // localization
 define('TIMEZONE', 'Europe/Rome');		// set time zone (see http://www.php.net/manual/en/timezones.php for a list of supported timezones)
 
+define('DATE_SEP', '-');
 define('DATE_FORMAT', 'd/m/Y');
 define('DATETIME_FORMAT', 'd/m/Y H:i');
 
