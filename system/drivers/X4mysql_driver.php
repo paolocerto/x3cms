@@ -87,7 +87,7 @@ final class X4mysql_driver extends X3db_driver
 	 * @param   array	sorting rules for Mongo DB
 	 * @return  Database_Result
 	 */
-	public function query($sql = '', $collection = '', $fields = array(), $sort = array())
+	public function query($sql = '', $collection = '', $fields = array(), $sort = array(), $unbuffered = false)
 	{
 		if (empty($sql))
 		{
@@ -96,6 +96,11 @@ final class X4mysql_driver extends X3db_driver
 		
 		// No link? Connect!
 		$this->link or $this->connect();
+		
+		if ($unbuffered)
+		{
+		    $this->link->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, false);
+		}
 		
 		$this->latest_query = $sql;
 		$res = array();
