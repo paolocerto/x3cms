@@ -92,13 +92,14 @@ class X4Plugin_model extends X4Model_core
 	 */
 	public function get_installed($id_area)
 	{
-	    return $this->db->query('SELECT DISTINCT m.*, up.level, p.level AS administrator 
+	    return $this->db->query('SELECT DISTINCT m.*, up.level, p.level AS adminlevel 
 			FROM modules m
 			JOIN privs p ON p.id_who = '.intval($_SESSION['xuid']).' AND p.what = \'modules\' AND p.id_what = m.id
 			JOIN uprivs up ON up.id_user = '.intval($_SESSION['xuid']).' AND (
 			    REPLACE(up.privtype, \'x3_\', \'x3\') = m.name OR
 			    REPLACE(up.privtype, \'x4_\', \'x4\') = m.name OR
-			    REPLACE(up.privtype, \'x5_\', \'x5\') = m.name OR 
+			    REPLACE(up.privtype, \'x5_\', \'x5\') = m.name OR
+			    up.privtype = \'x3_forms\' OR
 			    up.privtype = \'x3_plugins\'
 			) AND up.level > 1
 			WHERE p.id_area = '.intval($id_area).' ORDER BY m.name ASC');
@@ -397,7 +398,7 @@ class X4Plugin_model extends X4Model_core
 	 * This method have to be arranged foe each website
 	 *
 	 * @return  array(array_of_installed_modules, res)
-	 */
+	 * /
 	public function duplicate_modules_lang($id_area, $old_lang, $new_lang)
 	{
 	    // this list have to be adapted for each website
@@ -554,4 +555,5 @@ echo 'MODULE = '.$k.BR;
 	    }
 	    return 1;
 	}
+*/
 }
