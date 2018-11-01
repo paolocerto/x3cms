@@ -320,9 +320,18 @@ class X4Form_helper
 	 */
 	public static function text($e, $req = '')
 	{
-		$iextra = (isset($e['extra'])) 
-			? $e['extra'] 
+		$error = (is_null($e['label']) && isset($e['error']))
+			? 'error '
 			: '';
+			
+		$iextra = (isset($e['extra'])) 
+			? str_replace('class="', 'class="'.$error, $e['extra']) 
+			: '';
+			
+		if (!empty($error) && empty($iextra))
+		{
+			$iextra = 'class="error"';
+		}
 			
 		$readonly = (isset($e['readonly'])) 
 			? ' readonly="readonly"' 
@@ -367,14 +376,23 @@ class X4Form_helper
 		$tmp = '';
 		if (isset($e['old']) && !empty($e['old'])) 
 		{
-			$tmp = '<p class="xsmall">';
+			$tmp = '<p class="xsmall block">';
 			// can display the file only if knowns his path
 			if (isset($e['folder'])) 
 			{
 				$tmp = ($e['folder'] == 'img') 
 					? '<br /><img class="thumb dblock" src="'.FPATH.$e['folder'].'/'.$e['old'].'" alt="thumb" />' 
 					: '';
-				$tmp .= ' <a target="_blank" href="'.FPATH.$e['folder'].'/'.$e['old'].'" title="">'.$e['old'].'</a><br />';
+
+				if (is_dir(APATH.'files/filemanager/'.$e['folder']))
+				{
+					$tmp .= ' <a target="_blank" href="'.FPATH.$e['folder'].'/'.$e['old'].'" title="">'.$e['old'].'</a><br />';
+				}
+				elseif (is_dir(APATH.'files/'.$e['folder']))
+				{
+					$tmp .= ' <a target="_blank" href="'.APATH.'files/'.$e['folder'].'/'.$e['old'].'" title="">'.$e['old'].'</a><br />';
+				}
+				
 			}
 			elseif (isset($e['aold']))
 			{
@@ -716,8 +734,8 @@ class X4Form_helper
 				// $e['disabled'] contains the field name
 				if (isset($e['disabled'])) 
 				{
-				    $o = $e['disabled'];
-					if ($ii->$o > 0) 
+				    $disabled_label = $e['disabled'];
+					if ($ii->$disabled_label > 0) 
 					{
 						$dis = ' disabled="disabled"';
 						$sign = (isset($e['disabled_sign']))
