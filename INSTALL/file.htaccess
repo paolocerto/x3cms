@@ -2,7 +2,7 @@ Header unset ETag
 FileETag None
 <FilesMatch "\.(ico|js|css|swf|gif|jpeg|png|mp4|ogv|flv|webm|ttf|eot|woff|woff2|svg)$">
 Header unset Last-Modified
-Header set Expires "Fri, 21 Dec 2024 00:00:00 GMT"
+Header set Expires "Fri, 21 Dec 2028 00:00:00 GMT"
 Header set Cache-Control "public, no-transform"
 SetOutputFilter DEFLATE
 </FilesMatch>
@@ -34,4 +34,4 @@ RewriteRule ^(.*)/$ $1 [L,R=301]
 RewriteRule ^sitemap\.xml$ cms/files/sitemap.xml [L]
 RewriteRule ^cms/files/(.*)$ cms/files/$1 [L]
 RewriteRule ^files/js/(.+)$ files/js/$1 [L]
-RewriteRule !\.(htm|html|js|ico|txt|gif|jpg|jpeg|png|css|less|pdf|xml|zip|swf|wmv|rm|mov|flv|mp4|ogv|webm|ttf|eot|woff|woff2|svg|json)$ page.php
+RewriteRule !\.(htm|html|js|ico|txt|gif|jpg|jpeg|png|css|less|pdf|xml|zip|swf|wmv|rm|mov|flv|mp4|ogv|webm|ttf|eot|woff|woff2|svg|json|map)$ page.php
