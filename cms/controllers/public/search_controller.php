@@ -88,7 +88,7 @@ class Search_controller extends X4Cms_controller
 				// build links to items found
 				foreach($found as $i) 
 				{
-					$tmp .= '<li><a href="'.$i->url.'" title="'.stripslashes($i->description).'">'.stripslashes($i->name).'</a>'._TRAIT_.nl2br(stripslashes($i->description)).'</li>';
+					$tmp .= '<li><a href="'.BASE_URL.$i->url.'" title="'.stripslashes($i->description).'">'.stripslashes($i->name).'</a>'._TRAIT_.nl2br(stripslashes($i->description)).'</li>';
 				}
 				$tmp .= '</ul>';
 			}
@@ -149,7 +149,7 @@ class Search_controller extends X4Cms_controller
 								: _TRAIT_.nl2br(stripslashes($ii->description));
 							
 							// link to item
-							$tmp .= '<li><a href="'.$url.'" title="'.$item.'">'.$item.'</a>'.$descr.'</li>';
+							$tmp .= '<li><a href="'.BASE_URL.$url.'" title="'.$item.'">'.$item.'</a>'.$descr.'</li>';
 						}
 						$tmp .= '</ul>';
 					}
@@ -170,7 +170,7 @@ class Search_controller extends X4Cms_controller
 		else 
 		{
 			// empty request
-			$msg = new Obj_msg(_SEARCH_RESULT, '<p>'._SEARCH_MSG_SEARCH_EMPTY.'</p>');
+			$msg = new Obj_msg(_SEARCH_RESULT, '<p>'._SEARCH_MSG_SEARCH_EMPTY.'</p>', false);
 		}
 		
 		// get menus
