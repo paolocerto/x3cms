@@ -484,7 +484,11 @@ window.addEvent("domready", function()
 				{
 					if ($redirect)
 					{
-						X4Route_core::redirect($this->site->site->domain.'/admin');
+						$msg->update[] = array(
+							'element' => 'topic', 
+							'url' => BASE_URL.'home/redirect/admin',
+							'title' => null
+						);
 					}
 					else
 					{
