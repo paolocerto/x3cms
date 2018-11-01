@@ -1201,7 +1201,8 @@ window.addEvent("domready", function()
 				'xkeys' => strtolower($_post['xkeys']),
 				'name' => $_post['name'],
 				'content' => $_post['content'],
-				'js' => html_entity_decode($_post['js']),
+				'ftext' => $_post['name'].' '.strip_tags($_post['content']),
+				
 				'excerpt' => (strstr($_post['content'], '<!--pagebreak-->') !== false) ? 1 : 0,
 				'tags' => str_replace(', ', ',', $_post['tags']),
 				
@@ -1209,14 +1210,22 @@ window.addEvent("domready", function()
 				'module' => $_post['module'],
 				'param' => $_post['param'],
 				'id_editor' => $_SESSION['xuid'],
-				
-				'show_author' => intval(isset($_post['show_author'])),
-				'show_date' => intval(isset($_post['show_date'])),
-				'show_tags' => intval(isset($_post['show_tags'])),
-				'show_actions' => intval(isset($_post['show_actions'])),
 			//	'xschema' => $_post['xschema'],
 				'xon' => AUTOREFRESH
 			);
+			
+			if (EDITOR_SCRIPTS)
+			{
+			    $post['js'] = html_entity_decode($_post['js']);
+			}
+			
+			if (EDITOR_OPTIONS)
+			{
+			    $post['show_author'] = intval(isset($_post['show_author']));
+				$post['show_date'] = intval(isset($_post['show_date']));
+				$post['show_tags'] = intval(isset($_post['show_tags']));
+				$post['show_actions'] = intval(isset($_post['show_actions']));
+			}
 			
 			// adjust date_in value in case of set or update
 			if ($item->id == 0 || $_post['date_in'] != date('Y-m-d', $_post['old_date_in'])) 
@@ -1641,5 +1650,42 @@ window.addEvent("domready", function()
 			}
 		}
 		$this->response($msg);
+	}
+	
+	/**
+	 * Populate ftext field
+	 *
+	 * @return  string
+	 */
+	public function ftextize()
+	{
+		$mod = new Article_model();
+		
+		// check if not already done
+		$n = $mod->chk_ftext();
+		
+		if (true || $n == 0)
+		{
+		    // do it now
+		    $items = $mod->get_article_ftext();
+		    
+		    foreach($items as $i)
+		    {
+		        $post = array(
+		            'ftext' => $i->name.' '.strip_tags($i->content)
+		        );
+		        $mod->update($i->id, $post);
+		    }
+		
+		    // add index to table
+		    
+		    $res = $mod->add_filter();
+		    
+		    echo 'done!';
+		}
+		else
+		{
+		    echo 'already done!';
+		}
 	}
 }
