@@ -82,7 +82,7 @@ class Article_model extends X4Model_core
 		return $this->db->query_var('SELECT bid 
 			FROM articles 
 			WHERE code_context = 1 AND id_page = '.intval($id_page).' 
-			ORDER BY updated DESC');
+			ORDER BY id DESC');
 	}
 	
 	/**
@@ -132,16 +132,19 @@ class Article_model extends X4Model_core
 		$where = $this->get_where($str);
 		
 		return $this->db->query('SELECT aa.*, c.name AS context, pa.name AS page, p.level 
-			FROM 
-			(
-				SELECT a.* 
-				FROM articles a
-				WHERE a.id_area = '.intval($id_area).' AND a.lang = '.$this->db->escape($lang).' '.$where.' ORDER BY a.updated DESC
-			) aa
+			FROM articles aa
+            JOIN (
+                SELECT MAX(id) AS id, bid
+                FROM articles 
+                WHERE 
+                    id_area = '.intval($id_area).' AND 
+                    lang = '.$this->db->escape($lang).'
+                    '.$where.' 
+                GROUP BY bid
+                ) b ON b.id = aa.id AND b.bid = aa.bid
 			JOIN privs p ON p.id_who = '.intval($_SESSION['xuid']).' AND p.what = \'articles\' AND p.id_what = aa.id
 			LEFT JOIN contexts c ON c.id_area = aa.id_area AND c.lang = aa.lang AND c.code = aa.code_context
 			LEFT JOIN pages pa ON pa.id = aa.id_page
-			GROUP BY aa.bid
 			ORDER BY '.$order);
 	}
 	
@@ -159,20 +162,20 @@ class Article_model extends X4Model_core
 	    $where = $this->get_where($str);
 	    
 	    return $this->db->query('SELECT a.*, c.name AS context, pa.name AS page, p.level 
-			FROM (
-				SELECT * 
-				FROM articles
-				WHERE 
-				    id_area = '.intval($id_area).' AND
-				    lang = '.$this->db->escape($lang).'
-				    ORDER BY date_in DESC, updated DESC, id DESC
-			) a
+			FROM articles a 
+            JOIN (
+                SELECT MAX(id) AS id, bid
+                FROM articles 
+                WHERE 
+                    id_area = '.intval($id_area).' AND 
+                    lang = '.$this->db->escape($lang).'
+                GROUP BY bid
+                ) b ON b.id = a.id AND b.bid = a.bid
 			LEFT JOIN pages pa ON pa.id = a.id_page
 			JOIN contexts c ON c.id_area = a.id_area AND c.lang = a.lang AND c.code = a.code_context
 			JOIN privs p ON p.id_who = '.intval($_SESSION['xuid']).' AND p.what = \'articles\' AND p.id_what = a.id
 			WHERE c.code = '.intval($code_context).$where.'
-			GROUP BY a.bid
-			ORDER BY a.date_in DESC, a.updated DESC, a.id DESC');
+			ORDER BY a.updated DESC');
 	}
 	
 	/**
@@ -189,13 +192,20 @@ class Article_model extends X4Model_core
 	    $where = $this->get_where($str);
 	    
 		return $this->db->query('SELECT a.*, c.description AS title, pa.name AS page, p.level 
-			FROM articles a
-			LEFT JOIN pages pa ON pa.id = a.id_page
+			FROM articles a 
+            JOIN (
+                SELECT MAX(id) AS id, bid
+                FROM articles 
+                WHERE 
+                    id_area = '.intval($id_area).' AND 
+                    lang = '.$this->db->escape($lang).'
+                GROUP BY bid
+                ) b ON b.id = a.id AND b.bid = a.bid
+		    LEFT JOIN pages pa ON pa.id = a.id_page
 			JOIN categories c ON c.id_area = a.id_area AND c.lang = a.lang AND c.name = a.category
 			JOIN privs p ON p.id_who = '.intval($_SESSION['xuid']).' AND p.what = \'articles\' AND p.id_what = a.id
-			WHERE a.id_area = '.intval($id_area).' AND a.lang = '.$this->db->escape($lang).' AND c.name = '.$this->db->escape($ctg).$where.'
-			GROUP BY a.bid
-			ORDER BY a.updated DESC, a.id DESC');
+			WHERE c.name = '.$this->db->escape($ctg).$where.'
+			ORDER BY a.updated DESC');
 	}
 	
 	/**
@@ -216,13 +226,20 @@ class Article_model extends X4Model_core
 		    $where = $this->get_where($str);
 		    
 			return $this->db->query('SELECT a.*, c.name AS context, pa.name AS page, p.level 
-				FROM articles a
-				LEFT JOIN pages pa ON pa.id = a.id_page
+				FROM articles a 
+                JOIN (
+                    SELECT MAX(id) AS id, bid
+                    FROM articles 
+                    WHERE 
+                        id_area = '.intval($id_area).' AND 
+                        lang = '.$this->db->escape($lang).'
+                    GROUP BY bid
+                    ) b ON b.id = a.id AND b.bid = a.bid
+			    LEFT JOIN pages pa ON pa.id = a.id_page
 				JOIN contexts c ON c.id_area = a.id_area AND c.lang = a.lang AND c.code = a.code_context
 				JOIN privs p ON p.id_who = '.intval($_SESSION['xuid']).' AND p.what = \'articles\' AND p.id_what = a.id
-				WHERE a.id_area = '.intval($id_area).' AND a.lang = '.$this->db->escape($lang).' AND a.id_editor = '.intval($id_author).$where.'
-				GROUP BY a.bid
-				ORDER BY a.updated DESC, a.id DESC');
+				WHERE a.id_editor = '.intval($id_author).$where.'
+				ORDER BY a.updated DESC');
 		}
 	}
 	
@@ -258,13 +275,20 @@ class Article_model extends X4Model_core
 	    $where = $this->get_where($str);
 	    
 		return $this->db->query('SELECT a.*, c.name AS context, pa.name AS page, p.level 
-				FROM articles a
-				LEFT JOIN pages pa ON pa.id = a.id_page
+				FROM articles a 
+                JOIN (
+                    SELECT MAX(id) AS id, bid
+                    FROM articles 
+                    WHERE 
+                        id_area = '.intval($id_area).' AND 
+                        lang = '.$this->db->escape($lang).'
+                    GROUP BY bid
+                    ) b ON b.id = a.id AND b.bid = a.bid
+		        LEFT JOIN pages pa ON pa.id = a.id_page
 				JOIN contexts c ON c.id_area = a.id_area AND c.lang = a.lang AND c.code = a.code_context
 				JOIN privs p ON p.id_who = '.intval($_SESSION['xuid']).' AND p.what = \'articles\' AND p.id_what = a.id
-				WHERE a.id_area = '.intval($id_area).' AND a.lang = '.$this->db->escape($lang).' AND a.xkeys = '.$this->db->escape($key).$where.'
-				GROUP BY a.bid
-				ORDER BY a.updated DESC, a.id DESC');
+				WHERE a.xkeys = '.$this->db->escape($key).$where.'
+				ORDER BY a.updated DESC');
 	}
 	
 	/**
@@ -281,13 +305,20 @@ class Article_model extends X4Model_core
 	    $where = $this->get_where($str);
 	    
 		return $this->db->query('SELECT a.*, c.name AS context, pa.name AS page, p.level 
-				FROM articles a
-				LEFT JOIN pages pa ON pa.id = a.id_page
+				FROM articles a 
+                JOIN (
+                    SELECT MAX(id) AS id, bid
+                    FROM articles 
+                    WHERE 
+                        id_area = '.intval($id_area).' AND 
+                        lang = '.$this->db->escape($lang).'
+                    GROUP BY bid
+                    ) b ON b.id = a.id AND b.bid = a.bid
+		        LEFT JOIN pages pa ON pa.id = a.id_page
 				JOIN contexts c ON c.id_area = a.id_area AND c.lang = a.lang AND c.code = a.code_context
 				JOIN privs p ON p.id_who = '.intval($_SESSION['xuid']).' AND p.what = \'articles\' AND p.id_what = a.id
-				WHERE a.id_area = '.intval($id_area).' AND a.lang = '.$this->db->escape($lang).' AND a.id_page = '.intval($id_page).$where.'
-				GROUP BY a.bid
-				ORDER BY a.updated DESC, a.id DESC');
+				WHERE a.id_page = '.intval($id_page).$where.'
+				ORDER BY a.updated DESC');
 	}
 	
 	/**
@@ -337,8 +368,15 @@ class Article_model extends X4Model_core
 		foreach($array as $k => $v) {
 			$update .= ', '.addslashes($k).' = '.$this->db->escape($v);
 		}
+
+		// get last active item
+		$item = $this->db->query_row('SELECT a.id
+			FROM articles a
+			WHERE a.bid = '.$this->db->escape($obj->bid).'
+			ORDER BY a.id DESC');
+
 		// update
-		return $this->db->single_exec('UPDATE '.$this->table.' SET updated = NOW() '.$update.' WHERE bid = '.$this->db->escape($obj->bid));
+		return $this->db->single_exec('UPDATE '.$this->table.' SET updated = NOW() '.$update.' WHERE id = '.intval($item->id));
 	
 	}
 	
@@ -374,14 +412,19 @@ class Article_model extends X4Model_core
 	public function get_artt_by_context($id_area, $lang, $context, $limit = PP)
 	{
 		return $this->db->query('SELECT a.*
-			FROM 
-			(
-				SELECT * 
-				FROM articles 
-				WHERE id_area = '.intval($id_area).' AND lang = '.$this->db->escape($lang).' AND xon = 1 AND date_in <= '.$this->time.' AND (date_out = 0 OR date_out >= '.$this->time.') ORDER BY updated DESC
-			) a
-			JOIN contexts c ON c.id_area = a.id_area AND c.lang = a.lang AND c.code = a.code_context AND c.xkey = '.$this->db->escape($context).'
-			GROUP BY a.bid
+			FROM articles a 
+            JOIN (
+                SELECT MAX(id) AS id, bid
+                FROM articles 
+                WHERE 
+                    id_area = '.intval($id_area).' AND 
+                    lang = '.$this->db->escape($lang).' AND
+                    xon = 1 AND 
+					date_in <= '.$this->time.' AND 
+					(date_out = 0 OR date_out >= '.$this->time.') 
+                GROUP BY bid
+                ) b ON b.id = a.id AND b.bid = a.bid
+		    JOIN contexts c ON c.id_area = a.id_area AND c.lang = a.lang AND c.code = a.code_context AND c.xkey = '.$this->db->escape($context).'
 			ORDER BY a.date_in DESC, a.id DESC
 			LIMIT 0, '.$limit);
 	}
@@ -398,15 +441,20 @@ class Article_model extends X4Model_core
 	 */
 	public function get_latest($id_area, $lang, $context)
 	{
-		return $this->db->query('SELECT a.* FROM 
-				(
-					SELECT * 
-					FROM articles 
-					WHERE id_area = '.intval($id_area).' AND lang = '.$this->db->escape($lang).' AND xon = 1 AND date_in <= '.$this->time.' AND (date_out = 0 OR date_out >= '.$this->time.') 
-					ORDER BY updated DESC
-				) a
-				JOIN contexts c ON c.id_area = a.id_area AND c.lang = a.lang AND c.code = a.code_context AND c.xkey = '.$this->db->escape($context).'
-				GROUP BY a.bid
+		return $this->db->query('SELECT a.* 
+		        FROM articles a 
+                JOIN (
+                    SELECT MAX(id) AS id, bid
+                    FROM articles 
+                    WHERE 
+                        id_area = '.intval($id_area).' AND 
+                        lang = '.$this->db->escape($lang).' AND
+                        xon = 1 AND 
+                        date_in <= '.$this->time.' AND 
+                        (date_out = 0 OR date_out >= '.$this->time.') 
+                    GROUP BY bid
+                    ) b ON b.id = a.id AND b.bid = a.bid   
+		    	JOIN contexts c ON c.id_area = a.id_area AND c.lang = a.lang AND c.code = a.code_context AND c.xkey = '.$this->db->escape($context).'
 				ORDER BY a.date_in DESC, a.id DESC');
 	}
 	
@@ -422,14 +470,21 @@ class Article_model extends X4Model_core
 	 */
 	public function get_tags($id_area, $lang, $context)
 	{
-		$tags = $this->db->query('SELECT a.tags FROM 
-			(
-				SELECT * 
-				FROM articles 
-				WHERE id_area = '.intval($id_area).' AND lang = '.$this->db->escape($lang).' AND xon = 1 AND date_in <= '.$this->time.' AND (date_out = 0 OR date_out >= '.$this->time.') ORDER BY updated DESC
-			) a
+		$tags = $this->db->query('SELECT a.tags 
+		    FROM articles a 
+            JOIN (
+                SELECT MAX(id) AS id, bid
+                FROM articles 
+                WHERE 
+                    id_area = '.intval($id_area).' AND 
+                    lang = '.$this->db->escape($lang).' AND
+                    xon = 1 AND 
+                    date_in <= '.$this->time.' AND 
+                    (date_out = 0 OR date_out >= '.$this->time.') 
+                GROUP BY bid
+                ) b ON b.id = a.id AND b.bid = a.bid
 			JOIN contexts c ON c.id_area = a.id_area AND c.lang = a.lang AND c.code = a.code_context AND c.xkey = '.$this->db->escape($context).'
-			GROUP BY a.bid
+			ORDER BY a.date_in DESC, a.id DESC
 			');
 		
 		$a = array();
@@ -458,14 +513,20 @@ class Article_model extends X4Model_core
 	 */
 	public function get_categories($id_area, $lang, $context)
 	{
-		$ctgs = $this->db->query('SELECT a.xkeys FROM 
-			(
-				SELECT * 
-				FROM articles 
-				WHERE id_area = '.intval($id_area).' AND lang = '.$this->db->escape($lang).' AND xon = 1 AND date_in <= '.$this->time.' AND (date_out = 0 OR date_out >= '.$this->time.') ORDER BY updated DESC
-			) a
+		$ctgs = $this->db->query('SELECT a.xkeys 
+		    FROM articles a 
+            JOIN (
+                SELECT MAX(id) AS id, bid
+                FROM articles 
+                WHERE 
+                    id_area = '.intval($id_area).' AND 
+                    lang = '.$this->db->escape($lang).' AND
+                    xon = 1 AND 
+                    date_in <= '.$this->time.' AND 
+                    (date_out = 0 OR date_out >= '.$this->time.') 
+                GROUP BY bid
+                ) b ON b.id = a.id AND b.bid = a.bid
 			JOIN contexts c ON c.id_area = a.id_area AND c.lang = a.lang AND c.code = a.code_context AND c.xkey = '.$this->db->escape($context).'
-			GROUP BY a.bid
 			ORDER BY a.xkeys ASC');
 		$a = array();
 		foreach($ctgs as $i)
@@ -490,15 +551,21 @@ class Article_model extends X4Model_core
 	 */
 	public function get_items_by_key($id_area, $lang, $context, $key)
 	{
-		return $this->db->query('SELECT a.* FROM 
-			(
-				SELECT * 
-				FROM articles 
-				WHERE id_area = '.intval($id_area).' AND lang = '.$this->db->escape($lang).' AND xon = 1 AND date_in <= '.$this->time.' AND (date_out = 0 OR date_out >= '.$this->time.') ORDER BY updated DESC
-			) a
+		return $this->db->query('SELECT a.* 
+		    FROM articles a 
+            JOIN (
+                SELECT MAX(id) AS id, bid
+                FROM articles 
+                WHERE 
+                    id_area = '.intval($id_area).' AND 
+                    lang = '.$this->db->escape($lang).' AND
+                    xon = 1 AND 
+                    date_in <= '.$this->time.' AND 
+                    (date_out = 0 OR date_out >= '.$this->time.') 
+                GROUP BY bid
+                ) b ON b.id = a.id AND b.bid = a.bid
 			JOIN contexts c ON c.id_area = a.id_area AND c.lang = a.lang AND c.code = a.code_context AND c.xkey = '.$this->db->escape($context).'
 			WHERE a.xkeys = '.$this->db->escape($key).' 
-			GROUP BY a.bid
 			ORDER BY a.date_in DESC, a.id DESC');
 	}
 	
@@ -515,15 +582,21 @@ class Article_model extends X4Model_core
 	 */
 	public function get_by_tag($id_area, $lang, $context, $tag)
 	{
-		return $this->db->query('SELECT a.* FROM 
-			(
-				SELECT * 
-				FROM articles 
-				WHERE id_area = '.intval($id_area).' AND lang = '.$this->db->escape($lang).' AND xon = 1 AND date_in <= '.$this->time.' AND (date_out = 0 OR date_out >= '.$this->time.') ORDER BY updated DESC
-			) a
+		return $this->db->query('SELECT a.* 
+		    FROM articles a 
+            JOIN (
+                SELECT MAX(id) AS id, bid
+                FROM articles 
+                WHERE 
+                    id_area = '.intval($id_area).' AND 
+                    lang = '.$this->db->escape($lang).' AND
+                    xon = 1 AND 
+                    date_in <= '.$this->time.' AND 
+                    (date_out = 0 OR date_out >= '.$this->time.') 
+                GROUP BY bid
+                ) b ON b.id = a.id AND b.bid = a.bid
 			JOIN contexts c ON c.id_area = a.id_area AND c.lang = a.lang AND c.code = a.code_context AND c.xkey = '.$this->db->escape($context).'
 			WHERE a.tags LIKE '.$this->db->escape('%'.$tag.'%').' 
-			GROUP BY a.bid
 			ORDER BY a.date_in DESC, a.id DESC');
 	}
 	
@@ -544,6 +617,40 @@ class Article_model extends X4Model_core
 			ORDER BY ordinal ASC');
 	}
 	
+	/**
+	 * Check ftext field
+	 *
+	 * @return  integer
+	 */
+	public function chk_ftext()
+	{
+		return $this->db->query_var('SELECT COUNT(id) AS n
+			FROM articles
+			WHERE id_area > 1 AND ftext = \'\'');
+	}
+	
+	/**
+	 * Get articles for ftext field
+	 *
+	 * @return  array
+	 */
+	public function get_article_ftext()
+	{
+		return $this->db->query('SELECT id, name, content
+			FROM articles
+			WHERE id_area > 1 AND content != \'\'');
+	}
+	
+	/**
+	 * Add filter
+	 *
+	 * @return  array
+	 */
+	public function add_filter()
+	{
+	    $sql = 'ALTER TABLE articles ADD FULLTEXT `ftext` (ftext)';
+	    return $this->db->single_exec($sql);
+	}
 }
 
 /**

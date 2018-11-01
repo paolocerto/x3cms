@@ -204,7 +204,7 @@ class X4Site_model extends X4Model_core
 					foreach($a as $bid) 
 					{
 						// get articles
-						$t = $this->db->query_row('SELECT * FROM articles WHERE id_area = '.intval($i->id_area).' AND bid = '.$this->db->escape($bid).' AND xon = 1 AND date_in <= '.$this->now.' AND (date_out = 0 OR date_out >= '.$this->now.') ORDER BY id DESC');
+						$t = $this->db->query_row('SELECT * FROM articles WHERE id_area = '.intval($i->id_area).' AND (code_context = 1 OR code_context = 2) AND bid = '.$this->db->escape($bid).' AND xon = 1 AND date_in <= '.$this->now.' AND (date_out = 0 OR date_out >= '.$this->now.') ORDER BY id DESC');
 						if ($t) 
 							$s[] = $t;
 					}
@@ -214,7 +214,7 @@ class X4Site_model extends X4Model_core
 			else 
 			{
 				// simple editing
-				$sect = $this->db->query_row('SELECT * FROM articles WHERE id_page = '.intval($id_page).' AND xon = 1 AND date_in <= '.$this->now.' AND (date_out = 0 OR date_out >= '.$this->now.') ORDER BY id DESC');
+				$sect = $this->db->query_row('SELECT * FROM articles WHERE id_page = '.intval($id_page).' AND xon = 1 AND code_context = 1 AND date_in <= '.$this->now.' AND (date_out = 0 OR date_out >= '.$this->now.') ORDER BY id DESC');
 				$sections[1] = ($sect) 
 					? array($sect) 
 					: array();
@@ -245,20 +245,21 @@ class X4Site_model extends X4Model_core
 			
 		if (empty($c))
 		{
-		    $c = $this->db->query_row('SELECT a.* FROM 
-					(
-					SELECT * 
-					FROM articles 
-					WHERE 
-					    id_area = '.intval($id_area).' AND 
-					    lang = '.$this->db->escape($lang).' AND 
-					    xon = 1 AND 
-					    date_in <= '.$this->now.' AND 
-					    (date_out = 0 OR date_out >= '.$this->now.') 
-					    ORDER BY updated DESC, id DESC
-					) a
-				WHERE a.bid = '.$this->db->escape($bid).' 
-				ORDER BY a.date_in DESC, a.updated DESC, a.id DESC');
+		    $c = $this->db->query_row('SELECT a.* 
+		        FROM articles a 
+                JOIN (
+                    SELECT MAX(id) AS id, bid
+                    FROM articles 
+                    WHERE 
+                        id_area = '.intval($id_area).' AND 
+                        lang = '.$this->db->escape($lang).' AND 
+                        xon = 1 AND 
+                        date_in <= '.$this->time().' AND 
+                        (date_out = 0 OR date_out >= '.$this->time().') 
+                    GROUP BY bid
+                    ) b ON b.id = a.id AND b.bid = a.bid
+				WHERE a.bid = '.$this->db->escape($bid).'
+				ORDER BY a.date_in DESC, a.id DESC');
 			
 			if (APC)
 			{
@@ -278,15 +279,36 @@ class X4Site_model extends X4Model_core
 	 */
 	public function get_articles_by_key($id_area, $lang, $key)
 	{
-		return $this->db->query('SELECT a.* FROM 
-				(
-				SELECT * 
-				FROM articles 
-				WHERE id_area = '.intval($id_area).' AND lang = '.$this->db->escape($lang).' AND xon = 1 AND date_in <= '.$this->now.' AND (date_out = 0 OR date_out >= '.$this->now.') ORDER BY date_in DESC, updated DESC
-				) a
-			WHERE a.xkeys = '.$this->db->escape($key).' 
-			GROUP BY a.bid
-			ORDER BY a.date_in DESC, a.id DESC');
+	    // check APC
+		$c = (APC)
+			? apc_fetch(SITE.'akey'.$id_area.$lang.$key)
+			: array();
+			
+		if (empty($c))
+		{
+		    $c = $this->db->query('SELECT a.* 
+                FROM articles a 
+                JOIN (
+                    SELECT MAX(id) AS id, bid
+                    FROM articles 
+                    WHERE 
+                        id_area = '.intval($id_area).' AND 
+                        lang = '.$this->db->escape($lang).' AND 
+                        xon = 1 AND 
+                        date_in <= '.$this->time().' AND 
+                        (date_out = 0 OR date_out >= '.$this->time().') 
+                    GROUP BY bid
+                    ) b ON b.id = a.id AND b.bid = a.bid
+                WHERE a.xkeys = '.$this->db->escape($key).' 
+                ORDER BY a.date_in DESC, a.id DESC');
+            
+            
+			if (APC)
+			{
+				apc_store(SITE.'abid'.$id_area.$lang.$bid, $c);
+			}
+		}
+		return $c;
 	}
 	
 	/**
@@ -299,22 +321,36 @@ class X4Site_model extends X4Model_core
 	 */
 	public function get_articles_by_context($id_area, $lang, $context)
 	{
-		return $this->db->query('SELECT a.* FROM 
-				(
-				SELECT * 
-				FROM articles 
-				WHERE 
-				    id_area = '.intval($id_area).' AND 
-				    lang = '.$this->db->escape($lang).' AND 
-				    xon = 1 AND 
-				    date_in <= '.$this->now.' AND 
-				    (date_out = 0 OR date_out >= '.$this->now.') 
-				    ORDER BY date_in DESC, updated DESC, id DESC
-				) a
-			JOIN contexts c ON c.code = a.code_context
-			WHERE c.xkey = '.$this->db->escape($context).' 
-			GROUP BY a.bid
-			ORDER BY a.date_in DESC, a.id DESC');
+		// check APC
+		$c = (APC)
+			? apc_fetch(SITE.'akey'.$id_area.$lang.$key)
+			: array();
+			
+		if (empty($c))
+		{
+		    $c = $this->db->query('SELECT a.*
+                FROM articles a 
+                JOIN (
+                    SELECT MAX(id) AS id, bid
+                    FROM articles 
+                    WHERE 
+                        id_area = '.intval($id_area).' AND 
+                        lang = '.$this->db->escape($lang).' AND 
+                        xon = 1 AND 
+                        date_in <= '.$this->time().' AND 
+                        (date_out = 0 OR date_out >= '.$this->time().') 
+                    GROUP BY bid
+                    ) b ON b.id = a.id AND b.bid = a.bid
+                JOIN contexts c ON c.code = a.code_context
+                WHERE c.xkey = '.$this->db->escape($context).' 
+                ORDER BY a.date_in DESC, a.id DESC');
+            
+			if (APC)
+			{
+				apc_store(SITE.'abid'.$id_area.$lang.$bid, $c);
+			}
+		}
+		return $c;
 	}
 	
 	/**
@@ -327,12 +363,19 @@ class X4Site_model extends X4Model_core
 	 */
 	public function get_categories_by_key($id_area, $lang, $key)
 	{
-		return $this->db->query('SELECT a.*, c.description AS ctg FROM 
-				(
-				SELECT * 
-				FROM articles 
-				WHERE id_area = '.intval($id_area).' AND lang = '.$this->db->escape($lang).' AND xon = 1 AND date_in <= '.$this->now.' AND (date_out = 0 OR date_out >= '.$this->now.') ORDER BY date_in DESC, updated DESC
-				) a
+		return $this->db->query('SELECT a.*, c.description AS ctg 
+		    FROM articles a 
+            JOIN (
+                SELECT MAX(id) AS id, bid
+                FROM articles 
+                WHERE 
+                    id_area = '.intval($id_area).' AND 
+                    lang = '.$this->db->escape($lang).' AND 
+                    xon = 1 AND 
+                    date_in <= '.$this->time().' AND 
+                    (date_out = 0 OR date_out >= '.$this->time().') 
+                GROUP BY bid
+                ) b ON b.id = a.id AND b.bid = a.bid
 			JOIN categories c ON c.id_area = a.id_area AND c.lang = a.lang AND c.xon = 1 AND c.name = a.category
 			WHERE a.xkeys = '.$this->db->escape($key).' 
 			GROUP BY c.id
@@ -349,12 +392,19 @@ class X4Site_model extends X4Model_core
 	 */
 	public function get_categories_by_context($id_area, $lang, $context)
 	{
-		return $this->db->query('SELECT a.*, c.description AS ctg FROM 
-				(
-				SELECT * 
-				FROM articles 
-				WHERE id_area = '.intval($id_area).' AND lang = '.$this->db->escape($lang).' AND xon = 1 AND date_in <= '.$this->now.' AND (date_out = 0 OR date_out >= '.$this->now.') ORDER BY date_in DESC, updated DESC
-				) a
+		return $this->db->query('SELECT a.*, c.description AS ctg 
+		    FROM articles a 
+            JOIN (
+                SELECT MAX(id) AS id, bid
+                FROM articles 
+                WHERE 
+                    id_area = '.intval($id_area).' AND 
+                    lang = '.$this->db->escape($lang).' AND 
+                    xon = 1 AND 
+                    date_in <= '.$this->time().' AND 
+                    (date_out = 0 OR date_out >= '.$this->time().') 
+                GROUP BY bid
+                ) b ON b.id = a.id AND b.bid = a.bid
 			JOIN categories c ON c.id_area = a.id_area AND c.lang = a.lang AND c.xon = 1 AND c.name = a.category
 			JOIN contexts o ON o.xkey = '.$this->db->escape($context).' AND o.id_area = a.id_area AND o.lang = a.lang AND o.xon = 1 AND o.code = a.code_context
 			GROUP BY c.id
@@ -508,7 +558,7 @@ class X4Site_model extends X4Model_core
 		$w_p = $w_c = array();
 		foreach ($array as $a) {
 			$i = htmlentities($a);
-			$w_c[] = ' LOWER(a.content) LIKE '.$this->db->escape('%'.$i.'%');
+			$w_c[] = ' LOWER(a.ftext) LIKE '.$this->db->escape('%'.$i.'%');
 			$w_p[] = ' (
 				LOWER(p.name) LIKE '.$this->db->escape('%'.$i.'%').' OR 
 				LOWER(p.title) LIKE '.$this->db->escape('%'.$i.'%').' OR 
