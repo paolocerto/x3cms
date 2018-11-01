@@ -89,10 +89,14 @@ if (!empty($menus['sidebar']))
 $um = array(
 	'widgets' 	=> '<a href="'.BASE_URL.'widgets" title="'._WIDGETS.'"><i class="fa fa-paperclip fa-lg"></i></a>',
 	'help' 		=> '<a href="'.BASE_URL.'help" title="'._HELP_ON_LINE.'"><i class="fa fa-question fa-lg"></i></a>',
-	'profile' 	=> '<a href="'.BASE_URL.'profile" title="'.ucfirst($_SESSION['username']).' '._PROFILE.'"><i class="fa fa-user fa-lg"></i></a>',
-	'info' 		=> '<a href="'.BASE_URL.'info" title="'._ABOUT.'"><i class="fa fa-info fa-lg"></i></a>'
-);	
-			
+	'profile' 	=> '<a href="'.BASE_URL.'profile" title="'.ucfirst($_SESSION['username']).' '._PROFILE.'"><i class="fa fa-user fa-lg"></i></a>'
+);
+
+if ($_SESSION['xuid'] === 1)
+{
+    $um['info'] = '<a href="'.BASE_URL.'info" title="'._ABOUT.'"><i class="fa fa-info fa-lg"></i></a>';
+}
+
 if (!empty($menus['admin_user']))
 {
 	foreach($menus['admin_user'] as $i)
@@ -124,6 +128,12 @@ if ($langs)
 			<div id="page-title" class="two-fifth pad-left xs-hidden hide-x">Home</div>
 			<div id="filters" class="three-fifth xs-one-whole aright pad-right"></div>
 		</div>
+<?php
+if (!$this->site->site->xon)
+{
+    echo '<p class="acenter padded" style="background:#a00;color:#fff;"><b>'._MAINTENANCE_MODE.'</b></p>';
+}
+?>
 		<div id="topic" class="double-pad-left double-pad-right" role="main"></div>
 	</aside>
 </div>
