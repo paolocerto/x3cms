@@ -248,6 +248,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'admin', 'global', '_WARNING', 'Attenzione!', 0, 1),
 (NOW(), 'it', 'admin', 'global', '_CONGRATULATIONS', 'Complimenti!', 0, 1),
 
+(NOW(), 'it', 'admin', 'global', '_MAINTENANCE_MODE', 'Sito in manutenzione', 0, 1),
 (NOW(), 'it', 'admin', 'global', '_MSG_OK', 'Operazione completata', 0, 1),
 (NOW(), 'it', 'admin', 'global', '_MSG_ERROR', 'Attenzione! Si &egrave; verificato un errore.', 0, 1),
 
@@ -830,6 +831,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'admin', 'global', '_WARNING', 'Warning!', 0, 1),
 (NOW(), 'en', 'admin', 'global', '_CONGRATULATIONS', 'Congratulations!', 0, 1),
 
+(NOW(), 'en', 'admin', 'global', '_MAINTENANCE_MODE', 'Manintenance mode', 0, 1),
 (NOW(), 'en', 'admin', 'global', '_MSG_OK', 'Operation completed', 0, 1),
 (NOW(), 'en', 'admin', 'global', '_MSG_ERROR', 'Warning! An error occurred.', 0, 1),
 
@@ -1451,6 +1453,12 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'public', 'msg', '_UNKNOW_ERROR', 'Si &egrave; verificato un errore.', 0, 1),
 (NOW(), 'it', 'public', 'msg', '_PAGE_NOT_FOUND', 'La pagina richiesta non &egrave; disponibile.', 0, 1),
 (NOW(), 'it', 'public', 'msg', '_OFFLINE', 'Sito in manutenzione<br />Ci scusiamo per il disagio.', 0, 1),
+(NOW(), 'it', 'public', 'msg', '_PAGE_NOT_FOUND', 'La pagina richiesta non &egrave; disponibile.', 0, 1),
+(NOW(), 'it', 'public', 'msg', '_UPLOAD_ERROR', 'Si &egrave; verificato un errore durante l\'upload del file.', 0, 1),
+(NOW(), 'it', 'public', 'msg', '_FILE_SIZE_IS_TOO_BIG', 'La dimensione, in Kilobyte, del file di cui si cerca di fare l\'upload sono superiori al consentito', 0, 1),
+(NOW(), 'it', 'public', 'msg', '_IMAGE_SIZE_IS_TOO_BIG', 'Le dimensioni, in pixel, del file di cui si cerca di fare l\'upload sono superiori al consentito', 0, 1),
+(NOW(), 'it', 'public', 'msg', '_BAD_MIMETYPE', 'Il formato di file che si cerca di caricare non &egrave; ammesso', 0, 1),
+
 
 (NOW(), 'it', 'public', 'search', '_SEARCH_RESULT', 'Risultato della ricerca', 0, 1),
 (NOW(), 'it', 'public', 'search', '_SEARCH_OF', 'Ricerca di', 0, 1),
@@ -1610,6 +1618,10 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'public', 'msg', '_UNKNOW_ERROR', 'An error occurred', 0, 1),
 (NOW(), 'en', 'public', 'msg', '_PAGE_NOT_FOUND', 'This page is not available', 0, 1),
 (NOW(), 'en', 'public', 'msg', '_OFFLINE', 'Maintenance in progress<br />Sorry', 0, 1),
+(NOW(), 'en', 'public', 'msg', '_UPLOAD_ERROR', 'An error occurred during uploading.', 0, 1),
+(NOW(), 'en', 'public', 'msg', '_FILE_SIZE_IS_TOO_BIG', 'The size in kilobyte of uploading file is too big', 0, 1),
+(NOW(), 'en', 'public', 'msg', '_IMAGE_SIZE_IS_TOO_BIG', 'The size in pixel of uploading file is too big', 0, 1),
+(NOW(), 'en', 'public', 'msg', '_BAD_MIMETYPE', 'The file format you are trying to upload is not allowed', 0, 1),
 
 
 (NOW(), 'en', 'public', 'search', '_SEARCH_RESULT', 'Search result', 0, 1),
