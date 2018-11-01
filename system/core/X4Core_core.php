@@ -235,6 +235,12 @@ final class X4Core_core
 		case 'api':
 			$dirs = array(APATH.'apis/');
 			break;
+		case 'vendor':
+		    $class = 'autoload';
+		    $dirs = array(
+				PATH.'vendor/'
+			);
+		    break;
 		default:
 			$dirs = array(
 				SPATH.'controllers/',
@@ -247,7 +253,7 @@ final class X4Core_core
         {
             if(file_exists($d.$class.EXT))
             {
-            	require_once($d.$class.EXT);
+                require_once($d.$class.EXT);
                 return true;
             }
         }
