@@ -68,13 +68,17 @@ class X4Pagination_helper
 		// icons
 		if (isset($_SESSION['xuid']))
 		{
-		    $left = '<i class="fa fa-arrow-left lg"></i>';
-		    $right = '<i class="fa fa-arrow-right lg"></i>';
+		    $left = '<span class="fa fa-arrow-left lg"></span>';
+		    $right = '<span class="fa fa-arrow-right lg"></span>';
 		}
 		else
 		{
+			$left = '<span class="fa fa-arrow-left lg"></span>';
+			$right = '<span class="fa fa-arrow-right lg"></span>';
+			/*
 		    $left = '<img src="'.THEME_URL.'img/left.png" alt="'._PREVIOUS.'" />';
-		    $right = '<img src="'.THEME_URL.'img/right.png" alt="'._NEXT.'" />';
+			$right = '<img src="'.THEME_URL.'img/right.png" alt="'._NEXT.'" />';
+			*/
 		}
 		
 		// before
@@ -194,7 +198,7 @@ class X4Pagination_helper
 			if ($info[1] > 0) 
 			{
 				$link .= '<a class="pager_item" href="'.$url.'0'.$suffix.'" title="'._FIRST_PAGE.'">1</a>';
-				$link .= '<a class="pager_arrow" href="'.$url.($info[1]-1).$suffix.'" title="'._PREVIOUS.'"><i class="glyphicon glyphicon-chevron-left"></i></a>';
+				$link .= '<a class="pager_arrow" href="'.$url.($info[1]-1).$suffix.'" title="'._PREVIOUS.'"><span class="fa fa-chevron-left"></span></a>';
 			}
 			
 			// visualized section
@@ -208,7 +212,7 @@ class X4Pagination_helper
 			// after
 			if ($info[1] < ($info[0]-1)) 
 			{
-				$link .= '<a class="pager_arrow" href="'.$url.($info[1]+1).$suffix.'" title="'._NEXT.'"><i class="glyphicon glyphicon-chevron-right"></i></a>';
+				$link .= '<a class="pager_arrow" href="'.$url.($info[1]+1).$suffix.'" title="'._NEXT.'"><span class="fa fa-chevron-right"></span></a>';
 				$link .= '<a class="pager_item" href="'.$url.($info[0]-1).$suffix.'" title="'._LAST_PAGE.'">'.$info[0].'</a>';
 			}
 		}
