@@ -16,14 +16,15 @@ $sort = array();
 // SECTIONS
 $ltmp = $rtmp = '';
 $published = array();
+$artts = array();
 
 foreach($sections as $k => $v)
 {
-	$artts = '';
 	$sorter = array();
 	$ltmp .= '<h4>'._SECTION.' '.$k.'</h4>';
 	$sort[$k] = '#section'.$k;
 	$ltmp .= '<ul id="section'.$k.'" class="cdroppable">';
+	$artts[$k] = '';
 	
 	if (isset($v->articles) && !empty($v->articles)) 
 	{
@@ -50,10 +51,10 @@ foreach($sections as $k => $v)
 					</li>';
 			}
 		}
-		$artts = $v->articles;
+		$artts[$k] = $v->articles;
 	}
 	$ltmp .= '</ul>
-		<input type="hidden" name="sort'.$k.'" id="sort'.$k.'" value="'.$artts.'" />';
+		<input type="hidden" name="sort'.$k.'" id="sort'.$k.'" value="'.$artts[$k].'"  />';
 }
 
 // ARTICLES
@@ -118,7 +119,6 @@ if (!empty($layout))
 		</div>
 	</div>
 </div>
-
 
 <script>
 window.addEvent('domready', function() {
@@ -188,11 +188,11 @@ var sortableLists = new Sortables(sortableListsArray, {
 		}
 		
 ';
-
+// on complete
 foreach($sort as $k => $v) 
 {
 	echo 'var sect'.$k.' = sortableLists.serialize('.($k-1).');
-		$("sort'.$k.'").set("value", sect'.$k.');'.NL;
+	    $("sort'.$k.'").set("value", sect'.$k.');'.NL;
 }
 	echo '}
 	});';
