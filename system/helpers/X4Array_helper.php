@@ -34,6 +34,24 @@ class X4Array_helper
 	}
 	
 	/**
+	 * Convert an associative  array in array usable with array2obj 
+	 *
+	 * @static
+	 * @param array		$array associative array
+	 * @return array
+	 */
+	public static function sequentialarray2obj($array)
+	{
+		$a = array();
+		foreach($array as $k => $v) 
+		{
+			$a[] = array('value' => $k, 'option' => $v);
+		}
+
+		return self::array2obj($a, 'value', 'option');
+	}
+	
+	/**
 	 * Convert simple array or an associative array to an array of objects
 	 *
 	 * @static
