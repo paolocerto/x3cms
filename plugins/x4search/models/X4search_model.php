@@ -13,7 +13,7 @@
  *
  * @package		X3CMS
  */
-class x4search_model extends X4Model_core 
+class X4search_model extends X4Model_core 
 {
 	/**
 	 * Constructor

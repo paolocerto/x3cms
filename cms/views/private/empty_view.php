@@ -7,6 +7,7 @@
  * @license		http://www.gnu.org/licenses/agpl.htm
  * @package		X3CMS
  */
+
 ?>
 <script>
 <?php

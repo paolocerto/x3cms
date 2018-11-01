@@ -75,7 +75,7 @@ class X3ui_controller extends X4Cms_controller
 	 *
 	 * @param   mixed 	$fields Form array or boolean
 	 * @param   string 	$title Dialog title
-	 * @param   boolean     $session If true save message in a session var
+	 * @param   boolean $session If true save message in a session var
 	 * @return  void
 	 */
 	public function notice($fields, $title = '_form_not_valid', $session = false)

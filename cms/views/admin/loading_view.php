@@ -7,10 +7,19 @@
  * @license		http://www.gnu.org/licenses/agpl.htm
  * @package		X3CMS
  */
-
-echo stripslashes(X4Utils_helper::build_menu('A', $menus['admin_global'], 1, 'ALL', 5, false, 'id="nav"'));
 ?>
+<i class="fa fa-refresh fa-spin fa-3x" aria-hidden="true"></i>
 <script>
-$('nav').MooDropMenu();
-linking('#nav li a');
+<?php
+if (isset($location)) 
+{
+	// set redirect
+	echo 'location.href="'.$location.'";';
+}
+else
+{
+	// set reload
+	echo 'window.location.reload();';
+}
+?>
 </script>

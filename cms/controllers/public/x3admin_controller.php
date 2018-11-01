@@ -200,7 +200,6 @@ class X3admin_controller extends X4Cms_controller
 	 * Register article
 	 *
 	 * @access	private
-	 * @param   string	$what Dictionary what
 	 * @param   integer $id article id
 	 * @param   array 	$_post _POST array
 	 * @return  void

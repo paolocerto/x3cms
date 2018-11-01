@@ -11,7 +11,7 @@
 // x4search module installer
 
 // plugin version
-$version = '0.3';
+$version = '0.4';
 
 // compatibility
 $compatibility = '0.5 STABLE';
@@ -25,6 +25,11 @@ $required = array();
 // sql0 is the array of queries for global use (tables, privtypes, admin, admin dictionary)
 // sql1 is the array of queries for specific area use (parameters, dictionary, module)
 $sql0 = $sql1 = array();
+
+$sql0[] = "INSERT INTO privtypes (updated, xrif, name, description, xon) VALUES (NOW(), 1, 'x4_search', 'X4_SEARCH', 1)";
+$sql0[] = "INSERT INTO gprivs (updated, id_group, what, level, xon) VALUES (NOW(), 1, 'x4_search', 4, 1)";
+
+$sql0[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'it', 'admin', 'groups', 'X4_SEARCH', 'Motore di ricerca interno', 0, 1)";
 
 // module parameters
 $sql1[] = "INSERT INTO param (updated, id_area, xrif, name, description, xtype, xvalue, required, xlock, xon) VALUES (NOW(), $id_area, '$mod_name', 'label', 'Show label', '0|1', '0', 1, 0, 1)";

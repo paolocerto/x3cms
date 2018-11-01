@@ -45,7 +45,7 @@ if (RTL || isset($rtl)) echo 'directionality : "rtl",';
         autosave_ask_before_unload: false,
         
         toolbar1: "bold italic | alignleft aligncenter alignright alignjustify | bullist numlist | link image",
-        //toolbar2: "link image | responsivefilemanager | print preview media youtube",    
+        //toolbar2: "link image | responsivefilemanager | print preview media mediaembed youtube",    
         
         toolbar_items_size: 'small',
         
@@ -77,7 +77,8 @@ if (RTL || isset($rtl)) echo 'directionality : "rtl",';
         visualblocks_default_state: true,
         end_container_on_empty_block: true,
         
-        image_advtab: true,
+        image_advtab: false,
+        image_dimensions: false,
         
         insertdatetime_formats: ["%H:%M:%S", "%Y-%m-%d", "%d/%m/%Y", "%I:%M:%S %p", "%D"],
         

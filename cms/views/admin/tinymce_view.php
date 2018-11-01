@@ -44,7 +44,7 @@ if (RTL || isset($rtl)) echo 'directionality : "rtl",';
 		
 		autosave_ask_before_unload: false,
 		
-		toolbar1: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | responsivefilemanager | print preview media youtube | forecolor backcolor emoticons",
+		toolbar1: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | responsivefilemanager | print preview media mediaembed youtube | forecolor backcolor emoticons",
 		
 		imagetools_toolbar: "rotateleft rotateright | flipv fliph | editimage imageoptions",
 		
@@ -79,6 +79,7 @@ if (RTL || isset($rtl)) echo 'directionality : "rtl",';
 		end_container_on_empty_block: true,
 		
 		image_advtab: true,
+		image_dimensions: false,
 		
 		insertdatetime_formats: ["%H:%M:%S", "%Y-%m-%d", "%d/%m/%Y", "%I:%M:%S %p", "%D"],
 	
@@ -86,7 +87,7 @@ if (RTL || isset($rtl)) echo 'directionality : "rtl",';
 		remove_script_host : true,
 		document_base_url : "<?php echo (ROOT == '/') ? $this->site->site->domain : str_replace(ROOT, '', $this->site->site->domain.'/') ?>",
 	
-		extended_valid_elements : "article[class],header[class],section[class],div[class],p[class|style],a[href|title|class|onclick|id|name|rel|rev],figure[class],img[id|class|src|alt|style|onmouseover|onmouseout|name],span[class|style],hr[class|style],div[id|class|style],code,em[class],ul[class],ol[class],i[class],table[class|width=100%],th[class|width],td[class]",
+		extended_valid_elements : "article[class],header[class],section[class],div[class],p[class|style],a[href|title|class|onclick|id|name|rel|rev],figure[class],img[id|class|src|alt|style|onmouseover|onmouseout|name],span[class|style],hr[class|style],div[id|class|style],code,em[class],ul[class],ol[class],i[class],table[class|width=100%],th[class|width],td[class|style],iframe[frameborder|scrolling|src]",
 		invalid_elements : "script",
 	
 		// Example content CSS (should be your site CSS)

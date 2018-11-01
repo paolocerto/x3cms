@@ -14,7 +14,7 @@
 // close button
 if (isset($close)) 
 {
-	echo '<div id="close-modal" title="'._CLOSE.'"><i class="fa fa-times fa-lg"></i></div>';
+	echo '<div id="close-modal" title="'._CLOSE.'"><span class="fa fa-times fa-lg"></span></div>';
 }
 // msg
 if (isset($_SESSION['msg']) && !empty($_SESSION['msg']))

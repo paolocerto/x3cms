@@ -16,4 +16,9 @@ $required = array();
 $sql = array();
 $sql[] = 'DELETE FROM param WHERE xrif = \''.$mod_name.'\'';
 $sql[] = 'DELETE FROM dictionary WHERE what = \''.$mod_name.'\'';
+
+$sql[] = 'DELETE FROM privtypes WHERE name = \'x4_search\'';
+$sql[] = 'DELETE FROM gprivs WHERE what = \'x4_search\'';
+$sql[] = 'DELETE FROM uprivs WHERE privtype = \'x4_search\'';
+
 $sql[] = 'DELETE FROM modules WHERE name = \''.$mod_name.'\'';

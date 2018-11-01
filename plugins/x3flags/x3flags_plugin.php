@@ -54,9 +54,13 @@ class X3flags_plugin extends X4Plugin_core implements X3plugin
 					: '';
 					
 				if ($flags) 
+				{
 					$code = '<img src="'.ROOT.'files/files/'.$i->code.'.jpg" alt="'.$i->language.'" />';
+				}
 				else 
+				{
 					$code = ($short_text) ? $i->code : $i->language;
+				}
 				$out[] = '<li><a '.$flag.' href="'.ROOT.$i->code.'/'.X4Route_core::$area.'" title="'.$i->language.'">'.$code.'</a></li>';
 			}
 		}

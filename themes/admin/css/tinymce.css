@@ -1,5 +1,10 @@
 textarea {width:90%;}
 div {width:auto;}
+blockquote {padding:1em;border-left: 5px solid #428fdb;background:#eee;}
+
+img {max-width:100%;margin-bottom:1em;}
+img.sinistra {float: left;margin:0 1em 1em 0;}
+img.destra {float: right;margin:0 0 1em 1em;}
 
 table {border:none;width:100%;}
 thead tr {border:1px solid #ccc;}

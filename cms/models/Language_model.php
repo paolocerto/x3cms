@@ -233,7 +233,7 @@ class Language_model extends X4Model_core
 	}
 	
 	/**
-	 * Exchabnge languages in a table and in an area
+	 * Exchange languages in a table and in an area
 	 *
 	 * @param   integer	$id_area
 	 * @param   string	$table

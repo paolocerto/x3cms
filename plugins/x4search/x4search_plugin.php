@@ -13,7 +13,7 @@
  *
  * @package		X3CMS
  */
-class x4search_plugin extends X4Plugin_core implements X3plugin
+class X4search_plugin extends X4Plugin_core implements X3plugin
 {
 	/**
 	 * Constructor
