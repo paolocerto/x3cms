@@ -913,7 +913,7 @@ function save_article(bid, content) {
 	 * @param boolean	$home display the home link
 	 * @return string
 	 */
-	public static function build_menu($ordinal, $items, $deep = 1, $key = 'NONE', $levels = 1, $arrow = false, $ul_attribute = '', $home = false)
+	public static function build_menu($ordinal, $items, $deep = 1, $key = 'NONE', $levels = 1, $arrow = false, $ul_attribute = '', $home = false, $vertical = false)
 	{
 		$menu = '';
 		$sub = '';
@@ -963,15 +963,23 @@ function save_article(bid, content) {
 						{
 							if ($arrow && $tmp_deep > $deep)
 							{
-								$menu .= '<span class="arrow"></span>';
+								$menu .= '<div class="arrow pointer"><span class="fa fa-chevron-down"></span></div>';
 							}
 							
 							// First ul
-							$ul_attr = ($tmp_deep == 1 && !empty($ul_attribute))
-								? ' '.$ul_attribute
-								: '';
-								
-							// First ul
+							if ($tmp_deep == 1 && !empty($ul_attribute))
+							{
+								$ul_attr = $ul_attribute;
+							}
+							elseif ($vertical)
+							{
+								$ul_attr = 'style="display:none"';
+							}
+							else
+							{
+								$ul_attr = '';
+							}	
+							// ul
 							$menu .= '<ul '.$ul_attr.'>';
 							
 							// home
@@ -1058,6 +1066,25 @@ function save_article(bid, content) {
 			}
 		}
 		return $menu.$sub;
+	}
+
+	/**
+	 * Build a nested menu
+	 *
+	 * @static
+	 * @param string	$ordinal ordinal of visualized page
+	 * @param array		$items menu array
+	 * @param integer	$deep depth of the origin of the first item
+	 * @param string	$key [ALL|RELATED_INSIDE|RELATED_OUTSIDE|NONE]
+	 * @param integer	$levels number of levels to display
+	 * @param boolean	$arrow display an arrow if submenu
+	 * @param string	$ul_attribute first ul attribute
+	 * @param boolean	$home display the home link
+	 * @return string
+	 */
+	public static function build_menu_nav($ordinal, $items, $deep = 1, $key = 'NONE', $levels = 1, $arrow = false, $ul_attribute = '', $home = false, $vertical = false)
+	{
+		return '<nav>'.self::build_menu($ordinal, $items, $deep, $key, $levels, $arrow, $ul_attribute, $home, $vertical).'</nav>';
 	}
 	
 	/**
