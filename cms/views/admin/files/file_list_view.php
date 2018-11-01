@@ -17,17 +17,14 @@ foreach($areas as $i)
 }
 echo '</ul></div>';
 
-if (!empty($items[0])) 
+// type switcher
+echo '<div class="aright sbox"><ul class="inline-list">';
+foreach($types as $i) 
 {
-	// type switcher
-	echo '<div class="aright sbox"><ul class="inline-list">';
-	foreach($types as $i) 
-	{
-		$on = ($i->value == $xtype) ? 'class="on"' : '';
-		echo '<li><a '.$on.' href="'.BASE_URL.'files/index/'.$id_area.'/'.urlencode($category).'/'.urlencode($subcategory).'/'.$i->value.'/" title="'._SWITCH_TYPE.'">'.ucfirst($i->option).'</a></li>';
-	}
-	echo '</ul></div>';
+    $on = ($i->value == $xtype) ? 'class="on"' : '';
+    echo '<li><a '.$on.' href="'.BASE_URL.'files/index/'.$id_area.'/'.urlencode($category).'/'.urlencode($subcategory).'/'.$i->value.'/" title="'._SWITCH_TYPE.'">'.ucfirst($i->option).'</a></li>';
 }
+echo '</ul></div>';
 
 // category switcher
 if (!empty($categories))
@@ -133,7 +130,7 @@ if (!empty($items[0]))
 			
 			// image size
 			$size = (file_exists($file_path.'img/'.$i->name)) 
-				? implode('x', array_slice(getimagesize($file_path.'img/'.$i->name), 0, 2)).' pixel'._TRAIT_ 
+				? @implode('x', @array_slice(@getimagesize($file_path.'img/'.$i->name), 0, 2)).' pixel'._TRAIT_ 
 				: '';
 		}
 		
