@@ -115,7 +115,8 @@ class X4Time_helper
 	 */
 	public static function reformat($date, $old_format, $new_format)
 	{
-		$date = str_replace(array('/', '\\', '-', '.'), DATE_SEP, $date);		
+		$date = str_replace(array('/', '\\', '-', '.'), '-', trim($date));
+		$old_format = str_replace(array('/', '\\', '-', '.'), '-', $old_format);
 		$d = self::parse_date($date, $old_format);
 		if ($d['error_count'])
 		{
