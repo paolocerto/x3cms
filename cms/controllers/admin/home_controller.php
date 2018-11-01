@@ -38,6 +38,23 @@ class Home_controller extends X3ui_controller
 	}
 	
 	/**
+	 * Reload to home method
+	 *
+	 * @return  void
+	 */
+	public function redirect($url)
+	{
+		$page = $this->get_page('home');
+		$view = new X4View_core(X4Utils_helper::set_tpl($page->tpl));
+		$view->page = $page;
+		
+		$view->content = new X4View_core('loading');
+		$view->content->location = urldecode($this->site->site->domain.'/'.$url);
+		$view->render(TRUE);
+	}
+	
+	
+	/**
 	 * Admin area home page
 	 * This page displays Notices and Bookmarks
 	 *
@@ -123,8 +140,18 @@ class Home_controller extends X3ui_controller
 	 */
 	private function get_notices($lang)
 	{
+		$contextOptions = [
+			'ssl' => [
+				'verify_peer' => false,
+				"verify_peer_name"=>false,
+			],
+		];
+		$context = stream_context_create($contextOptions);
+		
+		$url = 'https://www.x3cms.net/en/public/call_plugin/x3notices/2/notices/'.urlencode($this->site->site->version).'/'.md5($this->site->site->xcode).'/'.$lang;
+		
 		// get remote contents
-		$content = @file_get_contents('http://www.x3cms.net/en/public/call_plugin/x3notices/2/notices/'.urlencode($this->site->site->version).'/'.md5($this->site->site->xcode).'/'.$lang);
+		$content = @file_get_contents($url, false, $context);
 		
 		// return contents or error message
 		return (empty($content)) 
