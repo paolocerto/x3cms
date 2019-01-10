@@ -403,36 +403,17 @@ class X4Plugin_model extends X4Model_core
 	{
 	    // this list have to be adapted for each website
 	    $modules = array(
-	        'x3_banner' => null,
-	        'x3_contacts' => null,
 	        'x3_forms' => null,
 	        'x3_fields' => array('x3_forms' => 'id_form'),
-	        'x3_menu' => null, //array('pages' => 'id_menu'),
-	        'x3_news' => null,
-	        'x3_news_pictures' => array('x3_news' => 'id_news'),
-	        'x3_projects' => null,
-	        'x3_projects_picture' => array('x3_projects' => 'id_project'),
-	        'x3_slideshow' => null,
-	        'x3_slideshow_items' => array('x3_slideshow' => 'id_slideshow'),
-	        'x3_social' => null,
-	        'x3_pro' => null,
-	        'x3_tree' => array('x3_tree' => 'id_from'),
-	        'x3_xpro' => array('x3_tree' => 'id_tree', 'x3_pro' => 'id_pro'),
 	    );
 	    
-	    $no_lang = array('x3_xpro', 'x3_slideshow_items', 'x3_news_pictures', 'x3_projects_picture');
+	    $no_lang = array();
 	    
 	    $images = array(
-	        'x3_banner' => array('img'),
-	        'x3_news_pictures' => array('img', 'thumb'),
-	        'x3_pro' => array('thumb', 'img1', 'img2', 'img3', 'img4', 'img5', 'img6', 'img7', 'img8'),
-	        'x3_projects' => array('img1', 'img2', 'img3', 'img4', 'img5', 'img6', 'img7'),
-	        'x3_projects_pictures' => array('img', 'thumb'),
-	        'x3_slideshow_pictures' => array('img', 'thumb'),
-	        'x3_tree' => array('img')
+	        
 	    );
 	    
-	    // those table are empty 'x3_menu_page', 'x3_xtree'
+	    // those table are empty
 	    $tables = array();
 	    
 	    $path = APATH.'files/filemanager/img/';
