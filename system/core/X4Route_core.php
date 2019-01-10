@@ -303,7 +303,7 @@ final class X4Route_core
 	 */ 
 	public static function get_route()
 	{
-	    $param = (self::$args[0] == '_default') 
+	    $param = (isset(self::$args[0]) && self::$args[0] == '_default') 
 			? '' 
 			: '/'.implode('/', self::$args);
 			
