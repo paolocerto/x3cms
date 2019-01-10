@@ -212,7 +212,7 @@ window.addEvent("domready", function()
 	 * @param   integer $id User ID
 	 * @return  void
 	 */
-	public function detail($id)
+	public function detail($id, $dialog = false)
 	{
 	    // load dictionaries
 		$this->dict->get_wordarray(array('users', 'form', 'login'));
@@ -224,18 +224,35 @@ window.addEvent("domready", function()
 		$page = $this->get_page('users/detail');
 		
 		// content
-		$view = new X4View_core('container');
-		
-		$view->content = new X4View_core('users/user_detail');
-		$view->content->page = $page;
-		
-		// get user data
-		$user = new User_model();
-		$view->content->u = $user->get_user_by_id($id);
-		
-		// get user privileges
-		$perm = new Permission_model();
-		$view->content->a = $perm->get_aprivs($id);
+		if ($dialog)
+		{
+			$view = new X4View_core('editor');
+			$view->form = new X4View_core('users/user_detail');
+			$view->form->dialog = 1;
+			
+			// get user data
+			$user = new User_model();
+			$view->form->u = $user->get_user_by_id($id);
+			
+			// get user privileges
+			$perm = new Permission_model();
+			$view->form->a = $perm->get_aprivs($id);
+		}
+		else
+		{
+			$view = new X4View_core('container');
+			
+			$view->content = new X4View_core('users/user_detail');
+			$view->content->page = $page;
+			
+			// get user data
+			$user = new User_model();
+			$view->content->u = $user->get_user_by_id($id);
+			
+			// get user privileges
+			$perm = new Permission_model();
+			$view->content->a = $perm->get_aprivs($id);
+		}
 		$view->render(TRUE);
 	}
 	
