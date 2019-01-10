@@ -23,7 +23,7 @@ echo '<tr><td style="width:15em;"><strong>'._GROUP.'</td></strong></td><td colsp
 	<tr><td><strong>'._PHONE.'</td></strong></td><td colspan="2">'.$u->phone.'</td></tr>
 	<tr><td><strong>'._LEVEL.'</td></strong></td><td colspan="2">'.$u->level.'</td></tr>';
 	
-if ($u->plevel > 2 || $u->plevel == 4) 
+if (!isset($dialog) && ($u->plevel > 2 || $u->plevel == 4)) 
 {
 	echo '<tr><td colspan="3" class="menu">'._PERMISSIONS.'</td></tr>
 			<tr><td><a class="btl" href="'.BASE_URL.'users/reset/'.$u->id.'" title="'._RESET_PRIVS.'">'._RESET_PRIVS.'</a></td><td colspan="2">'._RESET_PRIVS_MSG.'</td></tr>
@@ -44,7 +44,14 @@ if ($u->plevel > 2 || $u->plevel == 4)
 <script>
 window.addEvent('domready', function()
 {
+<?php
+if (!isset($dialog))
+{
+?>
 	X3.content('filters','users/filter/<?php echo $u->id_group.'/'.$u->id ?>', null);
+<?php
+}
+?>
 	buttonize('topic', 'btm', 'tdown');
 	buttonize('topic', 'btop', 'modal');
 	actionize('topic',  'btl', 'tdown', escape('users/detail/<?php echo $u->id ?>'));
