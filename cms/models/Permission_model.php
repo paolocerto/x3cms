@@ -408,7 +408,9 @@ class Permission_model extends X4Model_core
 					}
 				}
 				else 
+				{
 					$items = array();
+				}
 				
 				// if there are something to handle
 				if ($items) 
@@ -430,10 +432,17 @@ class Permission_model extends X4Model_core
 							// set all permission to right value (eliminate customizations) if permission is greater than zero
 							if ($v) 
 							{
-								$sql[] = 'UPDATE privs SET level = '.$v.' WHERE id_who = '.$id_user.' AND what = '.$this->db->escape($k).' AND id_what = '.$ii->id;
+							    if ($ii->id && !is_null($ii->pid))
+							    {
+							        $sql[] = 'UPDATE privs SET level = '.$v.' WHERE id_who = '.$id_user.' AND what = '.$this->db->escape($k).' AND id_what = '.$ii->id;
+							    }
+							    else
+							    {
+							        $sql[] = 'INSERT INTO privs (updated, id_area, id_who, what, id_what, level, xon) VALUES (NOW(), '.$i->id_area.', '.$id_user.', '.$this->db->escape($k).', '.$ii->id.', '.$v.', 1)';
+								}
 							}
 							// eliminate if permission is zero
-							else 
+							else
 							{
 								$sql[] = 'DELETE FROM privs WHERE id_who = '.$id_user.' AND what = '.$this->db->escape($k).' AND id_what = '.$ii->id;
 							}
@@ -457,9 +466,10 @@ class Permission_model extends X4Model_core
 				}
 			}
 		}
+		
 		return (empty($sql)) 
-			? array(0,1) : 
-			$this->db->multi_exec($sql);
+			? array(0,1) 
+			: $this->db->multi_exec($sql);
 	}
 	
 	/**
@@ -489,43 +499,45 @@ class Permission_model extends X4Model_core
 	 */
 	private function get_all_records($table, $id_user, $id_area = 0, $case = null)
 	{
-		// switch case
+		// switch case, force == null
 		if (is_null($case)) 
 		{
-			// whitout permissions
+			// without permissions
 			$join = 'LEFT';
 			$where = ' WHERE p.id_what IS NULL ';
 		}
 		else 
 		{
 			// with different level permissions
-			$join = '';
-			$where = ' WHERE p.level <> '.intval($case);
+			$join = 'LEFT';
+			$where = ' WHERE (p.id_what IS NULL OR p.level <> '.intval($case).')';
 		}
 		
 		// Some tables require special treatment
 		$sql = '';
+		
 		// excluded tables
-	    	$excluded = array('x4', 'x5');
-	    	$prefix = substr($table, 0, 2);
-        	switch($table) 
+        $excluded = array('x4', 'x5');
+        $prefix = substr($table, 0, 2);
+        
+        switch($table) 
 		{
 		case 'areas':
-			$sql = 'SELECT a.id_area AS id FROM aprivs a 
+			$sql = 'SELECT a.id_area AS id, p.id AS pid FROM aprivs a 
 			'.$join.' JOIN privs p ON p.what = '.$this->db->escape($table).' AND p.id_who = a.id_user AND p.id_what = a.id_area 
 			'.$where.' AND a.id_user = '.intval($id_user).' AND a.id_area = '.intval($id_area) .'
 			ORDER BY a.id ASC';
 			break;
 		case 'dictionary':
-			$sql = 'SELECT DISTINCT d.id FROM dictionary d
+			$sql = 'SELECT DISTINCT d.id, p.id AS pid FROM dictionary d
 				JOIN aprivs a ON a.area = d.area 
 				'.$join.' JOIN privs p ON p.what = '.$this->db->escape($table).' AND p.id_what = d.id AND p.id_who = '.intval($id_user).' AND p.id_area = '.intval($id_area).'
-				'.$where.'
+				'.$where.' AND d.updated > '.$this->db->escape($_SESSION['last_in']).'
 				ORDER BY d.id ASC';
 			break;
 		case 'menus':
 		case 'templates':
-			$sql = 'SELECT DISTINCT t.id FROM '.$table.' t 
+			$sql = 'SELECT DISTINCT t.id, p.id AS pid FROM '.$table.' t 
 			JOIN themes th ON th.id = t.id_theme 
 			'.$join.' JOIN privs p ON p.what = '.$this->db->escape($table).' AND p.id_what = t.id AND p.id_who = '.intval($id_user).'
 			'.$where.'
@@ -535,13 +547,13 @@ class Permission_model extends X4Model_core
 		case 'sites':
 		case 'themes':
 		case 'groups':
-			$sql = 'SELECT DISTINCT t.id FROM '.$table.' t 
+			$sql = 'SELECT DISTINCT t.id, p.id AS pid FROM '.$table.' t 
 			'.$join.' JOIN privs p ON p.what = '.$this->db->escape($table).' AND p.id_what = t.id AND p.id_who = '.intval($id_user).'
 			'.$where.'
 			ORDER BY t.id ASC';
 			break;
 		case 'users':
-			$sql = 'SELECT DISTINCT u.id FROM users u
+			$sql = 'SELECT DISTINCT u.id, p.id AS pid FROM users u
 				JOIN groups g ON g.id = u.id_group 
 				'.$join.' JOIN privs p ON p.what = '.$this->db->escape($table).' AND p.id_what = u.id AND p.id_who = '.intval($id_user).'
 				'.$where.'
@@ -572,10 +584,21 @@ class Permission_model extends X4Model_core
 						}
 					}
 					
+					// handle reset
+					if (is_null($case)) 
+                    {
+                        $soft = ' AND t.updated > '.$this->db->escape($_SESSION['last_in']);
+                    }
+                    else 
+                    {
+                        // hard
+                        $soft = '';
+                    }
+					
 					// MySQL table on default DB
-					$sql = 'SELECT DISTINCT t.id FROM '.$table.' t
+					$sql = 'SELECT DISTINCT t.id, p.id AS pid FROM '.$table.' t
 						'.$join.' JOIN privs p ON p.what = '.$this->db->escape($table).' AND p.id_what = t.id AND p.id_who = '.intval($id_user).' AND p.id_area = t.id_area
-						'.$where.' AND t.id_area = '.intval($id_area).'
+						'.$where.' AND t.id_area = '.intval($id_area).' '.$soft.'
 						ORDER BY t.id ASC';
 				}
 			}
@@ -612,17 +635,20 @@ class Permission_model extends X4Model_core
 			$exclude = array('themes', 'templates', 'menus', 'logs');
 			
 			if (in_array($table, $exclude))
+			{
 				$items = $this->db->query('SELECT t.id, p.level, p.id AS pid 
 					FROM '.$table.' t
 					LEFT JOIN privs p ON p.what = '.$this->db->escape($table).' AND p.id_what = t.id AND p.id_who = '.intval($id_user).' AND p.id_area = 1
 					ORDER BY t.id ASC');
+			}
 			else
+			{
 				$items = $this->db->query('SELECT t.id, p.level, p.id AS pid 
 					FROM '.$table.' t
 					LEFT JOIN privs p ON p.what = '.$this->db->escape($table).' AND p.id_what = t.id AND p.id_who = '.intval($id_user).' AND p.id_area = t.id_area
 					WHERE t.id_area = '.intval($a).'
 					ORDER BY t.id ASC');
-			
+			}
 			// insert, delete and update privs
 			foreach($items as $i) 
 			{
