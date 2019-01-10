@@ -450,7 +450,14 @@ class X4Site_model extends X4Model_core
 				$c[$i->name] = $this->db->query('SELECT pa.url, pa.name, pa.title, pa.xfrom, pa.hidden, pa.deep, pa.ordinal '.$level.' 
 					FROM pages pa
 					'.$page_privs.'
-					WHERE pa.id_area = '.intval($id_area).' AND pa.lang = '.$this->db->escape($this->lang).' AND pa.id_menu = '.intval($i->id).' AND pa.xpos > 0 AND pa.xon = 1 AND pa.deep < '.$maxdeep.'
+					WHERE 
+						pa.id_area = '.intval($id_area).' AND 
+						pa.lang = '.$this->db->escape($this->lang).' AND 
+						pa.id_menu = '.intval($i->id).' AND 
+						pa.xpos > 0 AND 
+						pa.xon = 1 AND 
+						pa.deep < '.$maxdeep.' AND
+						pa.hidden = 0
 					ORDER BY pa.ordinal ASC');
 			}
 			
