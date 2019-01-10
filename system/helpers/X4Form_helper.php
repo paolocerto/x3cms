@@ -225,7 +225,7 @@ class X4Form_helper
 					$str .= $i['value'];
 					break;
 				case 'button':
-					$str .= '<div class="xcenter">'.self::button($i).'</div>';
+					$str .= '<div class="text-center">'.self::button($i).'</div>';
 					break;
 				default:
 					// for: fieldset, hidden, text, file, password, checkbox, radio, texarea, select
@@ -376,7 +376,7 @@ class X4Form_helper
 		$tmp = '';
 		if (isset($e['old']) && !empty($e['old'])) 
 		{
-			$tmp = '<p class="xsmall block">';
+			$tmp = '<p class="xsmall">';
 			// can display the file only if knowns his path
 			if (isset($e['folder'])) 
 			{
@@ -506,10 +506,13 @@ class X4Form_helper
 				? 'class="error"'
 				: '';
 			
+			$v = $e['options'][1];
+			$o = $e['options'][2];
+			
 			$c = 0;
 			foreach($e['options'][0] as $i)
 			{
-				$checked = (isset($e['checked']) && in_array($i->$e['options'][1], $e['checked'])) 
+				$checked = (isset($e['checked']) && in_array($i->$v, $e['checked'])) 
 					? 'checked="checked"' 
 					: '';
 					
@@ -539,6 +542,10 @@ class X4Form_helper
 		$inline = false;
 		$br = BR;
 		
+		$error = isset($e['error'])
+            ? 'class="error"'
+            : '';
+				
 		if (isset($e['extra']))
 		{
 			$class = (strstr($e['extra'], 'class="'))
@@ -576,7 +583,7 @@ class X4Form_helper
 				}
 				else
 				{
-					$tmp .= '<div class="radiobox"><label for="'.$e['name'].'_'.$c.'"><input type="radio" '.$class.' name="'.$e['name'].'" id="'.$e['name'].'_'.$c.'" value="'.$i->$v.'" '.$checked.' /> '.stripslashes($i->$o).'</label> </div>';
+					$tmp .= '<div class="radiobox"><label for="'.$e['name'].'_'.$c.'" '.$error.'><input type="radio" '.$class.' name="'.$e['name'].'" id="'.$e['name'].'_'.$c.'" value="'.$i->$v.'" '.$checked.' /> '.stripslashes($i->$o).'</label> </div>';
 				}
 				$c++;
 			}
