@@ -137,7 +137,7 @@ class X4Dict_model extends X4Model_core
 		}
 		else
 		{
-		   $msg = urldecode($msg);
+		   $msg = nl2br(urldecode($msg));
 		}
 		
 		// handle break line
