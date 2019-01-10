@@ -392,6 +392,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'admin', 'msg', '_REQUIRED_PLUGIN', 'deve essere installato per installare questo modulo', 0, 1),
 (NOW(), 'it', 'admin', 'msg', '_PLUGIN_NEEDED_BY', 'richiede questo modulo', 0, 1),
 
+(NOW(), 'it', 'admin', 'form', '_SESSION_EXPIRED', 'La sessione per la compilazione di questo modulo è scaduta.<br>Ricaricate la pagina e riprovate.', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_FORM_NOT_VALID', 'Uno o pi&ugrave; campi del form non sono compilati correttamente:', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_FORM_DUPLICATE', 'Questo form &egrave; gi&agrave; stato registrato.', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_REQUIRED', '&egrave; un campo obbligatorio.', 0, 1),
@@ -974,6 +975,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'admin', 'msg', '_REQUIRED_PLUGIN', 'must be installed to install this plugin', 0, 1),
 (NOW(), 'en', 'admin', 'msg', '_PLUGIN_NEEDED_BY', 'require this plugin', 0, 1),
 
+(NOW(), 'en', 'admin', 'form', '_SESSION_EXPIRED', 'The session for filling out this form has expired.<br>Please reload the page and try again.', 0, 1),
 (NOW(), 'en', 'admin', 'form', '_FORM_NOT_VALID', 'One or more form\'s fields are wrong:', 0, 1),
 (NOW(), 'en', 'admin', 'form', '_FORM_DUPLICATE', 'This form was already submitted.', 0, 1),
 (NOW(), 'en', 'admin', 'form', '_REQUIRED', 'is a required field.', 0, 1),
