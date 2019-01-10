@@ -119,6 +119,49 @@ class X4Array_helper
 	}
 	
 	/**
+	 * Convert a string to an associative array
+	 *
+	 * @static
+	 * @param string	$str
+	 * @param string	$row_sep
+	 * @param string	$value_sep
+	 * @return array
+	 */
+	public static function str2array($str, $row_sep = '§', $value_sep = '|')
+	{
+		$a = array();
+		$rows = explode($row_sep, $str);
+		foreach($rows as $r)
+		{
+		    $v = explode($value_sep, $r);
+		    if (!empty($v[0]) && !is_null($v[1]))
+		    {
+		        $a[$v[0]] = $v[1];
+		    }
+		}
+		return $a;
+	}
+	
+	/**
+	 * Convert a string to an associative array
+	 *
+	 * @static
+	 * @param string	$array
+	 * @param string	$row_sep
+	 * @param string	$value_sep
+	 * @return str
+	 */
+	public static function array2str($array, $row_sep = '§', $value_sep = '|')
+	{
+		$rows = array();
+		foreach($array as $k => $v)
+		{
+		    $rows[] = $k.$value_sep.str_replace(array('<span class="AM">', '<', '>', '"'), array('<spam>', 'XLTX', 'XGTX', 'XQTX'), $v);
+		}
+		return implode($row_sep, $rows);
+	}
+	
+	/**
 	 * Get index of an element in an array
 	 *
 	 * @static
@@ -181,6 +224,28 @@ class X4Array_helper
 		        : $i->$index;
 		    
 			$a[$final_index] = $i;
+		}
+		return $a;
+	}
+	
+	/**
+	 * Extract from array by index
+	 *
+	 * @param	array	$array Array 
+	 * @param	string	$index Field to extract
+	 * @return array
+	 */
+	public static function extractize($array, $index)
+	{
+		$a = array();
+		foreach($array as $i)
+		{
+		    // to handle null values
+		    $final_index = (is_null($i->$index))
+		        ? -1
+		        : $i->$index;
+		    
+			$a[] = $final_index;
 		}
 		return $a;
 	}
