@@ -22,7 +22,7 @@ class X4Validation_helper
 		array('value' => 'required', 	'option' => 'required: set a field as mandatory', 														'param' => array(0, 0)),
 		array('value' => 'hidden_req', 	'option' => 'hidden_req: set a field as mandatory but don\'t show the *', 								'param' => array(0, 0)),
 		array('value' => 'requiredif', 	'option' => 'requiredif: set a field as mandatory if another field has a specific value', 				'param' => array(1, 'text')),
-		array('value' => 'ifempty', 	'option' => 'ifempty: set a field as mandatory if another field is empty', 								'param' => array(1, 0)),
+		array('value' => 'ifempty', 	'option' => 'ifempty: set a field as mandatory if another field is empty (more than one field separated with :)', 'param' => array(1, 0)),
 		array('value' => 'depends', 	'option' => 'depends: set a field as mandatory if another field is not empty', 							'param' => array(1, 0)),
 		array('value' => 'inarray', 	'option' => 'inarray: check if a selected value is in the selected values in a multiple select field', 	'param' => array(1, 0)),
 		array('value' => 'mail', 		'option' => 'mail: check if a value is a valid email address', 											'param' => array(0, 0)),
@@ -108,6 +108,7 @@ class X4Validation_helper
 		if (!empty($form_name) && (!isset(self::$data['x4token']) || self::$data['x4token'] != md5($_SESSION['token'].$form_name)))
 		{
 			$e = false;
+			$fields[0]['error'][] = array('msg' => '_session_expired');
 			$_SESSION['token'] = uniqid(rand(),TRUE);
 		}
 		else 
@@ -457,17 +458,46 @@ class X4Validation_helper
 	 */
 	private static function _ifempty(&$field, $tok, &$e, $_post, $_files)
 	{
-		if (
-				self::is_empty($tok[1]) &&			// the related item is not set 
-				self::is_empty($field['name'])			// also the item is not set  
-			)
-		{
-			$field['error'][] = array(
-			    'msg' => '_ifempty',
-			    'related' => $tok[1]
-			);
-			$e = false;
-		}
+	    // there are multiple fields in tok[1]?
+	    $toks = explode(':', $tok[1]);
+	    if (sizeof($toks) == 1)
+	    {
+            if (
+                    self::is_empty($tok[1]) &&			// the related item is not set 
+                    self::is_empty($field['name'])		// also the item is not set  
+                )
+            {
+                $field['error'][] = array(
+                    'msg' => '_ifempty',
+                    'related' => $tok[1]
+                );
+                $e = false;
+            }
+        }
+        else
+        {
+            if (self::is_empty($field['name']))
+            {
+                $chk = false;
+                // check the others
+                foreach($toks as $i)
+                {
+                    // at least one not empty
+                    if (!self::is_empty($i))
+                    {
+                        $chk = true;
+                    }
+                }
+                if (!$chk)
+                {
+                    $field['error'][] = array(
+                        'msg' => '_ifempty',
+                        'related' => $toks[0]
+                    );
+                    $e = false;
+                }
+            }
+        }
 	}
 	
 	/**
@@ -1002,9 +1032,15 @@ class X4Validation_helper
 			$res = X4Checker_helper::isDateTime($val, 'date', $date_format); 
 			if(!$res) 
 			{
+				$format = str_replace(
+					array('d', 'm', 'Y', '-'),
+					array('gg', 'mm', 'aaaa', '/'),
+					$date_format
+					);
+				
 				$field['error'][] = array(
 				    'msg' => '_must_be_a_date',
-				    'related' => '['.$date_format.']'
+				    'related' => '['.$format.']'
 				);
 				$e = false;
 			}
@@ -1405,12 +1441,19 @@ class X4Validation_helper
 								$res = empty(self::$data[$name]);
 							}
 						}
-						elseif (isset($i['multiple']))
+						else
 						{
-						    // multiple
-						    // not set if array is empty or the first value is empty
-							$res = (empty(self::$data[$i['name']]) || empty(self::$data[$i['name']][0]));
-						}
+						    if (isset($i['multiple']))
+                            {
+                                // multiple
+                                // not set if array is empty or the first value is empty
+                                $res = (empty(self::$data[$i['name']]) || empty(self::$data[$i['name']][0]));
+                            }
+                            else
+                            {
+                                $res = empty(self::$data[$name]);
+                            }
+                        }
 						break;
 				}
 			}
