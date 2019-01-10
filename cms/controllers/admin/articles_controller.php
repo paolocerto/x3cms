@@ -539,6 +539,13 @@ window.addEvent("domready", function()
 			$item->id_page = $id_page;
 		}
 		
+		// check if display or not time window
+		$time_window = true;
+		if (!ADVANCED_EDITING && $item->id_page)
+		{
+			$time_window = false;
+		}
+		
 		// if duplicate reset bid
 		if ($duplicate)
 		{
@@ -800,48 +807,80 @@ window.addEvent("domready", function()
 				<div id="right-box" class="one-fifth md-one-fourth sm-one-third xs-one-whole xs-hidden">'
 		);
 		
-		// time window section
-		$fields[] = array(
-			'label' => null,
-			'type' => 'html',
-			'value' => '<h2>'._TIME_WINDOW.'</h2><div class="band clearfix inner-pad"><div class="one-half sm-one-whole">'
-		);
-		$fields[] = array(
-			'label' => null,
-			'type' => 'hidden', 
-			'value' => $item->date_in,
-			'name' => 'old_date_in'
-		);
-		$fields[] = array(
-			'label' => _START_DATE,
-			'type' => 'text', 
-			'value' => date('Y-m-d', $item->date_in),
-			'name' => 'date_in',
-			'rule' => 'required|date',
-			'extra' => 'class="date date_toggled large"'
-		);
-		
-		$fields[] = array(
-			'label' => null,
-			'type' => 'html',
-			'value' => '</div><div class="one-half sm-one-whole">'
-		);
-		
-		$fields[] = array(
-			'label' => _END_DATE,
-			'type' => 'text', 
-			'value' => ($item->date_out == 0) ? '' : date('Y-m-d', $item->date_out),
-			'name' => 'date_out',
-			'rule' => 'date',
-			'extra' => 'class="date date_toggled large"',
-			'suggestion' => _NO_END_MSG
-		);
-		
+		if (!$time_window)
+		{
+		    $fields[] = array(
+                'label' => null,
+                'type' => 'hidden', 
+                'value' => $item->date_in,
+                'name' => 'old_date_in'
+            );
+            
+            $fields[] = array(
+                'label' => null,
+                'type' => 'hidden', 
+                'value' => $item->date_in,
+                'name' => 'date_in'
+            );
+            
+            $fields[] = array(
+                'label' => null,
+                'type' => 'hidden', 
+                'value' => '',
+                'name' => 'date_out'
+            );
+		}
+		else
+		{
+		    // time window section
+            $fields[] = array(
+                'label' => null,
+                'type' => 'html',
+                'value' => '<h2>'._TIME_WINDOW.'</h2><div class="band clearfix inner-pad"><div class="one-half sm-one-whole">'
+            );
+            $fields[] = array(
+                'label' => null,
+                'type' => 'hidden', 
+                'value' => $item->date_in,
+                'name' => 'old_date_in'
+            );
+            $fields[] = array(
+                'label' => _START_DATE,
+                'type' => 'text', 
+                'value' => date('Y-m-d', $item->date_in),
+                'name' => 'date_in',
+                'rule' => 'required|date',
+                'extra' => 'class="date date_toggled large"'
+            );
+            
+            $fields[] = array(
+                'label' => null,
+                'type' => 'html',
+                'value' => '</div><div class="one-half sm-one-whole">'
+            );
+            
+            $fields[] = array(
+                'label' => _END_DATE,
+                'type' => 'text', 
+                'value' => ($item->date_out == 0) ? '' : date('Y-m-d', $item->date_out),
+                'name' => 'date_out',
+                'rule' => 'date',
+                'extra' => 'class="date date_toggled large"',
+                'suggestion' => _NO_END_MSG
+            );
+            
+            // classification section
+            $fields[] = array(
+                'label' => null,
+                'type' => 'html',
+                'value' => '</div></div>'
+            );
+		}
 		// classification section
 		$fields[] = array(
 			'label' => null,
 			'type' => 'html',
-			'value' => '</div></div><h2>'._ORGANIZATION.'</h2>'
+			'value' => '<h2>'._ORGANIZATION.'</h2>'
 		);
 		
 		// categories
@@ -1235,6 +1274,13 @@ window.addEvent("domready", function()
 			else
 			{
 				$post['date_in'] = $_post['old_date_in'];
+			}
+			
+			// reset date_out for simple editing page content
+			if (!ADVANCED_EDITING && $post['id_page'] && $post['code_context'] == 1)
+			{
+			    // force empty
+			    $post['date_out'] = '';
 			}
 			
 			// insert article
