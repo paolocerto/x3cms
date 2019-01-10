@@ -463,6 +463,7 @@ X3.append({
 						e.stop();
 						SM.hide();
 						X3.unscroll();
+						$$('.scrollbar').destroy();
 					});
 				}
 			}
