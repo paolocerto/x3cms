@@ -28,7 +28,7 @@ class X4FBsdk_helper
 		$fb = new Facebook\Facebook(array(
 		    'app_id' => FACEBOOK_APP_ID,
 		    'app_secret' => FACEBOOK_SECRET,
-		    'default_graph_version' => 'v2.2',
+		    'default_graph_version' => 'v2.10',
 		));
 		
         // already logged with JS
@@ -41,7 +41,8 @@ class X4FBsdk_helper
             //$_SESSION['fb_access_token'] = (string) $accessToken;
             
             // Returns a `Facebook\FacebookResponse` object
-            $response = $fb->get('/me?fields=id,first_name,last_name,email,location', $accessToken);
+            // '/me?fields=id,first_name,last_name,email,location'
+            $response = $fb->get('/me?fields=id,first_name,last_name,email', $accessToken);
             
             $user = $response->getGraphUser();
         } 
