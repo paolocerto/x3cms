@@ -64,11 +64,26 @@ class X4Time_helper
 	 * @param boolean	$long 
 	 * @return array
 	 */
-	public static function week_array($long = true)
+	public static function week_array($long = true, $keys = false)
 	{
 		if ($long)
 		{
-			return array('', _MONDAY, _TUESDAY, _WEDNESDAY, _THURSDAY, _FRIDAY, _SATURDAY, _SUNDAY);
+		    if ($keys)
+		    {
+		        return array( 
+		            'Monday' => _MONDAY,
+		            'Tuesday' => _TUESDAY, 
+		            'Wednesday' => _WEDNESDAY, 
+		            'Thursday' => _THURSDAY, 
+		            'Friday' => _FRIDAY, 
+		            'Saturday' => _SATURDAY, 
+		            'Sunday' => _SUNDAY
+		        );
+		    }
+		    else
+		    {
+		        return array('', _MONDAY, _TUESDAY, _WEDNESDAY, _THURSDAY, _FRIDAY, _SATURDAY, _SUNDAY);
+		    }
 		}
 		else
 		{
@@ -137,15 +152,7 @@ class X4Time_helper
 	 */
 	public static function parse_date($date, $old_format = '')
 	{
-		if (function_exists('date_parse_from_format'))
-		{
-			$d = date_parse_from_format($old_format, $date);
-		}
-		else
-		{
-			$d = date_parse($date);
-		}
-		return $d;
+		return date_parse_from_format($old_format, $date);
 	}
 	
 	
