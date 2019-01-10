@@ -186,7 +186,7 @@ class X4Pagination_helper
 	 */
 	public static function bs_pager($url, $info, $section = 5, $suffix = '')
 	{
-		$link = '<p class="small">'._FOUND.' '.$info[2].' '._ITEMS.' '._IN.' '.$info[0].' '._PAGES.'</p>';
+		$link = '<p class="small">'._FOUND.' <span id="pager_items">'.$info[2].'</span> '._ITEMS.' '._IN.' '.$info[0].' '._PAGES.'</p>';
 		
 		// if there are more than one page
 		if ($info[2] > 1)
@@ -197,12 +197,16 @@ class X4Pagination_helper
 			// before
 			if ($info[1] > 0) 
 			{
-				$link .= '<a class="pager_item" href="'.$url.'0'.$suffix.'" title="'._FIRST_PAGE.'">1</a>';
-				$link .= '<a class="pager_arrow" href="'.$url.($info[1]-1).$suffix.'" title="'._PREVIOUS.'"><span class="fa fa-chevron-left"></span></a>';
+			    if ($w*$section > 0)
+			    {
+			        $link .= '<a class="pager_item" href="'.$url.'0'.$suffix.'" title="'._FIRST_PAGE.'">1</a>';
+			    }
+				$link .= '<a class="pager_arrow" href="'.$url.($info[1]-1).$suffix.'" title="'._PREVIOUS.'"><i class="glyphicon glyphicon-chevron-left"></i></a>';
 			}
 			
 			// visualized section
-			for($i = $w*$section; $i < min($info[0], ($w+1)*$section); $i++)
+			$last = min($info[0], ($w+1)*$section);
+			for($i = $w*$section; $i < $last; $i++)
 			{
 				$link .= ($i == $info[1]) 
 					? '<span class="pager_active">'.($i+1).'</span>' 
@@ -212,8 +216,11 @@ class X4Pagination_helper
 			// after
 			if ($info[1] < ($info[0]-1)) 
 			{
-				$link .= '<a class="pager_arrow" href="'.$url.($info[1]+1).$suffix.'" title="'._NEXT.'"><span class="fa fa-chevron-right"></span></a>';
-				$link .= '<a class="pager_item" href="'.$url.($info[0]-1).$suffix.'" title="'._LAST_PAGE.'">'.$info[0].'</a>';
+				$link .= '<a class="pager_arrow" href="'.$url.($info[1]+1).$suffix.'" title="'._NEXT.'"><i class="glyphicon glyphicon-chevron-right"></i></a>';
+				if (($info[0]-1) > $last)
+				{
+				    $link .= '<a class="pager_item" href="'.$url.($info[0]-1).$suffix.'" title="'._LAST_PAGE.'">'.$info[0].'</a>';
+				}
 			}
 		}
 		return $link;
