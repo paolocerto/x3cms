@@ -12,12 +12,25 @@ tr {background:none;border-bottom:1px solid #ccc;}
 th {padding:.2em 1em;text-align:center;color:#333;font-weight:bold;background:#eee;line-height:2em;}
 td {color:#333;padding:.2em 1em;vertical-align:top;line-height:2em;}
 
-th.largo_25 {width:25%;}
-th.largo_30 {width:30%;}
-th.largo_50 {width:50%;}
-th.largo_60 {width:60%;}
-th.largo_75 {width:75%;}
+.table tr {border-bottom:1px solid #999}
+.table-striped > tbody > tr:nth-child(2n) > td, .table-striped > tbody > tr:nth-child(2n) > th {
+	background-color:#dedede;
+ }
+ .table-striped.table-hover tr td {border:none;}
+ .table-striped.table-hover tr:hover td {background-color:#e2e2e2;}
+ 
+.table.titled tr:first-child td {
+	font-weight:bold;
+	border-bottom:2px solid #999 !important;
+}
 
+.table.columned tr td:first-child {
+	font-weight:bold;
+	border-right:2px solid #999 !important;
+}
 
+.table.grid tr td {
+	border:1px solid #999;
+}
 
 
