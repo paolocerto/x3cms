@@ -167,9 +167,124 @@ class X4Text_helper
 				   'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '1', '2',
 				   '3', '4', '5', '6', '7', '8', '9');
 	   
-	    shuffle($chars);
-	    $string = implode('', array_slice($chars, 0, $len));
-	    return $string;
+        shuffle($chars);
+        $string = implode('', array_slice($chars, 0, $len));
+        return $string;
+	}
+	
+	/**
+	 * responsive table
+	 *
+	 * @static
+	 * @param string	$html
+	 * @return string
+	 */
+	public static function responsive_table($html, $size = 'xs', $fixed = 'th')
+	{   
+	    if (!empty($html))
+	    {
+            $src = array('<thead>', '<td ', '<td>');
+            $rpl = array('<thead class="hidden-'.$size.'">', '<td class="hidden-'.$size.'" ', '<td class="hidden-'.$size.'">');
+            
+            $html = str_replace($src, $rpl, $html);
+            
+            try
+            {
+                $doc = new DOMDocument('1.0', 'utf-8');
+                $internalErrors = libxml_use_internal_errors(true);
+                $doc->loadHTML($html);
+                
+                // get table data
+                $doc->preserveWhiteSpace = false;   
+                
+                //the table by its tag name  
+                $tables = $doc->getElementsByTagName('table');   
+            
+                if ($tables->length)
+                {
+                    foreach($tables as $table)
+                    {
+                        //get all rows from the table  
+                        $rows = $table->getElementsByTagName('tr');   
+                        // get each column by tag name  
+                        $cols = $rows->item(0)->getElementsByTagName('th');   
+                        $row_headers = NULL;
+                        foreach ($cols as $node) 
+                        {
+                            //print $node->nodeValue."\n";   
+                            $row_headers[] = $node->nodeValue;
+                        }
+                        
+                        //get all rows from the table  
+                        $rows = $table->getElementsByTagName('tr');   
+                        foreach ($rows as $row)   
+                        {   
+                            // get each column by tag name  
+                            $cols = $row->getElementsByTagName('td');   
+                            $tmp = array();
+                            $i = 0;
+                            foreach ($cols as $node) {
+                                # code...
+                                //print $node->nodeValue."\n";   
+                                if ($row_headers == NULL)
+                                {
+                                    $tmp[] = $node->nodeValue;
+                                }
+                                else
+                                {
+                                    $tmp[$row_headers[$i]] = $node->nodeValue;
+                                }
+                                $i++;
+                            }   
+                            
+                            // build TDs
+                            if ($fixed == 'th')
+                            {
+                                // headers as column
+                                if ($row_headers == NULL)
+                                {
+                                    $txt = implode('<br>', $tmp);
+                                }
+                                else
+                                {
+                                    $a = array();
+                                    
+                                    foreach($tmp as $k => $v)
+                                    {
+                                        $a[] = '<b>'.$k.'</b>: '.$v;
+                                    }
+                                    $txt = implode('<br />', $a);
+                                }
+                            }
+                            else
+                            {
+                                // first column as key
+                                // TODO
+                                
+                                foreach($tmp as $k => $v)
+                                {
+                                    $a[] = '<b>'.$k.'</b>: '.$v;
+                                }
+                                $txt = implode('<br />', $a);
+                            }
+                            $tmp = $doc->createDocumentFragment();
+                            $tmp->appendXML('<td class="visible-'.$size.'">'.$txt.'</td>');
+                            $row->appendChild($tmp);
+                        }
+                    }
+                    return $doc->saveXML();
+                }
+            }
+            catch (Exception $e)
+            {
+                // do none   
+            }
+            return $html;
+        }
+        else
+        {
+            return $html;
+        }
 	}
 	
 	/**
