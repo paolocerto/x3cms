@@ -26,7 +26,7 @@ class X4Files_helper
 	    'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 
 	    'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
 	    'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-	    'application/zip', 'application/x-zip', 'application/x-zip-compressed', 
+	    'application/zip', 'application/x-zip', 'application/x-zip-compressed', 'application/x-rar', 'application/x-rar-compressed',
 	    'application/vnd.oasis.opendocument.text', 'application/vnd.oasis.opendocument.presentation', 'application/vnd.oasis.opendocument.spreadsheet',
 	    'binary/octet-stream', 'audio/mpeg', 'audio/wav', 'audio/x-wav', 'application/x-compress', 'application/x-compressed', 'multipart/x-zip');
 	private static $file = array();
@@ -242,6 +242,10 @@ class X4Files_helper
 					break;
 				case 'zip':
 					return 'application/zip';
+					break;
+				case 'rar':
+					return 'application/x-rar';
+					return 'application/x-rar-compressed';
 					break;
 				case 'pdf':
 				    return 'application/pdf';
