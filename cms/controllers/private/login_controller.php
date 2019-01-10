@@ -25,7 +25,7 @@ class Login_controller extends X4Cms_controller
 	public function __construct()
 	{
 		parent::__construct();
-		X4Utils_helper::logged(2, 'home');
+		//X4Utils_helper::logged(2, 'home');
 	}
 	
 	/**
