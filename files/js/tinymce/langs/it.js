@@ -81,7 +81,7 @@ tinymce.addI18n('it',{
 "Vertical space": "Spazio Verticale",
 "Image description": "Descrizione Immagine",
 "Style": "Stile",
-"Dimensions": "Dimenzioni",
+"Dimensions": "Dimensioni",
 "Insert image": "Inserisci immagine",
 "Insert date\/time": "Inserisci Data\/Ora",
 "Remove link": "Rimuovi link",
