@@ -584,17 +584,6 @@ class Permission_model extends X4Model_core
 						}
 					}
 					
-					// handle reset
-					if (is_null($case)) 
-                    {
-                        $soft = ' AND t.updated > '.$this->db->escape($_SESSION['last_in']);
-                    }
-                    else 
-                    {
-                        // hard
-                        $soft = '';
-                    }
-					
 					// MySQL table on default DB
 					$sql = 'SELECT DISTINCT t.id, p.id AS pid FROM '.$table.' t
 						'.$join.' JOIN privs p ON p.what = '.$this->db->escape($table).' AND p.id_what = t.id AND p.id_who = '.intval($id_user).' AND p.id_area = t.id_area
