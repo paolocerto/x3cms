@@ -587,7 +587,7 @@ class Permission_model extends X4Model_core
 					// MySQL table on default DB
 					$sql = 'SELECT DISTINCT t.id, p.id AS pid FROM '.$table.' t
 						'.$join.' JOIN privs p ON p.what = '.$this->db->escape($table).' AND p.id_what = t.id AND p.id_who = '.intval($id_user).' AND p.id_area = t.id_area
-						'.$where.' AND t.id_area = '.intval($id_area).' '.$soft.'
+						'.$where.' AND t.id_area = '.intval($id_area).'
 						ORDER BY t.id ASC';
 				}
 			}
