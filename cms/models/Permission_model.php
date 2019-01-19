@@ -532,7 +532,7 @@ class Permission_model extends X4Model_core
 			$sql = 'SELECT DISTINCT d.id, p.id AS pid FROM dictionary d
 				JOIN aprivs a ON a.area = d.area 
 				'.$join.' JOIN privs p ON p.what = '.$this->db->escape($table).' AND p.id_what = d.id AND p.id_who = '.intval($id_user).' AND p.id_area = '.intval($id_area).'
-				'.$where.' AND d.updated > '.$this->db->escape($_SESSION['last_in']).'
+				'.$where.'
 				ORDER BY d.id ASC';
 			break;
 		case 'menus':
