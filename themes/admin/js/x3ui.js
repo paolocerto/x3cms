@@ -1162,6 +1162,10 @@ var windowHeight = function (){
 		    }
 		    $(container).load(action + v);
 		});
+	},
+	floatize = function(s) {
+	    s = s.replace(',', '.');
+	    return Number(s.replace(/[^0-9.-]+/g,""));
 	};
 	
 	
