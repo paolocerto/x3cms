@@ -65,7 +65,7 @@ class Menus_controller extends X3ui_controller
 		// load the dictionary
 		$this->dict->get_wordarray(array('menus'));
 		
-		echo '<a class="btf" href="'.BASE_URL.'menus/edit/'.$id_theme.'" title="'._NEW_MENU.'"><i class="fa fa-plus fa-lg"></i></a>
+		echo '<a class="btf" href="'.BASE_URL.'menus/edit/'.$id_theme.'" title="'._NEW_MENU.'"><i class="fas fa-plus fa-lg"></i></a>
 <script>
 window.addEvent("domready", function()
 {

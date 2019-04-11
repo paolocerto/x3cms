@@ -53,13 +53,13 @@ foreach($history as $i)
 	// if user have write permission and object is unlocked or user is an administrator
 	if (($i->level > 2 && $i->xlock == 0) || $i->level == 4) 
 	{
-		$actions .= '<a class="btl" href="'.BASE_URL.'articles/set/xon/'.$i->id.'/'.(($i->xon+1)%2).'" title="'._STATUS.' '.$status.'"><i class="fa fa-lightbulb-o fa-lg '.$on_status.'"></i></a>';
+		$actions .= '<a class="btl" href="'.BASE_URL.'articles/set/xon/'.$i->id.'/'.(($i->xon+1)%2).'" title="'._STATUS.' '.$status.'"><i class="far fa-lightbulb fa-lg '.$on_status.'"></i></a>';
 		
 		// administrator
 		if ($i->level == 4) 
 		{
-			$delete = '<a class="btl" href="'.BASE_URL.'articles/set/xlock/'.$i->id.'/'.(($i->xlock+1)%2).'" title="'._STATUS.' '.$lock.'"><i class="fa fa-'.$lock_status.' fa-lg"></i></a> 
-				<a class="bta" href="'.BASE_URL.'articles/delete_version/'.$i->id.'" title="'._DELETE.'"><i class="fa fa-trash fa-lg red"></i></a>';
+			$delete = '<a class="btl" href="'.BASE_URL.'articles/set/xlock/'.$i->id.'/'.(($i->xlock+1)%2).'" title="'._STATUS.' '.$lock.'"><i class="fas fa-'.$lock_status.' fa-lg"></i></a> 
+				<a class="bta" href="'.BASE_URL.'articles/delete_version/'.$i->id.'" title="'._DELETE.'"><i class="fas fa-trash fa-lg red"></i></a>';
 		}
 		$date_in = '<a class="bta" href="'.BASE_URL.'articles/setdate/'.$i->id.'" title="'._EDIT_DATE.'">'.date('Y-m-d', $i->date_in).'</a>';
 		$date_out = '<a class="bta" href="'.BASE_URL.'articles/setdate/'.$i->id.'" title="'._EDIT_DATE.'">'.$out.'</a>';

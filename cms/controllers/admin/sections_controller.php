@@ -90,7 +90,7 @@ class Sections_controller extends X3ui_controller
 		// load the dictionary
 		$this->dict->get_wordarray(array('articles'));
 		
-		echo '<a class="btf" href="'.BASE_URL.'articles/edit/'.$id_area.'/'.$lang.'/1/x3/'.$id_page.'" title="'._NEW_ARTICLE.'"><i class="fa fa-plus fa-lg"></i></a>
+		echo '<a class="btf" href="'.BASE_URL.'articles/edit/'.$id_area.'/'.$lang.'/1/x3/'.$id_page.'" title="'._NEW_ARTICLE.'"><i class="fas fa-plus fa-lg"></i></a>
 <script>
 window.addEvent("domready", function()
 {

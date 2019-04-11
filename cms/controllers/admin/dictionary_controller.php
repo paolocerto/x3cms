@@ -141,8 +141,8 @@ class Dictionary_controller extends X3ui_controller
                 </form>';
                 
             echo '
-		<a class="btf" href="'.BASE_URL.'dictionary/import/'.$lang.'/'.$area.'" title="'._IMPORT_KEYS.'"><i class="fa fa-download fa-lg"></i></a>
-		<a class="btf" href="'.BASE_URL.'dictionary/add/'.$lang.'/'.$area.'" title="'._NEW_WORD.'"><i class="fa fa-plus fa-lg"></i></a>
+		<a class="btf" href="'.BASE_URL.'dictionary/import/'.$lang.'/'.$area.'" title="'._IMPORT_KEYS.'"><i class="fas fa-download fa-lg"></i></a>
+		<a class="btf" href="'.BASE_URL.'dictionary/add/'.$lang.'/'.$area.'" title="'._NEW_WORD.'"><i class="fas fa-plus fa-lg"></i></a>
 <script>
 window.addEvent("domready", function()
 {

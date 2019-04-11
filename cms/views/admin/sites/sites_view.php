@@ -23,24 +23,24 @@ if ($_SESSION['level'] > 2)
 		$on_status = 'gray';
 	}
 	
-	$edit = '<a class="bta" href="'.BASE_URL.'sites/config/'.$this->site->site->id.'" title="'._CONFIG.'"><i class="fa fa-cogs fa-lg"></i></a>';
+	$edit = '<a class="bta" href="'.BASE_URL.'sites/config/'.$this->site->site->id.'" title="'._CONFIG.'"><i class="fas fa-cogs fa-lg"></i></a>';
 	
 	// if caching
 	if (CACHE)
 	{
-		$edit .= '<a class="btl" href="'.BASE_URL.'sites/clear_cache" title="'._CLEAR_CACHE.'"><i class="fa fa-eraser fa-lg"></i></a>';
+		$edit .= '<a class="btl" href="'.BASE_URL.'sites/clear_cache" title="'._CLEAR_CACHE.'"><i class="fas fa-eraser fa-lg"></i></a>';
 	}
 	if (APC)
 	{
-		$edit .= ' <a class="btl" href="'.BASE_URL.'sites/clear_apc" title="'._CLEAR_CACHE.' APC"><i class="fa fa-eraser fa-lg"></i></a>';
+		$edit .= ' <a class="btl" href="'.BASE_URL.'sites/clear_apc" title="'._CLEAR_CACHE.' APC"><i class="fas fa-eraser fa-lg"></i></a>';
 	}
-	$offline = '<a class="btl" href="'.BASE_URL.'sites/offline/'.$this->site->site->id.'/'.(($this->site->site->xon+1)%2).'" title="'._STATUS.' '.$status.'"><i class="fa fa-globe '.$on_status.' fa-lg"></a>';
+	$offline = '<a class="btl" href="'.BASE_URL.'sites/offline/'.$this->site->site->id.'/'.(($this->site->site->xon+1)%2).'" title="'._STATUS.' '.$status.'"><i class="fas fa-globe '.$on_status.' fa-lg"></a>';
 }
 
 // admin user
 if ($_SESSION['level'] == 4) 
 {
-	$edit = '<a class="bta" href="'.BASE_URL.'sites/edit/'.$this->site->site->id.'" title="'._EDIT.'"><i class="fa fa-pencil fa-lg"></i></a> '.$edit;
+	$edit = '<a class="bta" href="'.BASE_URL.'sites/edit/'.$this->site->site->id.'" title="'._EDIT.'"><i class="fas fa-pencil-alt fa-lg"></i></a> '.$edit;
 }
 ?>
 

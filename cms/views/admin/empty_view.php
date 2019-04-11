@@ -11,7 +11,7 @@
 <!DOCTYPE html>
 <html>
 <body>
-<div id="close-modal"><i class="fa fa-times fa-lg"></i></div>
+<div id="close-modal"><i class="fas fa-times fa-lg"></i></div>
 <script>
 <?php
 if (isset($location)) 

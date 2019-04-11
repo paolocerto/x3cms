@@ -81,26 +81,26 @@ if ($plugged || $pluggable)
             // check permission
             if (($i->level > 2 && $i->xlock == 0) || $i->level == 4) 
             {
-                $actions = '<a class="btl" href="'.BASE_URL.'modules/set/xon/'.$i->id.'/'.(($i->xon+1)%2).'" title="'._STATUS.' '.$status.'"><i class="fa fa-lightbulb-o fa-lg '.$on_status.'"></i></a>';
+                $actions = '<a class="btl" href="'.BASE_URL.'modules/set/xon/'.$i->id.'/'.(($i->xon+1)%2).'" title="'._STATUS.' '.$status.'"><i class="far fa-lightbulb fa-lg '.$on_status.'"></i></a>';
                 
                 // admin user
                 if ($i->level == 4 && $i->adminlevel > 1) 
                 {
-                    $uninstall ='<a class="btl" href="'.BASE_URL.'modules/set/xlock/'.$i->id.'/'.(($i->xlock+1)%2).'" title="'._STATUS.' '.$lock.'"><i class="fa fa-'.$lock_status.' fa-lg"></i></a> 
-                        <a class="bta" href="'.BASE_URL.'modules/uninstall/'.$i->id.'" title="'._UNINSTALL.'"><i class="fa fa-upload fa-lg"></i></a>';
-                    $actions .= '<a class="btl" href="'.BASE_URL.'modules/set/hidden/'.$i->id.'/'.(($i->hidden+1)%2).'" title="'._STATUS.' '.$hidden.'"><i class="fa fa-'.$on_hidden.' fa-lg"></i></a>';
+                    $uninstall ='<a class="btl" href="'.BASE_URL.'modules/set/xlock/'.$i->id.'/'.(($i->xlock+1)%2).'" title="'._STATUS.' '.$lock.'"><i class="fas fa-'.$lock_status.' fa-lg"></i></a> 
+                        <a class="bta" href="'.BASE_URL.'modules/uninstall/'.$i->id.'" title="'._UNINSTALL.'"><i class="fas fa-upload fa-lg"></i></a>';
+                    $actions .= '<a class="btl" href="'.BASE_URL.'modules/set/hidden/'.$i->id.'/'.(($i->hidden+1)%2).'" title="'._STATUS.' '.$hidden.'"><i class="fas fa-'.$on_hidden.' fa-lg"></i></a>';
                 }
                 
                 // configurable
                 if ($i->configurable) 
                 {
-                    $actions .= ' <a class="bta" href="'.BASE_URL.'modules/config/'.$i->id.'" title="'._CONFIG.'"><i class="fa fa-cogs fa-lg"></i></a>';
+                    $actions .= ' <a class="bta" href="'.BASE_URL.'modules/config/'.$i->id.'" title="'._CONFIG.'"><i class="fas fa-cogs fa-lg"></i></a>';
                 }
             }
             
             // module instructions
             $help = (file_exists(PATH.'plugins/'.$i->name.'/instructions_'.X4Route_core::$lang.'.txt')) 
-                ? '<a class="bta" href="'.BASE_URL.'modules/help/'.$i->name.'/'.X4Route_core::$lang.'" title="'._INSTRUCTIONS.'"><i class="fa fa-info fa-lg"></i></a>'
+                ? '<a class="bta" href="'.BASE_URL.'modules/help/'.$i->name.'/'.X4Route_core::$lang.'" title="'._INSTRUCTIONS.'"><i class="fas fa-info fa-lg"></i></a>'
                 : '';
             
             echo '<tr>
@@ -119,11 +119,11 @@ if ($plugged || $pluggable)
         foreach($pluggable as $i)
         {
             $name = str_replace(PATH.'plugins/', '', $i);
-            $install = '<a class="btl" href="'.BASE_URL.'modules/install/'.$area->id.'/'.$name.'" title="'._INSTALL.'"><i class="fa fa-download fa-lg"></i></a>';
+            $install = '<a class="btl" href="'.BASE_URL.'modules/install/'.$area->id.'/'.$name.'" title="'._INSTALL.'"><i class="fas fa-download fa-lg"></i></a>';
             
             // module instructions
             $help = (file_exists(PATH.'plugins/'.$name.'/instructions_'.X4Route_core::$lang.'.txt')) 
-                ? '<a class="bta" href="'.BASE_URL.'modules/help/'.$name.'/'.X4Route_core::$lang.'" title="'._INSTRUCTIONS.'"><i class="fa fa-info fa-lg"></i></a>'
+                ? '<a class="bta" href="'.BASE_URL.'modules/help/'.$name.'/'.X4Route_core::$lang.'" title="'._INSTRUCTIONS.'"><i class="fas fa-info fa-lg"></i></a>'
                 : '';
                 
             echo '<tr>

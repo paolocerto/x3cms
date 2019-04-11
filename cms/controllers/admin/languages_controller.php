@@ -60,7 +60,7 @@ class Languages_controller extends X3ui_controller
 		// load the dictionary
 		$this->dict->get_wordarray(array('languages'));
 		
-		echo '<a class="btf" href="'.BASE_URL.'languages/edit/-1" title="'._NEW_LANG.'"><i class="fa fa-plus fa-lg"></i></a>
+		echo '<a class="btf" href="'.BASE_URL.'languages/edit/-1" title="'._NEW_LANG.'"><i class="fas fa-plus fa-lg"></i></a>
 <script>
 window.addEvent("domready", function()
 {

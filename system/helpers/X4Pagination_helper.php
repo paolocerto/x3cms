@@ -201,7 +201,7 @@ class X4Pagination_helper
 			    {
 			        $link .= '<a class="pager_item" href="'.$url.'0'.$suffix.'" title="'._FIRST_PAGE.'">1</a>';
 			    }
-				$link .= '<a class="pager_arrow" href="'.$url.($info[1]-1).$suffix.'" title="'._PREVIOUS.'"><i class="glyphicon glyphicon-chevron-left"></i></a>';
+				$link .= '<a class="pager_arrow" href="'.$url.($info[1]-1).$suffix.'" title="'._PREVIOUS.'"><span class="fas fa-chevron-left"></span></a>';
 			}
 			
 			// visualized section
@@ -216,7 +216,7 @@ class X4Pagination_helper
 			// after
 			if ($info[1] < ($info[0]-1)) 
 			{
-				$link .= '<a class="pager_arrow" href="'.$url.($info[1]+1).$suffix.'" title="'._NEXT.'"><i class="glyphicon glyphicon-chevron-right"></i></a>';
+				$link .= '<a class="pager_arrow" href="'.$url.($info[1]+1).$suffix.'" title="'._NEXT.'"><span class="fas fa-chevron-right"></span>></a>';
 				if (($info[0]-1) > $last)
 				{
 				    $link .= '<a class="pager_item" href="'.$url.($info[0]-1).$suffix.'" title="'._LAST_PAGE.'">'.$info[0].'</a>';

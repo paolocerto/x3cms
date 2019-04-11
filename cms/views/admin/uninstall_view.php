@@ -8,7 +8,7 @@
  * @package		X3CMS
  */
 
-echo '<div id="close-modal" title="'._CLOSE.'"><i class="fa fa-times fa-lg"></i></div>';
+echo '<div id="close-modal" title="'._CLOSE.'"><i class="fas fa-times fa-lg"></i></div>';
 echo '<h2>'.$title.'</h2><p>';
 
 if (!empty($msg))

@@ -518,11 +518,11 @@ class X4Form_helper
 					
 				if ($inline && is_null($e['label']))
 				{
-					$tmp .= '<div class="checkbox"><input type="checkbox" '.$class.' name="'.$e['name'].'[]" id="'.$e['name'].'_'.$c.'" value="'.$i->$e['options'][1].'" '.$checked.' /><label '.$error.' for="'.$e['name'].'_'.$c.'">'.stripslashes($i->$e['options'][1]).'</label></div>';
+					$tmp .= '<div class="checkbox"><input type="checkbox" '.$class.' name="'.$e['name'].'[]" id="'.$e['name'].'_'.$c.'" value="'.$i->$v.'" '.$checked.' /><label '.$error.' for="'.$e['name'].'_'.$c.'">'.stripslashes($i->$v).'</label></div>';
 				}
 				else
 				{
-					$tmp .= '<div class="checkbox"><label '.$error.' for="'.$e['name'].'_'.$c.'"><input type="checkbox" '.$class.' name="'.$e['name'].'[]" id="'.$e['name'].'_'.$c.'" value="'.$i->$e['options'][1].'" '.$checked.' />'.stripslashes($i->$e['options'][1]).'</label></div>';
+					$tmp .= '<div class="checkbox"><label '.$error.' for="'.$e['name'].'_'.$c.'"><input type="checkbox" '.$class.' name="'.$e['name'].'[]" id="'.$e['name'].'_'.$c.'" value="'.$i->$v.'" '.$checked.' />'.stripslashes($i->$v).'</label></div>';
 				}
 				$c++;
 			}
@@ -579,7 +579,7 @@ class X4Form_helper
 					
 				if ($inline)
 				{
-					$tmp .= '<div class="radiobox"><input type="radio" '.$class.' name="'.$e['name'].'" id="'.$e['name'].'_'.$c.'" value="'.$i->$v.'" '.$checked.' /> <label for="'.$e['name'].'_'.$c.'">'.stripslashes($i->$o).'</label></div>';
+					$tmp .= '<div class="radiobox"><input type="radio" '.$class.' name="'.$e['name'].'" id="'.$e['name'].'_'.$c.'" value="'.$i->$v.'" '.$checked.' /> <label for="'.$e['name'].'_'.$c.'" '.$error.'>'.stripslashes($i->$o).'</label></div>';
 				}
 				else
 				{

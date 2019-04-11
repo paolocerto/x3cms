@@ -89,15 +89,15 @@ if ($items)
 		// check permissions
 		if (($i->level > 1 && $i->xlock == 0) || $i->level == 4) 
 		{
-			$actions = '<a class="bta" href="'.BASE_URL.'categories/edit/'.$i->id_area.'/'.$i->lang.'/'.$i->tag.'/'.$i->id.'" title="'._EDIT.'"><i class="fa fa-pencil fa-lg"></i></a> ';
+			$actions = '<a class="bta" href="'.BASE_URL.'categories/edit/'.$i->id_area.'/'.$i->lang.'/'.$i->tag.'/'.$i->id.'" title="'._EDIT.'"><i class="fas fa-pencil-alt fa-lg"></i></a> ';
 			if ($i->level > 2) 
 			{
-				$actions .= ' <a class="btl" href="'.BASE_URL.'categories/set/xon/'.$i->id.'/'.(($i->xon+1)%2).'" title="'._STATUS.' '.$status.'"><i class="fa fa-lightbulb-o fa-lg '.$on_status.'"></i></a>';
+				$actions .= ' <a class="btl" href="'.BASE_URL.'categories/set/xon/'.$i->id.'/'.(($i->xon+1)%2).'" title="'._STATUS.' '.$status.'"><i class="far fa-lightbulb fa-lg '.$on_status.'"></i></a>';
 				
 				if ($i->level == 4)
 				{
-					$delete = '<a class="btl" href="'.BASE_URL.'categories/set/xlock/'.$i->id.'/'.(($i->xlock+1)%2).'" title="'._STATUS.' '.$lock.'"><i class="fa fa-'.$lock_status.' fa-lg"></i></a>
-						 <a class="bta" href="'.BASE_URL.'categories/delete/'.$i->id.'" title="'._DELETE.'"><i class="fa fa-trash fa-lg red"></i></a>';
+					$delete = '<a class="btl" href="'.BASE_URL.'categories/set/xlock/'.$i->id.'/'.(($i->xlock+1)%2).'" title="'._STATUS.' '.$lock.'"><i class="fas fa-'.$lock_status.' fa-lg"></i></a>
+						 <a class="bta" href="'.BASE_URL.'categories/delete/'.$i->id.'" title="'._DELETE.'"><i class="fas fa-trash fa-lg red"></i></a>';
 				}
 			}
 		}

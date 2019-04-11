@@ -36,8 +36,8 @@ if ($items)
 			$on_status = 'gray';
 		}
 		
-		$actions = ' <a class="btl" href="'.BASE_URL.'widgets/set/xon/'.$i->id.'/'.(($i->xon+1)%2).'" title="'._STATUS.' '.$status.'"><i class="fa fa-lightbulb-o fa-lg '.$on_status.'"></i></a> ';
-		$delete = ' <a class="bta" href="'.BASE_URL.'widgets/delete/'.$i->id.'" title="'._DELETE.'"><i class="fa fa-trash fa-lg red"></i></a>';
+		$actions = ' <a class="btl" href="'.BASE_URL.'widgets/set/xon/'.$i->id.'/'.(($i->xon+1)%2).'" title="'._STATUS.' '.$status.'"><i class="far fa-lightbulb fa-lg '.$on_status.'"></i></a> ';
+		$delete = ' <a class="bta" href="'.BASE_URL.'widgets/delete/'.$i->id.'" title="'._DELETE.'"><i class="fas fa-trash fa-lg red"></i></a>';
 		
 		echo '<li id="'.$i->id.'">
 				<table><tr>

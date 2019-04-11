@@ -158,7 +158,7 @@ class Files_controller extends X3ui_controller
 				<input type="text" name="search" id="search" value="'.urldecode($str).'" />
 				<button type="button" name="searcher" class="button" onclick="setForm(\'searchfile\');">'._FIND.'</button>
 				</form>
-				<a class="btf" href="'.BASE_URL.'files/add/'.$id_area.$url.'" title="'._NEW_FILE.'"><i class="fa fa-plus fa-lg"></i></a>
+				<a class="btf" href="'.BASE_URL.'files/add/'.$id_area.$url.'" title="'._NEW_FILE.'"><i class="fas fa-plus fa-lg"></i></a>
 				
 		<script>
 		window.addEvent("domready", function()
@@ -548,7 +548,7 @@ class Files_controller extends X3ui_controller
 					? '<div class="band inner-pad clearfix"><div class="one-half xs-one-whole">
 							<img class="thumb" src="'.FPATH.$folder.'/'.$file->name.'?t='.time().'" alt="'.$file->alt.'" /> 
 						</div><div class="one-half xs-one-whole">
-							<a class="btb" href="'.BASE_URL.'files/editor/'.$file->id.'" title="'._IMAGE_EDIT.'"><i class="fa fa-file-image-o fa-lg"></i> '._IMAGE_EDIT.'</a>
+							<a class="btb" href="'.BASE_URL.'files/editor/'.$file->id.'" title="'._IMAGE_EDIT.'"><i class="fas fa-file-image-o fa-lg"></i> '._IMAGE_EDIT.'</a>
 						</div></div>'
 					: '';
 				break;
@@ -556,7 +556,7 @@ class Files_controller extends X3ui_controller
 				// video
 				$action = (file_exists(APATH.'files/filemanager/media/'.$file->name))
 					? '<div class="band inner-pad clearfix"><div class="one-whole">
-							<a class="btb" href="'.BASE_URL.'files/editor/'.$file->id.'" title="'._VIDEO_EDIT.'"><i class="fa fa-file-video-o fa-lg"></i> '._VIDEO_EDIT.'</a>
+							<a class="btb" href="'.BASE_URL.'files/editor/'.$file->id.'" title="'._VIDEO_EDIT.'"><i class="fas fa-file-video-o fa-lg"></i> '._VIDEO_EDIT.'</a>
 						</div></div>'
 					: '';
 				break;
@@ -564,7 +564,7 @@ class Files_controller extends X3ui_controller
 				// template
 				$action = (file_exists(APATH.'files/filemanager/template/'.$file->name))
 					? '<div class="band inner-pad clearfix"><div class="one-whole">
-						<a class="btb" href="'.BASE_URL.'files/editor/'.$file->id.'" title="'._TEMPLATE_EDIT.'"><i class="fa fa-file-code-o fa-lg"></i> '._TEMPLATE_EDIT.'</a>
+						<a class="btb" href="'.BASE_URL.'files/editor/'.$file->id.'" title="'._TEMPLATE_EDIT.'"><i class="fas fa-file-code-o fa-lg"></i> '._TEMPLATE_EDIT.'</a>
 					</div></div>'
 					: '';
 				break;
@@ -573,7 +573,7 @@ class Files_controller extends X3ui_controller
 				$ext = pathinfo(APATH.'files/filemanager/files/'.$file->name, PATHINFO_EXTENSION);
 				if ($ext == 'txt' || $ext == 'csv')
 				{
-					$action = '<p><a class="btb" href="'.BASE_URL.'files/editor/'.$file->id.'" title="'._TEXT_EDIT.'"><i class="fa fa-file-text-o fa-lg"></i> '._TEXT_EDIT.'</a></p>';
+					$action = '<p><a class="btb" href="'.BASE_URL.'files/editor/'.$file->id.'" title="'._TEXT_EDIT.'"><i class="fas fa-file-text-o fa-lg"></i> '._TEXT_EDIT.'</a></p>';
 				}
 				else
 				{

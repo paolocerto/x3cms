@@ -61,7 +61,7 @@ class Widgets_controller extends X3ui_controller
 		// load the dictionary
 		$this->dict->get_wordarray(array('widgets'));
 		
-		echo '<a class="btf" href="'.BASE_URL.'widgets/edit/" title="'._WIDGETS_NEW.'"><i class="fa fa-plus fa-lg"></i></a>
+		echo '<a class="btf" href="'.BASE_URL.'widgets/edit/" title="'._WIDGETS_NEW.'"><i class="fas fa-plus fa-lg"></i></a>
 <script>
 window.addEvent("domready", function()
 {

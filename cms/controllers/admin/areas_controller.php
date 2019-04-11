@@ -74,7 +74,7 @@ class Areas_controller extends X3ui_controller
 		// load the dictionary
 		$this->dict->get_wordarray(array('areas'));
 		
-		echo '<a class="btf" href="'.BASE_URL.'areas/edit/-1" title="'._NEW_AREA.'"><i class="fa fa-plus fa-lg"></i></a>
+		echo '<a class="btf" href="'.BASE_URL.'areas/edit/-1" title="'._NEW_AREA.'"><i class="fas fa-plus fa-lg"></i></a>
 <script>
 window.addEvent("domready", function()
 {

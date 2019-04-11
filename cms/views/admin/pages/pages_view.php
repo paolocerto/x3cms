@@ -47,7 +47,7 @@ if (isset($page->url) && $page->url != 'home')
 {
 	// parent page
 	$parent = str_replace('/', '§', $page->xfrom);
-	echo '<p><a class="btm" href="'.BASE_URL.'pages/index/'.$page->id_area.'/'.$page->lang.'/'.$parent.'/1" title="'._GO_BACK.'"><i class="fa fa-arrow-left lg"></i> '.stripslashes($page->name).'</a></p>';
+	echo '<p><a class="btm" href="'.BASE_URL.'pages/index/'.$page->id_area.'/'.$page->lang.'/'.$parent.'/1" title="'._GO_BACK.'"><i class="fas fa-arrow-left lg"></i> '.stripslashes($page->name).'</a></p>';
 }
 
 // menu arrangement
@@ -112,30 +112,30 @@ if (!empty($pages))
 			// check permission
 			if (($i->level > 1 && $i->xlock == 0) || $i->level == 4) {
 				$actions = (ADVANCED_EDITING) ?
-					'<a class="btm" href="'.BASE_URL.'sections/compose/'.$i->id.'" title="'._EDIT.'"><i class="fa fa-pencil fa-lg"></i></a>' :
-					'<a class="btm2" href="'.BASE_URL.'articles/edit/'.$i->id_area.'/'.$i->lang.'/1/0/'.$i->id.'" title="'._EDIT.'"><i class="fa fa-pencil fa-lg"></i></a>';
+					'<a class="btm" href="'.BASE_URL.'sections/compose/'.$i->id.'" title="'._EDIT.'"><i class="fas fa-pencil-alt fa-lg"></i></a>' :
+					'<a class="btm2" href="'.BASE_URL.'articles/edit/'.$i->id_area.'/'.$i->lang.'/1/0/'.$i->id.'" title="'._EDIT.'"><i class="fas fa-pencil-alt fa-lg"></i></a>';
 				
 				// manager user
 				if ($i->level > 2) 
 				{
 					$actions .= (in_array($i->url, $no_del)) 
-						? '<a><i class="fa fa-lightbulb-o fa-lg invisible"></i></a>' 
-						: '<a class="btl" href="'.BASE_URL.'pages/set/xon/'.$i->id.'/'.(($i->xon+1)%2).'" title="'._STATUS.' '.$status.'"><i class="fa fa-lightbulb-o fa-lg '.$on_status.'"></i></a>';
+						? '<a><i class="far fa-lightbulb fa-lg invisible"></i></a>' 
+						: '<a class="btl" href="'.BASE_URL.'pages/set/xon/'.$i->id.'/'.(($i->xon+1)%2).'" title="'._STATUS.' '.$status.'"><i class="far fa-lightbulb fa-lg '.$on_status.'"></i></a>';
 						
-					$actions .= ' <a class="bta" href="'.BASE_URL.'pages/seo/'.$i->id.'" title="'._SEO_TOOLS.'"><i class="fa fa-cogs fa-lg"></i></a>' ;
+					$actions .= ' <a class="bta" href="'.BASE_URL.'pages/seo/'.$i->id.'" title="'._SEO_TOOLS.'"><i class="fas fa-cogs fa-lg"></i></a>' ;
 					
 					// admin user
 					if ($i->level == 4) 
 					{
-						$delete = '<a class="btl" href="'.BASE_URL.'pages/set/xlock/'.$i->id.'/'.(($i->xlock+1)%2).'" title="'._STATUS.' '.$lock.'"><i class="fa fa-'.$lock_status.' fa-lg"></i></a>';
+						$delete = '<a class="btl" href="'.BASE_URL.'pages/set/xlock/'.$i->id.'/'.(($i->xlock+1)%2).'" title="'._STATUS.' '.$lock.'"><i class="fas fa-'.$lock_status.' fa-lg"></i></a>';
 						
 						if (!in_array($i->url, $no_del)) 
 						{
-							$delete .= ' <a class="bta" href="'.BASE_URL.'pages/delete/'.$i->id.'" title="'._DELETE.'"><i class="fa fa-trash fa-lg red"></i></a>';
+							$delete .= ' <a class="bta" href="'.BASE_URL.'pages/delete/'.$i->id.'" title="'._DELETE.'"><i class="fas fa-trash fa-lg red"></i></a>';
 						}
 						else
 						{
-							$delete .= ' <a><i class="fa fa-trash fa-lg invisible"></i></a>';
+							$delete .= ' <a><i class="fas fa-trash fa-lg invisible"></i></a>';
 						}
 					}
 				}

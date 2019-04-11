@@ -366,7 +366,7 @@ function redirect() {
                         <button type="button" name="searcher" class="button" onclick="setForm(\\\'searchitems\\\');">\'._FIND.\'</button>
                         </form>\';
             
-            echo \'<a class="btf" href="\'.BASE_URL.\''.$name.'/edit/\'.$id_area.\'/\'.$lang.\'/0" title="\'.$new.\'"><i class="fa fa-plus fa-lg"></i></a>
+            echo \'<a class="btf" href="\'.BASE_URL.\''.$name.'/edit/\'.$id_area.\'/\'.$lang.\'/0" title="\'.$new.\'"><i class="fas fa-plus fa-lg"></i></a>
 <script>
 window.addEvent("domready", function()
 {
@@ -1025,8 +1025,8 @@ class '.$uname.'_model extends X4Model_core
 		$w = \'<div class="wtitle clearfix">
                 <span class="half-pad-left">\'.$title.\'</span>\'._TRAIT_.\'<span class="xsmall">\'.$area.\'</span>
                 <div class="wtools">
-                    <a class="btr" href="\'.BASE_URL.\''.$name.'/rewidget/\'.urlencode($title).\'/\'.$id_area.\'/\'.urlencode($area).\'" title="\'._RELOAD.\'"><i class="fa fa-refresh fa-lg"></i></a>
-                    <a class="bta" href="\'.BASE_URL.\''.$name.'/mod/\'.$id_area.\'" title="\'.$title.\'"><i class="fa fa-arrow-right fa-lg"></i></a>
+                    <a class="btr" href="\'.BASE_URL.\''.$name.'/rewidget/\'.urlencode($title).\'/\'.$id_area.\'/\'.urlencode($area).\'" title="\'._RELOAD.\'"><i class="fas fa-refresh fa-lg"></i></a>
+                    <a class="bta" href="\'.BASE_URL.\''.$name.'/mod/\'.$id_area.\'" title="\'.$title.\'"><i class="fas fa-arrow-right fa-lg"></i></a>
                 </div>
             </div>
 			<div class="wbox">\';
@@ -1240,16 +1240,16 @@ if (!empty($list))
         $actions = $delete = \'\';
         if (($i->level > 1 && $i->xlock == 0) || $i->level == 4)
         {
-		    $actions = \'<a class="bta" href="\'.BASE_URL.\''.$name.'/edit/\'.$i->id_area.\'/\'.$i->lang.\'/\'.$i->id.\'" title="\'._EDIT.\'"><i class="fa fa-pencil fa-lg"></i></a>\';
+		    $actions = \'<a class="bta" href="\'.BASE_URL.\''.$name.'/edit/\'.$i->id_area.\'/\'.$i->lang.\'/\'.$i->id.\'" title="\'._EDIT.\'"><i class="fas fa-pencil-alt fa-lg"></i></a>\';
 		    
 		    if ($i->level > 2) 
             {
-                $actions .= \' <a class="btl" href="\'.BASE_URL.\''.$name.'/set/xon/\'.$i->id.\'/\'.intval(!$i->xon).\'" title="\'._STATUS.\' \'.$status.\'"><i class="fa fa-lightbulb-o fa-lg \'.$on_status.\'"></i></a>\';
+                $actions .= \' <a class="btl" href="\'.BASE_URL.\''.$name.'/set/xon/\'.$i->id.\'/\'.intval(!$i->xon).\'" title="\'._STATUS.\' \'.$status.\'"><i class="far fa-lightbulb fa-lg \'.$on_status.\'"></i></a>\';
                 
                 if ($i->level == 4) 
                 {
-                    $delete = \'<a class="btl" href="\'.BASE_URL.\''.$name.'/set/xlock/\'.$i->id.\'/\'.intval(!$i->xlock).\'" title="\'._STATUS.\' \'.$lock.\'"><i class="fa fa-\'.$lock_status.\' fa-lg"></i></a> 
-                        <a class="bta" href="\'.BASE_URL.\''.$name.'/delete/\'.$i->id.\'" title="\'._DELETE.\'"><i class="fa fa-trash fa-lg red"></i></a>\';
+                    $delete = \'<a class="btl" href="\'.BASE_URL.\''.$name.'/set/xlock/\'.$i->id.\'/\'.intval(!$i->xlock).\'" title="\'._STATUS.\' \'.$lock.\'"><i class="fas fa-\'.$lock_status.\' fa-lg"></i></a> 
+                        <a class="bta" href="\'.BASE_URL.\''.$name.'/delete/\'.$i->id.\'" title="\'._DELETE.\'"><i class="fas fa-trash fa-lg red"></i></a>\';
                 }
             }
         }

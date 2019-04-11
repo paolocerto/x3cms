@@ -27,7 +27,7 @@ class AdmUtils_helper
 	public static function set_msg($res, $ok = _MSG_OK, $ko = _MSG_ERROR)
 	{
 		$msg = new Msg();
-		$close = '<div id="close-modal" class="zerom double-gap-top white" title="'._CLOSE.'"><i class="fa fa-times fa-lg"></i></div>';
+		$close = '<div id="close-modal" class="zerom double-gap-top white" title="'._CLOSE.'"><i class="fas fa-times fa-lg"></i></div>';
 		switch(gettype($res))
 		{
 			case 'boolean':

@@ -10,7 +10,7 @@
 
 
 // close button
-echo '<div id="close-modal" title="'._CLOSE.'"><i class="fa fa-times fa-lg"></i></div>';
+echo '<div id="close-modal" title="'._CLOSE.'"><i class="fas fa-times fa-lg"></i></div>';
 
 ?>
 <h2><?php echo _AREA_LANG_MAP ?></h2>

@@ -37,7 +37,7 @@ class Groups_controller extends X3ui_controller
 		// load the dictionary
 		$this->dict->get_wordarray(array('groups'));
 		
-		echo '<a class="btf" href="'.BASE_URL.'groups/edit" title="'._NEW_GROUP.'"><i class="fa fa-plus fa-lg"></i></a>
+		echo '<a class="btf" href="'.BASE_URL.'groups/edit" title="'._NEW_GROUP.'"><i class="fas fa-plus fa-lg"></i></a>
 <script>
 window.addEvent("domready", function()
 {

@@ -9,7 +9,7 @@
  */
 ?>
 <div class="block text-center padded">
-<i class="fa fa-refresh fa-spin fa-3x" aria-hidden="true"></i>
+<i class="fas fa-refresh fa-spin fa-3x" aria-hidden="true"></i>
 </div>
 <script>
 <?php

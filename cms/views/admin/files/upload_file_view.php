@@ -8,7 +8,7 @@
  * @package		X3CMS
  */
  
-echo '<div id="close-modal" title="'._CLOSE.'"><i class="fa fa-times fa-lg"></i></div>';
+echo '<div id="close-modal" title="'._CLOSE.'"><i class="fas fa-times fa-lg"></i></div>';
 
 echo '<h2>'._UPLOAD_FILE.'</h2>
 	<p class="small">'.ucfirst(_FILE_SIZES).' '.MAX_W.'x'.MAX_H.' px - '.ceil(MAX_IMG/1024).' MB / '.ceil(MAX_DOC/1024).' MB</p>';

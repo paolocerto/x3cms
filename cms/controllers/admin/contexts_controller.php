@@ -87,7 +87,7 @@ class Contexts_controller extends X3ui_controller
 		// load the dictionary
 		$this->dict->get_wordarray(array('contexts'));
 		
-		echo '<a class="btf" href="'.BASE_URL.'contexts/edit/'.$id_area.'/'.$lang.'/-1" title="'._NEW_CONTEXT.'"><i class="fa fa-plus fa-lg"></i></a>
+		echo '<a class="btf" href="'.BASE_URL.'contexts/edit/'.$id_area.'/'.$lang.'/-1" title="'._NEW_CONTEXT.'"><i class="fas fa-plus fa-lg"></i></a>
 <script>
 window.addEvent("domready", function()
 {

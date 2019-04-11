@@ -115,8 +115,8 @@ class Pages_controller extends X3ui_controller
 			// load the dictionary
 			$this->dict->get_wordarray(array('pages'));
 			
-			echo '<a class="btf" href="'.BASE_URL.'areas/map/'.$id_area.'/'.$lang.'" title="'._SITE_MAP.'"><i class="fa fa-map-marker fa-lg"></i></a>
-				<a class="btf" href="'.BASE_URL.'pages/add/'.$id_area.'/'.$lang.'/'.$xfrom.'" title="'._NEW_PAGE.'"><i class="fa fa-plus fa-lg"></i></a>
+			echo '<a class="btf" href="'.BASE_URL.'areas/map/'.$id_area.'/'.$lang.'" title="'._SITE_MAP.'"><i class="fas fa-map-marker fa-lg"></i></a>
+				<a class="btf" href="'.BASE_URL.'pages/add/'.$id_area.'/'.$lang.'/'.$xfrom.'" title="'._NEW_PAGE.'"><i class="fas fa-plus fa-lg"></i></a>
 	<script>
 	window.addEvent("domready", function()
 	{

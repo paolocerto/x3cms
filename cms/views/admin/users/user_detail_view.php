@@ -34,7 +34,7 @@ if (!isset($dialog) && ($u->plevel > 2 || $u->plevel == 4))
 	{
 		echo '<tr>
 			<td>'.$i->area.'</td>
-			<td><a class="btop" href="'.BASE_URL.'users/perm/'.$u->id.'/'.$i->id_area.'/1" title="'._EDIT_PRIV.'"><i class="fa fa-cogs fa-lg"></i></a></td>
+			<td><a class="btop" href="'.BASE_URL.'users/perm/'.$u->id.'/'.$i->id_area.'/1" title="'._EDIT_PRIV.'"><i class="fas fa-cogs fa-lg"></i></a></td>
 			<td><a class="btop" href="'.BASE_URL.'users/perm/'.$u->id.'/'.$i->id_area.'/0" title="'._GLOBAL_PRIVS.'">'._GLOBAL_PRIVS.'</a></td>
 			</tr>';
 	}

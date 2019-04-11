@@ -48,13 +48,13 @@ if ($theme_in)
 		
 		if (($i->level > 2 && $i->xlock == 0) || $i->level == 4) 
 		{
-			$actions = '<a class="btl" href="'.BASE_URL.'themes/set/xon/'.$i->id.'/'.(($i->xon+1)%2).'" title="'._STATUS.' '.$status.'"><i class="fa fa-lightbulb-o fa-lg '.$on_status.'"></i></a> ';
+			$actions = '<a class="btl" href="'.BASE_URL.'themes/set/xon/'.$i->id.'/'.(($i->xon+1)%2).'" title="'._STATUS.' '.$status.'"><i class="far fa-lightbulb fa-lg '.$on_status.'"></i></a> ';
 			
 			if ($i->level == 4) 
 			{
-				$uninstall = '<a class="btl" href="'.BASE_URL.'themes/set/xlock/'.$i->id.'/'.(($i->xlock+1)%2).'" title="'._STATUS.' '.$lock.'"><i class="fa fa-'.$lock_status.' fa-lg"></i></a>';
+				$uninstall = '<a class="btl" href="'.BASE_URL.'themes/set/xlock/'.$i->id.'/'.(($i->xlock+1)%2).'" title="'._STATUS.' '.$lock.'"><i class="fas fa-'.$lock_status.' fa-lg"></i></a>';
 				if (empty($i->area)) 
-					$uninstall .= '<a class="bta" href="'.BASE_URL.'themes/uninstall/'.$i->id.'" title="'._UNINSTALL.'"><i class="fa fa-upload fa-lg"></i></a>';
+					$uninstall .= '<a class="bta" href="'.BASE_URL.'themes/uninstall/'.$i->id.'" title="'._UNINSTALL.'"><i class="fas fa-upload fa-lg"></i></a>';
 				else 
 				{
 					$uninstall .= '<a><i class="fa faupload invisible fa-lg"></i></a>';
@@ -67,7 +67,7 @@ if ($theme_in)
 			$tmp = $i->id;
 			
 			$minify = ($i->level == 4)
-			    ? '<a class="btl" href="'.BASE_URL.'themes/minimize/'.$i->id.'/'.$i->name.'" title="'._MINIMIZE.'"><i class="fa fa-recycle fa-lg"></i></a></td>'
+			    ? '<a class="btl" href="'.BASE_URL.'themes/minimize/'.$i->id.'/'.$i->name.'" title="'._MINIMIZE.'"><i class="fas fa-recycle fa-lg"></i></a></td>'
 			    : '';
 			
 			echo '<tr>
@@ -75,8 +75,8 @@ if ($theme_in)
 					<td>'.$area.'</td>
 					<td></td>
 					<td>'.$actions.'
-						<a class="btm" href="'.BASE_URL.'templates/index/'.$i->id.'/'.$i->name.'" title="'._TEMPLATES.'"><i class="fa fa-desktop fa-lg"></i></a> 
-						<a class="btm" href="'.BASE_URL.'menus/index/'.$i->id.'/'.$i->name.'" title="'._MENUS.'"><i class="fa fa-navicon fa-lg"></i></a>
+						<a class="btm" href="'.BASE_URL.'templates/index/'.$i->id.'/'.$i->name.'" title="'._TEMPLATES.'"><i class="fas fa-desktop fa-lg"></i></a> 
+						<a class="btm" href="'.BASE_URL.'menus/index/'.$i->id.'/'.$i->name.'" title="'._MENUS.'"><i class="fas fa-navicon fa-lg"></i></a>
 						'.$minify.'
 					<td class="aright">'.$uninstall.'</td>
 					</tr>';
@@ -114,7 +114,7 @@ if ($theme_out && $_SESSION['level'] == 4)
 			$name = preg_replace('/(.*)\/(.*)/is', '$2', $i, 1);
 		}
 		
-		$install = '<a class="btl" href="'.BASE_URL.'themes/install/'.$name.'" title="'._INSTALL.'"><i class="fa fa-download fa-lg"></i></a>';
+		$install = '<a class="btl" href="'.BASE_URL.'themes/install/'.$name.'" title="'._INSTALL.'"><i class="fas fa-download fa-lg"></i></a>';
 		echo '<tr>
 				<td colspan="2">'.$name.'</td>
 				<td></td>

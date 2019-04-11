@@ -140,18 +140,18 @@ if ($items[0]) {
 		if (($i->level > 1 && $i->xlock == 0) || $i->level == 4) 
 		{
 			// edit
-			$actions = '<a class="btm" href="'.BASE_URL.'articles/edit/'.$i->id_area.'/'.$i->lang.'/'.$i->code_context.'/'.$i->bid.'" title="'._EDIT.'"><i class="fa fa-pencil fa-lg"></i></a> ';
+			$actions = '<a class="btm" href="'.BASE_URL.'articles/edit/'.$i->id_area.'/'.$i->lang.'/'.$i->code_context.'/'.$i->bid.'" title="'._EDIT.'"><i class="fas fa-pencil-alt fa-lg"></i></a> ';
 			// duplicate
-			$actions .= '<a class="btm" href="'.BASE_URL.'articles/edit/'.$i->id_area.'/'.$i->lang.'/'.$i->code_context.'/'.$i->bid.'/0/1" title="'._DUPLICATE.'"><i class="fa fa-files-o fa-lg"></i></a> ';
+			$actions .= '<a class="btm" href="'.BASE_URL.'articles/edit/'.$i->id_area.'/'.$i->lang.'/'.$i->code_context.'/'.$i->bid.'/0/1" title="'._DUPLICATE.'"><i class="fas fa-files-o fa-lg"></i></a> ';
 			
 			if ($i->level > 2) 
 			{
-				$actions .= ' <a class="btl" href="'.BASE_URL.'articles/set_by_bid/xon/'.$i->id.'/'.(($i->xon+1)%2).'" title="'._STATUS.' '.$status.'"><i class="fa fa-lightbulb-o fa-lg '.$on_status.'"></i></a>';
+				$actions .= ' <a class="btl" href="'.BASE_URL.'articles/set_by_bid/xon/'.$i->id.'/'.(($i->xon+1)%2).'" title="'._STATUS.' '.$status.'"><i class="far fa-lightbulb fa-lg '.$on_status.'"></i></a>';
 				
 				if ($i->level == 4)
 				{
-					$delete = '<a class="btl" href="'.BASE_URL.'articles/set_by_bid/xlock/'.$i->id.'/'.(($i->xlock+1)%2).'" title="'._STATUS.' '.$lock.'"><i class="fa fa-'.$lock_status.' fa-lg"></i></a>
-							 <a class="bta" href="'.BASE_URL.'articles/delete/'.$i->bid.'" title="'._DELETE.'"><i class="fa fa-trash fa-lg red"></i></a>';
+					$delete = '<a class="btl" href="'.BASE_URL.'articles/set_by_bid/xlock/'.$i->id.'/'.(($i->xlock+1)%2).'" title="'._STATUS.' '.$lock.'"><i class="fas fa-'.$lock_status.' fa-lg"></i></a>
+							 <a class="bta" href="'.BASE_URL.'articles/delete/'.$i->bid.'" title="'._DELETE.'"><i class="fas fa-trash fa-lg red"></i></a>';
 				}
 			}
 		}
@@ -163,7 +163,7 @@ if ($items[0]) {
 		echo '<tr>
 				<td>'.date('Y-m-d', $i->date_in).'<span class="dblock xsmall">'.$i->author.'</span></td>
 				<td><strong>'.$i->name.'</strong><span class="dblock small">'.$i->context.' '.$link.'</span></td>
-				<td>'.$actions.' <a class="btm" href="'.BASE_URL.'articles/history/'.$id_area.'/'.$lang.'/'.$i->bid.'" title="'._ARTICLE_HISTORY.'"><i class="fa fa-history fa-lg"></i></a></td>
+				<td>'.$actions.' <a class="btm" href="'.BASE_URL.'articles/history/'.$id_area.'/'.$lang.'/'.$i->bid.'" title="'._ARTICLE_HISTORY.'"><i class="fas fa-history fa-lg"></i></a></td>
 				<td class="aright">'.$delete.'</td>
 				</tr>';
 	}

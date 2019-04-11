@@ -103,7 +103,7 @@ class Categories_controller extends X3ui_controller
 		// load the dictionary
 		$this->dict->get_wordarray(array('categories'));
 		
-		echo '<a class="btf" href="'.BASE_URL.'categories/edit/'.$id_area.'/'.$lang.'/'.$tag.'/-1" title="'._NEW_CATEGORY.'"><i class="fa fa-plus fa-lg"></i></a>
+		echo '<a class="btf" href="'.BASE_URL.'categories/edit/'.$id_area.'/'.$lang.'/'.$tag.'/-1" title="'._NEW_CATEGORY.'"><i class="fas fa-plus fa-lg"></i></a>
 <script>
 window.addEvent("domready", function()
 {

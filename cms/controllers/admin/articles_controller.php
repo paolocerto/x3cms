@@ -200,7 +200,7 @@ class Articles_controller extends X3ui_controller
                     break;
             }
             
-            echo '<a class="btf" href="'.BASE_URL.'articles/edit/'.$id_area.'/'.$lang.'" title="'._NEW_ARTICLE.'"><i class="fa fa-plus fa-lg"></i></a>
+            echo '<a class="btf" href="'.BASE_URL.'articles/edit/'.$id_area.'/'.$lang.'" title="'._NEW_ARTICLE.'"><i class="fas fa-plus fa-lg"></i></a>
 <script>
 window.addEvent("domready", function()
 {
@@ -1241,7 +1241,7 @@ window.addEvent("domready", function()
 				'name' => $_post['name'],
 				'content' => $_post['content'],
 				'ftext' => $_post['name'].' '.strip_tags($_post['content']),
-				
+				'js' => html_entity_decode($_post['js']),
 				'excerpt' => (strstr($_post['content'], '<!--pagebreak-->') !== false) ? 1 : 0,
 				'tags' => str_replace(', ', ',', $_post['tags']),
 				
