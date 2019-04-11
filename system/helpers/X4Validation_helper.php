@@ -51,6 +51,7 @@ class X4Validation_helper
 		array('value' => 'captcha', 	'option' => 'captcha: check if value is equal to session captcha value', 								'param' => array(0, 0)),
 		array('value' => 'fiscalit', 	'option' => 'fiscalit: check if value is a valid italian Fiscal ID', 									'param' => array(0, 0)),	// (if length = 16 personal ID, if length = 11 company ID)
 		array('value' => 'sizes', 		'option' => 'sizes: check if image sizes are too big', 													'param' => array(0, 'integer', 'integer')),	// (eg. sizes-width_pixels-height_pixels)
+		array('value' => 'small', 		'option' => 'small: check if image sizes are too small', 												'param' => array(0, 'integer', 'integer')),	// (eg. sizes-width_pixels-height_pixels)
 		array('value' => 'weight', 		'option' => 'weight: check if file weight is too big in KiloBytes', 									'param' => array(0, 'integer')),
 		array('value' => 'color', 		'option' => 'color: check if value is a valid color (HEX format #00aaFF or #0aF)', 						'param' => array(0, 0)),
 		array('value' => 'iban', 		'option' => 'iban: check if value is a valid IBAN', 													'param' => array(0, 0)),
@@ -69,6 +70,7 @@ class X4Validation_helper
 		'_equal',
 		'_different',
 		'_sizes',
+		'_small',
 		'_weight',
 		'_captcha'
 	);
@@ -388,9 +390,11 @@ class X4Validation_helper
 	 */
 	private static function _requiredif(&$field, $tok, &$e, $_post, $_files)
 	{
-		// only if isset the field defined in $tok[1]
+	    // only if isset the field defined in $tok[1]
 		if (isset($_post[$tok[1]]))
 		{
+		    $related = self::get_field($tok[1]);
+		    		    
 			// check for not
 			$tok2 = str_replace('!', '', $tok[2]);
 		
@@ -432,11 +436,22 @@ class X4Validation_helper
 				}
 				else if (!isset($_post[$field['name']]) || empty($_post[$field['name']])) 
 				{
+				    // get related
+				    if (isset($related['options']))
+				    {
+				        $options = self::get_options($related['options']);
+				        $relatedvalue = $options[$_post[$tok[1]]];
+				    }
+				    else
+				    {
+				        $relatedvalue = $_post[$tok[1]];
+				    }
+				    
 					// for all other inputs
 					$field['error'][] = array(
                         'msg' => '_requiredif',
                         'related' => $tok[1],
-                        'relatedvalue' => $_post[$tok[1]]
+                        'relatedvalue' => $relatedvalue
                     );
 					$e = false;
 				}
@@ -568,6 +583,31 @@ class X4Validation_helper
 			if ($sizes[0] > intval($tok[1]) || $sizes[1] > $tok[2]) 
 			{
 				$field['error'][] = array('msg' => '_image_size_is_too_big');
+				$e = false;
+			}
+		}
+	}
+	
+	/**
+	 * Small rule
+	 * if the sizes of the image uploaded are lower than defined in tok[1] (width) and tok[2] (height) then catch an error
+	 *
+	 * @static
+	 * @param array		$field	Array of the field form (passed as reference)
+	 * @param array		$tok	Array of the rule parameters (rule_name, param1, param2...)
+	 * @param boolean	$e		Error status
+	 * @param array		$_post	_POST array
+	 * @param array		$_files	_FILES array
+	 * @return void
+	 */
+	private static function _small(&$field, $tok, &$e, $_post, $_files)
+	{
+		if (isset($_files[$field['name']]) && is_uploaded_file($_files[$field['name']]['tmp_name'])) 
+		{
+			$sizes = getImageSize($_files[$field['name']]['tmp_name']);
+			if ($sizes[0] < intval($tok[1]) || $sizes[1] < $tok[2]) 
+			{
+				$field['error'][] = array('msg' => '_image_size_is_too_small');
 				$e = false;
 			}
 		}
@@ -1040,7 +1080,7 @@ class X4Validation_helper
 				
 				$field['error'][] = array(
 				    'msg' => '_must_be_a_date',
-				    'related' => '['.$format.']'
+				    'relatedvalue' => '['.$format.']'
 				);
 				$e = false;
 			}
@@ -1441,23 +1481,56 @@ class X4Validation_helper
 								$res = empty(self::$data[$name]);
 							}
 						}
-						else
+						elseif (isset($i['multiple']))
 						{
-						    if (isset($i['multiple']))
-                            {
-                                // multiple
-                                // not set if array is empty or the first value is empty
-                                $res = (empty(self::$data[$i['name']]) || empty(self::$data[$i['name']][0]));
-                            }
-                            else
-                            {
-                                $res = empty(self::$data[$name]);
-                            }
-                        }
+						    // multiple
+						    // not set if array is empty or the first value is empty
+							$res = (empty(self::$data[$i['name']]) || empty(self::$data[$i['name']][0]));
+						}
 						break;
 				}
 			}
 		}
 		return $res;
+	}
+	
+	/**
+	 * Get a field from fileds array by name
+	 * Used for related fields
+	 *
+	 * @static
+	 * @param string	$name	Field to check name
+	 * @return array
+	 */
+	public static function get_field($name)
+	{
+	    foreach(self::$fields as $i)
+		{
+			if (isset($i['name']) && $i['name'] == $name)
+			{
+				return $i;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Get options
+	 * Used for related fields
+	 *
+	 * @static
+	 * @param array	$options
+	 * @return array
+	 */
+	public static function get_options($options)
+	{
+	    $a = array();
+	    $k = $options[1];
+	    $v = $options[2];
+		foreach($options[0] as $i)
+		{
+		    $a[$i->$k] = $i->$v;
+		}
+		return $a;
 	}
 }

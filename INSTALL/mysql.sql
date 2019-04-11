@@ -383,6 +383,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'admin', 'msg', '_AREA_ALREADY_EXISTS', 'Esiste gi&agrave; un\'area con lo stesso nome', 0, 1),
 (NOW(), 'it', 'admin', 'msg', '_FILE_SIZE_IS_TOO_BIG', 'La dimensione, in Kilobyte, del file di cui si cerca di fare l\'upload sono superiori al consentito', 0, 1),
 (NOW(), 'it', 'admin', 'msg', '_IMAGE_SIZE_IS_TOO_BIG', 'Le dimensioni, in pixel, del file di cui si cerca di fare l\'upload sono superiori al consentito', 0, 1),
+(NOW(), 'it', 'admin', 'msg', '_IMAGE_SIZE_IS_TOO_SMALL', 'Le dimensioni, in pixel, del file di cui si cerca di fare l\'upload sono inferiori al consentito', 0, 1),
 (NOW(), 'it', 'admin', 'msg', '_XKEY_ALREADY_EXISTS', 'Esiste gi&agrave; una espressione con la stessa chiave', 0, 1),
 (NOW(), 'it', 'admin', 'msg', '_LANGUAGE_ALREADY_EXISTS', 'Questa lingua esiste gi&agrave;', 0, 1),
 (NOW(), 'it', 'admin', 'msg', '_CATEGORY_ALREADY_EXISTS', 'Questa categoria esiste gi&agrave;', 0, 1),
@@ -410,6 +411,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'admin', 'form', '_MUST_BE_A_DATE', 'deve essere una data nel formato aaaa-mm-gg', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_TOO_LONG', 'ha una lunghezza superiore a quella richiesta "XXXRELATEDXXX".', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_IMAGE_SIZE_IS_TOO_BIG', 'le dimensioni, in pixel, sono superiori al consentito', 0, 1),
+(NOW(), 'it', 'admin', 'form', '_IMAGE_SIZE_IS_TOO_SMALL', 'le dimensioni, in pixel, sono inferiori al consentito', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_FILE_WEIGHT_IS_TOO_BIG', 'le dimensioni, in Kilobyte, sono superiori al consentito', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_MUST_CONTAIN_ONLY_NUMBERS', 'deve contenere solo numeri', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_MUST_CONTAIN_ONLY', 'deve contenere solo "XXXRELATEDXXX"', 0, 1),
@@ -966,6 +968,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'admin', 'msg', '_AREA_ALREADY_EXISTS', 'An area with the same name already exists', 0, 1),
 (NOW(), 'en', 'admin', 'msg', '_FILE_SIZE_IS_TOO_BIG', 'The size in kilobyte of uploading file is too big', 0, 1),
 (NOW(), 'en', 'admin', 'msg', '_IMAGE_SIZE_IS_TOO_BIG', 'The size in pixel of uploading file is too big', 0, 1),
+(NOW(), 'en', 'admin', 'msg', '_IMAGE_SIZE_IS_TOO_SMALL', 'The size in pixel of uploading file is too small', 0, 1),
 (NOW(), 'en', 'admin', 'msg', '_XKEY_ALREADY_EXISTS', 'A word with the same key already exixts', 0, 1),
 (NOW(), 'en', 'admin', 'msg', '_LANGUAGE_ALREADY_EXISTS', 'This language already exixts', 0, 1),
 (NOW(), 'en', 'admin', 'msg', '_CATEGORY_ALREADY_EXISTS', 'This category already exists', 0, 1),
@@ -1459,6 +1462,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'public', 'msg', '_UPLOAD_ERROR', 'Si &egrave; verificato un errore durante l\'upload del file.', 0, 1),
 (NOW(), 'it', 'public', 'msg', '_FILE_SIZE_IS_TOO_BIG', 'La dimensione, in Kilobyte, del file di cui si cerca di fare l\'upload sono superiori al consentito', 0, 1),
 (NOW(), 'it', 'public', 'msg', '_IMAGE_SIZE_IS_TOO_BIG', 'Le dimensioni, in pixel, del file di cui si cerca di fare l\'upload sono superiori al consentito', 0, 1),
+(NOW(), 'it', 'public', 'msg', '_IMAGE_SIZE_IS_TOO_SMALL', 'Le dimensioni, in pixel, del file di cui si cerca di fare l\'upload sono inferiori al consentito', 0, 1),
 (NOW(), 'it', 'public', 'msg', '_BAD_MIMETYPE', 'Il formato di file che si cerca di caricare non &egrave; ammesso', 0, 1),
 
 
@@ -1484,6 +1488,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'public', 'form', '_IFEMPTY', '&Egrave; obbligatorio se lasciate "XXXRELATEDXXX" vuoto.', 0, 1),
 
 (NOW(), 'it', 'public', 'form', '_IMAGE_SIZE_IS_TOO_BIG', 'le dimensioni, in pixel, sono superiori al consentito', 0, 1),
+(NOW(), 'it', 'public', 'form', '_IMAGE_SIZE_IS_TOO_SMALL', 'le dimensioni, in pixel, sono inferiori al consentito', 0, 1),
 (NOW(), 'it', 'public', 'form', '_FILE_WEIGHT_IS_TOO_BIG', 'le dimensioni, in Kilobyte, sono superiori al consentito', 0, 1),
 
 (NOW(), 'it', 'public', 'form', '_WRONG_LENGTH', 'numero di caratteri sbagliato (XXXRELATEDXXX)', 0, 1),
@@ -1623,6 +1628,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'public', 'msg', '_UPLOAD_ERROR', 'An error occurred during uploading.', 0, 1),
 (NOW(), 'en', 'public', 'msg', '_FILE_SIZE_IS_TOO_BIG', 'The size in kilobyte of uploading file is too big', 0, 1),
 (NOW(), 'en', 'public', 'msg', '_IMAGE_SIZE_IS_TOO_BIG', 'The size in pixel of uploading file is too big', 0, 1),
+(NOW(), 'en', 'public', 'msg', '_IMAGE_SIZE_IS_TOO_SMALL', 'The size in pixel of uploading file is too small', 0, 1),
 (NOW(), 'en', 'public', 'msg', '_BAD_MIMETYPE', 'The file format you are trying to upload is not allowed', 0, 1),
 
 
@@ -1649,6 +1655,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'public', 'form', '_IFEMPTY', 'is mandatory if "XXXRELATEDXXX" is empty.', 0, 1),
 
 (NOW(), 'en', 'public', 'form', '_IMAGE_SIZE_IS_TOO_BIG', 'the size in pixel of uploading file is too big', 0, 1),
+(NOW(), 'en', 'public', 'form', '_IMAGE_SIZE_IS_TOO_SMALL', 'the size in pixel of uploading file is too small', 0, 1),
 (NOW(), 'en', 'public', 'form', '_FILE_WEIGHT_IS_TOO_BIG', 'the weight in kilobyte of uploading file is too big', 0, 1),
 
 (NOW(), 'en', 'public', 'form', '_WRONG_LENGTH', 'wrong length (XXXRELATEDXXX)', 0, 1),
@@ -1818,6 +1825,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'private', 'form', '_MUST_BE_A_DATE', 'deve essere una data nel formato aaaa-mm-gg', 0, 1),
 (NOW(), 'it', 'private', 'form', '_TOO_LONG', 'ha una lunghezza superiore a quella richiesta [XXXRELATEDXXX].', 0, 1),
 (NOW(), 'it', 'private', 'form', '_IMAGE_SIZE_IS_TOO_BIG', 'le dimensioni, in pixel, sono superiori al consentito', 0, 1),
+(NOW(), 'it', 'private', 'form', '_IMAGE_SIZE_IS_TOO_SMALL', 'le dimensioni, in pixel, sono inferiori al consentito', 0, 1),
 (NOW(), 'it', 'private', 'form', '_FILE_WEIGHT_IS_TOO_BIG', 'le dimensioni, in Kilobyte, sono superiori al consentito', 0, 1),
 (NOW(), 'it', 'private', 'form', '_MUST_CONTAIN_ONLY_NUMBERS', 'deve contenere solo numeri', 0, 1),
 
@@ -1953,6 +1961,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'private', 'form', '_MUST_BE_A_DATE', 'expected aaaa-mm-gg format', 0, 1),
 (NOW(), 'en', 'private', 'form', '_TOO_LONG', 'is too long.', 0, 1),
 (NOW(), 'en', 'private', 'form', '_IMAGE_SIZE_IS_TOO_BIG', 'the size in pixel of uploading file is too big', 0, 1),
+(NOW(), 'en', 'private', 'form', '_IMAGE_SIZE_IS_TOO_SMALL', 'the size in pixel of uploading file is too small', 0, 1),
 (NOW(), 'en', 'private', 'form', '_FILE_WEIGHT_IS_TOO_BIG', 'the weight in kilobyte of uploading file is too big', 0, 1),
 (NOW(), 'en', 'private', 'form', '_MUST_CONTAIN_ONLY_NUMBERS', 'can contain only numbers', 0, 1),
 
