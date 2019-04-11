@@ -28,7 +28,8 @@ class X4Files_helper
 	    'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
 	    'application/zip', 'application/x-zip', 'application/x-zip-compressed', 'application/x-rar', 'application/x-rar-compressed',
 	    'application/vnd.oasis.opendocument.text', 'application/vnd.oasis.opendocument.presentation', 'application/vnd.oasis.opendocument.spreadsheet',
-	    'binary/octet-stream', 'audio/mpeg', 'audio/wav', 'audio/x-wav', 'application/x-compress', 'application/x-compressed', 'multipart/x-zip');
+	    'binary/octet-stream', 'audio/mpeg', 'audio/wav', 'audio/x-wav', 'application/x-compress', 'application/x-compressed', 'multipart/x-zip',
+	    'application/pkcs7-mime', 'application/x-pkcs7-mime', 'application/x-dike');
 	private static $file = array();
 	
 	private static function phpv()
@@ -253,6 +254,8 @@ class X4Files_helper
 				case 'xls':
 				    return 'application/vnd.ms-excel';
 				    break;
+				case 'p7m':
+				    return 'application/pkcs7-mime';
 				default:
 					return 'binary/octet-stream';
 					break;
@@ -297,7 +300,7 @@ class X4Files_helper
 	 */
 	private static function filter_mime($mimes, $file_type)
 	{
-		$mime = array();
+	    $mime = array();
 		$mime['img'] = (empty($mimes)) ? self::$mimg : array_intersect(self::$mimg, $mimes);
 		$mime['media'] = (empty($mimes)) ? self::$mmedia : array_intersect(self::$mmedia, $mimes);
 		$mime['template'] = (empty($mimes)) ? self::$mtemplate : array_intersect(self::$mtemplate, $mimes);
@@ -457,7 +460,6 @@ class X4Files_helper
 		if (is_uploaded_file($_FILES[$file]['tmp_name'])) 
 		{
 			$type = self::filter_mime($mimes, $_FILES[$file]['type']);
-			
 			if (!empty($mimes) && empty($type)) 
 			{
 				$errors[$file][] = '_bad_mimetype';
