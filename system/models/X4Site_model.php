@@ -47,18 +47,18 @@ class X4Site_model extends X4Model_core
 		parent::__construct('sites');
 		
 		// get area
-		$this->area = $this->set_data();
+		$this->area = (array) $this->set_data();
 		
 		// if no language is set by route set area predefined language
 		$this->lang = (empty(X4Route_core::$lang)) 
-			? $this->area->lang 
+			? $this->area['lang'] 
 			: X4Route_core::$lang;
 		
 		// set language
 		X4Route_core::set_lang($this->lang);
 		
 		// get site
-		$this->site = $this->get_site($this->area->id);
+		$this->site = $this->get_site($this->area['id']);
 		
 		if (!$this->area || !$this->site) 
 		{
@@ -172,7 +172,7 @@ class X4Site_model extends X4Model_core
 		return $this->db->query_row('SELECT p.*, a.name AS area, a.private
 			FROM pages p
 			JOIN areas a ON a.id = p.id_area
-			WHERE a.id = '.$this->db->escape($this->area->id).' AND 
+			WHERE a.id = '.$this->db->escape($this->area['id']).' AND 
 				p.lang = '.$this->db->escape($this->lang).' AND 
 				p.url = '.$this->db->escape($method).' AND
 				p.xon = 1');
@@ -440,7 +440,7 @@ class X4Site_model extends X4Model_core
 			// get menus
 			$sql = 'SELECT m.* 
 				FROM menus m 
-				WHERE m.id_theme = '.$this->area->id_theme.' AND m.xon = 1';
+				WHERE m.id_theme = '.$this->area['id_theme'].' AND m.xon = 1';
 			$menus = $this->db->query($sql);
 			
 			// get pages foreach menu
@@ -484,7 +484,7 @@ class X4Site_model extends X4Model_core
 			
 		if (empty($c))
 		{
-			$c = $this->db->query('SELECT xfrom, url, name, description 
+		    $c = $this->db->query('SELECT xfrom, url, name, description 
 				FROM pages 
 				WHERE id_area = '.intval($page->id_area).' AND
 					lang = '.$this->db->escape($page->lang).' AND 

@@ -46,7 +46,7 @@ if (isset($page))
 <link rel="shortcut icon" href="<?php echo THEME_URL ?>favicon.ico" type="images/x-icon">
 <link rel="stylesheet" href="<?php echo THEME_URL ?>css/bootstrap.min.css">
 <?php
-echo (!DEVEL && file_exists(PATH.'themes/'.$this->site->area->theme.'/css/'.$css.'.min.css'))
+echo (!DEVEL && file_exists(PATH.'themes/'.$this->site->area['theme'].'/css/'.$css.'.min.css'))
 	? '<link rel="stylesheet" href="'.THEME_URL.'css/'.$css.'.min.css">'
 	: '<link rel="stylesheet" href="'.THEME_URL.'css/'.$css.'.css">';
 
@@ -85,7 +85,7 @@ if (INLINE)
 echo X4Utils_helper::module($this->site, $page, array(), 'x3flags');
 ?>
 			<div id="logo">
-				<a href="<?php echo BASE_URL ?>" title="<?php echo _X3CMS_SLOGAN ?>"><img src="<?php echo THEME_URL ?>/img/x3cms.png" /></a>
+				<a href="<?php echo BASE_URL ?>" title="<?php echo _X3CMS_SLOGAN ?>"><img src="<?php echo THEME_URL ?>img/x3cms.png" /></a>
 			</div>
 		</div>
 <?php

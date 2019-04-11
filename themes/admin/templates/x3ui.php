@@ -34,10 +34,10 @@ if (isset($page)) {
 
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
 <link rel="shortcut icon" href="<?php echo THEME_URL ?>favicon.ico" type="images/x-icon" />
-<link rel="stylesheet" href="<?php echo THEME_URL ?>css/font-awesome.css">
+<link rel="stylesheet" href="<?php echo THEME_URL ?>css/fontawesome-all.min.css">
 <link rel="stylesheet" href="<?php echo THEME_URL ?>css/normalize.css">
 <?php
-echo (!DEVEL && file_exists(PATH.'themes/'.$this->site->area->theme.'/css/'.$css.'.min.css'))
+echo (!DEVEL && file_exists(PATH.'themes/'.$this->site->area['theme'].'/css/'.$css.'.min.css'))
 	? '<link rel="stylesheet" href="'.THEME_URL.'css/'.$css.'.min.css">'
 	: '<link rel="stylesheet" href="'.THEME_URL.'css/'.$css.'.css">'
 ?>
@@ -67,11 +67,11 @@ if (RTL)
 	<aside id="sidebar">
 		<i id="spinner" class="fa fa-circle-o-notch"></i>
 		<div>
-			<a class="no_link" href="<?php echo BASE_URL ?>" title="<?php echo _HOME_PAGE ?>"><i class="fa fa-home fa-lg"></i></a>
+			<a class="no_link" href="<?php echo BASE_URL ?>" title="<?php echo _HOME_PAGE ?>"><i class="fas fa-home fa-lg"></i></a>
 <?php
 // sidebar menu
 $sbm = array(
-	'sites' => '<a href="'.BASE_URL.'sites/show/1" title="'._SETTINGS.'"><i class="fa fa-cog fa-lg"></i></a>'
+	'sites' => '<a href="'.BASE_URL.'sites/show/1" title="'._SETTINGS.'"><i class="fas fa-cog fa-lg"></i></a>'
 );
 
 if (!empty($menus['sidebar']))
@@ -87,14 +87,14 @@ if (!empty($menus['sidebar']))
 
 // user menu
 $um = array(
-	'widgets' 	=> '<a href="'.BASE_URL.'widgets" title="'._WIDGETS.'"><i class="fa fa-paperclip fa-lg"></i></a>',
-	'help' 		=> '<a href="'.BASE_URL.'help" title="'._HELP_ON_LINE.'"><i class="fa fa-question fa-lg"></i></a>',
-	'profile' 	=> '<a href="'.BASE_URL.'profile" title="'.ucfirst($_SESSION['username']).' '._PROFILE.'"><i class="fa fa-user fa-lg"></i></a>'
+	'widgets' 	=> '<a href="'.BASE_URL.'widgets" title="'._WIDGETS.'"><i class="fas fa-paperclip fa-lg"></i></a>',
+	'help' 		=> '<a href="'.BASE_URL.'help" title="'._HELP_ON_LINE.'"><i class="fas fa-question fa-lg"></i></a>',
+	'profile' 	=> '<a href="'.BASE_URL.'profile" title="'.ucfirst($_SESSION['username']).' '._PROFILE.'"><i class="fas fa-user fa-lg"></i></a>'
 );
 
 if ($_SESSION['xuid'] === 1)
 {
-    $um['info'] = '<a href="'.BASE_URL.'info" title="'._ABOUT.'"><i class="fa fa-info fa-lg"></i></a>';
+    $um['info'] = '<a href="'.BASE_URL.'info" title="'._ABOUT.'"><i class="fas fa-info fa-lg"></i></a>';
 }
 
 if (!empty($menus['admin_user']))
@@ -108,7 +108,7 @@ if (!empty($menus['admin_user']))
 	}
 }
 ?>
-			<a class="no_link" href="<?php echo BASE_URL ?>login/logout" title="<?php echo _LOGOUT ?>"><i class="fa fa-power-off fa-lg"></i></a>
+			<a class="no_link" href="<?php echo BASE_URL ?>login/logout" title="<?php echo _LOGOUT ?>"><i class="fas fa-power-off fa-lg"></i></a>
 			...
 <?php
 // languages
@@ -164,7 +164,7 @@ var domain = "<?php echo $this->site->site->domain ?>",
 <script src="<?php echo ROOT ?>files/js/mootools/Lasso.Crop.js"></script>
 <script src="<?php echo ROOT ?>files/js/swfobject.js"></script>
 <?php
-echo (!DEVEL && file_exists(PATH.'themes/'.$this->site->area->theme.'/js/x3ui.min.js'))
+echo (!DEVEL && file_exists(PATH.'themes/'.$this->site->area['theme'].'/js/x3ui.min.js'))
 	? '<script src="'.THEME_URL.'js/x3ui.min.js"></script>'
 	: '<script src="'.THEME_URL.'js/x3ui.js"></script>'
 ?>

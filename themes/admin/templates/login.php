@@ -39,7 +39,7 @@ if (isset($page)) {
 <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.css">
 <link rel="stylesheet" href="<?php echo THEME_URL ?>css/normalize.css">
 <?php
-echo (!DEVEL && file_exists(PATH.'themes/'.$this->site->area->theme.'/css/'.$css.'.min.css'))
+echo (!DEVEL && file_exists(PATH.'themes/'.$this->site->area['theme'].'/css/'.$css.'.min.css'))
 	? '<link rel="stylesheet" href="'.THEME_URL.'css/'.$css.'.min.css">'
 	: '<link rel="stylesheet" href="'.THEME_URL.'css/'.$css.'.css">'
 ?>
