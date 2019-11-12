@@ -58,14 +58,15 @@ class X4Array_helper
 	 * @param array		$array associative array
 	 * @param string	$val key field name
 	 * @param string	$opt value field name
+	 * @param boolean   $assoc force associative array 
 	 * @return array
 	 */
-	public static function array2obj($array, $val = null, $opt = null)
+	public static function array2obj($array, $val = null, $opt = null, $assoc = false)
 	{
 		$o = array();
 		if (is_null($opt) || is_null($val))
 		{
-			if (array_values($array) === $array)
+			if (!$assoc && array_values($array) === $array)
 			{
 				// is a sequential array
 				foreach($array as $i) 
@@ -213,16 +214,21 @@ class X4Array_helper
 	 * @param	string	$index Field to use as index
 	 * @return array
 	 */
-	public static function indicize($array, $index)
+	public static function indicize($array, $indexes)
 	{
 		$a = array();
+		$ii = explode(':', $indexes);
 		foreach($array as $i)
 		{
 		    // to handle null values
-		    $final_index = (is_null($i->$index))
-		        ? -1
-		        : $i->$index;
-		    
+		    $fi = array();
+		    foreach($ii as $tmp)
+		    {
+		        $fi[] = (is_null($i->$tmp))
+		        ? 0    // was -1
+		        : $i->$tmp;
+		    }
+		    $final_index = implode('_', $fi);
 			$a[$final_index] = $i;
 		}
 		return $a;
@@ -260,6 +266,25 @@ class X4Array_helper
 	public static function sort_by_length($a, $b)
 	{
 		return strlen($b) - strlen($a);
+	}
+	
+	/**
+	 * Remove from array empty entries
+	 *
+	 * @static
+	 * @param array		$array array of objects
+	 * @return array
+	 */
+	public static function clean_array($array)
+	{
+		foreach($array as $k => $v) 
+		{
+			if (empty($v))
+			{
+			    unset($array[$k]);
+			}
+		}
+		return $array;
 	}
 }
 
