@@ -23,6 +23,7 @@ class X4Validation_helper
 		array('value' => 'hidden_req', 	'option' => 'hidden_req: set a field as mandatory but don\'t show the *', 								'param' => array(0, 0)),
 		array('value' => 'requiredif', 	'option' => 'requiredif: set a field as mandatory if another field has a specific value', 				'param' => array(1, 'text')),
 		array('value' => 'ifempty', 	'option' => 'ifempty: set a field as mandatory if another field is empty (more than one field separated with :)', 'param' => array(1, 0)),
+		array('value' => 'requiredifempty', 	'option' => 'requiredifempty: set a field as mandatory if another field has a specific value and another is_a empty', 				'param' => array(1, 'text')),
 		array('value' => 'depends', 	'option' => 'depends: set a field as mandatory if another field is not empty', 							'param' => array(1, 0)),
 		array('value' => 'inarray', 	'option' => 'inarray: check if a selected value is in the selected values in a multiple select field', 	'param' => array(1, 0)),
 		array('value' => 'mail', 		'option' => 'mail: check if a value is a valid email address', 											'param' => array(0, 0)),
@@ -67,6 +68,7 @@ class X4Validation_helper
 		'_hidden_req',
 		'_requiredif',
 		'_ifempty',
+		'_requiredifempty',
 		'_equal',
 		'_different',
 		'_sizes',
@@ -437,14 +439,14 @@ class X4Validation_helper
 				else if (!isset($_post[$field['name']]) || empty($_post[$field['name']])) 
 				{
 				    // get related
+				    $relatedvalue = $_post[$tok[1]];
 				    if (isset($related['options']))
 				    {
 				        $options = self::get_options($related['options']);
-				        $relatedvalue = $options[$_post[$tok[1]]];
-				    }
-				    else
-				    {
-				        $relatedvalue = $_post[$tok[1]];
+				        if(isset($options[$_post[$tok[1]]]))
+				        {
+				            $relatedvalue = $options[$_post[$tok[1]]];
+				        }
 				    }
 				    
 					// for all other inputs
@@ -513,6 +515,119 @@ class X4Validation_helper
                 }
             }
         }
+	}
+	
+	/**
+	 * Required if empty rule
+	 * if tok[1] field as a specific value then check if tok[3] is empty
+	 * tok[] = rule name, tok[1] = field that triggers the check, tok[2] = value that triggers, tok[3] = field that if empty triggers the required
+	 *
+	 * @static
+	 * @param array		$field	Array of the field form (passed as reference)
+	 * @param array		$tok	Array of the rule parameters (rule_name, param1, param2...)
+	 * @param boolean	$e		Error status
+	 * @param array		$_post	_POST array
+	 * @param array		$_files	_FILES array
+	 * @return void
+	 */
+	private static function _requiredifempty(&$field, $tok, &$e, $_post, $_files)
+	{
+	    // only if isset the field defined in $tok[1] and $tok[3]
+		if (isset($_post[$tok[1]]) && isset($_post[$tok[3]]))
+		{
+		    $related1 = self::get_field($tok[1]);
+		    $related3 = self::get_field($tok[3]);
+		    		    
+			// check for not
+			$tok2 = str_replace('!', '', $tok[2]);
+		
+			// check the value
+			$check = ($tok2 != $tok[2])
+				? $_post[$tok[1]] != $tok2
+				: $_post[$tok[1]] == $tok[2];
+			
+			
+			$toks = explode(':', $tok[3]);
+			
+			if ($check)
+			{
+				// set errors
+				if ($field['type'] == 'file') 
+				{
+				    /*
+				    TO DO
+					// for files
+					if (!isset($field['old']) || empty($field['old'])) 
+					{
+						if (!empty($_files) && isset($_files[$field['name']]) && is_array($_files[$field['name']])) 
+						{
+							if (!isset($_files[$field['name']]['tmp_name'][0]) || $_files[$field['name']]['tmp_name'][0] == '' || strlen($_files[$field['name']]['name'][0]) == 0) 
+							{
+								$field['error'][] = array(
+								    'msg' => '_requiredif',
+								    'related' => $tok[1],
+								    'relatedvalue' => $_post[$tok[1]]
+								);
+								$e = false;
+							}
+						}
+						else if (empty($_files) || (isset($_files[$field['name']]) && ($_files[$field['name']]['tmp_name'] == '' || strlen($_files[$field['name']]['name']) == 0))) 
+						{
+							$field['error'][] = array(
+                                'msg' => '_requiredif',
+                                'related' => $tok[1],
+                                'relatedvalue' => $_post[$tok[1]]
+                            );
+							$e = false;
+						}
+					}
+					*/
+				}
+				else if (!isset($_post[$field['name']]) || empty($_post[$field['name']])) 
+				{
+				    // check the tok[3]
+				    $chk = false;
+                    // check the others
+                    foreach($toks as $i)
+                    {
+                        // at least one not empty
+                        if (!self::is_empty($i))
+                        {
+                            $chk = true;
+                        }
+                    }
+                    
+                    if (!$chk)
+                    {
+                        $field['error'][] = array(
+                            'msg' => '_ifempty',
+                            'related' => $toks[0]
+                        );
+                        $e = false;
+                    }
+                    
+				    // get related
+				    $relatedvalue = $_post[$tok[1]];
+				    if (isset($related1['options']))
+				    {
+				        $options = self::get_options($related['options']);
+				        
+				        if (isset($options[$_post[$tok[1]]]))
+				        {
+				            $relatedvalue = $options[$_post[$tok[1]]];
+				        }
+				    }
+				    
+					// for all other inputs
+					$field['error'][] = array(
+                        'msg' => '_ifempty',
+                        'related' => $tok[1],
+                        'relatedvalue' => $relatedvalue
+                    );
+					$e = false;
+				}
+			}
+		}
 	}
 	
 	/**
@@ -1076,7 +1191,7 @@ class X4Validation_helper
 					array('d', 'm', 'Y', '-'),
 					array('gg', 'mm', 'aaaa', '/'),
 					$date_format
-					);
+				);
 				
 				$field['error'][] = array(
 				    'msg' => '_must_be_a_date',
@@ -1446,51 +1561,56 @@ class X4Validation_helper
 	public static function is_empty($name)
 	{
 		$res = true;
-		foreach(self::$fields as $i)
+		$i = self::get_field($name);
+		if ($i)
 		{
-			if (isset($i['name']) && $i['name'] == $name)
-			{
-				$name = self::get_name($i);
-				switch($i['type'])
-				{
-					case 'file':
-						$res = (
-									(
-										empty($_FILES) ||			// the _FILES array is empty 
-										!isset($_FILES[$name])		// not exists the item in the _FILES array
-									) 
-									&& 
-									(
-										!isset(self::$data['old_'.$name]) || 	// not exists an old value for the item
-										empty(self::$data['old_'.$name])		// the old value exists but is empty
-									)
-								);	
-						break;
-					default:
-						// for checkboxes uses default value
-						if (isset(self::$data[$name]))
-						{
-							if (isset($i['multiple']))
-							{
-								// not set if array is empty or the first value is empty
-								$res = (empty(self::$data[$name]) || empty(self::$data[$name][0]));
-							}
-							else
-							{
-								// empty value (zero is a value)
-								$res = empty(self::$data[$name]);
-							}
-						}
-						elseif (isset($i['multiple']))
-						{
-						    // multiple
-						    // not set if array is empty or the first value is empty
-							$res = (empty(self::$data[$i['name']]) || empty(self::$data[$i['name']][0]));
-						}
-						break;
-				}
-			}
-		}
+            $name = self::get_name($i);
+            switch($i['type'])
+            {
+                case 'file':
+                    $res = (
+                                (
+                                    empty($_FILES) ||			// the _FILES array is empty 
+                                    !isset($_FILES[$name])		// not exists the item in the _FILES array
+                                ) 
+                                && 
+                                (
+                                    !isset(self::$data['old_'.$name]) || 	// not exists an old value for the item
+                                    empty(self::$data['old_'.$name])		// the old value exists but is empty
+                                )
+                            );	
+                    break;
+                default:
+                    // for checkboxes uses default value
+                    if (isset(self::$data[$name]))
+                    {
+                        if (isset($i['multiple']))
+                        {
+                            // not set if array is empty or the first value is empty
+                            $res = (empty(self::$data[$name]) || empty(self::$data[$name][0]));
+                        }
+                        else
+                        {
+                            // empty value (zero is a value)
+                            $res = empty(self::$data[$name]);
+                        }
+                    }
+                    else
+                    {
+                        if (isset($i['multiple']))
+                        {
+                            // multiple
+                            // not set if array is empty or the first value is empty
+                            $res = (empty(self::$data[$i['name']]) || empty(self::$data[$i['name']][0]));
+                        }
+                        else
+                        {
+                            $res = empty(self::$data[$name]);
+                        }
+                    }
+                    break;
+            }
+        }
 		return $res;
 	}
 	
