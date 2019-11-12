@@ -125,6 +125,7 @@ if ($theme_out && $_SESSION['level'] == 4)
 }
 ?>
 </table>
+<script src="/themes/admin/js/basic.js"></script>
 <script>
 window.addEvent('domready', function()
 {

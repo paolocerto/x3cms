@@ -36,6 +36,7 @@ foreach($widgets as $i)
 }
 ?>
 </div>
+<script src="/themes/admin/js/basic.js"></script>
 <script>
 window.addEvent('domready', function()
 {

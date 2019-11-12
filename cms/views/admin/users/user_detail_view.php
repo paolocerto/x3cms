@@ -41,6 +41,7 @@ if (!isset($dialog) && ($u->plevel > 2 || $u->plevel == 4))
 }
 ?>	
 </table>
+<script src="/themes/admin/js/basic.js"></script>
 <script>
 window.addEvent('domready', function()
 {

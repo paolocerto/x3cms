@@ -83,6 +83,7 @@ foreach($history as $i)
 ?>
 </table>
 </form>
+<script src="/themes/admin/js/basic.js"></script>
 <script>
 window.addEvent('domready', function()
 {

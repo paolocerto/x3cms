@@ -17,3 +17,4 @@ echo $form;
 ?>
 
 </div>
+<script src="/themes/admin/js/basic.js"></script>

@@ -56,6 +56,7 @@ if ($_SESSION['level'] == 4)
 		<td class="aright"><?php echo $offline ?></td>
 	</tr>
 </table>
+<script src="/themes/admin/js/basic.js"></script>
 <script>
 window.addEvent('domready', function()
 {

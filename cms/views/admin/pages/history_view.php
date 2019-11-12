@@ -85,3 +85,4 @@ foreach($contents as $i)
 }
 ?>	
 </table>
+<script src="/themes/admin/js/basic.js"></script>

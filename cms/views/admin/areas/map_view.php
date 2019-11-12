@@ -80,6 +80,7 @@ while ($openli > 0)
 
 ?>
 </div>
+<script src="/themes/admin/js/basic.js"></script>
 <script>
 window.addEvent("domready", function()
 {

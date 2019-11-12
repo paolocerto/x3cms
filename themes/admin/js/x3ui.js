@@ -7,6 +7,16 @@
  * @package		X3CMS
  */
 
+// EVENTS
+window.addEventListener('popstate', function(e){
+    var url = e.state;
+    if (url != null) {
+        X3.content('topic', url, 'back');
+    }
+});
+
+// X3 object
+ 
 var X3 = (X3 || {});
 var SM;
 
@@ -68,6 +78,9 @@ X3.append({
 				if (title !== null){
 					$('page-title').set('html', title);
 					buttonize('page-title', null, 'topic');
+				}
+				if (container == 'topic' && title != 'back') {
+				    history.pushState(url, title, url);
 				}
 				X3.spinnerOff();
 			}
@@ -463,7 +476,6 @@ X3.append({
 						e.stop();
 						SM.hide();
 						X3.unscroll();
-						$$('.scrollbar').destroy();
 					});
 				}
 			}
@@ -525,6 +537,9 @@ X3.append({
 		if ($('scrolled') != null) {
 			$('scrolled').fireEvent('mouseleave');
 		}
+		$$('.scrollbar').destroy();
+		$$('.datepicker_dashboard').destroy();
+		$$('.autocompleter-choices').destroy();
 	},
 	
 	/**
