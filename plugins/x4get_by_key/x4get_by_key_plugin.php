@@ -53,7 +53,7 @@ class x4get_by_key_plugin extends X4Plugin_core implements X3plugin
 		{
 			if ($tag) 
 			{
-				$mod = new x4get_by_key_model();
+				$mod = new X4get_by_key_model();
 				$items = X4Pagination_helper::paginate($mod->get_articles_by_key_and_tag($page->id_area, $page->lang, $param, $tag), $pp);
 				$out .= '<div class="block"><h3>'._TAG.': '.htmlentities($tag).'</h3></div>';
 			}
@@ -69,7 +69,7 @@ class x4get_by_key_plugin extends X4Plugin_core implements X3plugin
 				{
 					if (!empty($i->content)) 
 					{
-						$out .= '<div class="block">'.X4Utils_helper::online_edit($i, 0);
+						$out .= '<div class="block">'.X4Utils_helper::inline_edit($i, 0);
 						// options
 						$out .= X4Utils_helper::get_block_options($i);
 						
@@ -101,11 +101,16 @@ class x4get_by_key_plugin extends X4Plugin_core implements X3plugin
 					
 					// module
 					if (!empty($i->module)) 
-						$out .=  X4Utils_helper::module($this->site, $page, $args, $i->module, $i->param);
+					{
+						$out .= X4Utils_helper::module($this->site, $page, $args, $i->module, $i->param);
+					}
 				}
 				
 				// pager
-				$out .= '<div id="pager">'.X4Pagination_helper::pager(BASE_URL.$page->url.'/', $items[1]).'</div>'; 
+				if ($items[1][0] > 1)
+				{
+				    $out .= '<div id="pager">'.X4Pagination_helper::pager(BASE_URL.$page->url.'/', $items[1]).'</div>';
+				}
 			}
 			else 
 			{

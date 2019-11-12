@@ -12,6 +12,9 @@
 
 $mod_name = 'x4get_by_key';
 $required = array();
+
 $sql = array();
 
+$sql[] = 'DELETE FROM param WHERE xrif = \''.$mod_name.'\' AND id_area = '.$area->id;
+$sql[] = 'DELETE FROM dictionary WHERE what = \''.$mod_name.'\' AND area = \''.$area->name.'\'';
 $sql[] = 'DELETE FROM modules WHERE id = '.intval($id);

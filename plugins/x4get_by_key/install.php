@@ -26,6 +26,9 @@ $required = array();
 // sql1 is the array of queries for specific area use (parameters, dictionary, module)
 $sql0 = $sql1 = array();
 
+$sql0[] = "INSERT INTO privtypes (updated, xrif, name, description, xon) VALUES (NOW(), 1, 'x4_get_by_key', 'X4_GET_BY_KEY', 1)";
+$sql0[] = "INSERT INTO gprivs (updated, id_group, what, level, xon) VALUES (NOW(), 1, 'x4_get_by_key', 4, 1)";
+
 // it
 $sql0[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'it', 'admin', 'x4get_by_key', '_X4GET_BY_KEY_CONFIGURATOR_MSG', 'Seleziona una chiave per filtrare gli articoli', 0, 1)";
 $sql0[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'it', 'admin', 'x4get_by_key', '_X4GET_BY_KEY_OPTION', 'Chiave articoli', 0, 1)";
