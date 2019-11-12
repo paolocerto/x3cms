@@ -172,7 +172,7 @@ class X4Site_model extends X4Model_core
 		return $this->db->query_row('SELECT p.*, a.name AS area, a.private
 			FROM pages p
 			JOIN areas a ON a.id = p.id_area
-			WHERE a.id = '.$this->db->escape($this->area['id']).' AND 
+			WHERE a.id = '.intval($this->area['id']).' AND 
 				p.lang = '.$this->db->escape($this->lang).' AND 
 				p.url = '.$this->db->escape($method).' AND
 				p.xon = 1');

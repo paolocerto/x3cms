@@ -47,7 +47,15 @@ class X4Utils_helper
 			if (isset($_COOKIE[COOKIE.'_hash']) && $_COOKIE[COOKIE.'_hash'] != '')
 			{
 				$mod = new X4Auth_model('users');
-				$chk = $mod->rehash($id_area, $_COOKIE[COOKIE.'_hash']);
+				$area = $mod->get_by_id($id_area, 'areas', 'private');
+				if ($area->private)
+				{
+				    $chk = $mod->rehash($id_area, $_COOKIE[COOKIE.'_hash']);
+				}
+				else
+				{
+				    $chk = true;
+				}
 			}
 			
 			if (!$chk)

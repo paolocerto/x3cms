@@ -160,6 +160,7 @@ class Obj_msg
 {
 	public $content;
 	public $module = '';
+	public $param = '';
 	
 	/**
 	 * Constructor
@@ -207,5 +208,28 @@ class Obj_msg
 	public function replace_html($str = '')
 	{
 		$this->content = $str;
+	}
+	
+	/**
+	 * Replace message content
+	 *
+	 * @param   string message body
+	 * @return  void
+	 */
+	public function enclose($before, $after)
+	{
+		$this->content = $before.$this->content.$after;
+	}
+	
+	/**
+	 * Set module and param
+	 *
+	 * @param   string message body
+	 * @return  void
+	 */
+	public function module($module, $param)
+	{
+		$this->module = $module;
+		$this->param = $param;
 	}
 }

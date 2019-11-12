@@ -143,12 +143,13 @@ class X4Text_helper
 		$cur_encoding = mb_detect_encoding($str) ;
 		if ($cur_encoding == 'UTF-8' && mb_check_encoding($str, 'UTF-8'))
 		{
-			return $str;
+			//nothing
 		}
 		else
 		{
-			return utf8_encode($str);
+			$str = utf8_encode($str);
 		}
+		return preg_replace("/[\n\r]/","\n", $str);
 	}
 	
 	/**

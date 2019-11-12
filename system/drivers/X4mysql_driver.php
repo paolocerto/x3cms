@@ -153,6 +153,7 @@ final class X4mysql_driver extends X3db_driver
 			$sql .= ' LIMIT 0, 1';
 		}
 		
+		$res = array(0, 0);
 		try 
 		{
 			$sth = $this->link->prepare($sql);

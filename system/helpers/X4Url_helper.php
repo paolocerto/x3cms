@@ -341,11 +341,11 @@ class X4Url_helper
             
         $desc = (empty($data['description']))
             ? ''
-            :  '<p class="pad-left pad-right">'.$data['description'].'</p>';
+            : '<p class="pad-left pad-right">'.$data['description'].'</p>';
           
         $site = (empty($data['site_name']))
             ? ''
-            :  '<p class="pad-left pad-right">'.strtoupper($data['site_name']).'</p>';
+            : '<p class="pad-left pad-right">'.strtoupper($data['site_name']).'</p>';
             
         // video replace img
         if (!empty($data['video']))
