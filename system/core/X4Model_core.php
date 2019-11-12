@@ -400,10 +400,10 @@ abstract class X4Model_core
 	 * @final
 	 * @param   array	data to insert
 	 * @param   string	table name
-	 * @param   boolean	Mongo ID switcher
+	 * @param   array   array of floats    //boolean	Mongo ID switcher
 	 * @return  array	(id row, success)
 	 */
-	final public function insert($data, $table = '', $mongo_id = null)
+	final public function insert($data, $table = '', $floats = array())    //$mongo_id = null)
 	{
 		$t = (empty($table)) 
 				? $this->table 
@@ -416,7 +416,14 @@ abstract class X4Model_core
 			foreach($data as $k => $v) 
 			{
 				$field .= ', '.$k;
-				$insert .= ', '.$this->db->escape($v);
+				if (in_array($k, $floats))
+				{
+				    $insert .= ', '.str_replace(',', '.', floatval($v));
+				}
+				else
+				{
+				    $insert .= ', '.$this->db->escape($v);
+				}
 			}
 			
 			$res = $this->db->single_exec('INSERT INTO '.$t.' (updated '.$field.') VALUES (\''.$this->now().'\' '.$insert.')');
@@ -473,10 +480,10 @@ abstract class X4Model_core
 	 * @param   integer	record ID
 	 * @param   array	data to update
 	 * @param   string	table name
-	 * @param   boolean	Mongo ID switcher
+	 * @param   array   array of floats    //boolean	Mongo ID switcher
 	 * @return  array (id row, success)
 	 */
-	final public function update($id, $data, $table = '', $mongo_id = null)
+	final public function update($id, $data, $table = '', $floats = array())    //$mongo_id = null)
 	{
 		$t = (empty($table)) 
 				? $this->table 
@@ -488,7 +495,14 @@ abstract class X4Model_core
 			$update = '';
 			foreach($data as $k => $v) 
 			{
-				$update .= ', '.addslashes($k).' = '.$this->db->escape($v);
+			    if (in_array($k, $floats))
+				{
+				    $update .= ', '.addslashes($k).' = '.str_replace(',', '.', floatval($v));
+				}
+				else
+				{
+				    $update .= ', '.addslashes($k).' = '.$this->db->escape($v);
+				}
 			}
 			
 			$res = $this->db->single_exec('UPDATE '.$t.' SET updated = \''.$this->now().'\' '.$update.' WHERE id = '.intval($id));
