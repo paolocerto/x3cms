@@ -17,14 +17,17 @@ foreach($areas as $i)
 }
 echo '</ul></div>';
 
-// type switcher
-echo '<div class="aright sbox"><ul class="inline-list">';
-foreach($types as $i) 
+if (!empty($items[0])) 
 {
-    $on = ($i->value == $xtype) ? 'class="on"' : '';
-    echo '<li><a '.$on.' href="'.BASE_URL.'files/index/'.$id_area.'/'.urlencode($category).'/'.urlencode($subcategory).'/'.$i->value.'/" title="'._SWITCH_TYPE.'">'.ucfirst($i->option).'</a></li>';
+	// type switcher
+	echo '<div class="aright sbox"><ul class="inline-list">';
+	foreach($types as $i) 
+	{
+		$on = ($i->value == $xtype) ? 'class="on"' : '';
+		echo '<li><a '.$on.' href="'.BASE_URL.'files/index/'.$id_area.'/'.urlencode($category).'/'.urlencode($subcategory).'/'.$i->value.'/" title="'._SWITCH_TYPE.'">'.ucfirst($i->option).'</a></li>';
+	}
+	echo '</ul></div>';
 }
-echo '</ul></div>';
 
 // category switcher
 if (!empty($categories))
