@@ -307,6 +307,22 @@ class X4Form_helper
 		$iextra = (isset($e['extra'])) 
 			? $e['extra'] 
 			: '';
+		
+		// replace with session value
+		if ($e['value'] == 'SESSION')
+		{
+		    if (isset($_SESSION[$e['name']]))
+		    {
+		        $e['value'] = $_SESSION[$e['name']];
+		    }
+		    elseif (isset($_SESSION['id_'.$e['name']]))
+		    {
+		        $mod = new Log_model();
+		        $tokens = explode('|', $e['extra']);
+		        $e['value'] = $mod->get_var($_SESSION['id_'.$e['name']], $tokens[0], $tokens[1]);
+		        $iextra = '';
+		    }
+		}
 			
 		return '<input type="hidden" name="'.$e['name'].'" id="'.$e['name'].'" value="'.$e['value'].'" '.$iextra.' />';
 	}

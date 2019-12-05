@@ -101,6 +101,7 @@ class X4Text_helper
 	{
 		if (function_exists('preg_replace_callback'))
 		{
+		    $str = str_replace("\t", '', $str);
 			return preg_replace_callback(
 				'/\\s+/iu',
 				function($m)

@@ -20,7 +20,7 @@ class X4Files_helper
 	 */
 	private static $mimg = array('image/jpeg', 'image/pjpeg', 'image/gif', 'image/png', 'image/x-png');
 	private static $mmedia = array('video/quicktime', 'application/vnd.rn-realmedia', 'audio/x-pn-realaudio', 'application/vnd.adobe.flash.movie', 'application/x-shockwave-flash', 'video/x-ms-wmv', 'video/avi', 'video/msvideo', 'video/x-msvideo','video/mpeg', 'video/mp4', 'video/3gpp', 'video/x-flv', 'video/ogg', 'application/ogg');
-	private static $mtemplate = array('text/html');
+	private static $mtemplate = array('text/html', 'text/xml', 'application/xml');
 // TODO: this must be defined in the administration
 	private static $mfiles = array('text/plain', 'application/pdf', 
 	    'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 
@@ -1517,6 +1517,67 @@ class X4Files_helper
 		}
 		return null;
 	}
+	
+	/**
+	 * Get a remote file
+	 *
+	 * @param string	the name of the field
+	 * @param string	the path where to store the file
+	 * @return mixed	the filename string if
+	 */
+	public static function get_remote_file($remote, $path)
+	{
+	    $str = file_get_contents($remote);
+	    // $http_response_header should be filled by file_get_contents
+	    $filename = self::get_real_filename($http_response_header, $remote);
+	    
+	    $name = self::get_final_name($path, X4Utils_helper::unspace(str_replace('..', '.', $filename)));
+	    
+	    $chk = file_put_contents($path.$name, $str);
+	    if ($chk)
+	    {
+	        chmod($path.$name, 0777);
+	        return $name;
+	    }
+	}
+	
+	/**
+	 * Get the real name of a remote file
+	 *
+	 * @param string	remote file URL
+	 * @return string
+	 */
+	public static function get_real_filename($headers, $url)
+    {
+        foreach($headers as $header)
+        {
+            if (strpos(strtolower($header),'content-disposition') !== false)
+            {
+                $tmp_name = explode('=', $header);
+                if ($tmp_name[1]) return trim($tmp_name[1],'";\'');
+            }
+        }
+    
+        $stripped_url = preg_replace('/\\?.*/', '', $url);
+        return basename($stripped_url);
+    }
+	
+	/**
+	 * Get the mime type of a remote file
+	 *
+	 * @param string	remote file URL
+	 * @return string
+	 */
+	public static function get_remote_file_mime_type($remote)
+    {
+        $ch = curl_init($remote);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($ch, CURLOPT_HEADER, 1);
+        curl_setopt($ch, CURLOPT_NOBODY, 1);
+        curl_exec($ch);
+        return curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
+    }
 	
 	/**
 	 * Get icon

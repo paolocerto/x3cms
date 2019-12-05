@@ -1615,12 +1615,12 @@ class X4Validation_helper
 	}
 	
 	/**
-	 * Get a field from fileds array by name
+	 * Get a field from fields array by name
 	 * Used for related fields
 	 *
 	 * @static
 	 * @param string	$name	Field to check name
-	 * @return array
+	 * @return mixed
 	 */
 	public static function get_field($name)
 	{

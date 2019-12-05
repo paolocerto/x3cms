@@ -92,8 +92,11 @@ class Msg_controller extends X4Cms_controller
 			$title = _WARNING;
 		}
 		
+		//check personal message
+		$chk = strip_tags(urldecode($personal_msg));
+		
 		// get message
-		$msg = (empty($personal_msg))
+		$msg = (empty($personal_msg) || $personal_msg != $chk)
 			? $this->dict->get_message($title, strtoupper($what), 'msg')
 			: $this->dict->build_message($title, $personal_msg, 'msg');
 		
