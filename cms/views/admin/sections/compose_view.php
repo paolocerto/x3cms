@@ -120,7 +120,7 @@ if (!empty($layout))
 	</div>
 </div>
 
-<script src="/themes/admin/js/basic.js"></script>
+<script src="<?php echo THEME_URL ?>js/basic.js"></script>
 <script>
 window.addEvent('domready', function() {
 	buttonize('topic', 'bta', 'topic', '<?php echo $referer ?>');

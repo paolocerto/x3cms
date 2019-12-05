@@ -168,6 +168,7 @@ else
 	echo '<p>'._NO_ITEMS.'</p>';
 }
 ?>
+<script src="<?php echo THEME_URL ?>js/basic.js"></script>
 <script>
 window.addEvent('domready', function()
 {

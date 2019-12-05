@@ -83,7 +83,7 @@ foreach($history as $i)
 ?>
 </table>
 </form>
-<script src="/themes/admin/js/basic.js"></script>
+<script src="<?php echo THEME_URL ?>js/basic.js"></script>
 <script>
 window.addEvent('domready', function()
 {

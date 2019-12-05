@@ -24,7 +24,7 @@ case 0:
 <div id="image_editor"  class="acenter bmiddlegray padded hide-o">
 	<img src="<?php echo FPATH.'img/'.$file->name ?>" id="img" />
 </div>
-<script src="/themes/admin/js/basic.js"></script>
+<script src="<?php echo THEME_URL ?>js/basic.js"></script>
 <script src="<?php echo ROOT ?>files/js/mootools/Lasso.js"></script>
 <script src="<?php echo ROOT ?>files/js/mootools/Lasso.Crop.js"></script>
 <script>

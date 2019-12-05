@@ -191,7 +191,7 @@ if (!empty($pages))
 	
 ?>
 <p>&nbsp;</p>
-<script src="/themes/admin/js/basic.js"></script>
+<script src="<?php echo THEME_URL ?>js/basic.js"></script>
 <script>
 window.addEvent('domready', function() {
 	X3.content('filters', 'pages/filter/<?php echo $id_area.'/'.$lang.'/'.$xfrom ?>', '<?php echo X4Utils_helper::navbar($navbar, ' . ', false) ?>');

@@ -12,5 +12,5 @@
 if (document.getElementById('topic') == undefined)
 {
   var url = window.location.href.split('/admin/');
-  window.location.href = url[0]+'/admin/home/start/'+ url[1].replace('/', '-');
+  window.location.href = url[0]+'/admin/home/start/'+ url[1].replace(/\//g, '-');
 }
