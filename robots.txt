@@ -2,3 +2,4 @@ User-agent: *
 Disallow: /files/
 Disallow: /admin/
 Disallow: /cms/files/
+Sitemap: http://localhost/x3cms/sitemap.xml
