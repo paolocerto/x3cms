@@ -197,37 +197,37 @@ class X4Text_helper
                 $doc->loadHTML($html);
                 
                 // get table data
-                $doc->preserveWhiteSpace = false;   
+                $doc->preserveWhiteSpace = false;
                 
-                //the table by its tag name  
-                $tables = $doc->getElementsByTagName('table');   
+                //the table by its tag name
+                $tables = $doc->getElementsByTagName('table');
             
                 if ($tables->length)
                 {
                     foreach($tables as $table)
                     {
-                        //get all rows from the table  
-                        $rows = $table->getElementsByTagName('tr');   
-                        // get each column by tag name  
-                        $cols = $rows->item(0)->getElementsByTagName('th');   
+                        //get all rows from the table
+                        $rows = $table->getElementsByTagName('tr');
+                        // get each column by tag name
+                        $cols = $rows->item(0)->getElementsByTagName('th');
                         $row_headers = NULL;
-                        foreach ($cols as $node) 
+                        foreach ($cols as $node)
                         {
-                            //print $node->nodeValue."\n";   
+                            //print $node->nodeValue."\n";
                             $row_headers[] = $node->nodeValue;
                         }
                         
                         //get all rows from the table  
-                        $rows = $table->getElementsByTagName('tr');   
-                        foreach ($rows as $row)   
+                        $rows = $table->getElementsByTagName('tr');
+                        foreach ($rows as $row)
                         {   
-                            // get each column by tag name  
-                            $cols = $row->getElementsByTagName('td');   
+                            // get each column by tag name
+                            $cols = $row->getElementsByTagName('td');
                             $tmp = array();
                             $i = 0;
                             foreach ($cols as $node) {
                                 # code...
-                                //print $node->nodeValue."\n";   
+                                //print $node->nodeValue."\n";
                                 if ($row_headers == NULL)
                                 {
                                     $tmp[] = $node->nodeValue;
@@ -250,7 +250,6 @@ class X4Text_helper
                                 else
                                 {
                                     $a = array();
-                                    
                                     foreach($tmp as $k => $v)
                                     {
                                         $a[] = '<b>'.$k.'</b>: '.$v;
@@ -262,16 +261,18 @@ class X4Text_helper
                             {
                                 // first column as key
                                 // TODO
-                                
                                 foreach($tmp as $k => $v)
                                 {
                                     $a[] = '<b>'.$k.'</b>: '.$v;
                                 }
                                 $txt = implode('<br />', $a);
                             }
-                            $tmp = $doc->createDocumentFragment();
-                            $tmp->appendXML('<td class="visible-'.$size.'">'.$txt.'</td>');
-                            $row->appendChild($tmp);
+			$tmp = $doc->createDocumentFragment();
+			$chk = $tmp->appendXML('<td class="visible-'.$size.'">'.$txt.'</td>');
+			if ($chk)
+			{
+				$row->appendChild($tmp);
+			}
                         }
                     }
                     return $doc->saveXML();
@@ -279,7 +280,7 @@ class X4Text_helper
             }
             catch (Exception $e)
             {
-                // do none   
+                // do none
             }
             return $html;
         }
