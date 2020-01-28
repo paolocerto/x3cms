@@ -65,7 +65,7 @@ foreach($areas as $i)
 	}
 	
 	$private = ($i->private)
-	    ? ' - [area privata]'
+	    ? ' - ['._PRIVATE.']'
 	    : '';
 	
 	echo '<tr>
