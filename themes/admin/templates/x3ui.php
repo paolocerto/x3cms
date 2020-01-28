@@ -65,7 +65,7 @@ if (RTL)
 </div>
 <div class="band bwhite dtable">
 	<aside id="sidebar">
-		<i id="spinner" class="fa fa-circle-o-notch"></i>
+		<i id="spinner" class="fas fa-circle-notch"></i>
 		<div>
 			<a class="no_link" href="<?php echo BASE_URL ?>" title="<?php echo _HOME_PAGE ?>"><i class="fas fa-home fa-lg"></i></a>
 <?php
