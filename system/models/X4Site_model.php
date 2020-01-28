@@ -145,10 +145,11 @@ class X4Site_model extends X4Model_core
 		
 		if (empty($c))
 		{
-			$c = $this->db->query('SELECT SQL_CACHE pa.*, p.level 
+			$c = $this->db->query('SELECT SQL_CACHE pa.*, IF(p.id IS NULL, u.level, p.level) AS level
 				FROM param pa
 				JOIN sites s ON s.id = '.intval($id_site).'
-				JOIN privs p ON p.id_who = '.intval($_SESSION['xuid']).' AND p.what = \'sites\' AND p.id_what = s.id
+				JOIN uprivs u ON u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('sites').'
+				LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = s.id
 				WHERE pa.xrif = \'site\' AND pa.id_area = 0 ORDER BY pa.id ASC');
 			
 			if (APC)
@@ -429,8 +430,9 @@ class X4Site_model extends X4Model_core
 			// privs
 			if ($id_area == 1) 
 			{
-				$level = ', p.level';
-				$page_privs = 'INNER JOIN privs p ON p.id_who = '.intval($_SESSION['xuid']).' AND p.what = \'pages\' AND p.id_what = pa.id AND p.level > 0';
+				$level = ', IF (p.id IS NULL, u.level, p.level) AS level';
+				$page_privs = 'JOIN uprivs u ON u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('pages').'
+					LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = pa.id AND p.level > 0';
 			}
 			else 
 			{
@@ -458,6 +460,7 @@ class X4Site_model extends X4Model_core
 						pa.xon = 1 AND 
 						pa.deep < '.$maxdeep.' AND
 						pa.hidden = 0
+					GROUP BY pa.id
 					ORDER BY pa.ordinal ASC');
 			}
 			
