@@ -788,12 +788,12 @@ function save_article(bid, content) {
 					: $i->url;
 				if ($home || $i->url != 'home')
 				{
-					$str .= '<a href="'.BASE_URL.$url.$id.'" title="'.stripslashes($i->description).'">'.stripslashes($i->name).'</a>'.$sep;
+					$str .= '<a href="'.BASE_URL.$url.$id.'" title="'.stripslashes($i->description).'">'.stripslashes($i->name).'</a><span>'.$sep.'</span>';
 				}
 			}
 			if ($home || $item->url != 'home')
 			{
-				$str .= stripslashes($item->name);
+				$str .= '<span>'.stripslashes($item->name).'</span>';
 			}
 		}
 		return $str;
@@ -971,7 +971,7 @@ function save_article(bid, content) {
 						{
 							if ($arrow && $tmp_deep > $deep)
 							{
-								$menu .= '<div class="arrow pointer"><span class="fa fa-chevron-down"></span></div>';
+								$menu .= '<div class="arrow pointer"><span class="fas fa-chevron-down"></span></div>';
 							}
 							
 							// First ul
