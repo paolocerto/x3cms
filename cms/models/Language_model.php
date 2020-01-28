@@ -40,9 +40,10 @@ class Language_model extends X4Model_core
 			? ' WHERE l.xon = '.$xon 
 			: '';
 			
-		return $this->db->query('SELECT l.*, p.level 
-				FROM languages l 
-				JOIN privs p ON p.id_who = '.intval($_SESSION['xuid']).' AND p.what = \'languages\' AND p.id_what = l.id
+		return $this->db->query('SELECT l.*, IF(p.id IS NULL, u.level, p.level) AS level
+				FROM languages l
+				JOIN uprivs u ON u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('languages').'
+				LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = l.id AND p.level > 0
 				'.$where.'
 				ORDER BY l.language ASC');
 	}
@@ -142,7 +143,8 @@ class Language_model extends X4Model_core
 		
 		// current situation
 		$set = array();
-		if ($setted) {
+		if ($setted) 
+		{
 			foreach($setted as $i) $set[$i->code] = $i->id;
 		}
 		
@@ -191,10 +193,11 @@ class Language_model extends X4Model_core
 	 */
 	public function get_seo_data($id_area)
 	{
-		return $this->db->query('SELECT DISTINCT a.*, p.level 
+		return $this->db->query('SELECT DISTINCT a.*, IF(p.id IS NULL, u.level, p.level) AS level
 				FROM alang a
 				JOIN languages l ON l.code = a.code
-				JOIN privs p ON p.id_who = '.intval($_SESSION['xuid']).' AND p.what = \'languages\' AND p.id_what = l.id
+				JOIN uprivs u ON u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('languages').'
+				LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = l.id AND p.level > 0
 				WHERE a.id_area = '.intval($id_area).'
 				ORDER BY a.language ASC');
 	}

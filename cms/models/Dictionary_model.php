@@ -63,9 +63,10 @@ class Dictionary_model extends X4Model_core
 	 */
 	public function get_words($lang, $area, $what)
 	{
-		return $this->db->query('SELECT d.*, p.level 
+		return $this->db->query('SELECT d.*, IF(p.id IS NULL, u.level, p.level) AS level
 			FROM dictionary d
-			JOIN privs p ON p.id_who = '.intval($_SESSION['xuid']).' AND p.what = \'dictionary\' AND p.id_what = d.id
+			JOIN uprivs u ON u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('dictionary').'
+			LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = d.id
 			WHERE 
 				d.lang = '.$this->db->escape($lang).' AND 
 				d.area = '.$this->db->escape($area).' AND 
@@ -87,7 +88,7 @@ class Dictionary_model extends X4Model_core
 	 */
 	public function get_words_to_import($lang, $area, $what, $new_lang, $new_area)
 	{
-		return $this->db->query('SELECT DISTINCT d.*, p.level 
+		return $this->db->query('SELECT DISTINCT d.*, IF(p.id IS NULL, u.level, p.level) AS level
 			FROM dictionary d
 			LEFT JOIN dictionary d2 ON (
 				d2.what = d.what AND 
@@ -95,12 +96,14 @@ class Dictionary_model extends X4Model_core
 				d2.lang = '.$this->db->escape($new_lang).' AND 
 				d2.area = '.$this->db->escape($new_area).'
 			)
-			JOIN privs p ON p.id_who = '.intval($_SESSION['xuid']).' AND p.what = \'dictionary\' AND p.id_what = d.id
+			JOIN uprivs u ON u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('dictionary').'
+			LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = d.id
 			WHERE 
 				d.lang = '.$this->db->escape($lang).' AND 
 				d.area = '.$this->db->escape($area).' AND 
 				d.what = '.$this->db->escape($what).' AND 
 				d2.id IS NULL
+			GROUP BY d.id
 			ORDER BY d.xkey ASC');
 	}
 	

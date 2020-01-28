@@ -44,12 +44,14 @@ class Menu_model extends X4Model_core
 		if ($id_area) $where .= ' AND a.id = '.intval($id_area);
 		if (!empty($area)) $where .= ' AND a.name = '.$this->db->escape($area);
 		
-		$sql = 'SELECT DISTINCT m.*, t.name AS theme, p.level
+		$sql = 'SELECT DISTINCT m.*, t.name AS theme, IF(p.id IS NULL, u.level, p.level) AS level
 				FROM menus m 
 				JOIN themes t ON t.id = m.id_theme
 				JOIN areas a ON a.id_theme = t.id
-				JOIN privs p ON p.id_who = '.intval($_SESSION['xuid']).' AND p.what = \'menus\' AND p.id_what = m.id
-				WHERE m.id > 0 '.$where.' 
+				JOIN uprivs u ON u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('menus').'
+				LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = m.id
+				WHERE m.id > 0 '.$where.'
+				GROUP BY m.id
 				ORDER BY m.'.$order.' ASC';
 		return $this->db->query($sql);
 	}
@@ -62,10 +64,11 @@ class Menu_model extends X4Model_core
 	 * @return  array	array of objects
 	 */
 	public function get_menus_by_theme($id_theme) {
-		$sql = 'SELECT DISTINCT m.*, t.name AS theme, p.level
+		$sql = 'SELECT DISTINCT m.*, t.name AS theme, IF(p.id IS NULL, u.level, p.level) AS level
 				FROM menus m 
 				JOIN themes t ON t.id = m.id_theme
-				JOIN privs p ON p.id_who = '.intval($_SESSION['xuid']).' AND p.what = \'menus\' AND p.id_what = m.id
+				JOIN uprivs u ON u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('menus').'
+				LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = m.id
 				WHERE m.id > 0 AND t.id = '.intval($id_theme).' 
 				ORDER BY m.name ASC';
 		return $this->db->query($sql);

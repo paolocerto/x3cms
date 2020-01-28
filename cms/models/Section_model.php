@@ -167,12 +167,14 @@ class Section_model extends X4Model_core
 	{
 		return $this->db->query('SELECT x.* 
 			FROM contexts x
-			JOIN privs p ON p.id_who = '.intval($_SESSION['xuid']).' AND p.what = \'contexts\' AND p.id_what = x.id AND p.level > 0
+			JOIN uprivs u ON u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('contexts').'
+			LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = x.id AND p.level > 0
 			WHERE 
 				x.xon = 1 AND 
 				x.code < 3 AND 
 				x.id_area = '.intval($id_area).' AND 
 				x.lang = '.$this->db->escape($lang).' 
+			GROUP BY x.id
 			ORDER BY x.code ASC');
 	}
 	
@@ -191,10 +193,11 @@ class Section_model extends X4Model_core
 			? 'a.name ASC' 
 			: 'a.id DESC';
 		
-		return $this->db->query('SELECT a.*, c.xkey, p.level 
+		return $this->db->query('SELECT a.*, c.xkey, IF(p.id IS NULL, u.level, p.level) AS level
 			FROM articles a
 			LEFT JOIN contexts c ON c.id_area = a.id_area AND c.lang = a.lang AND c.code = a.code_context
-			JOIN privs p ON p.id_who = '.intval($_SESSION['xuid']).' AND p.what = \'articles\' AND p.id_what = a.id
+			JOIN uprivs u ON u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('articles').'
+			LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = a.id
 			WHERE a.xon = 1 AND a.id_area = '.intval($page->id_area).' AND a.lang = '.$this->db->escape($page->lang).' AND c.code < 3 AND 
 				(
 				a.id_page = '.intval($page->id).' OR c.code != 1

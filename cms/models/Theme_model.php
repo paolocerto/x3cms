@@ -41,9 +41,10 @@ class Theme_model extends X4Model_core
 			? ' WHERE t.xon = '.intval($xon) 
 			: '';
 			
-		return $this->db->query('SELECT t.*, a.title AS area, p.level 
-			FROM themes t 
-			JOIN privs p ON p.id_who = '.intval($_SESSION['xuid']).' AND p.what = \'themes\' AND p.id_what = t.id
+		return $this->db->query('SELECT t.*, a.title AS area, IF(p.id IS NULL, u.level, p.level) AS level
+			FROM themes t
+			JOIN uprivs u ON u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('themes').'
+			LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = t.id AND p.level > 0
 			LEFT JOIN areas a ON a.id_theme = t.id
 			'.$where.'
 			GROUP BY t.id

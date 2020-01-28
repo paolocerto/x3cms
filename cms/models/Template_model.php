@@ -35,10 +35,12 @@ class Template_model extends X4Model_core
 	 */
 	public function get_tpl_installed($id_theme)
 	{
-		return $this->db->query('SELECT DISTINCT t.*, p.level 
+		return $this->db->query('SELECT DISTINCT t.*, IF(p.id IS NULL, u.level, p.level) AS level
 			FROM templates t
-			JOIN privs p ON p.id_who = '.intval($_SESSION['xuid']).' AND p.what = \'templates\' AND p.id_what = t.id
+			JOIN uprivs u ON u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('templates').'
+			LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = t.id
 			WHERE t.id_theme = '.intval($id_theme).'
+			GROUP BY t.id
 			ORDER BY t.sections ASC');
 	}
 	

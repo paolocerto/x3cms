@@ -177,14 +177,16 @@ class Page_model extends X4Model_core
 			$from .= ' AND p.url <> '.$this->db->escape($diff);
 		}
 		
-		return $this->db->query('SELECT DISTINCT p.*, a.title AS area, pr.level
+		return $this->db->query('SELECT DISTINCT p.*, a.title AS area, IF(pr.id IS NULL, u.level, pr.level) AS level
 			FROM pages p
 			JOIN areas a ON a.id = p.id_area 
-			JOIN privs pr ON pr.id_who = '.intval($_SESSION['xuid']).' AND pr.what = \'pages\' AND pr.id_what = p.id
+			JOIN uprivs u ON u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('pages').'
+			LEFT JOIN privs pr ON pr.id_who = u.id_user AND pr.what = u.privtype AND pr.id_what = a.id
 			WHERE 
 				p.id_area = '.intval($this->id_area).' AND 
 				p.lang = '.$this->db->escape($this->lang).' 
 				'.$from.'
+			GROUP BY p.id
 			ORDER BY p.ordinal ASC, p.url ASC');
 	}
 	
@@ -419,10 +421,12 @@ class Page_model extends X4Model_core
 		if ($rows) 
 		{
 			// get many rows (advanced editing)
-			return $this->db->query('SELECT a.*, p.level 
+			return $this->db->query('SELECT a.*, IF(p.id IS NULL, u.level, p.level) AS level
 				FROM articles a 
-				JOIN privs p ON p.id_who = '.intval($_SESSION['xuid']).' AND p.what = \'articles\' AND p.id_what = a.id
+				JOIN uprivs u ON u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('articles').'
+				LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = a.id
 				WHERE a.id_page = '.intval($id).' 
+				GROUP BY a.id
 				ORDER BY a.id DESC');
 		}
 		else 

@@ -952,8 +952,10 @@ class '.$uname.'_model extends X4Model_core
 		    
 		return $this->db->query(\'SELECT x.*, p.level 
 			FROM '.$table.' x
-			JOIN privs p ON p.id_who = \'.intval($_SESSION[\'xuid\']).\' AND p.what = \\\''.$table.'\\\' AND p.id_what = x.id
+			JOIN uprivs u ON u.id_user = \'.intval($_SESSION[\'xuid'\]).\' AND u.privtype = \\\''.$table.'\\\'
+			LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = x.id
 			WHERE x.id_area = \'.intval($id_area).\' AND x.lang = \'.$this->db->escape($lang).$where.\' 
+			GROUP BY x.id
 			ORDER BY \'.$order);
 	}
 	';
@@ -1013,7 +1015,8 @@ class '.$uname.'_model extends X4Model_core
 		// Sample: get total number of active items
 		$ntot = (int) $this->db->query_var(\'SELECT COUNT(x.id) AS n
 			FROM '.$table.' x
-			JOIN privs p ON p.id_who = \'.intval($_SESSION[\'xuid\']).\' AND p.what = \\\''.$table.'\\\' AND p.id_what = x.id
+			JOIN uprivs u ON u.id_user = \'.intval($_SESSION[\'xuid'\]).\' AND u.privtype = \\\''.$table.'\\\'
+			LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = x.id
 			WHERE x.id_area = \'.intval($id_area).\' AND x.xon = 1\');
 		
 		// dictionary
@@ -1304,6 +1307,7 @@ else
 	echo \'<p>\'._NO_ITEMS.\'</p>\';
 }
 ?>
+<script src="<?php echo THEME_URL ?>js/basic.js"></script>
 <script>
 window.addEvent("domready", function() {
 	X3.content("filters","'.$name.'/filter/<?php echo $id_area.\'/\'.$lang.\'/\'.$str ?>", "<?php echo addslashes(X4Utils_helper::navbar($navbar, \' . \', false)) ?>");

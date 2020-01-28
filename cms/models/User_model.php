@@ -46,9 +46,10 @@ class User_model extends X4Model_core
 	 */
 	public function get_user_by_id($id)
 	{
-		return $this->db->query_row('SELECT u.*, g.name AS groupname, p.level AS plevel
+		return $this->db->query_row('SELECT u.*, g.name AS groupname, IF(p.id IS NULL, up.level, p.level) AS plevel
 				FROM users u 
-				JOIN privs p ON p.id_who = '.intval($_SESSION['xuid']).' AND p.what = \'users\' AND p.id_what = u.id
+				JOIN uprivs up ON up.id_user = '.intval($_SESSION['xuid']).' AND up.privtype = '.$this->db->escape('users').'
+				LEFT JOIN privs p ON p.id_who = up.id_user AND p.what = up.privtype AND p.id_what = u.id
 				JOIN groups g ON g.id = u.id_group
 				WHERE u.id = '.intval($id));
 	}
@@ -62,10 +63,12 @@ class User_model extends X4Model_core
 	 */
 	public function get_users($id_group)
 	{
-		return $this->db->query('SELECT u.*, p.level 
+		return $this->db->query('SELECT u.*, IF(p.id IS NULL, up.level, p.level) AS level
 				FROM users u 
-				JOIN privs p ON p.id_who = '.intval($_SESSION['xuid']).' AND p.what = \'users\' AND p.id_what = u.id
-				WHERE u.id_group = '.intval($id_group).' AND (u.hidden = 0 OR '.intval($_SESSION['level']).' = 4) 
+				JOIN uprivs up ON up.id_user = '.intval($_SESSION['xuid']).' AND up.privtype = '.$this->db->escape('users').'
+				LEFT JOIN privs p ON p.id_who = up.id_user AND p.what = up.privtype AND p.id_what = u.id
+				WHERE u.id_group = '.intval($id_group).' AND (u.hidden = 0 OR '.intval($_SESSION['level']).' = 4)
+				GROUP BY u.id
 				ORDER BY u.username ASC');
 	}
 	

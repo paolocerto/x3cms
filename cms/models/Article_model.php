@@ -131,7 +131,7 @@ class Article_model extends X4Model_core
 		
 		$where = $this->get_where($str);
 		
-		return $this->db->query('SELECT aa.*, c.name AS context, pa.name AS page, p.level 
+		return $this->db->query('SELECT aa.*, c.name AS context, pa.name AS page, IF(p.id IS NULL, u.level, p.level) AS level
 			FROM articles aa
             JOIN (
                 SELECT MAX(id) AS id, bid
@@ -141,10 +141,12 @@ class Article_model extends X4Model_core
                     lang = '.$this->db->escape($lang).'
                     '.$where.' 
                 GROUP BY bid
-                ) b ON b.id = aa.id AND b.bid = aa.bid
-			JOIN privs p ON p.id_who = '.intval($_SESSION['xuid']).' AND p.what = \'articles\' AND p.id_what = aa.id
+				) b ON b.id = aa.id AND b.bid = aa.bid
+			JOIN uprivs u ON u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('articles').'
+			LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = aa.id
 			LEFT JOIN contexts c ON c.id_area = aa.id_area AND c.lang = aa.lang AND c.code = aa.code_context
 			LEFT JOIN pages pa ON pa.id = aa.id_page
+			GROUP BY aa.id
 			ORDER BY '.$order);
 	}
 	
@@ -161,7 +163,7 @@ class Article_model extends X4Model_core
 	{
 	    $where = $this->get_where($str);
 	    
-	    return $this->db->query('SELECT a.*, c.name AS context, pa.name AS page, p.level 
+	    return $this->db->query('SELECT a.*, c.name AS context, pa.name AS page, IF(p.id IS NULL, u.level, p.level) AS level
 			FROM articles a 
             JOIN (
                 SELECT MAX(id) AS id, bid
@@ -173,8 +175,10 @@ class Article_model extends X4Model_core
                 ) b ON b.id = a.id AND b.bid = a.bid
 			LEFT JOIN pages pa ON pa.id = a.id_page
 			JOIN contexts c ON c.id_area = a.id_area AND c.lang = a.lang AND c.code = a.code_context
-			JOIN privs p ON p.id_who = '.intval($_SESSION['xuid']).' AND p.what = \'articles\' AND p.id_what = a.id
+			JOIN uprivs u ON u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('articles').'
+			LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = a.id
 			WHERE c.code = '.intval($code_context).$where.'
+			GROUP BY a.id
 			ORDER BY a.updated DESC');
 	}
 	
@@ -191,7 +195,7 @@ class Article_model extends X4Model_core
 	{
 	    $where = $this->get_where($str);
 	    
-		return $this->db->query('SELECT a.*, c.description AS title, pa.name AS page, p.level 
+		return $this->db->query('SELECT a.*, c.description AS title, pa.name AS page, IF(p.id IS NULL, u.level, p.level) AS level
 			FROM articles a 
             JOIN (
                 SELECT MAX(id) AS id, bid
@@ -203,8 +207,10 @@ class Article_model extends X4Model_core
                 ) b ON b.id = a.id AND b.bid = a.bid
 		    LEFT JOIN pages pa ON pa.id = a.id_page
 			JOIN categories c ON c.id_area = a.id_area AND c.lang = a.lang AND c.name = a.category
-			JOIN privs p ON p.id_who = '.intval($_SESSION['xuid']).' AND p.what = \'articles\' AND p.id_what = a.id
+			JOIN uprivs u ON u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('articles').'
+			LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = a.id
 			WHERE c.name = '.$this->db->escape($ctg).$where.'
+			GROUP BY a.id
 			ORDER BY a.updated DESC');
 	}
 	
@@ -225,7 +231,7 @@ class Article_model extends X4Model_core
 		{
 		    $where = $this->get_where($str);
 		    
-			return $this->db->query('SELECT a.*, c.name AS context, pa.name AS page, p.level 
+			return $this->db->query('SELECT a.*, c.name AS context, pa.name AS page, IF(p.id IS NULL, u.level, p.level) AS level
 				FROM articles a 
                 JOIN (
                     SELECT MAX(id) AS id, bid
@@ -237,8 +243,10 @@ class Article_model extends X4Model_core
                     ) b ON b.id = a.id AND b.bid = a.bid
 			    LEFT JOIN pages pa ON pa.id = a.id_page
 				JOIN contexts c ON c.id_area = a.id_area AND c.lang = a.lang AND c.code = a.code_context
-				JOIN privs p ON p.id_who = '.intval($_SESSION['xuid']).' AND p.what = \'articles\' AND p.id_what = a.id
+				JOIN uprivs u ON u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('articles').'
+				LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = a.id
 				WHERE a.id_editor = '.intval($id_author).$where.'
+				GROUP BY a.id
 				ORDER BY a.updated DESC');
 		}
 	}
@@ -253,9 +261,10 @@ class Article_model extends X4Model_core
 	 */
 	public function get_authors($id_area, $lang)
 	{
-		return $this->db->query('SELECT a.id, a.id_editor, a.author, p.level 
+		return $this->db->query('SELECT a.id, a.id_editor, a.author, IF(p.id IS NULL, u.level, p.level) AS level
 			FROM articles a
-			JOIN privs p ON p.id_who = '.intval($_SESSION['xuid']).' AND p.what = \'articles\' AND p.id_what = a.id
+			JOIN uprivs u ON u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('articles').'
+			LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = a.id
 			WHERE a.id_area = '.intval($id_area).' AND a.lang = '.$this->db->escape($lang).' AND LENGTH(a.author) > 0
 			GROUP BY a.author
 			ORDER BY a.author ASC');
@@ -274,7 +283,7 @@ class Article_model extends X4Model_core
 	{
 	    $where = $this->get_where($str);
 	    
-		return $this->db->query('SELECT a.*, c.name AS context, pa.name AS page, p.level 
+		return $this->db->query('SELECT a.*, c.name AS context, pa.name AS page, IF(p.id IS NULL, u.level, p.level) AS level
 				FROM articles a 
                 JOIN (
                     SELECT MAX(id) AS id, bid
@@ -286,8 +295,10 @@ class Article_model extends X4Model_core
                     ) b ON b.id = a.id AND b.bid = a.bid
 		        LEFT JOIN pages pa ON pa.id = a.id_page
 				JOIN contexts c ON c.id_area = a.id_area AND c.lang = a.lang AND c.code = a.code_context
-				JOIN privs p ON p.id_who = '.intval($_SESSION['xuid']).' AND p.what = \'articles\' AND p.id_what = a.id
+				JOIN uprivs u ON u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('articles').'
+				LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = a.id
 				WHERE a.xkeys = '.$this->db->escape($key).$where.'
+				GROUP BY a.id
 				ORDER BY a.updated DESC');
 	}
 	
@@ -304,7 +315,7 @@ class Article_model extends X4Model_core
 	{
 	    $where = $this->get_where($str);
 	    
-		return $this->db->query('SELECT a.*, c.name AS context, pa.name AS page, p.level 
+		return $this->db->query('SELECT a.*, c.name AS context, pa.name AS page, IF(p.id IS NULL, u.level, p.level) AS level
 				FROM articles a 
                 JOIN (
                     SELECT MAX(id) AS id, bid
@@ -316,8 +327,10 @@ class Article_model extends X4Model_core
                     ) b ON b.id = a.id AND b.bid = a.bid
 		        LEFT JOIN pages pa ON pa.id = a.id_page
 				JOIN contexts c ON c.id_area = a.id_area AND c.lang = a.lang AND c.code = a.code_context
-				JOIN privs p ON p.id_who = '.intval($_SESSION['xuid']).' AND p.what = \'articles\' AND p.id_what = a.id
+				JOIN uprivs u ON u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('articles').'
+				LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = a.id
 				WHERE a.id_page = '.intval($id_page).$where.'
+				GROUP BY a.id
 				ORDER BY a.updated DESC');
 	}
 	
@@ -330,9 +343,10 @@ class Article_model extends X4Model_core
 	 */
 	public function get_keys($id_area, $lang)
 	{
-		return $this->db->query('SELECT a.*, p.level 
+		return $this->db->query('SELECT a.*, IF(p.id IS NULL, u.level, p.level) AS level
 			FROM articles a
-			JOIN privs p ON p.id_who = '.intval($_SESSION['xuid']).' AND p.what = \'articles\' AND p.id_what = a.id
+			JOIN uprivs u ON u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('articles').'
+			LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = a.id
 			WHERE a.id_area = '.intval($id_area).' AND a.lang = '.$this->db->escape($lang).' AND LENGTH(a.xkeys) > 0
 			GROUP BY a.xkeys
 			ORDER BY a.xkeys ASC');
@@ -347,10 +361,12 @@ class Article_model extends X4Model_core
 	 */
 	public function get_history($id_area, $bid)
 	{
-		return $this->db->query('SELECT a.*, p.level 
+		return $this->db->query('SELECT a.*, IF(p.id IS NULL, u.level, p.level) AS level
 			FROM articles a
-			JOIN privs p ON p.id_who = '.intval($_SESSION['xuid']).' AND p.what = \'articles\' AND p.id_what = a.id
+			JOIN uprivs u ON u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('articles').'
+			LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = a.id
 			WHERE a.id_area = '.intval($id_area).' AND a.bid = '.$this->db->escape($bid).' 
+			GROUP BY a.id
 			ORDER BY a.id DESC');
 	}
 	
