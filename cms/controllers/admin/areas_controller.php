@@ -377,12 +377,12 @@ window.addEvent("domready", function()
 	 * @param   array 	$_post _POST array
 	 * @return  void
 	 */
-	private function editing($id, $_post)
+	private function editing($id_area, $_post)
 	{
 		$msg = null;
 		// check permissions
-		$msg = ($id)
-			? AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'areas', $id, 2)
+		$msg = ($id_area)
+			? AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'areas', $id_area, 2)
 			: AdmUtils_helper::chk_priv_level($_SESSION['xuid'], '_area_creation', 0, 4);
 			
 		if (is_null($msg))
@@ -401,7 +401,7 @@ window.addEvent("domready", function()
 			$mod = new Area_model();
 			
 			// check if area name already exists
-			$check = (boolean) $mod->exists($post['name'], $id);
+			$check = (boolean) $mod->exists($post['name'], $id_area);
 			if ($check) 
 			{
 				$msg = AdmUtils_helper::set_msg(false, '', $this->dict->get_word('_AREA_ALREADY_EXISTS', 'msg'));
@@ -416,9 +416,9 @@ window.addEvent("domready", function()
 					$mod->set_log(true);
 				
 				// update or insert
-				if ($id) 
+				if ($id_area) 
 				{
-					$result = $mod->update($id, $post);
+					$result = $mod->update($id_area, $post);
 					
 					if ($id == 1 && X4Route_core::$lang != $post['lang'])
 					{
@@ -432,19 +432,22 @@ window.addEvent("domready", function()
 					// create permissions
 					if ($result[1]) 
 					{
-						$id = $result[0];
+						$id_area = $result[0];
 						$perm = new Permission_model();
+
 						// aprivs permissions
 						$domain = X4Utils_helper::obj2array($perm->get_aprivs($_SESSION['xuid']), null, 'id_area');
-						$domain[] = $result[0];
+						$domain[] = $id_area;
 						$res = $perm->set_aprivs($_SESSION['xuid'], $domain);
+						// uprivs premissions
+						$perm->set_uprivs($_SESSION['xuid'], $id_area, 'areas', 4);
 						// privs permissions
 						$array[] = array(
 								'action' => 'insert', 
-								'id_what' => $id, 
+								'id_what' => $id_area, 
 								'id_user' => $_SESSION['xuid'], 
 								'level' => 4);
-						$res = $perm->pexec('areas', $array, $id);
+						$res = $perm->pexec('areas', $array, $id_area);
 					}
 				}
 				
@@ -452,7 +455,7 @@ window.addEvent("domready", function()
 				{
 					// refresh languages related to area
 					$lang = new Language_model();
-					$lang->set_alang($id, $_post['languages'], $_post['lang']);
+					$lang->set_alang($id_area, $_post['languages'], $_post['lang']);
 					
 					// update theme settings
 					if ($_post['id'] && $_post['id_theme'] != $_post['old_id_theme']) 
