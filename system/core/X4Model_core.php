@@ -719,7 +719,7 @@ abstract class X4Model_core
 		// default result
 		$res = array(0, 0);
 				
-		if ($this->db->sql)
+		if (LOG && $this->db->sql)
 		{
 			// Relational DB
 			$log = (empty($memo))
