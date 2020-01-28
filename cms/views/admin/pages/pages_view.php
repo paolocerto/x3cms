@@ -78,7 +78,7 @@ if (!empty($pages))
 	echo '<form id="menu_manager">
 			<input type="hidden" name="id_area" id="id_area" value="'.$page->id_area.'" />
 			<input type="hidden" name="lang" id="lang" value="'.$page->lang.'" />
-			<input type="hidden" name="xfrom" id="xfrom" value="'.$page->url.'" />
+			<input type="hidden" name="pagefrom" id="pagefrom" value="'.$page->url.'" />
 		<div class="titlebar">'.ucfirst(_PAGES).'</div><ul class="nomargin zebra min-height" id="m0">';
 	$sort[0] = '#m0';
 	$memo = $c = 0;
@@ -206,7 +206,7 @@ window.addEvent('domready', function() {
 //get data
 var id_area = $('id_area').get('value');
 var lang = $('lang').get('value');
-var xfrom = $('xfrom').get('value');
+var xfrom = $('pagefrom').get('value');
 
 <?php
 echo 'var sortableListsArray = $$("'.implode(', ', $sort).'"),
