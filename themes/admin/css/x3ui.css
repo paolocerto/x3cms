@@ -59,8 +59,8 @@
 /* BASE */
 
 html { font-size:.9em;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;}
-html { font-family:titillium,helvetica,arial,sans-serif;color:#444;}
-body { margin:0;background:#333;line-height:1.4;}
+html { font-family:titillium,helvetica,arial,sans-serif;color:#222d32;}
+body { margin:0;background:#222d32;line-height:1.4;}
 
 ::-moz-selection {background:#fe57a1;color:#fff;text-shadow: none; }
 ::selection {background:#fe57a1;color:#fff;text-shadow:none; }
@@ -118,7 +118,7 @@ label {cursor:pointer;display:block;font-size:0.9em;line-height:1em;margin:1em 0
 label span {font-weight:normal;color:#666;}
 
 legend {border:0;padding:0;white-space:normal;}
-input, select, textarea {font-size:100%;margin:0;vertical-align:baseline;vertical-align:middle;border:1px solid #444;padding:.4em .5em;margin:0;color:#444;-moz-border-sizing:border-box;box-sizing:border-box;}
+input, select, textarea {font-size:100%;margin:0;vertical-align:baseline;vertical-align:middle;border:1px solid #222d32;padding:.4em .5em;margin:0;color:#222d32;-moz-border-sizing:border-box;box-sizing:border-box;}
 select {padding:.32em .5em;}
 #simple-modal input, #simple-modal select, #simple-modal textarea, #topic input, #topic select, #topic textarea {border:1px solid #ccc;}
 input:focus, textarea:focus, select:focus {border:.1em solid #09c;}
@@ -161,12 +161,11 @@ button, input[type="button"], input[type="reset"], input[type="submit"] { cursor
 button[disabled], input[disabled] { cursor: default;opacity:.5; }
 
 .slider {background:#ccc;height:1em;width:100%;}
-.slider .knob {background:#333;width:1em;height:1em;cursor:move;}
+.slider .knob {background:#222d32;width:1em;height:1em;cursor:move;}
 
 /* BULK ACTIONS */
-input.bulkable:checked, input.bulker:checked {background-color:#444;color:#fff;}
+input.bulkable:checked, input.bulker:checked {background-color:#222d32;color:#fff;}
 input.bulkable:checked:after, input.bulker:checked:after {content:'\2731';font-size:1em;position:absolute;top:0;left:3px;color:#fff;}
-
 
 /* TABLES */
 
@@ -175,27 +174,27 @@ tr {border-bottom:1px solid #ddd;}
 tr.noborder {border:none;}
 
 tr.first {border-bottom:1px solid #aaa;}
-tr:hover td {background:#333;color:#ccc;}
+tr:hover td {background:#222d32;color:#ccc;}
 table.mceToolbar tr:hover td, table.mceLayout tr:hover td {background:#eee;}
 th {text-align:center;background:#ddd;line-height:2em;}
 td {vertical-align:top;line-height:1.8em;padding:.2em 1em 0;}
 td.blue {background-color:#cef;}
 td.red {background-color:#fec;}
 td.alert {color:#c00;}
-td.menu {background:#bbb;color:#444;font-weight:bold;text-align:center;padding:.5em 0;}
+td.menu {background:#bbb;color:#222d32;font-weight:bold;text-align:center;padding:.5em 0;}
 td a {font-weight:bold;margin-right:.5em;}
 td a:last-child{margin-right:0;}
 td img {margin-left:.5em;}
 
 /* Hidden table */
 table.wireless tr {border:0}
-table.wireless tr:hover td {background:none;color:#444;}
+table.wireless tr:hover td {background:none;color:#222d32;}
 td.wireless table.mceToolbar tr:hover td, td.wireless table.mceLayout tr:hover td {background:#eee;}
 
 /* table no-wired */
 table.no-wired tr {border:none;}
-table.no-wired > tr:hover > td {background:none;color:#444;}
-table.no-wired > tr:hover > td.mo {background:#ccc;color:#444;}
+table.no-wired > tr:hover > td {background:none;color:#222d32;}
+table.no-wired > tr:hover > td.mo {background:#ccc;color:#222d32;}
 /* table wired */
 table.wired th, table.wired td {border:1px solid #999;}
 
@@ -355,15 +354,14 @@ td.formatted ol li.response {border-left:5px solid #e60;}
 /* COLORS */
 .invisible {color:rgba(255, 255, 255, 0)}
 .bwhite {background:#fff;}
-.bdarkgray {background:#222;}
-.bmiddlegray {background:#444;}
+.bdarkgray {background:#242e32;}
+.bmiddlegray {background:#222d32;}
 .blightgray {background:#ccc;}
 .mo {background:#ccc;}
 .highlight {background:#fec;}
-.softwarn {background:#ff0;color:#444;}}
+.softwarn {background:#ff0;color:#222d32;}}
 .odd {background:#fff;}
 .even {background:#eee;}
-
 
 .white {color:#fff;}
 .blue {color:#09c;}
@@ -409,7 +407,7 @@ td.formatted ol li.response {border-left:5px solid #e60;}
 
 
 #sidebar {display:table-cell;width:20px;height:100%;background:#ddd;text-align:center;padding-bottom:20px;}
-#sidebar:hover {background:#333;}
+#sidebar:hover {background:#222d32;}
 #spinner {margin:1em;color:#999}
 #spinner.fa-spin {color:#e60;}
 #sidebar div {color:#666;margin:2em 0 1em 0;}
@@ -438,19 +436,19 @@ td.formatted ol li.response {border-left:5px solid #e60;}
 /* PAGINATION */
 .pager {font-weight:bold;margin-top:1em;}
 .pager div {margin-bottom:.5em;}
-.pager span.n {color:#fff;background:#444;padding:.2em .7em;margin:0 .3em 0 0;font-weight:normal;}
+.pager span.n {color:#fff;background:#222d32;padding:.2em .7em;margin:0 .3em 0 0;font-weight:normal;}
 .pager a {margin:0 .4em 0 0;}
 
 
 /* HORIZONTAL ULS */
 ul.inline-list {list-style:none;margin:0;padding-left:0;}
 ul.inline-list li {display:inline-block;margin:0 .6em;}
-ul.inline-list li a.on {color:#333;}
+ul.inline-list li a.on {color:#222d32;}
 
 .sbox {border-bottom:1px dotted #ddd;padding:2px 0;font-size:0.9em;}
 
 /* PAGES */
-.titlebar {background:#ddd;color:#444;text-align:center;font-weight:bold;padding:.4em;margin-top:1em;}
+.titlebar {background:#ddd;color:#222d32;text-align:center;font-weight:bold;padding:.4em;margin-top:1em;}
 ul.nomargin {margin:0;padding:0;}
 ul.nomargin li {list-style:none;position:relative;padding:0;margin:0;}
 ul.nomargin li table {margin:0;}
@@ -464,7 +462,7 @@ ul.margin li {padding:2px 5px;border-bottom:1px solid #ccc;}
 .tabs ul {list-style:none;margin:0;padding:0;}
 .tabs ul li {display:block;float:left;margin:0 .1em;border-bottom:none;background:#ddd;}
 .tabs ul li a {display:block;font-size:0.9em;padding:.4em 1em;}
-.tabs ul li:hover {background:#444;}
+.tabs ul li:hover {background:#222d32;}
 .tabs ul li a:hover {color:#fff;text-decoration:none;}
 .tabs ul li.on {background:#09c;}
 .tabs ul li.on a {text-decoration:none;color:#fff;}
@@ -489,10 +487,10 @@ ul.margin li {padding:2px 5px;border-bottom:1px solid #ccc;}
 
 /* WIDGETS */
 div.widget {background:#ddd;border-radius:2px;-moz-border-sizing:border-box;box-sizing:border-box;}
-div.widget:hover {background:#444;color:#fff;}
-.wtitle {background:#ccc;border-bottom:1px solid #aaa;overflow:hidden;color:#444;line-height:3em;font-weight:bold;}
+div.widget:hover {background:#222d32;color:#fff;}
+.wtitle {background:#ccc;border-bottom:1px solid #aaa;overflow:hidden;color:#222d32;line-height:3em;font-weight:bold;}
 .wtools {width:30%;float:right;text-align:right;}
-.wtools a {color:#444;margin-right:.5em;}
+.wtools a {color:#222d32;margin-right:.5em;}
 
 .wbox {clear:both;min-height:100px;color:#666;}
 .wbox p {padding:.5em 1em;}
@@ -502,7 +500,7 @@ div.widget:hover .wbox {color:#eee;}
 
 /* FILES */
 .sidebar {width:20px;height:100%;background:#ddd;padding:.5em 0;border-left:1px solid #aaa;}
-.sidebar:hover {background:#333;}
+.sidebar:hover {background:#222d32;}
 .sidebar a, .sidebar input {padding:.3em 1em;display:block;color:#888;text-align:center;margin:0 auto;}
 .sidebar a:hover {color:#e80;}
 .filebox {padding:1em;height:150px !important;-moz-border-sizing:border-box;box-sizing:border-box;} 
@@ -512,7 +510,7 @@ div.widget:hover .wbox {color:#eee;}
 #simple-modal-overlay {position:fixed;display:block;z-index:65499;top:0;left:0;width:100%;height:100%;background:#000;}
 .simple-modal {width:auto;max-height:90% !important;top:2em;position:absolute;margin:0 auto;padding:0;color:#808080;font-size:1em;line-height:2em;background:#fff;box-shadow:0 0 1em rgba(0, 0, 0, 0.6);z-index:65500;}
 .simple-modal .simple-modal-header {display:none;}
-.simple-modal .simple-modal-body {padding:2em;font-size:1em;font-weight:normal;color:#444;background:#eee;}
+.simple-modal .simple-modal-body {padding:2em;font-size:1em;font-weight:normal;color:#222d32;background:#eee;}
 .simple-modal .simple-modal-body div.contents {margin:0;padding:0;}
 .simple-modal .simple-modal-body p.success {margin:-2em;padding:2em;color:#fff;background:#6a0;}
 .simple-modal .simple-modal-body p.error {margin:-2em;padding:2em;color:#fff;background:#e80;}
@@ -520,7 +518,7 @@ div.widget:hover .wbox {color:#eee;}
 .simple-modal .simple-modal-body div.error {margin:-2em;padding:3em 2em 2em 2em;color:#fff;background:#e80;}
 .simple-modal .simple-modal-body div.error p {line-height:1.2em;}
 
-.simple-modal .simple-modal-body .buttons {background:#333;margin:2em -2em -2.1em -2em;padding:1.5em 2em 2em 2em;text-align:center;}
+.simple-modal .simple-modal-body .buttons {background:#222d32;margin:2em -2em -2.1em -2em;padding:1.5em 2em 2em 2em;text-align:center;}
 
 .simple-modal .simple-modal-footer {display:none;}
 .simple-modal.loading .simple-modal-body {min-height:60px;background:transparent url('../img/loader.gif') no-repeat center center;}
@@ -537,37 +535,37 @@ div.widget:hover .wbox {color:#eee;}
 .uploadItem span {font-size:0.9em;}
 .uploadItem a {padding:1em;background:url(../img/close.png) left no-repeat;margin-right:3px;}
 .uploadItem input {float:right;width:50%;}
-.droppable {border-radius:3px;background:#444;color:#ccc;padding:2em;margin:1em 0;clear:both;text-align:center;}
+.droppable {border-radius:3px;background:#222d32;color:#ccc;padding:2em;margin:1em 0;clear:both;text-align:center;}
 .droppable.hover {color:#fff;}
 .progress {margin:.5em 0;height:1em;border-radius:3px;background:#e60;}
 
 /* ACCORDION */
-#accordion .context {cursor:pointer;background:#ddd;color:#444;margin:0;text-align:center;border-bottom:1px solid #ccc;padding:.3em 0;}
+#accordion .context {cursor:pointer;background:#ddd;color:#222d32;margin:0;text-align:center;border-bottom:1px solid #ccc;padding:.3em 0;}
 #accordion .context.active-accordion {background:#09c;color:#fff;}
 #accordion .section {margin:.1em 0;}
 
 /* COMPOSITION */
 .fixed {position:fixed;top:88px;right:1em;padding-left:2em;}
 .cartts {background:#eee;padding:0;}
-.cdroppable {display:block;padding:.3em .5em .5em .5em;background:#444;border-radius:3px;}
+.cdroppable {display:block;padding:.3em .5em .5em .5em;background:#222d32;border-radius:3px;}
 .cdroppable li {background:#fff;}
 .cdroppable li.listitem:hover {border-left:5px solid #f80;background:#fff;}
 li.listitem {list-style:none;position:relative;margin-top:2px;padding:.2em .5em;overflow:hidden;cursor:move;border-radius:3px;}
 li.listdrop {list-style:none;position:relative;margin-top:2px;padding:.2em .5em;overflow:hidden;border-radius:3px;}
-.cartts li.listitem:hover {background:#444;color:#fff;}
+.cartts li.listitem:hover {background:#222d32;color:#fff;}
 
 /* HELP */
 #index ul {margin-left:1.5em;}
 #help {margin-left:2em;}
 #help em, #help .hdiv, 
-em.help {display:block;margin:1em 0;padding:1.5em 3em 1.5em 1em;font-size:0.95em;color:#fff;background:#444 url(../img/star.png) 99% center no-repeat;border-radius:3px;font-style:italic;}
+em.help {display:block;margin:1em 0;padding:1.5em 3em 1.5em 1em;font-size:0.95em;color:#fff;background:#222d32 url(../img/star.png) 99% center no-repeat;border-radius:3px;font-style:italic;}
 #help h4 {margin:1em 0 .5em;padding:.5em 1em;border-left:1.5em solid #ddd;border-radius:3px;}
 #help img {border:1px solid #ccc;}
 #help img[style*='right'] {margin-left:2em;}
 #help img[style*='left'] {margin-right:2em;}
 #help ul, #help ol {margin-left:1.6em;}
 #help li img {margin:.5em 1.5em .5em 0;}
-#help blockquote {margin:1em 5em;padding:1.5em 3em;background:#ddd;border-radius:3px;color:#333;font-style:normal;}
+#help blockquote {margin:1em 5em;padding:1.5em 3em;background:#ddd;border-radius:3px;color:#222d32;font-style:normal;}
 #help .audicence img {border:none;}
 #accordion .context {font-weight:bold;padding:.3em;}
 #accordion .artts {margin:.1em;font-size:0.9em;padding:.5em .5em 1em .5em;}
@@ -586,7 +584,7 @@ a.no_target {padding-left:0;background:none;}
 input.autocompleter-loading {background: url(../img/spinner_on.gif) right 50% no-repeat;}
 ul.autocompleter-choices {position:absolute;margin:0;padding:0;list-style:none;border:1px solid #ccc;text-align:left;z-index:999999;background:#fff;}
 ul.autocompleter-choices li {position:relative;margin:-2px 0 0 0;padding:0.3em 1.5em 0.3em 1em;display:block;float:none !important;cursor:pointer;font-weight:normal;white-space:nowrap;font-size:1em;line-height:1.5em;}
-ul.autocompleter-choices li.autocompleter-selected {background:#444;color:#fff;}
+ul.autocompleter-choices li.autocompleter-selected {background:#222d32;color:#fff;}
 ul.autocompleter-choices span.autocompleter-queried {display:inline;float:none;font-weight:bold;margin:0;padding:0;}
 ul.autocompleter-choices li.autocompleter-selected span.autocompleter-queried {color:#09c;}
 
@@ -612,8 +610,8 @@ ul#sortable li:hover {cursor:move;}
 /* DATEPICKER */
 img.date_toggler {position:relative;top:4px;margin-left:4px;}
 
-.datepicker_dashboard {position:absolute;font-size:1em;color:#fff;line-height:normal;width:17em;height:16em;padding:1.4em;background:#333;border-radius:3px;z-index:999999;}
-.datepicker_dashboard div.slider {background:#333;}
+.datepicker_dashboard {position:absolute;font-size:1em;color:#fff;line-height:normal;width:17em;height:16em;padding:1.4em;background:#222d32;border-radius:3px;z-index:999999;}
+.datepicker_dashboard div.slider {background:#222d32;}
 .datepicker_dashboard.column_2 {width: 356px;}
 .datepicker_dashboard.column_3 {width: 592px;}
 /* datepicker header */
@@ -647,7 +645,7 @@ img.date_toggler {position:relative;top:4px;margin-left:4px;}
 .datepicker_dashboard .time {position:relative;width:100%;height:100%;}
 .datepicker_dashboard .time .hour,
 .datepicker_dashboard .time .separator,
-.datepicker_dashboard .time .minutes {width:45%;float:left;background:#333;border:0;height:2.4em;font-size:3em;color:#fff;text-align:center;padding:0;}
+.datepicker_dashboard .time .minutes {width:45%;float:left;background:#222d32;border:0;height:2.4em;font-size:3em;color:#fff;text-align:center;padding:0;}
 .datepicker_dashboard .time .hour {}
 .datepicker_dashboard .time .separator {width:10%;padding-top:.25em;}
 .datepicker_dashboard .time .minutes {}
@@ -662,7 +660,7 @@ img.date_toggler {position:relative;top:4px;margin-left:4px;}
 .datepicker_dashboard .days .week .day {cursor:pointer;}
 .datepicker_dashboard .days .week .day:hover {color:#cf0;}
 .datepicker_dashboard .days .otherMonth {color:#666;}
-.datepicker_dashboard .days .selected {color:#cf0;background:#444;}
+.datepicker_dashboard .days .selected {color:#cf0;background:#222d32;}
 /* datepicker months-grid */
 .datepicker_dashboard .months .month {float:left;cursor:pointer;text-align:center;padding-top:.6em;width:33%;overflow:hidden;height:2em;margin:0;}
 .datepicker_dashboard .months .month3,

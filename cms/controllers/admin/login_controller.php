@@ -150,12 +150,12 @@ class Login_controller extends X4Cms_controller
 				$fields[] = array(
 					'label' => null,
 					'type' => 'html', 
-					'value' => '<div id="cha" class="acenter"><img id="captcha_img" src="'.BASE_URL.'captcha/51/51/51" alt="captcha" /></div>',
+					'value' => '<div id="cha" class="acenter"><img id="captcha_img" src="'.BASE_URL.'captcha/34/45/50" alt="captcha" /></div>',
 				);
 				$fields[] = array(
 					'label' => null,
 					'type' => 'html', 
-					'value' => '<p class="small"><a href="'.BASE_URL.'captcha/51/51/51" title="reload" id="reload_captcha">'._RELOAD_CAPTCHA.'</a></p>'
+					'value' => '<p class="small"><a href="'.BASE_URL.'captcha/34/45/50" title="reload" id="reload_captcha">'._RELOAD_CAPTCHA.'</a></p>'
 				);
 				
 			}
