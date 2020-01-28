@@ -67,7 +67,11 @@ class Permission_model extends X4Model_core
 	 */
 	private function get_id($id_area, $id_user, $what, $id_what)
 	{
-		return (int) $this->db->query_var('SELECT id FROM privs WHERE id_who = '.intval($id_user).' AND id_area = '.$id_area.' AND what = '.$this->db->escape($what).' AND id_what = '.$id_what);
+		return (int) $this->db->query_var('SELECT IF (p.id IS NULL, 0, p.id) AS id 
+			FROM uprivs u
+			LEFT JOIN privs p ON p.id_who = u.id_user AND p.id_area = u.id_area AND p.what = u.privtype
+			WHERE u.id_user = '.intval($id_user).' AND u.id_area = '.intval($id_area).' AND u.privtype = '.$this->db->escape($what).' AND p.id_what = '.intval($id_what));
+		//SELECT id FROM privs WHERE id_who = '.intval($id_user).' AND id_area = '.$id_area.' AND what = '.$this->db->escape($what).' AND id_what = '.$id_what);
 	}
 	
 	/**
@@ -81,7 +85,12 @@ class Permission_model extends X4Model_core
 	 */
 	public function get_priv($id_area, $id_user, $what, $id_what) 
 	{
-		return $this->db->query_row('SELECT id, level FROM privs WHERE id_area = '.intval($id_area).' AND id_who = '.intval($id_user).' AND what = '.$this->db->escape($what).' AND id_what = '.intval($id_what));
+		return $this->db->query_row('SELECT IF(p.id IS NULL, 0, p.id) AS id, IF(p.id IS NULL, u.level, p.level) AS level
+			FROM uprivs u
+			LEFT JOIN privs p ON p.id_who = u.id_user AND p.id_area = u.id_area AND p.what = u.privtype
+			WHERE u.id_user = '.intval($id_user).' AND u.id_area = '.intval($id_area).' AND u.privtype = '.$this->db->escape($what).' AND p.id_what = '.intval($id_what));
+			
+		//'SELECT id, level FROM privs WHERE id_area = '.intval($id_area).' AND id_who = '.intval($id_user).' AND what = '.$this->db->escape($what).' AND id_what = '.intval($id_what));
 	}
 	
 	/**
@@ -94,7 +103,12 @@ class Permission_model extends X4Model_core
 	 */
 	public function check_priv($id_user, $what, $id_what) 
 	{
-		return (int) $this->db->query_var('SELECT level FROM privs WHERE id_who = '.intval($id_user).' AND what = '.$this->db->escape($what).' AND id_what = '.intval($id_what));
+		return (int) $this->db->query_var('SELECT IF(p.id IS NULL, u.level, p.level) AS level
+			FROM uprivs u
+			LEFT JOIN privs p ON p.id_who = u.id_user AND p.id_area = u.id_area AND p.what = u.privtype AND p.id_what = '.intval($id_what).'
+			WHERE u.id_user = '.intval($id_user).' AND u.privtype = '.$this->db->escape($what));
+		
+		//'SELECT level FROM privs WHERE id_who = '.intval($id_user).' AND what = '.$this->db->escape($what).' AND id_what = '.intval($id_what));
 	}
 	
 	/**
@@ -173,29 +187,41 @@ class Permission_model extends X4Model_core
 			$id_user = intval($i['id_user']);
 			$id_what = intval($i['id_what']);
 			
+			// get upriv
+			$upriv = $this->get_upriv($id_area, $id_user, $what);
 			// check if already exists
 			$priv = $this->get_priv($id_area, $id_user, $what, $id_what);
 			
 			if ($priv)
 			{
-				if ($priv->level != $i['level'])
+				if ($upriv->level != $i['level'])
 				{
-					// update
-					$sql[] = 'UPDATE privs SET level = '.intval($i['level']).' WHERE id = '.intval($priv->id);
+					if ($priv->level != $i['level'])
+					{
+						// update
+						$sql[] = 'UPDATE privs SET level = '.intval($i['level']).' WHERE id = '.intval($priv->id);
+					}
+				}
+				else
+				{
+					// delete
+					$sql[] = 'DELETE FROM privs WHERE id = '.intval($priv->id);
 				}
 			}
 			else
 			{
-				// insert
-				$sql[] = 'INSERT INTO privs (updated, id_area, id_who, what, id_what, level, xon) VALUES (NOW(), '.intval($id_area).', '.$id_user.', '.$this->db->escape($what).', '.$id_what.', '.intval($i['level']).', 1)';
+				if ($upriv->level != $i['level'])
+				{
+					// insert
+					$sql[] = 'INSERT INTO privs (updated, id_area, id_who, what, id_what, level, xon) VALUES (NOW(), '.intval($id_area).', '.$id_user.', '.$this->db->escape($what).', '.$id_what.', '.intval($i['level']).', 1)';
+				}
 			}
 		}
 		
-		// insert
-		if (!empty($sql)) 
-			return $this->db->multi_exec($sql);
-		else 
-			return array(0, 1);
+		// insert/update/delete
+		return (empty($sql)) 
+			? array(0, 1) 
+			: $this->db->multi_exec($sql);
 	}
 	
 	/**
@@ -267,6 +293,23 @@ class Permission_model extends X4Model_core
 	}
 	
 	/**
+	 * Set user's privtype permissions into an area
+	 * Use uprivs table
+	 *
+	 * @param   integer $id_user User ID
+	 * @param   integer $id_area Area ID
+	 * @param   string  $privtype Privtype name
+	 * @param   integer $level
+	 * @return  mixed
+	 */
+	public function set_uprivs($id_user, $id_area, $privtype, $level)
+	{
+		$sql = 'INSERT INTO uprivs (updated, id_area, id_user, privtype, level, xon) 
+			VALUES (NOW(), '.intval($id_area).', '.intval($id_user).', '.$this->db->escape($privtype).', '.intval($level).', 1)';
+		return $this->db->single_exec($sql);
+	}
+
+	/**
 	 * Get user's permission on a table into an area
 	 *
 	 * @param   string	$what Table name
@@ -276,17 +319,22 @@ class Permission_model extends X4Model_core
 	 */
 	private function get_privs($what, $id_user, $id_area)
 	{
-		return $this->db->query('SELECT * FROM privs WHERE what = '.$this->db->escape($what).' AND id_who = '.intval($id_user).' AND id_area = '.intval($id_area));
+		return $this->db->query('SELECT IF(p.id IS NULL, 0, p.id) AS id, IF(p.id IS NULL, u.level, p.level) AS level
+			FROM uprivs u
+			LEFT JOIN privs p ON p.id_who = u.id_user AND p.id_area = u.id_area AND p.what = u.privtype
+			WHERE u.id_user = '.intval($id_user).' AND u.id_area = '.intval($id_area).' AND u.privtype = '.$this->db->escape($what));
+			
+		// 'SELECT * FROM privs WHERE what = '.$this->db->escape($what).' AND id_who = '.intval($id_user).' AND id_area = '.intval($id_area));
 	}
 	
 	/**
 	 * Refresh user permissions
 	 *
 	 * @param   integer $id_user User ID
-	 * @param	mixed	$force if null leaves priv personalizations else (integer) set to default
+	 * @param   boolean	$force if false leaves priv personalizations else (integer) set to default
 	 * @return  array	Array(0, boolean)
 	 */
-	public function refactory($id_user, $force = null)
+	public function refactory($id_user, $force = false)
 	{
 		// action areas
 		$areas = $this->get_aprivs($id_user);
@@ -354,15 +402,15 @@ class Permission_model extends X4Model_core
 	
 	/**
 	 * Syncronize user privileges with user permissions
-	 * if force is null add priv but not change permission levels
-	 * else add, edit and delete privs
+	 * if force is false remove privs equal to default value
+	 * else remove all privs
 	 *
 	 * @param   integer $id_user User ID
 	 * @param	array	$areas array of area objects
-	 * @param	mixed	$force if null leaves privs personalizations (only add missing privs) else (integer) set to default
+	 * @param	boolean	$force if false leaves privs personalizations (only add missing privs) else set to default
 	 * @return  array	Array(0, boolean)
 	 */
-	private function sync_priv($id_user, $areas, $force = null)
+	private function sync_priv($id_user, $areas, $force = false)
 	{
 		$sql = array();
 		foreach($areas as $i)
@@ -370,98 +418,38 @@ class Permission_model extends X4Model_core
 			// get user privilege types on area
 			$up = X4Utils_helper::obj2array($this->get_uprivs($id_user, $i->id_area), 'privtype', 'level');
 			
+			// k => privtype and v => level
 			foreach($up as $k => $v)
 			{
+				$items = array();
 				// handle all if area is admin and only commons if area isn't admin 
 				if ($i->id_area == 1 || !in_array($k, $this->admin_privtypes)) 
 				{
-					// abstract privilege
-					if (substr($k, 0, 1) == '_') 
+					// not handle abstract privilege
+					if (substr($k, 0, 1) != '_') 
 					{
-						// get the Priv ID
-						$id = $this->get_id($i->id_area, $id_user, $k, 0);
-						
-						// if exists create empty array
-						if ($id) 
-						{
-							$items = array();
-						}
-						else 
-						{
-							// add empty item to insert
-							$item = new Obj_item(0);
-							$items = array($item);
-						}
-					}
-					// privilege with table
-					else 
-					{
-						// set case
-						$case = (is_null($force)) 
-							? null 
-							: $v;
-							
 						// get items
-						// if case is null get all items without permissions
-						// if not null get all items with permission not equal to case value
-						$items = $this->get_all_records($k, $id_user, $i->id_area, $case);
+						// if force is null get all items with permissions equal to default so we can delete them
+						// if force is not null get all items with permission different than default (v) so we can delete them
+						$items = $this->get_all_records($k, $id_user, $i->id_area, $v, $force);
 					}
-				}
-				else 
-				{
-					$items = array();
 				}
 				
 				// if there are something to handle
 				if ($items) 
 				{
-					if (is_null($force)) 
+					if (!$force) 
 					{
-						// no forcing, only insert missing permissions
+						// delete permissions set as default
 						foreach($items as $ii) 
 						{
-							$sql[] = 'INSERT INTO privs (updated, id_area, id_who, what, id_what, level, xon) 
-								VALUES (NOW(), '.$i->id_area.', '.$id_user.', '.$this->db->escape($k).', '.$ii->id.', '.$v.', 1)';
+							$sql[] = 'DELETE FROM privs WHERE id = '.$ii->pid;
 						}
 					}
 					else 
 					{
-						// forcing
-						foreach($items as $ii) 
-						{
-							// set all permission to right value (eliminate customizations) if permission is greater than zero
-							if ($v) 
-							{
-							    if ($ii->id && !is_null($ii->pid))
-							    {
-							        $sql[] = 'UPDATE privs SET level = '.$v.' WHERE id_who = '.$id_user.' AND what = '.$this->db->escape($k).' AND id_what = '.$ii->id;
-							    }
-							    else
-							    {
-							        $sql[] = 'INSERT INTO privs (updated, id_area, id_who, what, id_what, level, xon) VALUES (NOW(), '.$i->id_area.', '.$id_user.', '.$this->db->escape($k).', '.$ii->id.', '.$v.', 1)';
-								}
-							}
-							// eliminate if permission is zero
-							else
-							{
-								$sql[] = 'DELETE FROM privs WHERE id_who = '.$id_user.' AND what = '.$this->db->escape($k).' AND id_what = '.$ii->id;
-							}
-						}
-					}
-				}
-			}
-			
-			// set privs on admin pages
-			if ($i->id_area == 1) 
-			{
-				// get administration pages without permission
-				$pages = $this->get_pages_by_xid('base', $id_user);
-				if ($pages) 
-				{
-					foreach($pages as $ii)
-					{
-						$sql[] = 'INSERT INTO privs (updated, id_area, id_who, what, id_what, level, xon) 
-							VALUES (NOW(), 1, '.$id_user.', \'pages\', '.$ii->id.', 1, 1)';
+						// forcing we delete all personalizations on permissions
+						$sql[] = 'DELETE FROM privs WHERE id_who = '.$id_user.' AND what = '.$this->db->escape($k);
 					}
 				}
 			}
@@ -473,45 +461,22 @@ class Permission_model extends X4Model_core
 	}
 	
 	/**
-	 * Get id of pages without privs by xid and User ID
-	 * Use pages and privs tables
-	 *
-	 * @param   string	$xid, is a key to group pages
-	 * @param   integer $id_user User ID
-	 * @return  array	array of integer
-	 */
-	private function get_pages_by_xid($xid, $id_user)
-	{
-		return $this->db->query('SELECT pg.id 
-			FROM pages pg 
-			LEFT JOIN privs p ON p.what = \'pages\' AND p.id_area= pg.id_area AND p.id_what = pg.id AND p.id_who = '.$id_user.' AND pg.xid = '.$this->db->escape($xid).'  
-			WHERE p.id_area = 1 AND p.id_what IS NULL');
-	}
-	
-	/**
-	 * Get id of table records without user priv or with priv level different from given value
+	 * Get id of table records with user priv equal to default or with priv level different from default
+	 * if equal to default we delete them
+	 * if different we delete them in case of force set to true
 	 *
 	 * @param   string	$table Table name
 	 * @param   integer $id_user User ID
 	 * @param   integer $id_area Area ID
-	 * @param	mixed	$case null or integer (if null get id records without priv)
+	 * @param	integer	$level
+	 * @param 	boolean force
 	 * @return  array	array of integer
 	 */
-	private function get_all_records($table, $id_user, $id_area = 0, $case = null)
+	private function get_all_records($table, $id_user, $id_area = 0, $level, $force)
 	{
-		// switch case, force == null
-		if (is_null($case)) 
-		{
-			// without permissions
-			$join = 'LEFT';
-			$where = ' WHERE p.id_what IS NULL ';
-		}
-		else 
-		{
-			// with different level permissions
-			$join = 'LEFT';
-			$where = ' WHERE (p.id_what IS NULL OR p.level <> '.intval($case).')';
-		}
+		$where = ($force) 
+			? ' WHERE p.level <> '.intval($level) // with different level permissions
+			: ' WHERE p.level = '.intval($level);
 		
 		// Some tables require special treatment
 		$sql = '';
@@ -523,23 +488,26 @@ class Permission_model extends X4Model_core
         switch($table) 
 		{
 		case 'areas':
-			$sql = 'SELECT a.id_area AS id, p.id AS pid FROM aprivs a 
-			'.$join.' JOIN privs p ON p.what = '.$this->db->escape($table).' AND p.id_who = a.id_user AND p.id_what = a.id_area 
+			$sql = 'SELECT a.id_area AS id, p.id AS pid 
+			FROM aprivs a
+			JOIN privs p ON p.what = '.$this->db->escape($table).' AND p.id_who = a.id_user AND p.id_what = a.id_area 
 			'.$where.' AND a.id_user = '.intval($id_user).' AND a.id_area = '.intval($id_area) .'
 			ORDER BY a.id ASC';
 			break;
 		case 'dictionary':
-			$sql = 'SELECT DISTINCT d.id, p.id AS pid FROM dictionary d
+			$sql = 'SELECT DISTINCT d.id, p.id AS pid 
+				FROM dictionary d
 				JOIN aprivs a ON a.area = d.area 
-				'.$join.' JOIN privs p ON p.what = '.$this->db->escape($table).' AND p.id_what = d.id AND p.id_who = '.intval($id_user).' AND p.id_area = '.intval($id_area).'
+				JOIN privs p ON p.what = '.$this->db->escape($table).' AND p.id_what = d.id AND p.id_who = '.intval($id_user).' AND p.id_area = '.intval($id_area).'
 				'.$where.'
 				ORDER BY d.id ASC';
 			break;
 		case 'menus':
 		case 'templates':
-			$sql = 'SELECT DISTINCT t.id, p.id AS pid FROM '.$table.' t 
+			$sql = 'SELECT DISTINCT t.id, p.id AS pid 
+			FROM '.$table.' t 
 			JOIN themes th ON th.id = t.id_theme 
-			'.$join.' JOIN privs p ON p.what = '.$this->db->escape($table).' AND p.id_what = t.id AND p.id_who = '.intval($id_user).'
+			JOIN privs p ON p.what = '.$this->db->escape($table).' AND p.id_what = t.id AND p.id_who = '.intval($id_user).'
 			'.$where.'
 			ORDER BY t.id ASC';
 			break;
@@ -547,15 +515,17 @@ class Permission_model extends X4Model_core
 		case 'sites':
 		case 'themes':
 		case 'groups':
-			$sql = 'SELECT DISTINCT t.id, p.id AS pid FROM '.$table.' t 
-			'.$join.' JOIN privs p ON p.what = '.$this->db->escape($table).' AND p.id_what = t.id AND p.id_who = '.intval($id_user).'
+			$sql = 'SELECT DISTINCT t.id, p.id AS pid 
+			FROM '.$table.' t 
+			JOIN privs p ON p.what = '.$this->db->escape($table).' AND p.id_what = t.id AND p.id_who = '.intval($id_user).'
 			'.$where.'
 			ORDER BY t.id ASC';
 			break;
 		case 'users':
-			$sql = 'SELECT DISTINCT u.id, p.id AS pid FROM users u
+			$sql = 'SELECT DISTINCT u.id, p.id AS pid 
+				FROM users u
 				JOIN groups g ON g.id = u.id_group 
-				'.$join.' JOIN privs p ON p.what = '.$this->db->escape($table).' AND p.id_what = u.id AND p.id_who = '.intval($id_user).'
+				JOIN privs p ON p.what = '.$this->db->escape($table).' AND p.id_what = u.id AND p.id_who = '.intval($id_user).'
 				'.$where.'
 				ORDER BY u.id ASC';
 			break;
@@ -585,8 +555,9 @@ class Permission_model extends X4Model_core
 					}
 					
 					// MySQL table on default DB
-					$sql = 'SELECT DISTINCT t.id, p.id AS pid FROM '.$table.' t
-						'.$join.' JOIN privs p ON p.what = '.$this->db->escape($table).' AND p.id_what = t.id AND p.id_who = '.intval($id_user).' AND p.id_area = t.id_area
+					$sql = 'SELECT DISTINCT t.id, p.id AS pid 
+						FROM '.$table.' t
+						JOIN privs p ON p.what = '.$this->db->escape($table).' AND p.id_what = t.id AND p.id_who = '.intval($id_user).' AND p.id_area = t.id_area
 						'.$where.' AND t.id_area = '.intval($id_area).'
 						ORDER BY t.id ASC';
 				}
@@ -602,7 +573,7 @@ class Permission_model extends X4Model_core
 	
 	/**
 	 * Refresh user priv over a table
-	 * edit and delete privs
+	 * NO MORE USED
 	 *
 	 * @param   integer $id_user User ID
 	 * @param	array	$id_area array of Area ID
@@ -611,12 +582,12 @@ class Permission_model extends X4Model_core
 	 */
 	public function refactory_table($id_user, $id_area, $table)
 	{
+		/*
 		$sql = array();
-		foreach($id_area as $a) 
+		foreach($id_area as $id_a) 
 		{
 			// get user privilege types and levels
-			if (!isset($up)) 
-				$up = $this->get_uprivs($id_user, $a, $table);
+			$up = $this->get_uprivs($id_user, $id_a, $table);
 			
 			// get id and permission levels on records of the table
 			
@@ -627,7 +598,7 @@ class Permission_model extends X4Model_core
 			{
 				$items = $this->db->query('SELECT t.id, p.level, p.id AS pid 
 					FROM '.$table.' t
-					LEFT JOIN privs p ON p.what = '.$this->db->escape($table).' AND p.id_what = t.id AND p.id_who = '.intval($id_user).' AND p.id_area = 1
+					JOIN privs p ON p.what = '.$this->db->escape($table).' AND p.id_what = t.id AND p.id_who = '.intval($id_user).' AND p.id_area = 1
 					ORDER BY t.id ASC');
 			}
 			else
@@ -665,6 +636,8 @@ class Permission_model extends X4Model_core
 		return (empty($sql)) 
 			? array(0,1) : 
 			$this->db->multi_exec($sql);
+		*/
+		return array(0, 1);
 	}
 	
 	/**
@@ -794,9 +767,10 @@ class Permission_model extends X4Model_core
 		switch($table) 
 		{
 		case 'articles':
-			$sql = 'SELECT a.id, a.name, CONCAT(c.name, \' - \', a.lang) AS description, p.level 
+			$sql = 'SELECT a.id, a.name, CONCAT(c.name, \' - \', a.lang) AS description, IF (p.id IS NULL, u.level, p.level) AS level 
 				FROM articles a
 				JOIN contexts c ON c.code = a.code_context
+				FROM uprivs u ON u.privtype = \'articles\' AND u.id_user = '.intval($id_user).'
 				LEFT JOIN privs p ON p.what = \'articles\' AND p.id_what = a.id AND p.id_who = '.intval($id_user).'
 				WHERE a.id_area = '.intval($id_area).'
 				GROUP BY a.bid
