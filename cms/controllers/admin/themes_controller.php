@@ -35,7 +35,7 @@ class Themes_controller extends X3ui_controller
 	public function _default()
 	{
 		// load dictionary
-		$this->dict->get_wordarray(array('themes'));
+		$this->dict->get_wordarray(array('themes', 'msg'));
 		
 		// get page
 		$page = $this->get_page('themes');

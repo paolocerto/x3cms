@@ -35,7 +35,7 @@ class Users_controller extends X3ui_controller
 	public function _default()
 	{
 		// load dictionaries
-		$this->dict->get_wordarray(array('groups', 'users'));
+		$this->dict->get_wordarray(array('groups', 'users', 'msg'));
 		
 		// get page
 		$page = $this->get_page('users');

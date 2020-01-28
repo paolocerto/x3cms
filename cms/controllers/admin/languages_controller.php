@@ -35,7 +35,7 @@ class Languages_controller extends X3ui_controller
 	public function _default()
 	{
 		// load the dictionary
-		$this->dict->get_wordarray(array('languages'));
+		$this->dict->get_wordarray(array('languages', 'msg'));
 		
 		// get page
 		$page = $this->get_page('languages');

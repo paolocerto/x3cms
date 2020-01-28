@@ -7,7 +7,24 @@
  * @license		http://www.gnu.org/licenses/agpl.htm
  * @package		X3CMS
  */
+
+ if (empty($langs))
+ {
 ?>
+<p><?php echo _NOT_PERMITTED ?></p>
+<script src="<?php echo THEME_URL ?>js/basic.js"></script>
+<script>
+window.addEvent('domready', function()
+{
+	X3.content('filters','languages/filter', null);
+});
+</script>
+<?php
+ }
+ else
+ {
+?>
+
 <table class="zebra">
 	<tr class="first">
 		<th style="width:3em;"></th>
@@ -80,3 +97,5 @@ window.addEvent('domready', function()
 	zebraTable('zebra');
 });
 </script>
+<?
+ }

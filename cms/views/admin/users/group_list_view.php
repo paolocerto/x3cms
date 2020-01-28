@@ -9,7 +9,23 @@
  */
 ?>
 <h2><?php echo _GROUP_LIST ?></h2>
-
+<?php
+if (empty($groups))
+{
+?>
+<p><?php echo _NOT_PERMITTED ?></p>
+<script src="<?php echo THEME_URL ?>js/basic.js"></script>
+<script>
+window.addEvent('domready', function()
+{
+	X3.content('filters','groups/filter', null);
+});
+</script>
+<?php
+}
+else
+{
+?>
 <table class="zebra">
 	<tr class="first">
 		<th><?php echo _AREA ?></th>
@@ -87,3 +103,5 @@ window.addEvent('domready', function()
 	zebraTable('zebra');
 });
 </script>
+<?php
+}
