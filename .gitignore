@@ -4,9 +4,6 @@ puphet/*
 vendor/*
 
 # Config
-cms/config/config.php
-cms/files/
-.htaccess
 robot.txt
 humans.txt
 
