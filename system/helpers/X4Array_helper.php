@@ -218,18 +218,29 @@ class X4Array_helper
 	{
 		$a = array();
 		$ii = explode(':', $indexes);
-		foreach($array as $i)
+		if (is_array($array))
 		{
-		    // to handle null values
-		    $fi = array();
-		    foreach($ii as $tmp)
-		    {
-		        $fi[] = (is_null($i->$tmp))
-		        ? 0    // was -1
-		        : $i->$tmp;
-		    }
-		    $final_index = implode('_', $fi);
-			$a[$final_index] = $i;
+			foreach($array as $i)
+			{
+				if (sizeof($ii) == 1)
+				{
+					$a[$i->$indexes] = $i;
+				}
+				else
+				{
+					// to handle null values
+					$fi = array();
+					foreach($ii as $tmp)
+					{
+						$fi[] = (is_null($i->$tmp))
+							? 0    // was -1
+							: $i->$tmp;
+					}
+					$final_index = implode('_', $fi);
+					$a[$final_index] = $i;
+				}
+				
+			}
 		}
 		return $a;
 	}
