@@ -53,7 +53,7 @@ class Context_model extends X4Model_core
 	{
 		return $this->db->query('SELECT c.*, IF(p.id IS NULL, u.level, p.level) AS level
 				FROM contexts c
-				JOIN uprivs u ON u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('categories').'
+				JOIN uprivs u ON u.id_area = c.id_area AND u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('categories').'
 				LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = c.id
 				WHERE c.id_area = '.intval($id_area).' AND c.lang = '.$this->db->escape($lang).'
 				GROUP BY c.id 
@@ -126,7 +126,7 @@ class Context_model extends X4Model_core
 	{
 		return $this->db->query('SELECT p.id, LPAD(p.name, CHAR_LENGTH(p.name)+p.deep, \'-\') AS name, IF(pr.id IS NULL, u.level, pr.level) AS level
 				FROM pages p
-				JOIN uprivs u ON u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('pages').'
+				JOIN uprivs u ON u.id_area = p.id_area AND u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('pages').'
 				LEFT JOIN privs pr ON pr.id_who = u.id_user AND pr.what = u.privtype AND pr.id_what = p.id
 				WHERE p.id_area = '.intval($id_area).' AND p.lang = '.$this->db->escape($lang).'
 				GROUP BY p.id

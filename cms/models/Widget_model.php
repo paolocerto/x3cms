@@ -85,7 +85,7 @@ class Widget_model extends X4Model_core
 		return $this->db->query('SELECT m.id, CONCAT(a.title, \' - \', m.description) AS what, IF(w.id = \'null\', 0, w.id) AS wid 
 			FROM modules m 
 			JOIN areas a ON a.id = m.id_area
-			JOIN uprivs u ON u.id_user = '.intval($id_user).' AND u.privtype = '.$this->db->escape('modules').'
+			JOIN uprivs u ON u.id_area = a.id AND u.id_user = '.intval($id_user).' AND u.privtype = '.$this->db->escape('modules').'
 			LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = m.id
 			LEFT JOIN widgets w ON w.id_user = '.$user.' AND m.id = w.id_module
 			WHERE widget = 1 AND

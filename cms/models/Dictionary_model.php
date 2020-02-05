@@ -65,7 +65,8 @@ class Dictionary_model extends X4Model_core
 	{
 		return $this->db->query('SELECT d.*, IF(p.id IS NULL, u.level, p.level) AS level
 			FROM dictionary d
-			JOIN uprivs u ON u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('dictionary').'
+			JOIN areas a ON a.name = d.area
+			JOIN uprivs u ON u.id_area = a.id AND u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('dictionary').'
 			LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = d.id
 			WHERE 
 				d.lang = '.$this->db->escape($lang).' AND 
@@ -96,7 +97,8 @@ class Dictionary_model extends X4Model_core
 				d2.lang = '.$this->db->escape($new_lang).' AND 
 				d2.area = '.$this->db->escape($new_area).'
 			)
-			JOIN uprivs u ON u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('dictionary').'
+			JOIN areas a ON a.name = d.area
+			JOIN uprivs u ON u.id_area = a.id AND u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('dictionary').'
 			LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = d.id
 			WHERE 
 				d.lang = '.$this->db->escape($lang).' AND 
@@ -187,9 +189,11 @@ class Dictionary_model extends X4Model_core
 	 */
 	public function search_words($area, $str)
 	{
-		return $this->db->query('SELECT d.*, p.level 
+		return $this->db->query('SELECT d.*, IF(p.id IS NULL, u.level, p.level) AS level
 			FROM dictionary d
-			JOIN privs p ON p.id_who = '.intval($_SESSION['xuid']).' AND p.what = \'dictionary\' AND p.id_what = d.id
+			JOIN areas a ON a.name = d.area
+			JOIN uprivs u ON u.id_area = a.id AND u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('dictionary').'
+			LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = d.id
 			WHERE 
 				d.area = '.$this->db->escape($area).' AND 
 				d.xkey LIKE '.$this->db->escape('%'.strtoupper($str).'%').'

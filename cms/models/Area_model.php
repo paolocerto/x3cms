@@ -72,7 +72,7 @@ class Area_model extends X4Model_core
 		
         $sql = 'SELECT a.*, IF(p.id IS NULL, u.level, p.level) AS level
             FROM areas a
-			JOIN uprivs u ON u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('areas').'
+			JOIN uprivs u ON u.id_area = a.id AND u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('areas').'
 			LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = a.id
 			'.$where.'
 			GROUP BY a.id

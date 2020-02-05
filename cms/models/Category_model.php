@@ -43,7 +43,7 @@ class Category_model extends X4Model_core
 	        
 		return $this->db->query('SELECT c.*, IF(p.id IS NULL, u.level, p.level) AS level
 			FROM categories c 
-			JOIN uprivs u ON u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('categories').'
+			JOIN uprivs u ON u.id_area = c.id_area AND u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('categories').'
 			LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = c.id
 			WHERE c.id_area = '.intval($id_area).' AND c.lang = '.$this->db->escape($lang).$where.'
 			GROUP BY c.id

@@ -41,7 +41,7 @@ class X4Plugin_model extends X4Model_core
 			
 		return $this->db->query('SELECT DISTINCT m.*, IF(p.id IS NULL, u.level, p.level) AS level
 			FROM modules m
-			JOIN uprivs u ON u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('modules').'
+			JOIN uprivs u ON u.id_area = m.id_area AND u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('modules').'
 			LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = m.id
 			WHERE m.id_area = '.intval($id_area).' AND m.pluggable = 1 AND m.xon = 1 '.$where.'
 			GROUP BY m.id
@@ -60,7 +60,7 @@ class X4Plugin_model extends X4Model_core
 		return $this->db->query('SELECT DISTINCT pa.*, IF(p.id IS NULL, u.level, p.level) AS level
 			FROM param pa
 			JOIN modules m ON m.name = pa.xrif AND m.id_area = pa.id_area
-			JOIN uprivs u ON u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('modules').'
+			JOIN uprivs u ON u.id_area = m.id_area AND u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('modules').'
 			LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = m.id
 			WHERE pa.xrif = '.$this->db->escape($plugin_name).' AND p.id_area = '.intval($id_area).'
 			ORDER BY pa.id ASC');
@@ -95,18 +95,18 @@ class X4Plugin_model extends X4Model_core
 	 */
 	public function get_installed($id_area)
 	{
-	    return $this->db->query('SELECT DISTINCT m.*, up.level, IF(p.id IS NULL, u.level, p.level) AS adminlevel 
-			FROM modules m
-			JOIN uprivs up ON up.id_user = '.intval($_SESSION['xuid']).' AND u.privtype (
-			    REPLACE(up.privtype, \'x3_\', \'x3\') = m.name OR
-			    REPLACE(up.privtype, \'x4_\', \'x4\') = m.name OR
-			    REPLACE(up.privtype, \'x5_\', \'x5\') = m.name OR 
-			    (up.privtype = \'x3_forms\' AND m.name = \'x3form_builder\') OR 
-			    up.privtype = \'x3_plugins\'
-			) AND up.level > 1
-			JOIN uprivs u ON u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('modules').'
-			LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = m.id
-			WHERE p.id_area = '.intval($id_area).' ORDER BY m.name ASC');
+		return $this->db->query('SELECT DISTINCT m.*, up.level, IF(p.id IS NULL, up.level, p.level) AS adminlevel 
+		FROM modules m
+		JOIN uprivs up ON up.id_area = m.id_area AND up.id_user = '.intval($_SESSION['xuid']).' AND (
+			up.privtype = '.$this->db->escape('modules').' OR
+			REPLACE(up.privtype, \'x3_\', \'x3\') = m.name OR
+			REPLACE(up.privtype, \'x4_\', \'x4\') = m.name OR
+			REPLACE(up.privtype, \'x5_\', \'x5\') = m.name OR 
+			(up.privtype = \'x3_forms\' AND m.name = \'x3form_builder\') OR 
+			up.privtype = \'x3_plugins\'
+		) AND up.level > 1
+		LEFT JOIN privs p ON p.id_who = up.id_user AND p.what = up.privtype AND p.id_what = m.id
+		WHERE m.id_area = '.intval($id_area).' ORDER BY m.name ASC');
 	}
 	
 	/**
@@ -211,8 +211,6 @@ class X4Plugin_model extends X4Model_core
 							$res = $mod->insert($sql2['index'], 'indexes');
 						}
 						
-						$perm = new Permission_model();
-						$perm->refactory($_SESSION['xuid']);
 						// return an integer if installation run fine
 						return $result[0];
 					}

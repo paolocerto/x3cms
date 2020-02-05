@@ -196,7 +196,7 @@ class Language_model extends X4Model_core
 		return $this->db->query('SELECT DISTINCT a.*, IF(p.id IS NULL, u.level, p.level) AS level
 				FROM alang a
 				JOIN languages l ON l.code = a.code
-				JOIN uprivs u ON u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('languages').'
+				JOIN uprivs u ON u.id_area = a.id_area AND u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('languages').'
 				LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = l.id AND p.level > 0
 				WHERE a.id_area = '.intval($id_area).'
 				ORDER BY a.language ASC');

@@ -36,7 +36,7 @@ class Group_model extends X4Model_core
 	{
 		return $this->db->query('SELECT g.*, a.title, IF(p.id IS NULL, u.level, p.level) AS level
 				FROM groups g 
-				JOIN uprivs u ON u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('groups').'
+				JOIN uprivs u ON u.id_area = g.id_area AND u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('groups').'
 				LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = g.id
 				JOIN areas a ON a.id = g.id_area
 				ORDER BY a.id ASC, g.name ASC');

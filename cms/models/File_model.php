@@ -84,7 +84,7 @@ class File_model extends X4Model_core
 	{
 		return $this->db->query('SELECT a.id, a.title, a.description, IF(p.id IS NULL, u.level, p.level) AS level
 			FROM areas a
-			JOIN uprivs u ON u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('areas').'
+			JOIN uprivs u ON u.id_area = a.id AND u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('areas').'
 			LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = a.id
 			ORDER BY a.title ASC');
 	}
@@ -100,7 +100,7 @@ class File_model extends X4Model_core
 		return $this->db->query('SELECT a.id, a.title, a.description, f.category, f.subcategory, IF(p.id IS NULL, u.level, p.level) AS level
 			FROM areas a
 			JOIN files f ON f.id_area = a.id
-			JOIN uprivs u ON u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('files').'
+			JOIN uprivs u ON u.id_area = a.id AND u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('files').'
 			LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = f.id
 			GROUP BY a.id, f.category, f.subcategory 
 			ORDER BY a.title ASC, f.category ASC, f.subcategory ASC');
@@ -194,7 +194,7 @@ class File_model extends X4Model_core
 		
 		return $this->db->query('SELECT f.*, IF(p.id IS NULL, u.level, p.level) AS level
 			FROM files f 
-			JOIN uprivs u ON u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('files').'
+			JOIN uprivs u ON u.id_area = f.id_area AND u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('files').'
 			LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = f.id
 			WHERE f.id_area = '.intval($id_area).$where.' 
 			GROUP BY f.id

@@ -142,7 +142,7 @@ class Article_model extends X4Model_core
                     '.$where.' 
                 GROUP BY bid
 				) b ON b.id = aa.id AND b.bid = aa.bid
-			JOIN uprivs u ON u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('articles').'
+			JOIN uprivs u ON u.id_area = aa.id_area AND u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('articles').'
 			LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = aa.id
 			LEFT JOIN contexts c ON c.id_area = aa.id_area AND c.lang = aa.lang AND c.code = aa.code_context
 			LEFT JOIN pages pa ON pa.id = aa.id_page
@@ -175,7 +175,7 @@ class Article_model extends X4Model_core
                 ) b ON b.id = a.id AND b.bid = a.bid
 			LEFT JOIN pages pa ON pa.id = a.id_page
 			JOIN contexts c ON c.id_area = a.id_area AND c.lang = a.lang AND c.code = a.code_context
-			JOIN uprivs u ON u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('articles').'
+			JOIN uprivs u ON u.id_area = a.id_area AND u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('articles').'
 			LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = a.id
 			WHERE c.code = '.intval($code_context).$where.'
 			GROUP BY a.id
@@ -207,7 +207,7 @@ class Article_model extends X4Model_core
                 ) b ON b.id = a.id AND b.bid = a.bid
 		    LEFT JOIN pages pa ON pa.id = a.id_page
 			JOIN categories c ON c.id_area = a.id_area AND c.lang = a.lang AND c.name = a.category
-			JOIN uprivs u ON u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('articles').'
+			JOIN uprivs u ON u.id_area = a.id_area AND u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('articles').'
 			LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = a.id
 			WHERE c.name = '.$this->db->escape($ctg).$where.'
 			GROUP BY a.id
@@ -243,7 +243,7 @@ class Article_model extends X4Model_core
                     ) b ON b.id = a.id AND b.bid = a.bid
 			    LEFT JOIN pages pa ON pa.id = a.id_page
 				JOIN contexts c ON c.id_area = a.id_area AND c.lang = a.lang AND c.code = a.code_context
-				JOIN uprivs u ON u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('articles').'
+				JOIN uprivs u ON u.id_area = a.id_area AND u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('articles').'
 				LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = a.id
 				WHERE a.id_editor = '.intval($id_author).$where.'
 				GROUP BY a.id
@@ -263,7 +263,7 @@ class Article_model extends X4Model_core
 	{
 		return $this->db->query('SELECT a.id, a.id_editor, a.author, IF(p.id IS NULL, u.level, p.level) AS level
 			FROM articles a
-			JOIN uprivs u ON u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('articles').'
+			JOIN uprivs u ON u.id_area = a.id_area AND u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('articles').'
 			LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = a.id
 			WHERE a.id_area = '.intval($id_area).' AND a.lang = '.$this->db->escape($lang).' AND LENGTH(a.author) > 0
 			GROUP BY a.author
@@ -295,7 +295,7 @@ class Article_model extends X4Model_core
                     ) b ON b.id = a.id AND b.bid = a.bid
 		        LEFT JOIN pages pa ON pa.id = a.id_page
 				JOIN contexts c ON c.id_area = a.id_area AND c.lang = a.lang AND c.code = a.code_context
-				JOIN uprivs u ON u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('articles').'
+				JOIN uprivs u ON u.id_area = a.id_area AND u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('articles').'
 				LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = a.id
 				WHERE a.xkeys = '.$this->db->escape($key).$where.'
 				GROUP BY a.id
@@ -327,7 +327,7 @@ class Article_model extends X4Model_core
                     ) b ON b.id = a.id AND b.bid = a.bid
 		        LEFT JOIN pages pa ON pa.id = a.id_page
 				JOIN contexts c ON c.id_area = a.id_area AND c.lang = a.lang AND c.code = a.code_context
-				JOIN uprivs u ON u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('articles').'
+				JOIN uprivs u ON u.id_area = a.id_area AND u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('articles').'
 				LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = a.id
 				WHERE a.id_page = '.intval($id_page).$where.'
 				GROUP BY a.id
@@ -345,7 +345,7 @@ class Article_model extends X4Model_core
 	{
 		return $this->db->query('SELECT a.*, IF(p.id IS NULL, u.level, p.level) AS level
 			FROM articles a
-			JOIN uprivs u ON u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('articles').'
+			JOIN uprivs u ON u.id_area = a.id_area AND u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('articles').'
 			LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = a.id
 			WHERE a.id_area = '.intval($id_area).' AND a.lang = '.$this->db->escape($lang).' AND LENGTH(a.xkeys) > 0
 			GROUP BY a.xkeys
@@ -363,7 +363,7 @@ class Article_model extends X4Model_core
 	{
 		return $this->db->query('SELECT a.*, IF(p.id IS NULL, u.level, p.level) AS level
 			FROM articles a
-			JOIN uprivs u ON u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('articles').'
+			JOIN uprivs u ON u.id_area = a.id_area AND u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('articles').'
 			LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = a.id
 			WHERE a.id_area = '.intval($id_area).' AND a.bid = '.$this->db->escape($bid).' 
 			GROUP BY a.id

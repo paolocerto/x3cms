@@ -180,7 +180,7 @@ class Page_model extends X4Model_core
 		return $this->db->query('SELECT DISTINCT p.*, a.title AS area, IF(pr.id IS NULL, u.level, pr.level) AS level
 			FROM pages p
 			JOIN areas a ON a.id = p.id_area 
-			JOIN uprivs u ON u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('pages').'
+			JOIN uprivs u ON u.id_area = a.id AND u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('pages').'
 			LEFT JOIN privs pr ON pr.id_who = u.id_user AND pr.what = u.privtype AND pr.id_what = a.id
 			WHERE 
 				p.id_area = '.intval($this->id_area).' AND 
@@ -423,7 +423,7 @@ class Page_model extends X4Model_core
 			// get many rows (advanced editing)
 			return $this->db->query('SELECT a.*, IF(p.id IS NULL, u.level, p.level) AS level
 				FROM articles a 
-				JOIN uprivs u ON u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('articles').'
+				JOIN uprivs u ON u.id_area = a.id_area AND u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('articles').'
 				LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = a.id
 				WHERE a.id_page = '.intval($id).' 
 				GROUP BY a.id

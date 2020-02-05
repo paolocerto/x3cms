@@ -952,7 +952,7 @@ class '.$uname.'_model extends X4Model_core
 		    
 		return $this->db->query(\'SELECT x.*, p.level 
 			FROM '.$table.' x
-			JOIN uprivs u ON u.id_user = \'.intval($_SESSION[\'xuid'\]).\' AND u.privtype = \\\''.$table.'\\\'
+			JOIN uprivs u ON u.id_area = x.id_area AND u.id_user = \'.intval($_SESSION[\'xuid'\]).\' AND u.privtype = \\\''.$table.'\\\'
 			LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = x.id
 			WHERE x.id_area = \'.intval($id_area).\' AND x.lang = \'.$this->db->escape($lang).$where.\' 
 			GROUP BY x.id
@@ -1007,15 +1007,12 @@ class '.$uname.'_model extends X4Model_core
 	 */
 	public function get_widget($title, $id_area, $area)
 	{
-		$mod = new Permission_model();
-		$mod->refactory_table($_SESSION[\'xuid\'], array($id_area), \''.$table.'\');
-		
 		// TO DO
 		
 		// Sample: get total number of active items
 		$ntot = (int) $this->db->query_var(\'SELECT COUNT(x.id) AS n
 			FROM '.$table.' x
-			JOIN uprivs u ON u.id_user = \'.intval($_SESSION[\'xuid'\]).\' AND u.privtype = \\\''.$table.'\\\'
+			JOIN uprivs u ON u.id_area = x.id_area AND u.id_user = \'.intval($_SESSION[\'xuid'\]).\' AND u.privtype = \\\''.$table.'\\\'
 			LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = x.id
 			WHERE x.id_area = \'.intval($id_area).\' AND x.xon = 1\');
 		
