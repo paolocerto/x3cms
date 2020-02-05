@@ -114,7 +114,7 @@ class X4Page_controller extends X4Cms_controller
 		if ($page) 
 		{
 			// check login if area is private 
-			if ($this->site->area['private'] && !in_array($url, $this->admitted)) 
+			if ($this->site->area->private && !in_array($url, $this->admitted)) 
 			{
 				if (file_exists(APATH.'controllers/'.X4Route_core::$area.'/login.php'))
 				{

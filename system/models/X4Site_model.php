@@ -47,18 +47,18 @@ class X4Site_model extends X4Model_core
 		parent::__construct('sites');
 		
 		// get area
-		$this->area = (array) $this->set_data();
+		$this->area = $this->set_data();
 		
 		// if no language is set by route set area predefined language
 		$this->lang = (empty(X4Route_core::$lang)) 
-			? $this->area['lang'] 
+			? $this->area->lang 
 			: X4Route_core::$lang;
 		
 		// set language
 		X4Route_core::set_lang($this->lang);
 		
 		// get site
-		$this->site = $this->get_site($this->area['id']);
+		$this->site = $this->get_site($this->area->id);
 		
 		if (!$this->area || !$this->site) 
 		{
@@ -254,6 +254,7 @@ class X4Site_model extends X4Model_core
                     WHERE 
                         id_area = '.intval($id_area).' AND 
                         lang = '.$this->db->escape($lang).' AND 
+                        bid = '.$this->db->escape($bid).' AND
                         xon = 1 AND 
                         date_in <= '.$this->time().' AND 
                         (date_out = 0 OR date_out >= '.$this->time().') 
@@ -431,7 +432,7 @@ class X4Site_model extends X4Model_core
 			if ($id_area == 1) 
 			{
 				$level = ', IF (p.id IS NULL, u.level, p.level) AS level';
-				$page_privs = 'JOIN uprivs u ON u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('pages').'
+				$page_privs = 'JOIN uprivs u ON u.id_area = pa.id_area AND u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('pages').'
 					LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = pa.id AND p.level > 0';
 			}
 			else 
@@ -442,7 +443,7 @@ class X4Site_model extends X4Model_core
 			// get menus
 			$sql = 'SELECT m.* 
 				FROM menus m 
-				WHERE m.id_theme = '.$this->area['id_theme'].' AND m.xon = 1';
+				WHERE m.id_theme = '.$this->area->id_theme.' AND m.xon = 1';
 			$menus = $this->db->query($sql);
 			
 			// get pages foreach menu
@@ -487,7 +488,7 @@ class X4Site_model extends X4Model_core
 			
 		if (empty($c))
 		{
-		    $c = $this->db->query('SELECT xfrom, url, name, description 
+			$c = $this->db->query('SELECT xfrom, url, name, description 
 				FROM pages 
 				WHERE id_area = '.intval($page->id_area).' AND
 					lang = '.$this->db->escape($page->lang).' AND 

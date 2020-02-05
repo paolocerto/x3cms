@@ -62,7 +62,7 @@ foreach($langs as $i)
 	if (($i->level > 2 && $i->xlock == 0) || $i->level == 4) 
 	{
 		$actions = '<a  class="bta" href="'.BASE_URL.'languages/edit/'.$i->id.'" title="'._EDIT.'"><i class="fas fa-pencil-alt fa-lg"></i></a>';
-		$actions .= ($i->code != $this->site->area['lang']) 
+		$actions .= ($i->code != $this->site->area->lang) 
 			? '<a class="btl" href="'.BASE_URL.'languages/set/xon/'.$i->id.'/'.(($i->xon+1)%2).'" title="'._STATUS.' '.$status.'"><i class="far fa-lightbulb fa-lg '.$on_status.'"></i>' 
 			: '<a><i class="far fa-lightbulb fa-lg invisible"></i></a>';
 		

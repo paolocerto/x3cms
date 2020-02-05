@@ -39,7 +39,7 @@ if (isset($page)) {
 <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.css">
 <link rel="stylesheet" href="<?php echo THEME_URL ?>css/normalize.css">
 <?php
-echo (!DEVEL && file_exists(PATH.'themes/'.$this->site->area['theme'].'/css/'.$css.'.min.css'))
+echo (!DEVEL && file_exists(PATH.'themes/'.$this->site->area->theme.'/css/'.$css.'.min.css'))
 	? '<link rel="stylesheet" href="'.THEME_URL.'css/'.$css.'.min.css">'
 	: '<link rel="stylesheet" href="'.THEME_URL.'css/'.$css.'.css">'
 ?>
@@ -138,10 +138,7 @@ else
 	<div class="band padded clearfix">
 		<footer class="one-half sm-one-whole push-one-fourth sm-push-none small gray double-padded">
 			<p class="small acenter"><a href="http://www.x3cms.net" title="X3 your next Content Management System">X3 CMS</a> &copy; <a href="http://www.cblu.net" title="Cblu.net - Software &amp; Web design">Cblu.net</a></p>
-<?php
-echo '<p class="xs-hidden xsmall">'.X4Bench_core::info('X4WebApp v. {x4wa_version} &copy; Cblu.net - execution time: {execution_time} - memory usage: {memory_usage} - queries: {queries} - included files: {included_files}');
-echo '<br />'.$browser.'</p>';
-?>
+		</footer>
 		</div>
 	</div>
 

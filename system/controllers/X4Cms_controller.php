@@ -53,7 +53,7 @@ class X4Cms_controller extends X4Controller_core
 		}
 		
 		define('RTL', $this->site->site->rtl);
-		define('THEME_URL', ROOT.'themes/'.$this->site->area['theme'].'/');
+		define('THEME_URL', ROOT.'themes/'.$this->site->area->theme.'/');
 		define('X4VERSION', 0.5);
 		define('X3VERSION', $this->site->site->version);
 	}

@@ -37,7 +37,7 @@ if (isset($page)) {
 <link rel="stylesheet" href="<?php echo THEME_URL ?>css/fontawesome-all.min.css">
 <link rel="stylesheet" href="<?php echo THEME_URL ?>css/normalize.css">
 <?php
-echo (!DEVEL && file_exists(PATH.'themes/'.$this->site->area['theme'].'/css/'.$css.'.min.css'))
+echo (!DEVEL && file_exists(PATH.'themes/'.$this->site->area->theme.'/css/'.$css.'.min.css'))
 	? '<link rel="stylesheet" href="'.THEME_URL.'css/'.$css.'.min.css">'
 	: '<link rel="stylesheet" href="'.THEME_URL.'css/'.$css.'.css">'
 ?>
@@ -140,7 +140,7 @@ if (!$this->site->site->xon)
 <footer id="foot" class="xsmall lightgray double-padded acenter">
 	<p><a href="http://www.x3cms.net" title="X3 CMS">X3 CMS</a> powered by <a href="http://www.cblu.net" title="Cblu.net - Web solutions">Cblu.net</a></p>
 <?php			
-echo X4Bench_core::info('<p class="xs-hidden xsmall">X4WebApp v. {x4wa_version} &copy; Cblu.net - execution time: {execution_time} - memory usage: {memory_usage} - queries: {queries} - included files: {included_files}</p>');
+//echo X4Bench_core::info('<p class="xs-hidden xsmall">X4WebApp v. {x4wa_version} &copy; Cblu.net - execution time: {execution_time} - memory usage: {memory_usage} - queries: {queries} - included files: {included_files}</p>');
 ?>
 
 </footer>
@@ -164,7 +164,7 @@ var domain = "<?php echo $this->site->site->domain ?>",
 <script src="<?php echo ROOT ?>files/js/mootools/Lasso.Crop.js"></script>
 <script src="<?php echo ROOT ?>files/js/swfobject.js"></script>
 <?php
-echo (!DEVEL && file_exists(PATH.'themes/'.$this->site->area['theme'].'/js/x3ui.min.js'))
+echo (!DEVEL && file_exists(PATH.'themes/'.$this->site->area->theme.'/js/x3ui.min.js'))
 	? '<script src="'.THEME_URL.'js/x3ui.min.js"></script>'
 	: '<script src="'.THEME_URL.'js/x3ui.js"></script>'
 ?>

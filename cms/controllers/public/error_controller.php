@@ -39,7 +39,7 @@ class Error_controller extends X4Cms_controller
 		
 		// get page
 		$page = $this->get_page('msg');
-		$view = new X4View_core(AdmUtils_helper::set_tpl($page->tpl, $this->site->area['theme']));
+		$view = new X4View_core(AdmUtils_helper::set_tpl($page->tpl, $this->site->area->theme));
 		$view->site = $this->site;
 		$view->page = $page;
 		
