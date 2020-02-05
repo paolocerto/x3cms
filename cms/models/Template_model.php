@@ -101,9 +101,6 @@ class Template_model extends X4Model_core
 				$result = $this->db->single_exec($sql);
 				if ($result[1]) 
 				{
-					// refactory permissions on templates table
-					$perm = new Permission_model();
-					$perm->refactory_table($_SESSION['xuid'], 1, 'templates');
 					return $result[0];
 				}
 				else
