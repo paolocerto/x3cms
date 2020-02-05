@@ -17,6 +17,7 @@ if (isset($tinymce))
 
 if (isset($js))
 {
+	echo '<script src="'.THEME_URL.'js/basic.js"></script>';
 	echo $js;
 }
 
@@ -30,6 +31,11 @@ if (!isset($close))
 if (isset($title))
 {
 	echo '<h2>'.$title.'</h2>';
+}
+
+if (isset($loader))
+{
+    echo '<div id="formloader" class="hidden"><i class="fas fa-sync fa-spin fa-5x orange" aria-hidden="true"></i></div>';
 }
 
 // show message

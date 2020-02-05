@@ -146,15 +146,31 @@ X3.append({
 			data: data,
 			onRequest: function() {
 				X3.spinnerOn();
+				if ($('formloader') != null) {
+					X3.unscroll();
+					$('formloader').removeClass('hidden');
+					$('editor').hide();
+				}
 			},
 			onFailure: function(xhr) {
 				X3.spinnerOff();
+				
+				if ($('formloader') != null) {
+					$('formloader').addClass('hidden');
+					$('editor').show();
+				}
+
 				// Error notification
 				X3.notification('error', xhr.responseJSON, div);
 			},
 			onSuccess: function(responseJSON, responseText){
 				X3.spinnerOff();
 				
+				if ($('formloader') != null) {
+					$('formloader').addClass('hidden');
+					$('editor').show();
+				}
+
 				// Update the elements transmitted through JSON
 				if (responseJSON && responseJSON.update){
 					// Updates all the elements in the update array
@@ -231,11 +247,9 @@ X3.append({
 					$('progressZone').setStyle('width', '100%');
 				}
 				//X3.reset_files();
-				
 				responseJSON = JSON.decode(responseText, true);
 				// Update the elements transmitted through JSON
-				// && qs.length > 0
-				if (responseJSON && responseJSON.update) {
+				if (responseJSON && qs.length > 0) {
 					if (responseJSON.message_type == 'success') {
 						X3.reset_files();
 					}
@@ -607,8 +621,8 @@ XUI.desktop = function(start_page, start_title){
 // link to scroll Up and scroll Down
 window.addEvent('load', function() {
     var scroll_fx = new Fx.Scroll(window); 
-    var xto_top = new Element('span#xscroll_up.scroll.scroll-to-top.fa.fa-2x.fa-arrow-circle-up').addEvent('click', function() { scroll_fx.toTop(); }).inject(document.body); 
-    var xto_bottom = new Element('span#xscroll_down.scroll.scroll-to-bottom.fa.fa-2x.fa-arrow-circle-down').addEvent('click', function() { scroll_fx.toBottom(); }).inject(document.body); 
+    var xto_top = new Element('span#xscroll_up.scroll.scroll-to-top.fas.fa-2x.fa-arrow-circle-up').addEvent('click', function() { scroll_fx.toTop(); }).inject(document.body); 
+    var xto_bottom = new Element('span#xscroll_down.scroll.scroll-to-bottom.fas.fa-2x.fa-arrow-circle-down').addEvent('click', function() { scroll_fx.toBottom(); }).inject(document.body); 
     
     var checkScroll = function() { 
 	    var body_scroll = document.body.getScroll(); 
@@ -1167,7 +1181,7 @@ var windowHeight = function (){
 		}
 	},
 	loadize = function(id, container, action) {
-	    el = document.getElementById(id);
+	        el = document.getElementById(id);
 		el.addEvent('change', function(e) {
 		    tag = this.get('tag');
 		    if (tag == 'select') {
@@ -1182,7 +1196,6 @@ var windowHeight = function (){
 	    s = s.replace(',', '.');
 	    return Number(s.replace(/[^0-9.-]+/g,""));
 	};
-	
 	
 // functions for Tiny MCE
 function toggleEditor(id) {
