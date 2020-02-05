@@ -68,17 +68,13 @@ class X4Pagination_helper
 		// icons
 		if (isset($_SESSION['xuid']))
 		{
-		    $left = '<span class="fa fa-arrow-left lg"></span>';
-		    $right = '<span class="fa fa-arrow-right lg"></span>';
+		    $left = '<i class="fas fa-arrow-left lg"></i>';
+		    $right = '<i class="fas fa-arrow-right lg"></i>';
 		}
 		else
 		{
-			$left = '<span class="fa fa-arrow-left lg"></span>';
-			$right = '<span class="fa fa-arrow-right lg"></span>';
-			/*
-		    $left = '<img src="'.THEME_URL.'img/left.png" alt="'._PREVIOUS.'" />';
-			$right = '<img src="'.THEME_URL.'img/right.png" alt="'._NEXT.'" />';
-			*/
+			$left = '<span class="fas fa-arrow-left lg"></span>';
+			$right = '<span class="fas fa-arrow-right lg"></span>';
 		}
 		
 		// before
