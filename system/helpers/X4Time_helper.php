@@ -267,6 +267,10 @@ class X4Time_helper
         
         switch($out) 
         {
+        case 'years':
+			$y = $time->format('%y');
+			return $y;
+			break;
         case 'time':
 			// hours - minutes - seconds
 			$h = $time->format('%H');
