@@ -145,10 +145,6 @@ class Themes_controller extends X3ui_controller
 							'id_user' => $_SESSION['xuid'], 
 							'level' => 4);
 					$result = $perm->pexec('themes', $array, 1);
-					// refactory permissions
-					$perm->refactory_table($_SESSION['xuid'], array(1), 'themes');
-					$perm->refactory_table($_SESSION['xuid'], array(1), 'templates');
-					$perm->refactory_table($_SESSION['xuid'], array(1), 'menus');
 				}
 				
 				$msg->update[] = array(

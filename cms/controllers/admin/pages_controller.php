@@ -331,9 +331,6 @@ class Pages_controller extends X3ui_controller
 							'id_user' => $_SESSION['xuid'], 
 							'level' => 4);
 					$result = $perm->pexec('pages', $array, $post['id_area']);
-					
-					// refresh article permissions
-					$perm->refactory_table($_SESSION['xuid'], array($post['id_area']), 'articles');
 				}
 				
 				// set message
@@ -851,10 +848,6 @@ window.addEvent("domready", function()
 				// create default contexts
 				$mod->initialize_context($id_area, $lang);
 				
-				// refresh permissions
-				$perm = new Permission_model();
-				$perm->refactory($_SESSION['xuid']);
-				
 				// set update
 				$msg->update[] = array(
 					'element' => $qs['div'],
@@ -888,10 +881,6 @@ window.addEvent("domready", function()
 			
         if ($res[1])
         {
-            // refactory permissions
-            $mod = new Permission_model();
-            $mod->refactory($_SESSION['xuid']);
-				
             echo '<h1>CONGRATULATIONS!</h1>';
             echo '<p>The changes on the database are applied.</p>';
             

@@ -430,15 +430,6 @@ class Files_controller extends X3ui_controller
 				
 				// insert new files
 				$result = $mod->insert_file($post);
-				if ($result[1]) 
-				{
-					// add permission
-					$perm = new Permission_model();
-					foreach($areas as $i)
-					{
-						$perm->refactory_table($_SESSION['xuid'], array($i), 'files');
-					}
-				}
 				
 				// set message
 				$msg = AdmUtils_helper::set_msg($result);

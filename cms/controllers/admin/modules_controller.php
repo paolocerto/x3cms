@@ -575,10 +575,6 @@ window.addEvent("domready", function()
 			
         if ($res)
         {
-            // refactory permissions
-            $mod = new Permission_model();
-            $mod->refactory($_SESSION['xuid']);
-            
             echo '<h1>CONGRATULATIONS!</h1>';
             echo '<p>The changes on the database are applied.</p>';
         }

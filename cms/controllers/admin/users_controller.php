@@ -463,6 +463,7 @@ window.addEvent("domready", function()
 			'options' => array($area->get_areas($g->id_area, false), 'id', 'name'),
 			'multiple' => 4,
 			'name' => 'domain',
+			'rule' => 'required',
 			'extra' => 'class="large"'
 		);
 		
@@ -578,9 +579,6 @@ window.addEvent("domready", function()
 								'id_user' => $_SESSION['xuid'], 
 								'level' => 4);
 						$res = $perm->pexec('users', $array, $_post['id_area']);
-						
-						// refactory permissions for the user
-						$perm->refactory($id);
 					}
 				}
 				
@@ -934,7 +932,7 @@ window.addEvent("domready", function()
 			
 			// do action 
 			$mod = new Permission_model();
-			$result = $mod->refactory($id_user, null);
+			$result = $mod->refactory($id_user);
 			
 			// set message
 			$this->dict->get_words();
@@ -942,11 +940,13 @@ window.addEvent("domready", function()
 			
 			// set update
 			if ($result[1])
+			{
 				$msg->update[] = array(
 					'element' => $qs['div'],
 					'url' => urldecode($qs['url']),
 					'title' => null
 				);
+			}
 		}
 		$this->response($msg);
 	}
@@ -1113,7 +1113,9 @@ window.addEvent("domready", function()
 			{
 				// if the new value do not match the old value
 				if ($_post['value_'.$c] != $_post['old_value_'.$c]) 
+				{
 					$post[] = array('id' => $_post['id_'.$c], 'value' => $_post['value_'.$c]);
+				}
 				$c++;
 			}
 			
