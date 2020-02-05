@@ -9,7 +9,7 @@
  */
 
 /**
- * x4search plugin
+ * X4search plugin
  *
  * @package		X3CMS
  */

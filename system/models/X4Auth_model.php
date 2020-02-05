@@ -186,8 +186,6 @@ class X4Auth_model extends X4Model_core
 			$last_in = $this->areas_tables[$tmp_id_area]['last_in'];
 			$_SESSION['last_in'] = $u->$last_in;
 			
-$this->logger($_SESSION[$this->areas_tables[$tmp_id_area]['session']], 1, 'users', 're-log in');
-			
             // level
             if ($id_area == 1)
             {

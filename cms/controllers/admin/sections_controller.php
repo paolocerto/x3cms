@@ -189,7 +189,7 @@ window.addEvent("domready", function()
 	 */
 	public function compositing()
 	{
-	    $msg = null;
+		$msg = null;
 		// check permission
 		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'pages', $_POST['id_page'], 3);
 		

@@ -300,7 +300,7 @@ class X4Files_helper
 	 */
 	private static function filter_mime($mimes, $file_type)
 	{
-	    $mime = array();
+		$mime = array();
 		$mime['img'] = (empty($mimes)) ? self::$mimg : array_intersect(self::$mimg, $mimes);
 		$mime['media'] = (empty($mimes)) ? self::$mmedia : array_intersect(self::$mmedia, $mimes);
 		$mime['template'] = (empty($mimes)) ? self::$mtemplate : array_intersect(self::$mtemplate, $mimes);

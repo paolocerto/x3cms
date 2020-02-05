@@ -169,7 +169,7 @@ if (!empty($pages))
 				
 			echo '<li '.$inmenu.'><table><tr>
 					<td><a class="btm" href="'.BASE_URL.'pages/index/'.$i->id_area.'/'.$i->lang.'/'.str_replace('/', '§', $i->url).'/1" title="'._SUBPAGES.'">'.stripslashes($i->name).'</a></td>
-					<td class="aright" style="width:10em;">'.$actions.$delete.'</td>
+					<td class="aright" style="width:12em;">'.$actions.$delete.'</td>
 					</tr></table></li>';
 		}
 	}

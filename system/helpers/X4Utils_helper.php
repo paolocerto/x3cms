@@ -770,7 +770,7 @@ function save_article(bid, content) {
 	 */
 	public static function navbar($array, $sep = ' > ', $home = true)
 	{
-	    $str = '';
+		$str = '';
 		if (!empty($array))
 		{
 			$item = array_pop($array[0]);
