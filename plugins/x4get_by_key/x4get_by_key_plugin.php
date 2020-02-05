@@ -13,7 +13,7 @@
  *
  * @package		X3CMS
  */
-class x4get_by_key_plugin extends X4Plugin_core implements X3plugin
+class X4get_by_key_plugin extends X4Plugin_core implements X3plugin
 {
 	/**
 	 * Constructor
@@ -114,7 +114,7 @@ class x4get_by_key_plugin extends X4Plugin_core implements X3plugin
 			}
 			else 
 			{
-				$out .= '<div class="block"><p>'._NO_ITEMS.'</p></div>';
+				//$out .= '<div class="block"><p>'._NO_ITEMS.'</p></div>';
 			}
 		}
 		return $out;

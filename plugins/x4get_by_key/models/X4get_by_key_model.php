@@ -111,4 +111,3 @@ class X4get_by_key_model extends X4Model_core
 			ORDER BY a.date_in DESC, a.id DESC');
 	}
 }
-?>
