@@ -58,3 +58,4 @@ if ($items)
 else {
 	echo '<p>'._NO_ITEMS.'</p>';
 }
+<script src="<?php echo THEME_URL ?>js/basic.js"></script>
