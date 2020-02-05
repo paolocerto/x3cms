@@ -143,6 +143,8 @@ label input.check.inline.first {margin:.2em .5em .5em 0;}
 
 .inliner input.radio:first-child {margin-left:0;}
 .inliner .radiobox {float:left;margin:.5em 2em 0 0;}
+.acenter .inliner .radiobox {display:inline-block;width:280px;margin:.5em 2em 0 0;}
+
 .inliner .radiobox label {display:inline;}
 
 textarea {overflow:auto;display: inline-block;vertical-align:top;resize:vertical;height:6em;} 
@@ -206,7 +208,6 @@ td.formatted ol li {border-top:1px solid #ccc;padding:0 0 5px 5px;}
 td.formatted ol li:first-child {border:none;}
 td.formatted ol li.response {border-left:5px solid #e60;}
 
-
 /* SIZES */
 
 .small {font-size:.9em;}
@@ -215,6 +216,7 @@ td.formatted ol li.response {border-left:5px solid #e60;}
 .xbig {font-size:1.4em;}
 
 .thumb {width:150px;}
+.mthumb {max-width:150px;}
 .thumb_100 {max-width:100px;}
 .thumb_25 {max-width:25px;}
 .thumb_40 {max-width:40px;margin:0 1em 1em 0;}
@@ -294,7 +296,6 @@ td.formatted ol li.response {border-left:5px solid #e60;}
 .push-three-fifth {margin-left:60%;}
 .push-four-fifth {margin-left:80%;}
 
-
 .zerop, .no-pad {padding:0;}
 .zerom, .no-gap, .nomargin {margin:0;}
 .zerop * {margin:0;padding:0;}
@@ -354,12 +355,12 @@ td.formatted ol li.response {border-left:5px solid #e60;}
 /* COLORS */
 .invisible {color:rgba(255, 255, 255, 0)}
 .bwhite {background:#fff;}
-.bdarkgray {background:#242e32;}
+.bdarkgray {background:#222d32;}
 .bmiddlegray {background:#222d32;}
 .blightgray {background:#ccc;}
 .mo {background:#ccc;}
 .highlight {background:#fec;}
-.softwarn {background:#ff0;color:#222d32;}}
+.softwarn {background:#ff0;color:#222d32;}
 .odd {background:#fff;}
 .even {background:#eee;}
 
@@ -472,6 +473,8 @@ ul.margin li {padding:2px 5px;border-bottom:1px solid #ccc;}
 #close-modal {width:20px;padding:.5em 1em;float:right;margin-top:-3.3em;margin-right:-2em;}
 #close-modal:hover i {color:#09c;cursor:pointer;}
 
+/* LOADER */
+#formloader {max-width:100%;padding:3em;text-align:center;background:#fff;opacity:0.7;}
 
 /* SCROLLBAR */
 #scrolled {max-height:700px;overflow:hidden;margin:0 -2em -2em -2em;padding:0 2em;}
