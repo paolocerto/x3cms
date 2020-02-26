@@ -206,12 +206,11 @@ window.addEvent("domready", function()
 			// handle _POST for each section 
 			for($i = 1; $i <= $_POST['snum']; $i++)
 			{
-			    $sort = $_POST['sort'.$i];
+				$sort = $_POST['sort'.$i];
+				$post['progressive'] = $i;
 			    // disable strange behaviour
 			    if (strlen($sort) >= 32)
 			    {
-                    $post['progressive'] = $i;
-                    
                     // delete first comma
                     $articles = (substr($sort, 0, 1) == ',') 
                         ? substr($_POST['sort'.$i], 1) 
@@ -219,9 +218,15 @@ window.addEvent("domready", function()
                     
                     $post['articles'] = str_replace(',', '|', $articles);
                     $sections[] = $post;
-                }
+				}
+				else
+				{
+					// empty sections
+					unset($post['articles']);
+					$sections[] = $post;
+				}
 			}
-			
+
 			// register composition
 			$mod = new Section_model();
 			$result = $mod->compose($sections);

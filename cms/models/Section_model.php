@@ -83,7 +83,16 @@ class Section_model extends X4Model_core
 			
 			// update or insert
 			if ($s) 
-				$res = $this->update($s->id, $i);
+			{
+				if (isset($i['articles']))
+				{
+					$res = $this->update($s->id, $i);
+				}
+				else
+				{
+					$res = $this->delete($s->id);
+				}
+			}
 			else 
 			{
 				$res = $this->insert($i);
