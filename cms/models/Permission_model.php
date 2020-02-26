@@ -416,6 +416,7 @@ class Permission_model extends X4Model_core
 			// k => privtype and v => level
 			foreach($up as $k => $v)
 			{
+				$install = false;
 				$items = array();
 				// handle all if area is admin and only commons if area isn't admin 
 				if ($i->id_area == 1 || !in_array($k, $this->admin_privtypes)) 
@@ -426,16 +427,23 @@ class Permission_model extends X4Model_core
 						// get items
 						// if force is null get all items with permissions equal to default so we can delete them
 						// if force is not null get all items with permission different than default (v) so we can delete them
-						$items = $this->get_all_records($k, $id_user, $i->id_area, $v, $force);
+						$items = ($force)
+							? array(1)
+							: $this->get_all_records($k, $id_user, $i->id_area, $v, $force);
+					}
+					else
+					{
+						$install = true;
+						$items = array(1);
 					}
 				}
 				
 				// if there are something to handle
 				if ($items) 
 				{
-					if (!$force) 
+					if (!$force && !$install) 
 					{
-						// delete permissions set as default
+						// mantain personalizations
 						foreach($items as $ii) 
 						{
 							$sql[] = 'DELETE FROM privs WHERE id = '.$ii->pid;
@@ -470,8 +478,8 @@ class Permission_model extends X4Model_core
 	private function get_all_records($table, $id_user, $id_area = 0, $level, $force)
 	{
 		$where = ($force) 
-			? ' WHERE p.level <> '.intval($level) // with different level permissions
-			: ' WHERE p.level = '.intval($level);
+			? ' WHERE p.level = '.intval($level) // with different level permissions
+			: ' WHERE p.level <> '.intval($level);
 		
 		// Some tables require special treatment
 		$sql = '';
@@ -509,6 +517,7 @@ class Permission_model extends X4Model_core
 		case 'sites':
 		case 'themes':
 		case 'groups':
+		case 'widgets':
 			$sql = 'SELECT DISTINCT t.id, p.id AS pid 
 				FROM '.$table.' t 
 				JOIN privs p ON p.what = '.$this->db->escape($table).' AND p.id_what = t.id AND p.id_who = '.intval($id_user).'
@@ -528,6 +537,7 @@ class Permission_model extends X4Model_core
 			// modules and others generic tables
 			if (!in_array($table, $this->no_privs)) 
 			{
+				// no mysql tables
 				$prefix = substr($table, 0, 2);
 				if (in_array($prefix, $excluded))
 				{
