@@ -2,6 +2,7 @@
 DOCS/*
 puphet/*
 vendor/*
+node_modules/*
 
 # Config
 robot.txt
