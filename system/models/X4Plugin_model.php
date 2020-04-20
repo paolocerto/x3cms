@@ -62,7 +62,7 @@ class X4Plugin_model extends X4Model_core
 			JOIN modules m ON m.name = pa.xrif AND m.id_area = pa.id_area
 			JOIN uprivs u ON u.id_area = m.id_area AND u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('modules').'
 			LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = m.id
-			WHERE pa.xrif = '.$this->db->escape($plugin_name).' AND p.id_area = '.intval($id_area).'
+			WHERE pa.xrif = '.$this->db->escape($plugin_name).' AND pa.id_area = '.intval($id_area).'
 			ORDER BY pa.id ASC');
 	}
 	
