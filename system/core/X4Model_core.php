@@ -66,10 +66,11 @@ abstract class X4Model_core
 	 *
 	 * @param	integer $id_area Area ID
 	 * @param	string	$lang Language code
+	 * @param   	integer $id_page Page ID
 	 * @param	string	$param Parameter
 	 * @return	array
 	 */
-	public function configurator($id_area, $lang, $param)
+	public function configurator($id_area, $lang, $id_page, $param)
 	{
 	    $fields = array();
 	    
@@ -400,7 +401,7 @@ abstract class X4Model_core
 	 * @final
 	 * @param   array	data to insert
 	 * @param   string	table name
-	 * @param   array   array of floats    //boolean	Mongo ID switcher
+	 * @param   array   	array of floats    //boolean	Mongo ID switcher
 	 * @return  array	(id row, success)
 	 */
 	final public function insert($data, $table = '', $floats = array())    //$mongo_id = null)
@@ -719,7 +720,7 @@ abstract class X4Model_core
 		// default result
 		$res = array(0, 0);
 				
-		if (LOG && $this->db->sql)
+		if (LOGS && $this->db->sql)
 		{
 			// Relational DB
 			$log = (empty($memo))
