@@ -413,24 +413,26 @@ window.addEvent("domready", function()
 				
 				// enable logs
 				if (LOGS && DEVEL)
+				{
 					$mod->set_log(true);
-				
+				}
+
 				// update or insert
-				if ($id_area) 
+				if ($id_area)
 				{
 					$result = $mod->update($id_area, $post);
 					
-					if ($id == 1 && X4Route_core::$lang != $post['lang'])
+					if ($_post['id'] == 1 && X4Route_core::$lang != $post['lang'])
 					{
 						$redirect = true;
 					}
 				}
-				else 
+				else
 				{
 					$result = $mod->insert($post);
 					
 					// create permissions
-					if ($result[1]) 
+					if ($result[1])
 					{
 						$id_area = $result[0];
 						$perm = new Permission_model();
@@ -441,13 +443,6 @@ window.addEvent("domready", function()
 						$res = $perm->set_aprivs($_SESSION['xuid'], $domain);
 						// uprivs premissions
 						$perm->set_uprivs($_SESSION['xuid'], $id_area, 'areas', 4);
-						// privs permissions
-						$array[] = array(
-								'action' => 'insert', 
-								'id_what' => $id_area, 
-								'id_user' => $_SESSION['xuid'], 
-								'level' => 4);
-						$res = $perm->pexec('areas', $array, $id_area);
 					}
 				}
 				
