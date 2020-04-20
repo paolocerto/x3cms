@@ -481,7 +481,7 @@ class X4Form_helper
 				? 'class="inline error"'
 				: 'class="inline"';
 			
-			$tmp = '<label '.$label_class.' for="'.$e['name'].'"><input type="checkbox" '.$class.' name="'.$e['name'].'" id="'.$e['name'].'" value="'.$e['value'].'" '.$checked.' /> &nbsp;&nbsp;'.stripslashes($e['suggestion']).'</label>';
+			$tmp = '<label '.$label_class.' for="'.$e['name'].'"><input type="checkbox" '.$class.' name="'.$e['name'].'" id="'.$e['name'].'" value="'.$e['value'].'" '.$checked.' /> &nbsp;&nbsp;<span>'.stripslashes($e['suggestion']).'</span></label>';
 		}
 		else
 		{
@@ -595,7 +595,15 @@ class X4Form_helper
 					
 				if ($inline)
 				{
-					$tmp .= '<div class="radiobox"><input type="radio" '.$class.' name="'.$e['name'].'" id="'.$e['name'].'_'.$c.'" value="'.$i->$v.'" '.$checked.' /> <label for="'.$e['name'].'_'.$c.'" '.$error.'>'.stripslashes($i->$o).'</label></div>';
+					if (isset($e['bootstrap']))
+					{
+						$tmp .= '<input type="radio" class="radio inline custom-control-input" name="'.$e['name'].'" id="'.$e['name'].'_'.$c.'" value="'.$i->$v.'" '.$checked.' /> <label class="inline custom-control-label" for="'.$e['name'].'_'.$c.'" '.$error.'>'.stripslashes($i->$o).'</label>';
+					}
+					else
+					{
+						$tmp .= '<div class="radiobox"><input type="radio" '.$class.' name="'.$e['name'].'" id="'.$e['name'].'_'.$c.'" value="'.$i->$v.'" '.$checked.' /> <label for="'.$e['name'].'_'.$c.'" '.$error.'>'.stripslashes($i->$o).'</label></div>';
+					}
+					
 				}
 				else
 				{
@@ -605,7 +613,7 @@ class X4Form_helper
 			}
 		}
 		
-		if ($inline) 
+		if ($inline && !isset($e['bootstrap'])) 
 		{
 			$tmp = '<div class="inliner clearfix">'.$tmp.'</div>';
 		}
