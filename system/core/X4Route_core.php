@@ -166,7 +166,7 @@ final class X4Route_core
 				// set additional area
 				self::$area = array_shift(self::$args);
 
-				// set the folder				
+				// set the folder
 				self::$folder = $default_config[self::$area];
 
 				// add additional area to the areas array
@@ -233,32 +233,6 @@ final class X4Route_core
 	}
 	
 	/**
-	 * get id_area
-	 *
-	 * @static
-	 * @return  integer
-	 */ 
-	public static function get_id_area()
-	{
-	    $mod = new Log_model();
-	    return $mod->find('areas', 'id', array('name' => X4Route_core::$area));
-	}
-	
-	/**
-	 * get area name by ID
-	 *
-	 * @static
-	 * @return  string
-	 */ 
-	public static function get_area_by_id($id_area)
-	{
-	    $mod = new Log_model();
-	    $area = $mod->get_var($id_area, 'areas', 'name');
-	    //$tmp = array_flip(self::$areas);
-		return $area;
-	}
-	
-	/**
 	 * get query string
 	 *
 	 * @static
@@ -271,7 +245,7 @@ final class X4Route_core
 		else
 		{
 			$a = array();
-			$items = explode('&amp;', htmlentities(strip_tags(urldecode(self::$query_string)), ENT_QUOTES, 'UTF-8', false));
+			$items = explode('&amp;', htmlentities(strip_tags(urldecode(self::$query_string)), ENT_QUOTES | ENT_IGNORE, 'UTF-8', false));
 			
 			foreach($items as $i)
 			{
