@@ -8,7 +8,7 @@
  * @package		X3CMS
  */
 
-echo stripslashes(X4Utils_helper::build_menu('A', $menus['admin_global'], 1, 'ALL', 5, false, 'id="nav"'));
+echo stripslashes(X4Utils_helper::build_menu('A', $menus['admin_global'], 1, 5, 'id="nav"'));
 ?>
 <script>
 $('nav').MooDropMenu();
