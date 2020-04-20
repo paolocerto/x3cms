@@ -173,7 +173,7 @@ class X4Site_model extends X4Model_core
 		return $this->db->query_row('SELECT p.*, a.name AS area, a.private
 			FROM pages p
 			JOIN areas a ON a.id = p.id_area
-			WHERE a.id = '.intval($this->area['id']).' AND 
+			WHERE a.id = '.intval($this->area->id).' AND 
 				p.lang = '.$this->db->escape($this->lang).' AND 
 				p.url = '.$this->db->escape($method).' AND
 				p.xon = 1');
@@ -432,8 +432,8 @@ class X4Site_model extends X4Model_core
 			if ($id_area == 1) 
 			{
 				$level = ', IF (p.id IS NULL, u.level, p.level) AS level';
-				$page_privs = 'JOIN uprivs u ON u.id_area = pa.id_area AND u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('pages').'
-					LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = pa.id AND p.level > 0';
+				$page_privs = 'JOIN uprivs u ON u.id_area = pa.id_area AND u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('menus').'
+					LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = pa.id_menu AND p.level > 0';
 			}
 			else 
 			{
@@ -444,13 +444,14 @@ class X4Site_model extends X4Model_core
 			$sql = 'SELECT m.* 
 				FROM menus m 
 				WHERE m.id_theme = '.$this->area->id_theme.' AND m.xon = 1';
+
 			$menus = $this->db->query($sql);
 			
 			// get pages foreach menu
 			$c = array();
 			foreach($menus as $i)
 			{
-				$c[$i->name] = $this->db->query('SELECT pa.url, pa.name, pa.title, pa.xfrom, pa.hidden, pa.deep, pa.ordinal '.$level.' 
+				$c[$i->name] = $this->db->query('SELECT pa.url, pa.name, pa.title, pa.xfrom, pa.hidden, pa.fake, pa.deep, pa.ordinal '.$level.' 
 					FROM pages pa
 					'.$page_privs.'
 					WHERE 
@@ -488,7 +489,7 @@ class X4Site_model extends X4Model_core
 			
 		if (empty($c))
 		{
-			$c = $this->db->query('SELECT xfrom, url, name, description 
+			$c = $this->db->query('SELECT xfrom, url, name, description, fake 
 				FROM pages 
 				WHERE id_area = '.intval($page->id_area).' AND
 					lang = '.$this->db->escape($page->lang).' AND 
