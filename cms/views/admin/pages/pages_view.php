@@ -257,12 +257,23 @@ foreach($sort as $k => $v)
 }
 else 
 {
-	if (!isset($page->url) || $page->url == 'home') 
-		echo '<p>'._NO_SUBPAGES._TRAIT_.'<a class="btl" href="'.BASE_URL.'pages/init/'.$id_area.'/'.$lang.'" title="'._INIZIALIZE_AREA.'">'._INIZIALIZE_AREA.'</a></p>';
+	if ($_SESSION['level'] > 1)
+	{
+		if (!isset($page->url) || $page->url == 'home') 
+		{
+			echo '<p>'._NO_SUBPAGES._TRAIT_.'<a class="btl" href="'.BASE_URL.'pages/init/'.$id_area.'/'.$lang.'" title="'._INIZIALIZE_AREA.'">'._INIZIALIZE_AREA.'</a></p>';
+		}
+		else
+		{
+			echo '<p>'._NO_SUBPAGES.'</p>';
+		}
+	}
 	else
-		echo '<p>'._NO_SUBPAGES.'</p>';
-	
+	{
+		echo '<p>'._NOT_PERMITTED.'</p>';
+	}
 	echo '
+<script src="'.THEME_URL.'js/basic.js"></script>
 <script>
 window.addEvent("domready", function() {
 	X3.content("filters", "pages/filter/'.$id_area.'/'.$lang.'/'.$page->url.'", "'.addslashes(X4Utils_helper::navbar($navbar, ' . ')).'");
