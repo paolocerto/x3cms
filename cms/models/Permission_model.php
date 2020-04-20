@@ -28,7 +28,7 @@ class Permission_model extends X4Model_core
 		'_theme_install',
 		'_user_creation',
 		'groups',
-		'languages',
+		//'languages',
 		'menus',
 		'privs',
 		'sites',
@@ -333,15 +333,19 @@ class Permission_model extends X4Model_core
 	{
 		// action areas
 		$areas = $this->get_aprivs($id_user);
+
 		// refresh user permissions syncronize with group permissions
-		$res = $this->sync_upriv($id_user, $areas);
-		
-		if ($res[1]) 
+		$result = $this->sync_upriv($id_user, $areas);
+
+		if ($result[1])
 		{
 			// foreach areas and foreach privtype refresh permissions
 			$res = $this->sync_priv($id_user, $areas, $force);
 		}
-		return (isset($res)) ? $res : array(0,1);
+
+		return (isset($res))
+			? $res 
+			: array(0,1);
 	}
 	
 	/**
@@ -389,7 +393,7 @@ class Permission_model extends X4Model_core
 					WHERE u.id = '.$v.' AND p.id_who = '.$id_user.' AND p.what = \''.$k.'\' AND p.id_area = '.$i->id_area;
 			}
 		}
-		
+
 		return (empty($sql)) 
 			? array(0,1) 
 			: $this->db->multi_exec($sql);
