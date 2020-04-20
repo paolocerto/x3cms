@@ -59,22 +59,18 @@ class Area_model extends X4Model_core
 	 * @param   integer $id_area Area ID
 	 * @return  array	array of area objects
 	 */
-	public function get_areas($id_area = 1, $priv = true) 
+	public function get_areas($id_area = 1) 
 	{
 		// condition
 		$where = ($id_area == 1) 
 			? '' 
-			: ' WHERE a.id = '.intval($id_area);
-			
-		$join = ($priv)
-		    ? ''
-		    : 'LEFT';
+			: ' AND a.id = '.intval($id_area);
 		
-        $sql = 'SELECT a.*, IF(p.id IS NULL, u.level, p.level) AS level
+        $sql = 'SELECT a.*, u.level
             FROM areas a
-			JOIN uprivs u ON u.id_area = a.id AND u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('areas').'
-			LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = a.id
-			'.$where.'
+			JOIN aprivs p ON p.id_area = a.id
+			JOIN uprivs u ON u.id_area = a.id AND u.id_user = p.id_user AND u.privtype = '.$this->db->escape('areas').'
+			WHERE u.id_user = '.intval($_SESSION['xuid']).' '.$where.'
 			GROUP BY a.id
             ORDER BY a.id ASC';
 		
