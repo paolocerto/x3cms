@@ -401,13 +401,7 @@ var myScroll = new Scrollable($("scrolled"));
 					$area = $mod->get_by_id($id_area, 'areas', 'name');
 					// add permission
 					$mod = new Permission_model();
-					$array[] = array(
-						'action' => 'insert', 
-						'id_what' => $result, 
-						'id_user' => $_SESSION['xuid'], 
-						'level' => 4
-					);
-					$result = $mod->pexec('modules', $array, $id_area);
+					$mod->refactory($_SESSION['xuid']);
 					
 					// refresh deep, xpos and ordinal
 					$mod = new Menu_model();

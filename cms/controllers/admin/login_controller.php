@@ -247,6 +247,10 @@ class Login_controller extends X4Cms_controller
 					setcookie(COOKIE.'_login', $conditions['username'].'-'.$conditions['password'], time() + 2592000, '/', $_SERVER['HTTP_HOST']);
 				}
 				
+				// refactory permissions
+				$mod = new Permission_model();
+				$mod->refactory($_SESSION['xuid']);
+				
 				// log
 				if (LOGS)
 				{
