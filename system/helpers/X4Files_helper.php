@@ -29,7 +29,7 @@ class X4Files_helper
 	    'application/zip', 'application/x-zip', 'application/x-zip-compressed', 'application/x-rar', 'application/x-rar-compressed',
 	    'application/vnd.oasis.opendocument.text', 'application/vnd.oasis.opendocument.presentation', 'application/vnd.oasis.opendocument.spreadsheet',
 	    'binary/octet-stream', 'audio/mpeg', 'audio/wav', 'audio/x-wav', 'application/x-compress', 'application/x-compressed', 'multipart/x-zip',
-	    'application/pkcs7-mime', 'application/x-pkcs7-mime', 'application/x-dike');
+	    'application/octet-stream', 'application/pkcs7-mime', 'application/x-pkcs7-mime', 'application/x-dike');
 	private static $file = array();
 	
 	private static function phpv()
@@ -1469,7 +1469,7 @@ class X4Files_helper
 	public static function folder_exist($folder) 
 	{
 		// is set?
-		if ($folder == '')
+		if (!$folder || $folder == '')
 		{
 			return false;
 		}
@@ -1608,7 +1608,6 @@ class X4Files_helper
 	    }
 	    return $icon;
 	}
-	            
 }
 
 /**
