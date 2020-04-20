@@ -238,51 +238,7 @@ class X4Checker_helper
 	 */
 	public static function check_url($str)
 	{
-		$url = @parse_url($str);
-		if ($url) 
-		{
-			$url = array_map('trim', $url);
-			$url['port'] = (!isset($url['port'])) 
-				? 80 
-				: (int)$url['port'];
-				
-			$path = (isset($url['path'])) 
-				? $url['path'] 
-				: '/';
-			
-			$path .= ( isset ( $url['query'] ) ) 
-				? "?$url[query]" 
-				: '';
-				
-			if (isset($url['host']) && $url['host'] != gethostbyname($url['host'])) 
-			{
-				switch ($url['scheme'])
-				{
-				case 'https':
-					/*
-					if (function_exists('curl_version'))
-					{
-						// check with curl
-						return self::curl_headers($str);
-					}
-					else
-					{
-					*/
-						// alternative headers checker
-						return self::alternative_headers($str);
-					//}
-					break;
-				case 'http':
-					$headers = get_headers($url['scheme'].'://'.$url['host'].':'.$url['port'].$path);
-					$headers = (is_array($headers)) 
-						? implode ("\n", $headers) 
-						: $headers;
-					return ( bool ) preg_match ( '#^HTTP/.*\s+[(200|301|302)]+\s#i', $headers );
-					break;
-				}
-			}
-		}
-		return false;
+		return (filter_var($str, FILTER_VALIDATE_URL) !== false);
 	}
 	
 	public static function curl_headers($url) 
@@ -407,11 +363,13 @@ class X4Checker_helper
 		if(preg_match($regex,$value)) 
 		{
 			// Regex passed, check checksum
-			if(!X4Checker::iban_verify_checksum($value)) { 
+			if(!X4Checker_helper::iban_verify_checksum($value)) 
+			{ 
 				return false;
 			}
 		}
-		else {
+		else 
+		{
 			return false;
 		}
 		
@@ -428,9 +386,9 @@ class X4Checker_helper
 		// move first 4 chars (countrycode and checksum) to the end of the string
 		$tempiban = substr($iban, 4).substr($iban, 0, 4);
 		// subsitutute chars
-		$tempiban = X4Checker::iban_checksum_string_replace($tempiban);
+		$tempiban = X4Checker_helper::iban_checksum_string_replace($tempiban);
 		// mod97-10
-		$result = X4Checker::iban_mod97_10($tempiban);
+		$result = X4Checker_helper::iban_mod97_10($tempiban);
 		// checkvalue of 1 indicates correct IBAN checksum
 		if ($result != 1) 
 		{
