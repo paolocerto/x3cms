@@ -908,172 +908,39 @@ function save_article(bid, content) {
 	}
 	
 	/**
-	 * Build a nested menu
+	 * Check relation
+	 * Check if two ordinals are related (one is a substr of the other)
 	 *
 	 * @static
-	 * @param string	$ordinal ordinal of visualized page
-	 * @param array		$items menu array
-	 * @param integer	$deep depth of the origin of the first item
-	 * @param string	$key [ALL|RELATED_INSIDE|RELATED_OUTSIDE|NONE]
-	 * @param integer	$levels number of levels to display
-	 * @param boolean	$arrow display an arrow if submenu
-	 * @param string	$ul_attribute first ul attribute
-	 * @param boolean	$home display the home link
-	 * @return string
+	 * @param string	$ordinal_active_page ordinal of visualized page
+	 * @param string	$ordinal_menu_item ordinal of another page
+	 * @return boolean
 	 */
-	public static function build_menu($ordinal, $items, $deep = 1, $key = 'NONE', $levels = 1, $arrow = false, $ul_attribute = '', $home = false, $vertical = false)
+	public static function check_relation($ordinal_active_page, $ordinal_menu_item)
 	{
-		$menu = '';
-		$sub = '';
-		$io = 0;
-		
-		if (is_array($items)) 
+		$oap_len = strlen($ordinal_active_page);
+		$omi_len = strlen($ordinal_menu_item);
+		if ($oap_len != $omi_len)
 		{
-			// preset related
-			switch($key) 
+			// not at the same level
+			if ($oap_len > $omi_len)
 			{
-			case 'RELATED_INSIDE':
-			case 'RELATED_OUTSIDE':
-				$min = 4 + $deep*4;
-				$r = true;
-				
-				// inside or outside
-				$io = 1 + intval($key == 'RELATED_OUTSIDE');
-				break;
-			case 'ALL':
-				$r = true;
-				break;
-			default:
-				$r = false;
-				break;
+				// active page is a subpage
+				$ordinals = array($ordinal_active_page, $ordinal_menu_item);
+				sort($ordinals);
+				return (strstr($ordinals[1], $ordinals[0]) != '');
 			}
-			
-			$tmp_deep = $deep - 1;
-			foreach($items as $i)
+			else
 			{
-				// check related
-				if ($io && $tmp_deep == $deep)
-					$r = substr($i->ordinal, 0, $min) == substr($ordinal, 0, $min);
-				
-				// check if item is in the right range of deep
-				if ($i->deep == $deep || ($r && $i->deep < ($deep + $levels))) 
-				{
-					// check if you need open an ul
-					if ($tmp_deep < $i->deep)
-					{
-						$tmp_deep++;
-						// handle inside and outside
-						if ($io > 1 && $tmp_deep > $deep)
-						{
-							$sub .= '<div class="sub"><ul>';
-						}
-						else
-						{
-							if ($arrow && $tmp_deep > $deep)
-							{
-								$menu .= '<div class="arrow pointer"><span class="fas fa-chevron-down"></span></div>';
-							}
-							
-							// First ul
-							if ($tmp_deep == 1 && !empty($ul_attribute))
-							{
-								$ul_attr = $ul_attribute;
-							}
-							elseif ($vertical)
-							{
-								$ul_attr = 'style="display:none"';
-							}
-							else
-							{
-								$ul_attr = '';
-							}	
-							// ul
-							$menu .= '<ul '.$ul_attr.'>';
-							
-							// home
-							if ($tmp_deep == 1 && $home)
-							{
-								$active = ($ordinal == 'A')
-									? ' class="active" ' 
-									: ' ';
-								
-								$menu .= '<li '.$active.'><a href="'.BASE_URL.'" title="Home page">Home</a></li>';
-							}
-						}
-					}
-					// close opened ul
-					else if ($tmp_deep > $i->deep) 
-					{
-						for($n = $tmp_deep; $n > $i->deep; $n--)
-						{
-							// handle inside and outside
-							if ($io > 1 && $tmp_deep > $deep)
-							{
-								$sub .= '</li></ul></div>';
-							}
-							else
-							{
-								$menu .= '</li></ul>';
-							}
-							$tmp_deep--;
-						}
-						$menu .= '</li>';
-					}
-					// close li
-					else 
-					{
-						// handle inside and outside
-						if ($io > 1 && $tmp_deep > $deep)
-						{
-							$sub .= '</li>';
-						}
-						else
-						{
-							$menu .= '</li>';
-						}
-					}
-					
-					// detect active pages
-					$active = (
-						$i->ordinal == $ordinal || // is the active page
-						(
-							$io && // there are related
-							(
-								$i->deep == $deep &&	// you are in a nested level
-								substr($i->ordinal, 0, $min) == substr($ordinal, 0, $min)) // with the same ordinal prefix
-							)
-						) 
-							? ' class="active" ' 
-							: ' ';
-					
-					// handle inside and outside
-					if ($io > 1 && $tmp_deep > $deep)
-					{
-						$sub .= '<li'.$active.'><a href="'.BASE_URL.$i->url.'" title="'.stripslashes($i->title).'">'.stripslashes($i->name).'</a>';
-					}
-					else
-					{
-						$menu .= '<li'.$active.'><a href="'.BASE_URL.$i->url.'" title="'.stripslashes($i->title).'">'.stripslashes($i->name).'</a>';
-					}
-				}
-			}
-			
-			// close onpened ul
-			for($n = $tmp_deep; $n >= $deep; $n--)
-			{
-				// handle inside and outside
-				if ($io > 1 && $tmp_deep > $deep)
-				{
-					$sub .= '</li></ul></div>';
-				}
-				else
-				{
-					$menu .= '</li></ul>';
-				}
-				$tmp_deep--;
+				// active page is parent
+				return false;
 			}
 		}
-		return $menu.$sub;
+		else
+		{
+			// same level
+			return (substr($ordinal_active_page, 0, -4) == substr($ordinal_menu_item, 0, -4));
+		}
 	}
 
 	/**
@@ -1082,17 +949,124 @@ function save_article(bid, content) {
 	 * @static
 	 * @param string	$ordinal ordinal of visualized page
 	 * @param array		$items menu array
-	 * @param integer	$deep depth of the origin of the first item
-	 * @param string	$key [ALL|RELATED_INSIDE|RELATED_OUTSIDE|NONE]
+	 * @param integer	$start_deep depth of the origin of the first item
 	 * @param integer	$levels number of levels to display
-	 * @param boolean	$arrow display an arrow if submenu
 	 * @param string	$ul_attribute first ul attribute
+	 * @param boolean	$arrow display an arrow if submenu
 	 * @param boolean	$home display the home link
+	 * @param boolean	$vertical display menù open if related to active
 	 * @return string
 	 */
-	public static function build_menu_nav($ordinal, $items, $deep = 1, $key = 'NONE', $levels = 1, $arrow = false, $ul_attribute = '', $home = false, $vertical = false)
+	public static function build_menu($ordinal, $items, $start_deep = 1, $levels = 1, $ul_attribute = '', $arrow = false,  $home = false, $vertical = false)
 	{
-		return '<nav>'.self::build_menu($ordinal, $items, $deep, $key, $levels, $arrow, $ul_attribute, $home, $vertical).'</nav>';
+		$out = '';
+		$open_li = false;
+		if (is_array($items) && !empty($items)) 
+		{
+			// first ul
+			$out .= '<ul '.$ul_attribute.'>';
+
+			$tmp_deep = $items[0]->deep;
+			foreach($items as $i)
+			{
+				// check if item is in the right range of deep
+				if ($i->deep >= $start_deep && $i->deep < $levels)
+				{
+					// reset ul_attribute
+					$ul_attribute = '';
+
+					// home in menù?
+					if ($home && $start_deep == 1)
+					{
+						$active = ($ordinal == 'A')
+							? 'class="active"'
+							: '';
+
+						$out .= '<li '.$active.'><a href="'.BASE_URL.'" title="Home page">'._HOME_PAGE.'</a>';
+						$open_li = true;
+						$home = false;
+					}
+
+					// inner levels
+					if ($i->deep >= $start_deep)
+					{
+						// relation to active used for vertical
+						$related = false;
+
+						// check if related
+						if ($vertical)
+						{
+							$related = self::check_relation($ordinal, $i->ordinal);
+						}
+
+						// check if you need open an ul
+						if ($tmp_deep < $i->deep && $open_li)
+						{
+							$tmp_deep++;
+
+							// ul attributes
+							if ($tmp_deep >= $start_deep && $vertical && !$related)
+							{
+								// overwrite for inner uls
+								$ul_attribute = 'style="display:none"';
+							}
+							
+							// inner ul
+							if ($tmp_deep > $start_deep)
+							{
+								if ($arrow)
+								{
+									// keep open or closed submenu
+									$out .= ($related)
+										? '<div class="submenu pointer"><span class="fa fa-2x fa-chevron-up"></span></div>'
+										: '<div class="submenu pointer"><span class="fa fa-2x fa-chevron-down"></span></div>';
+								}
+
+								$out .= '<ul '.$ul_attribute.'>';
+							}
+						}
+						else if ($tmp_deep > $i->deep)
+						{
+							// close opened inner uls
+							while($tmp_deep > $i->deep)
+							{
+								$out .= '</li></ul>';
+								$tmp_deep--;
+							}
+							$out .= '</li>';
+						}
+						else if ($open_li)
+						{
+							$out .= '</li>';
+						}
+
+						// detect active pages
+						$active = ($i->ordinal == $ordinal) 
+							? 'class="active"'
+							: '';
+
+						// add the item (open)
+						if ($i->fake)
+						{
+							$out .= '<li '.$active.'><a href="#" class="submenu" title="'.stripslashes($i->title).'">'.stripslashes($i->name).'</a>';
+						}
+						else
+						{
+							$out .= '<li '.$active.'><a href="'.BASE_URL.$i->url.'" title="'.stripslashes($i->title).'">'.stripslashes($i->name).'</a>';
+						}
+						$open_li = true;
+					}
+				}
+			}
+
+			// close onpened uls
+			while($tmp_deep >= $start_deep)
+			{
+				$out .= '</li></ul>';
+				$tmp_deep--;
+			}
+		}
+		return $out;
 	}
 	
 	/**
@@ -1142,7 +1116,7 @@ function save_article(bid, content) {
 						else
 						{
 							// First ul
-							$menu .= '<ul class="nav navbar-nav">';
+							$menu .= '<ul class="nav navbar-nav navbar-right">';
 							
 							// home
 							if ($tmp_deep == 1 && $home)
