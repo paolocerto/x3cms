@@ -161,7 +161,8 @@ class Obj_msg
 	public $content;
 	public $module = '';
 	public $param = '';
-	
+	public $bid = '';
+
 	/**
 	 * Constructor
 	 * Set message content
