@@ -26,6 +26,7 @@ $required = array();
 // sql1 is the array of queries for specific area use (parameters, dictionary, module)
 $sql0 = $sql1 = array();
 
+// administration priv
 $sql0[] = "INSERT INTO privtypes (updated, xrif, name, description, xon) VALUES (NOW(), 1, 'x4_get_by_key', 'X4_GET_BY_KEY', 1)";
 $sql0[] = "INSERT INTO gprivs (updated, id_group, what, level, xon) VALUES (NOW(), 1, 'x4_get_by_key', 4, 1)";
 

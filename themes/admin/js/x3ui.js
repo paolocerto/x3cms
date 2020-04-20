@@ -339,8 +339,8 @@ X3.append({
 	
 	droppize: function(id_form, id_file_input, drop_msg){
 		if ('FormData' in window) {
-			X3.form = document.id(id_form);
-			X3.input = document.id(id_file_input);
+			X3.form = $(id_form);
+			X3.input = $(id_file_input);
 			
 			var drop = new Element('div.droppable', {
 				id: 'dropZone',
@@ -370,7 +370,7 @@ X3.append({
 	uploadize: function(id_form, id_file_input, div, reload){
 		if ('FormData' in window && X3.inputFiles !=  null) {
 		    if (X3.form == null) {
-		        X3.form = document.id(id_form);
+		        X3.form = $(id_form);
 		    }
 			var req_options = X3.getFormUploadObject(X3.form.get('action'), id_form, div, reload);
 			var uploadReq = new Request.File(req_options);
@@ -409,12 +409,12 @@ X3.append({
 	
 	single_upload: function(id_form, id_file_input){
 		if ('FormData' in window) {
-			X3.form = document.id(id_form);
+			X3.form = $(id_form);
 			
 			if (X3.input == null) {
 				X3.input = new Array();
 			}
-			X3.input[id_file_input] = document.id(id_file_input);
+			X3.input[id_file_input] = $(id_file_input);
 			
 			if (X3.inputFiles == null) {
 				X3.inputFiles = new Array();
@@ -427,7 +427,7 @@ X3.append({
 	
 	uploadize2: function(id_form, array_id_files_input, div, reload){
 		if ('FormData' in window && X3.inputFiles !=  null) {
-			X3.form = document.id(id_form);
+			X3.form = $(id_form);
 			var req_options = X3.getFormUploadObject(X3.form.get('action'), id_form, div, reload);
 			var uploadReq = new Request.File(req_options);
 			
@@ -1054,23 +1054,23 @@ var windowHeight = function (){
 	},
 	print_r = function(theObj){
 		if(theObj.constructor == Array || theObj.constructor == Object){
-			document.write("<ul>")
+			Document.write("<ul>");
 			for(var p in theObj){
 				if(theObj[p].constructor == Array|| theObj[p].constructor == Object){
-					document.write("<li>["+p+"] => "+typeof(theObj)+"</li>");
-					document.write("<ul>")
+					Document.write("<li>["+p+"] => "+typeof(theObj)+"</li>");
+					Document.write("<ul>");
 					print_r(theObj[p]);
-					document.write("</ul>")
+					Document.write("</ul>");
 				} else {
-					document.write("<li>["+p+"] => "+theObj[p]+"</li>");
+					Document.write("<li>["+p+"] => "+theObj[p]+"</li>");
 				}
 			}
-			document.write("</ul>")
+			Document.write("</ul>");
 		}
 	},
 	sortize = function(id_form, container, sort_info) {
-		var sortInput = document.id(sort_info),
-			list = document.id(container),
+		var sortInput = $(sort_info),
+			list = $(container),
 			chk = false,
 			s = new Sortables(list, {
 				constrain: true,

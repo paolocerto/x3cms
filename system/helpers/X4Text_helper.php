@@ -267,12 +267,12 @@ class X4Text_helper
                                 }
                                 $txt = implode('<br />', $a);
                             }
-			$tmp = $doc->createDocumentFragment();
-			$chk = $tmp->appendXML('<td class="visible-'.$size.'">'.$txt.'</td>');
-			if ($chk)
-			{
-				$row->appendChild($tmp);
-			}
+				$tmp = $doc->createDocumentFragment();
+				$chk = $tmp->appendXML('<td class="visible-'.$size.'">'.$txt.'</td>');
+				if ($chk)
+				{
+					$row->appendChild($tmp);
+				}
                         }
                     }
                     return $doc->saveXML();
