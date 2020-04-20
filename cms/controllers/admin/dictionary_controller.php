@@ -650,10 +650,6 @@ window.addEvent("domready", function()
 				'xon' => 1
 			);
 			
-			// set the translator
-			X4Core_core::auto_load('google_translate_library');
-			$translator = new GoogleTranslate($lang, $post['lang']);
-			
 			// get words to import
 			$dict = new Dictionary_model();
 			
@@ -681,7 +677,7 @@ window.addEvent("domready", function()
 							// try to translate
 							if ($lang != $post['lang'])
 							{
-								$value = $translator->translate($i->xval);
+								$value = $i->xval; // should we add a suffix?
 							}
 							else
 							{
@@ -728,7 +724,7 @@ window.addEvent("domready", function()
 					// try to translate
 					if ($lang != $post['lang'])
 					{
-						$value = $translator->translate($i->xval);
+						$value = $$value = $i->xval; // should we add a suffix?
 					}
 					else
 					{
