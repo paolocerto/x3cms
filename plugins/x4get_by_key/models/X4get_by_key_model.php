@@ -32,10 +32,11 @@ class X4get_by_key_model extends X4Model_core
 	 *
 	 * @param	integer $id_area Area ID
 	 * @param	string	$lang Language code
+	 * @param   	integer $id_page Page ID
 	 * @param	string	$param Parameter
 	 * @return	array
 	 */
-	public function configurator($id_area, $lang, $param)
+	public function configurator($id_area, $lang, $id_page, $param)
 	{
 	    $p = (empty($param))
 	        ? array('', '', '')
