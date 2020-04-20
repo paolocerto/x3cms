@@ -460,7 +460,7 @@ window.addEvent("domready", function()
 			'label' => _DOMAIN,
 			'type' => 'select',
 			'value' => X4Utils_helper::obj2array($perm->get_aprivs($id), null, 'id_area'),
-			'options' => array($area->get_areas($g->id_area, false), 'id', 'name'),
+			'options' => array($area->get_areas($g->id_area), 'id', 'name'),
 			'multiple' => 4,
 			'name' => 'domain',
 			'rule' => 'required',
@@ -502,8 +502,7 @@ window.addEvent("domready", function()
 	
 	/**
 	 * Register Edit / New User form data
-	 *
-	 (if 0 then is a new item)
+	 * 
 	 * @param   integer $id item ID (if 0 then is a new item)
 	 * @param   array 	$_post _POST array
 	 * @return  void
