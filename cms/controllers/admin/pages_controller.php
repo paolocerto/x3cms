@@ -48,7 +48,7 @@ class Pages_controller extends X3ui_controller
 	 * @param   string  $xfrom page URL of origin
 	 * @return  void
 	 */
-	public function index($id_area, $lang = '', $xfrom = 'home')
+	public function index($id_area, $lang = '', $xfrom = 'home', $suffix = 1)
 	{
 	    $area = new Area_model();
 	    list($id_area, $areas) = $area->get_my_areas($id_area);
@@ -61,7 +61,7 @@ class Pages_controller extends X3ui_controller
 		$xfrom = str_replace('§', '/', urldecode($xfrom));
 		
 		// load dictionary
-		$this->dict->get_wordarray(array('pages'));
+		$this->dict->get_wordarray(array('pages', 'msg'));
 		
 		$view = new X4View_core('container');
 			
@@ -393,7 +393,7 @@ class Pages_controller extends X3ui_controller
 		$fields[] = array(
 			'label' => null,
 			'type' => 'html', 
-			'value' => '</div><div class="one-half xs-one-whole">'
+			'value' => '</div><div class="one-fourth xs-one-whole">'
 		);
 		
 		$fields[] = array(
@@ -404,6 +404,20 @@ class Pages_controller extends X3ui_controller
 			'checked' => $page->hidden
 		);
 		
+		$fields[] = array(
+			'label' => null,
+			'type' => 'html', 
+			'value' => '</div><div class="one-fourth xs-one-whole">'
+		);
+		
+		$fields[] = array(
+			'label' => _FAKE_PAGE,
+			'type' => 'checkbox',
+			'value' => $page->fake,
+			'name' => 'hidden',
+			'checked' => $page->fake,
+			'suggestion' => _FAKE_PAGE_MSG
+		);
 		$fields[] = array(
 			'label' => null,
 			'type' => 'html', 
@@ -618,6 +632,7 @@ window.addEvent("domready", function()
 				'description' => $_post['description'],
 				'xfrom' => (!in_array($page->url, $no_change)) ? $_post['xfrom'] : $page->xfrom,
 				'hidden' => intval(isset($_post['hidden'])),
+				'fake' => intval(isset($_post['fake'])),
 				'xkeys' => $_post['xkeys'],
 				'robot' => $_post['robot'],
 				'redirect_code' => $_post['redirect_code'],
@@ -848,6 +863,10 @@ window.addEvent("domready", function()
 				// create default contexts
 				$mod->initialize_context($id_area, $lang);
 				
+				// refactory permissions
+				$mod = new Permission_model();
+				$mod->refactory($_SESSION['xuid']);
+
 				// set update
 				$msg->update[] = array(
 					'element' => $qs['div'],
@@ -881,6 +900,10 @@ window.addEvent("domready", function()
 			
         if ($res[1])
         {
+			// refactory permissions
+			$mod = new Permission_model();
+			$mod->refactory($_SESSION['xuid']);
+
             echo '<h1>CONGRATULATIONS!</h1>';
             echo '<p>The changes on the database are applied.</p>';
             
