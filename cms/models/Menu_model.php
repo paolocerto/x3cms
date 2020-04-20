@@ -260,18 +260,37 @@ class Menu_model extends X4Model_core
 	 * @param string	ordinal
 	 * @return array	associative array of array of objects
 	 */
-	public function get_subpages($id_area, $ordinal, $maxdeep = MAX_MENU_DEEP) 
+	public function get_subpages($id_area, $ordinal, $maxdeep = MAX_MENU_DEEP, $home = false) 
 	{
+		$where = ($home)
+			? ''
+			: ' ordinal != '.$this->db->escape($ordinal).' AND ';
+
 	    return $this->db->query('SELECT url, name, title, xfrom, hidden, deep, ordinal 
             FROM pages
             WHERE 
-                id_area = '.intval($id_area).' AND 
-                ordinal != '.$this->db->escape($ordinal).' AND
+                id_area = '.intval($id_area).' AND '.$where.'
                 ordinal LIKE '.$this->db->escape($ordinal.'%').' AND
                 hidden = 0 AND
                 xon = 1 AND 
-                deep < '.$maxdeep.'
+                deep < '.$maxdeep.' 
             ORDER BY ordinal ASC');
+	}
+
+	/**
+	 * Get ordinal of a page by url
+	 *
+	 * @param integer	area ID
+	 * @param string	url
+	 * @return string
+	 */
+	public function get_ordinal_by_url($id_area, $url) 
+	{
+		return $this->db->query_var('SELECT ordinal 
+            FROM pages
+            WHERE 
+                id_area = '.intval($id_area).' AND 
+                url = '.$this->db->escape($url));
 	}
 
 }
