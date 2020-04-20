@@ -39,12 +39,13 @@ class Language_model extends X4Model_core
 		$where = ($xon < 2) 
 			? ' WHERE l.xon = '.$xon 
 			: '';
-			
+		
 		return $this->db->query('SELECT l.*, IF(p.id IS NULL, u.level, p.level) AS level
 				FROM languages l
 				JOIN uprivs u ON u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('languages').'
 				LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = l.id AND p.level > 0
 				'.$where.'
+				GROUP BY l.id
 				ORDER BY l.language ASC');
 	}
 	
