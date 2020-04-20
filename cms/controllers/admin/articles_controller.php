@@ -1097,9 +1097,9 @@ window.addEvent("domready", function()
     	event.preventDefault();
     	v = this.get("value");
     	if (v.length == 0) {
-    	   $("param").set("value", "");
+    	    $("param").set("value", "");
     	} else {
-    	   X3.modal("", "'._ARTICLE_PARAM_SETTING.'", "'.BASE_URL.'articles/param/'.$id_area.'/'.$lang.'/"+v);
+	    X3.modal("", "'._ARTICLE_PARAM_SETTING.'", "'.BASE_URL.'articles/param/'.$id_area.'/'.$lang.'/'.$id_page.'/"+v);
     	}
     });
     
@@ -1108,7 +1108,7 @@ window.addEvent("domready", function()
     	m = $("module").get("value");
     	if (m != "") {
             v = this.get("value");
-            X3.modal("", "'._ARTICLE_PARAM_SETTING.'", "'.BASE_URL.'articles/param/'.$id_area.'/'.$lang.'/"+m+"/"+v);
+            X3.modal("", "'._ARTICLE_PARAM_SETTING.'", "'.BASE_URL.'articles/param/'.$id_area.'/'.$lang.'/'.$id_page.'/"+m+"/"+v);
         }
     });
 });
@@ -1137,7 +1137,7 @@ window.addEvent("domready", function()
 	 * @param   string $param Parameter value
 	 * @return  void
 	 */
-	public function param($id_area, $lang, $module, $param = '')
+	public function param($id_area, $lang, $id_page, $module, $param = '')
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'articles', $module));
@@ -1147,7 +1147,7 @@ window.addEvent("domready", function()
 		$mod = new $module();
 		
 		// build the form
-		$fields = $mod->configurator($id_area, $lang, $param);
+		$fields = $mod->configurator($id_area, $lang, $id_page, $param);
 		
 		// if submitted
 		if (X4Route_core::$post)
