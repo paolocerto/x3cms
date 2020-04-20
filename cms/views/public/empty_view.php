@@ -12,10 +12,17 @@
 <?php
 
 // set redirect
-if (isset($location)) 
+if (isset($location) && !empty($location)) 
 {
-    // set redirect
+    if ($location == 'back')
+    {
+        echo 'window.history.back();';
+    }
+    else
+    {
+        // set redirect
 	echo 'location.href=\''.$location.'\';';
+    }
 }
 else
 {
