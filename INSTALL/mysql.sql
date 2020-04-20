@@ -299,6 +299,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'admin', 'global', '_FIND', 'Trova', 0, 1),
 (NOW(), 'it', 'admin', 'global', '_ORDERABLE_MSG', 'Potete ordinare gli elementi trascinandoli', 0, 1),
 (NOW(), 'it', 'admin', 'global', '_UNSAVED_CHANGES', 'Ci sono modifiche non salvate', 0, 1),
+(NOW(), 'it', 'admin', 'global', '_CANCEL', 'Annulla', 0, 1),
 
 (NOW(), 'it', 'admin', 'home', '_HOME_PAGE', 'Home page', 0, 1),
 (NOW(), 'it', 'admin', 'home', '_PUBLIC_SIDE', 'Sito pubblico', 0, 1),
@@ -571,6 +572,8 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'admin', 'pages', '_DELETE_PAGE', 'Elimina pagina', 0, 1),
 (NOW(), 'it', 'admin', 'pages', '_INIZIALIZE_AREA', 'Inizializza area', 0, 1),
 (NOW(), 'it', 'admin', 'pages', '_SITE_MAP', 'Mappa del sito', 0, 1),
+(NOW(), 'it', 'admin', 'pages', '_FAKE_PAGE', 'Pagina finta', 0, 1),
+(NOW(), 'it', 'admin', 'pages', '_FAKE_PAGE_MSG', 'Solo voce di menù', 0, 1),
 
 (NOW(), 'it', 'admin', 'pages', '_ROBOT', 'Regole per meta ROBOTS', 0, 1),
 (NOW(), 'it', 'admin', 'pages', '_ROBOT_MSG', 'se vuoto viene usato "index,follow"', 0, 1),
@@ -884,6 +887,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'admin', 'global', '_FIND', 'Find', 0, 1),
 (NOW(), 'en', 'admin', 'global', '_ORDERABLE_MSG', 'You can order items with drag and drop', 0, 1),
 (NOW(), 'en', 'admin', 'global', '_UNSAVED_CHANGES', 'There are unsaved changes', 0, 1),
+(NOW(), 'en', 'admin', 'global', '_CANCEL', 'Cancel', 0, 1),
 
 (NOW(), 'en', 'admin', 'home', '_HOME_PAGE', 'Home page', 0, 1),
 (NOW(), 'en', 'admin', 'home', '_PUBLIC_SIDE', 'Public side', 0, 1),
@@ -1155,6 +1159,8 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'admin', 'pages', '_DELETE_PAGE', 'Delete page', 0, 1),
 (NOW(), 'en', 'admin', 'pages', '_INIZIALIZE_AREA', 'Initialize area', 0, 1),
 (NOW(), 'en', 'admin', 'pages', '_SITE_MAP', 'Site map', 0, 1),
+(NOW(), 'en', 'admin', 'pages', '_FAKE_PAGE', 'Fake page', 0, 1),
+(NOW(), 'en', 'admin', 'pages', '_FAKE_PAGE_MSG', 'Only a menu item', 0, 1),
 
 (NOW(), 'en', 'admin', 'pages', '_ROBOT', 'Rule for meta ROBOTS', 0, 1),
 (NOW(), 'en', 'admin', 'pages', '_ROBOT_MSG', 'if empty will be used "index,follow"', 0, 1),
@@ -1439,6 +1445,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'public', 'global', '_NO_ITEMS', 'Nessun elemento trovato', 0, 1),
 (NOW(), 'it', 'public', 'global', '_IN', 'in', 0, 1),
 (NOW(), 'it', 'public', 'global', '_CLOSE', 'Chiudi', 0, 1),
+(NOW(), 'it', 'public', 'global', '_CANCEL', 'Annulla', 0, 1),
 
 (NOW(), 'it', 'public', 'global', '_PHONE', 'Telefono', 0, 1),
 (NOW(), 'it', 'public', 'global', '_MOBILE', 'Cellulare', 0, 1),
@@ -1607,6 +1614,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'public', 'global', '_NO_ITEMS', 'No items found', 0, 1),
 (NOW(), 'en', 'public', 'global', '_IN', 'in', 0, 1),
 (NOW(), 'en', 'public', 'global', '_CLOSE', 'Close', 0, 1),
+(NOW(), 'en', 'public', 'global', '_CANCEL', 'Cancle', 0, 1),
 
 (NOW(), 'en', 'public', 'global', '_PHONE', 'Phone', 0, 1),
 (NOW(), 'en', 'public', 'global', '_MOBILE', 'Mobile', 0, 1),
@@ -2289,6 +2297,7 @@ CREATE TABLE IF NOT EXISTS `pages` (
   `deep` smallint(2) NOT NULL,
   `ordinal` varchar(255) NOT NULL,
   `hidden` tinyint(1) NOT NULL,
+  `fake` tinyint(1) NOT NULL,
   `xlock` tinyint(1) NOT NULL,
   `xon` tinyint(1) NOT NULL,
   PRIMARY KEY  (`id`),
