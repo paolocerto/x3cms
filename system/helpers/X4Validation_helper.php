@@ -21,7 +21,7 @@ class X4Validation_helper
 	public static $rules = array(
 		array('value' => 'required', 	'option' => 'required: set a field as mandatory', 														'param' => array(0, 0)),
 		array('value' => 'hidden_req', 	'option' => 'hidden_req: set a field as mandatory but don\'t show the *', 								'param' => array(0, 0)),
-		array('value' => 'requiredif', 	'option' => 'requiredif: set a field as mandatory if another field has a specific value', 				'param' => array(1, 'text')),
+		array('value' => 'requiredif', 	'option' => 'requiredif: set a field as mandatory if another field has a specific value (more than one field separated with :)', 				'param' => array(1, 'text')),
 		array('value' => 'ifempty', 	'option' => 'ifempty: set a field as mandatory if another field is empty (more than one field separated with :)', 'param' => array(1, 0)),
 		array('value' => 'requiredifempty', 	'option' => 'requiredifempty: set a field as mandatory if another field has a specific value and another is_a empty', 				'param' => array(1, 'text')),
 		array('value' => 'depends', 	'option' => 'depends: set a field as mandatory if another field is not empty', 							'param' => array(1, 0)),
@@ -302,64 +302,10 @@ class X4Validation_helper
 	 */
 	private static function _required(&$field, $tok, &$e,  $_post, $_files)
 	{
-		switch ($field['type'])
+		if (self::is_empty($field['name']))
 		{
-			case 'file': 
-				// for files
-				if (!isset($field['old']) || empty($field['old'])) 
-				{
-					if (!empty($_files) && is_array($_files[$field['name']])) 
-					{
-						if (!isset($_files[$field['name']]['tmp_name'][0]) || $_files[$field['name']]['tmp_name'][0] == '' || strlen($_files[$field['name']]['name'][0]) == 0) 
-						{
-							$field['error'][] = array('msg' => '_required');
-							$e = false;
-						}
-					}
-					else if (empty($_files) || $_files[$field['name']]['tmp_name'] == '' || strlen($_files[$field['name']]['name']) == 0) 
-					{
-						$field['error'][] = array('msg' => '_required');
-						$e = false;
-					}
-				}
-				break;
-			case 'js_checkbox': 
-				// special case
-				if (!isset($_post[$field['name']]) || !$_post[$field['name']]) 
-				{
-					$field['error'][] = array('msg' => '_required');
-					$e = false;
-				}
-				break;
-			default:
-			    
-				if (!isset($_post[$field['name']])) 
-				{
-					$field['error'][] = array('msg' => '_required');
-					$e = false;
-				}
-				else
-				{
-				    if (is_array($_post[$field['name']]))
-				    {
-				        $arr = array_filter($_post[$field['name']]);
-				        if (empty($arr))
-                        {
-                            $field['error'][] = array('msg' => '_required');
-                            $e = false;
-                        }
-				    }
-				    else
-				    {
-                        $str = trim(X4Text_helper::empty_rows($_post[$field['name']]));
-                        if (empty($str))
-                        {
-                            $field['error'][] = array('msg' => '_required');
-                            $e = false;
-                        }
-                    }
-				}
-				break;
+			$field['error'][] = array('msg' => '_required');
+			$e = false;
 		}
 	}
 	
@@ -381,6 +327,7 @@ class X4Validation_helper
 	
 	/**
 	 * Required if rule
+	 * set a field as mandatory if another field has a specific value (more than one field separated with :)
 	 *
 	 * @static
 	 * @param array		$field	Array of the field form (passed as reference)
@@ -392,69 +339,56 @@ class X4Validation_helper
 	 */
 	private static function _requiredif(&$field, $tok, &$e, $_post, $_files)
 	{
-	    // only if isset the field defined in $tok[1]
-		if (isset($_post[$tok[1]]))
+		if (self::is_empty($field['name']))
 		{
-		    $related = self::get_field($tok[1]);
-		    		    
-			// check for not
-			$tok2 = str_replace('!', '', $tok[2]);
-		
-			// check the value
-			$check = ($tok2 != $tok[2])
-				? $_post[$tok[1]] != $tok2
-				: $_post[$tok[1]] == $tok[2];
-			
-			if ($check)
+			// there are multiple fields in tok[1] and tok[2]?
+			$toks1 = explode(':', $tok[1]);
+			$toks2 = explode(':', $tok[2]);
+
+			// all values should have the related value to fire the required rule
+			$fired = true;
+			$fields = array();
+			foreach($toks1 as $index => $name)
 			{
-				// set errors
-				if ($field['type'] == 'file') 
+				// check for not
+				$tok2 = str_replace('!', '', $toks2[$index]);
+
+				if ($tok2 == '')
 				{
-					// for files
-					if (!isset($field['old']) || empty($field['old'])) 
-					{
-						if (!empty($_files) && isset($_files[$field['name']]) && is_array($_files[$field['name']])) 
-						{
-							if (!isset($_files[$field['name']]['tmp_name'][0]) || $_files[$field['name']]['tmp_name'][0] == '' || strlen($_files[$field['name']]['name'][0]) == 0) 
-							{
-								$field['error'][] = array(
-								    'msg' => '_requiredif',
-								    'related' => $tok[1],
-								    'relatedvalue' => $_post[$tok[1]]
-								);
-								$e = false;
-							}
-						}
-						else if (empty($_files) || (isset($_files[$field['name']]) && ($_files[$field['name']]['tmp_name'] == '' || strlen($_files[$field['name']]['name']) == 0))) 
-						{
-							$field['error'][] = array(
-                                'msg' => '_requiredif',
-                                'related' => $tok[1],
-                                'relatedvalue' => $_post[$tok[1]]
-                            );
-							$e = false;
-						}
-					}
+					// empty or not set field
+					$value = self::get_value($name);
+					$check = ($tok2 != $toks2[$index])
+						? $value != ''
+						: $value == '';
 				}
-				else if (!isset($_post[$field['name']]) || empty($_post[$field['name']])) 
+				else
 				{
-				    // get related
-				    $relatedvalue = $_post[$tok[1]];
-				    if (isset($related['options']))
-				    {
-				        $options = self::get_options($related['options']);
-				        if(isset($options[$_post[$tok[1]]]))
-				        {
-				            $relatedvalue = $options[$_post[$tok[1]]];
-				        }
-				    }
-				    
-					// for all other inputs
+					// check a particular value
+					$value = self::get_value($name);
+					$check = ($tok2 != $toks2[$index])
+						? $value != $tok2
+						: $value == $tok2;
+				}
+
+				if (!$check)
+				{
+					$fired = false;
+				}
+
+				// store data for related
+				$fields[$name] = $value;
+			}
+
+			// the required condition is fired?
+			if ($fired)
+			{
+				foreach($fields as $name => $value)
+				{
 					$field['error'][] = array(
-                        'msg' => '_requiredif',
-                        'related' => $tok[1],
-                        'relatedvalue' => $relatedvalue
-                    );
+						'msg' => '_requiredif',
+						'related' => $name,
+						'relatedvalue' => $value
+					);
 					$e = false;
 				}
 			}
@@ -476,50 +410,30 @@ class X4Validation_helper
 	private static function _ifempty(&$field, $tok, &$e, $_post, $_files)
 	{
 	    // there are multiple fields in tok[1]?
-	    $toks = explode(':', $tok[1]);
-	    if (sizeof($toks) == 1)
-	    {
-            if (
-                    self::is_empty($tok[1]) &&			// the related item is not set 
-                    self::is_empty($field['name'])		// also the item is not set  
-                )
-            {
-                $field['error'][] = array(
-                    'msg' => '_ifempty',
-                    'related' => $tok[1]
-                );
-                $e = false;
-            }
-        }
-        else
-        {
-            if (self::is_empty($field['name']))
-            {
-                $chk = false;
-                // check the others
-                foreach($toks as $i)
-                {
-                    // at least one not empty
-                    if (!self::is_empty($i))
-                    {
-                        $chk = true;
-                    }
-                }
-                if (!$chk)
-                {
-                    $field['error'][] = array(
-                        'msg' => '_ifempty',
-                        'related' => $toks[0]
-                    );
-                    $e = false;
-                }
-            }
-        }
+		$toks = explode(':', $tok[1]);
+		
+		if (self::is_empty($field['name']))
+		{
+			$chk = false;
+			// check the others
+			foreach($toks as $i)
+			{
+				// at least one not empty
+				if (!empty($i) && !self::is_empty($i))
+				{
+					$field['error'][] = array(
+						'msg' => '_ifempty',
+						'related' => $toks[0]
+					);
+					$e = false;
+				}
+			}
+		}
 	}
 	
 	/**
 	 * Required if empty rule
-	 * if tok[1] field as a specific value then check if tok[3] is empty
+	 * if tok[1] field as a specific value stored in tok[2] then check if tok[3] is empty
 	 * tok[] = rule name, tok[1] = field that triggers the check, tok[2] = value that triggers, tok[3] = field that if empty triggers the required
 	 *
 	 * @static
@@ -532,99 +446,92 @@ class X4Validation_helper
 	 */
 	private static function _requiredifempty(&$field, $tok, &$e, $_post, $_files)
 	{
-	    // only if isset the field defined in $tok[1] and $tok[3]
-		if (isset($_post[$tok[1]]) && isset($_post[$tok[3]]))
+		// only if isset the field defined in $tok[1]
+		if (self::is_empty($field['name']))
 		{
-		    $related1 = self::get_field($tok[1]);
-		    $related3 = self::get_field($tok[3]);
-		    		    
-			// check for not
-			$tok2 = str_replace('!', '', $tok[2]);
-		
-			// check the value
-			$check = ($tok2 != $tok[2])
-				? $_post[$tok[1]] != $tok2
-				: $_post[$tok[1]] == $tok[2];
-			
-			
-			$toks = explode(':', $tok[3]);
-			
+			$tok1 = self::get_field($tok[1]);
+
+			// we can have different cases 
+			switch (sizeof($tok))
+			{
+				case 4:
+					//tok[] = rule name, tok[1] = field that triggers the check, tok[2] = value that triggers, tok[3] = field that if empty triggers the required
+					// we have a value to check
+					
+					// check for not
+					$tok2 = str_replace('!', '', $tok[2]);
+				
+					// check the value
+					if ($tok1['type'] == 'file')
+					{
+						// options are only empty and not empty
+						$check = ($tok2 != $tok[2])
+							? self::check_file_upload($tok[1])		// required if file is not empty
+							: !self::check_file_upload($tok[1]);	// required if file is empty 
+					}
+					elseif ($tok1['type'] == 'checkbox')
+					{
+						$check = ($tok2 != $tok[2])
+							? !isset($_post[$tok[1]])		// §!1 required if no set
+							: isset($_post[$tok[1]]);		// §1 required if is set
+
+					}
+					else
+					{
+						$check = ($tok2 != $tok[2])
+							? $_post[$tok[1]] != $tok2		// required if post is different from tok2
+							: $_post[$tok[1]] == $tok[2];	// required if post is equal tok2
+
+						//echo '<h1>'.$tok1['name'].' - '.$tok1['type'].' - value = '.$tok1['value'].' - tok2 = '.$tok2.' - tok[2] = '.$tok[2].' - post = '.$_post[$tok[1]].' - check = '.intval($check).'</h1>';
+					}
+					
+					// related fields
+					$toks = explode(':', $tok[3]);
+					break;
+
+				case 3:
+					//tok[] = rule name, tok[1] = field that triggers the check, tok[2] = field that if empty triggers the required
+					// we have only to check if the field tok[1] is set or not
+
+					// check the value
+					$check = !self::is_empty($tok[1]);
+					
+					// related fields
+					$toks = explode(':', $tok[2]);
+					break;
+
+				default:
+					// not enough data
+					$check = false;
+			}
+
+			// the required condition is fired?
 			if ($check)
 			{
-				// set errors
-				if ($field['type'] == 'file') 
+				// we have to check related fields
+
+				$emtpy_fields = array();
+				// check if there are empty fields
+				foreach($toks as $i)
 				{
-				    /*
-				    TO DO
-					// for files
-					if (!isset($field['old']) || empty($field['old'])) 
+					if (!empty($i))
 					{
-						if (!empty($_files) && isset($_files[$field['name']]) && is_array($_files[$field['name']])) 
-						{
-							if (!isset($_files[$field['name']]['tmp_name'][0]) || $_files[$field['name']]['tmp_name'][0] == '' || strlen($_files[$field['name']]['name'][0]) == 0) 
-							{
-								$field['error'][] = array(
-								    'msg' => '_requiredif',
-								    'related' => $tok[1],
-								    'relatedvalue' => $_post[$tok[1]]
-								);
-								$e = false;
-							}
-						}
-						else if (empty($_files) || (isset($_files[$field['name']]) && ($_files[$field['name']]['tmp_name'] == '' || strlen($_files[$field['name']]['name']) == 0))) 
+						if (self::is_empty($i))
 						{
 							$field['error'][] = array(
-                                'msg' => '_requiredif',
-                                'related' => $tok[1],
-                                'relatedvalue' => $_post[$tok[1]]
-                            );
+								'msg' => '_ifempty',
+								'related' => $i
+							);
+							
+							$field['error'][] = array(
+								'msg' => '_requiredif',
+								'related' => $tok[1],
+								'relatedvalue' => self::$data[$tok[1]]
+							);
+
 							$e = false;
 						}
 					}
-					*/
-				}
-				else if (!isset($_post[$field['name']]) || empty($_post[$field['name']])) 
-				{
-				    // check the tok[3]
-				    $chk = false;
-                    // check the others
-                    foreach($toks as $i)
-                    {
-                        // at least one not empty
-                        if (!self::is_empty($i))
-                        {
-                            $chk = true;
-                        }
-                    }
-                    
-                    if (!$chk)
-                    {
-                        $field['error'][] = array(
-                            'msg' => '_ifempty',
-                            'related' => $toks[0]
-                        );
-                        $e = false;
-                    }
-                    
-				    // get related
-				    $relatedvalue = $_post[$tok[1]];
-				    if (isset($related1['options']))
-				    {
-				        $options = self::get_options($related['options']);
-				        
-				        if (isset($options[$_post[$tok[1]]]))
-				        {
-				            $relatedvalue = $options[$_post[$tok[1]]];
-				        }
-				    }
-				    
-					// for all other inputs
-					$field['error'][] = array(
-                        'msg' => '_ifempty',
-                        'related' => $tok[1],
-                        'relatedvalue' => $relatedvalue
-                    );
-					$e = false;
 				}
 			}
 		}
@@ -1568,20 +1475,12 @@ class X4Validation_helper
             switch($i['type'])
             {
                 case 'file':
-                    $res = (
-                                (
-                                    empty($_FILES) ||			// the _FILES array is empty 
-                                    !isset($_FILES[$name])		// not exists the item in the _FILES array
-                                ) 
-                                && 
-                                (
-                                    !isset(self::$data['old_'.$name]) || 	// not exists an old value for the item
-                                    empty(self::$data['old_'.$name])		// the old value exists but is empty
-                                )
-                            );	
-                    break;
+			$res = !self::check_file_upload($i);
+			break;
+		case 'checkbox':
+			$res = !isset(self::$data[$name]);
+			break;
                 default:
-                    // for checkboxes uses default value
                     if (isset(self::$data[$name]))
                     {
                         if (isset($i['multiple']))
@@ -1614,6 +1513,98 @@ class X4Validation_helper
 		return $res;
 	}
 	
+	/**
+	 * Check file upload
+	 * return true if file is uploaded
+	 *
+	 * @static
+	 * @param  array	$field	field name
+	 * @return boolean
+	 */
+	private static function check_file_upload($field)
+	{
+		$uploaded = true;
+		if (!isset($field['old']) || empty($field['old'])) 
+		{
+			if (!empty($_FILES) && is_array($_FILES[$field['name']])) 
+			{
+				if (!isset($_FILES[$field['name']]['tmp_name'][0]) || $_FILES[$field['name']]['tmp_name'][0] == '' || strlen($_FILES[$field['name']]['name'][0]) == 0) 
+				{
+					$uploaded = false;
+				}
+			}
+			else if (empty($_FILES) || $_FILES[$field['name']]['tmp_name'][0] == '' || strlen($_FILES[$field['name']]['name'][0]) == 0) 
+			{
+				$uploaded = false;
+			}
+		}
+		return $uploaded;
+	}
+
+	/**
+	 * Get the value of a field
+	 * Used for requiredif fields
+	 *
+	 * @static
+	 * @param string	$name	Field to check name
+	 * @return mixed	Return 	value
+	 */
+	public static function get_value($name)
+	{
+		$res = '';
+		$i = self::get_field($name);
+		if ($i)
+		{
+            $name = self::get_name($i);
+            switch($i['type'])
+            {
+                case 'file':
+					$res = 'file';
+					break;
+				case 'checkbox':
+					$res = (isset(self::$data[$name]))
+						? $i['value']
+						: '';
+					break;
+				case 'select':
+					// fields with multiple
+                    if (isset(self::$data[$name]))
+                    {
+                        if (isset($i['multiple']))
+                        {
+                            $res = (!empty(self::$data[$name]) && isset(self::$data[$name][0]))
+								? self::$data[$name][0]
+								: '';
+                        }
+                        else
+                        {
+                            // empty value (zero is a value)
+                            $res = self::$data[$name];
+                        }
+                    }
+                    else
+                    {
+                        if (isset($i['multiple']))
+                        {
+                            // multiple
+                            $res = (!empty(self::$data[$i['name']]) && isset(self::$data[$i['name']][0]))
+								? self::$data[$i['name']][0]
+								: '';
+                        }
+                        else
+                        {
+                            $res = empty(self::$data[$name]);
+                        }
+                    }
+					break;
+				default:
+					$res = self::$data[$name];
+                    break;
+            }
+        }
+		return $res;
+	}
+
 	/**
 	 * Get a field from fields array by name
 	 * Used for related fields
