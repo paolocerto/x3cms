@@ -249,6 +249,8 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'admin', 'global', '_CONGRATULATIONS', 'Complimenti!', 0, 1),
 
 (NOW(), 'it', 'admin', 'global', '_MAINTENANCE_MODE', 'Sito in manutenzione', 0, 1),
+(NOW(), 'it', 'admin', 'global', '_DEVEL_MODE', 'Sito in sviluppo', 0, 1),
+(NOW(), 'it', 'admin', 'global', '_DEBUG_MODE', 'Debug attivo', 0, 1),
 (NOW(), 'it', 'admin', 'global', '_MSG_OK', 'Operazione completata', 0, 1),
 (NOW(), 'it', 'admin', 'global', '_MSG_ERROR', 'Attenzione! Si &egrave; verificato un errore.', 0, 1),
 
@@ -838,6 +840,8 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'admin', 'global', '_CONGRATULATIONS', 'Congratulations!', 0, 1),
 
 (NOW(), 'en', 'admin', 'global', '_MAINTENANCE_MODE', 'Manintenance mode', 0, 1),
+(NOW(), 'en', 'admin', 'global', '_DEVEL_MODE', 'Development mode', 0, 1),
+(NOW(), 'en', 'admin', 'global', '_DEBUG_MODE', 'Debug on', 0, 1),
 (NOW(), 'en', 'admin', 'global', '_MSG_OK', 'Operation completed', 0, 1),
 (NOW(), 'en', 'admin', 'global', '_MSG_ERROR', 'Warning! An error occurred.', 0, 1),
 

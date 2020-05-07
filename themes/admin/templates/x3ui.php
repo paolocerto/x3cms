@@ -108,8 +108,8 @@ if (!empty($menus['admin_user']))
 	}
 }
 ?>
-			<a class="no_link" href="<?php echo BASE_URL ?>login/logout" title="<?php echo _LOGOUT ?>"><i class="fas fa-power-off fa-lg"></i></a>
-			...
+		<a class="no_link" href="<?php echo BASE_URL ?>login/logout" title="<?php echo _LOGOUT ?>"><i class="fas fa-power-off fa-lg"></i></a>
+		...
 <?php
 // languages
 if ($langs)
@@ -118,6 +118,13 @@ if ($langs)
 	{
 		echo '<a class="no_link small" href="'.ROOT.$i->code.'/admin/" title="'.$i->language.'">'.$i->code.'</a>';
 	}
+}
+
+if ($_SESSION['xuid'] == 1 && (DEVEL || DEBUG))
+{
+	echo '...'.BR.BR;
+	if (DEVEL) echo '<a class="orange" href="'.BASE_URL.'sites/config/1" title="'._DEVEL_MODE.'"><i class="fas fa-code fa-lg"></i></a>';
+	if (DEBUG) echo '<a class="orange" href="'.BASE_URL.'sites/config/1" title="'._DEBUG_MODE.'"><i class="fas fa-wrench fa-lg"></i></a>';
 }
 ?>
 		</div>
@@ -131,7 +138,7 @@ if ($langs)
 <?php
 if (!$this->site->site->xon)
 {
-    echo '<p class="acenter padded" style="background:#a00;color:#fff;"><b>'._MAINTENANCE_MODE.'</b></p>';
+    echo '<p class="acenter padded no-gap" style="background:#a00;color:#fff;"><b>'._MAINTENANCE_MODE.'</b></p>';
 }
 ?>
 		<div id="topic" class="double-pad-left double-pad-right" role="main"></div>
