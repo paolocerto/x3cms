@@ -11,6 +11,8 @@
 echo stripslashes(X4Utils_helper::build_menu('A', $menus['admin_global'], 1, 5, 'id="nav"'));
 ?>
 <script>
-$('nav').MooDropMenu();
-linking('#nav li a');
+if ($('nav') != null) {
+    $('nav').MooDropMenu();
+    linking('#nav li a');
+}
 </script>

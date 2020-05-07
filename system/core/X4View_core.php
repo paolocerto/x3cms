@@ -139,6 +139,7 @@ class X4View_core
 		
 		// Load the view in the controller for access to $this
 		$output = X4Core_core::$insta->load_view($this->filename, $data);
+		
 		if ($print)
 		{
 			// Display the output

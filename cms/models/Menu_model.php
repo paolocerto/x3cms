@@ -269,11 +269,12 @@ class Menu_model extends X4Model_core
 	    return $this->db->query('SELECT url, name, title, xfrom, hidden, deep, ordinal 
             FROM pages
             WHERE 
-                id_area = '.intval($id_area).' AND '.$where.'
+                id_area = '.intval($id_area).' AND 
+		'.$where.'
                 ordinal LIKE '.$this->db->escape($ordinal.'%').' AND
                 hidden = 0 AND
                 xon = 1 AND 
-                deep < '.$maxdeep.' 
+                deep < '.$maxdeep.'
             ORDER BY ordinal ASC');
 	}
 

@@ -502,7 +502,7 @@ window.addEvent("domready", function()
 	
 	/**
 	 * Register Edit / New User form data
-	 * 
+	 *
 	 * @param   integer $id item ID (if 0 then is a new item)
 	 * @param   array 	$_post _POST array
 	 * @return  void

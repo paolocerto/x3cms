@@ -1096,9 +1096,12 @@ window.addEvent("domready", function()
 	$("module").addEvent("change", function(event, target){
     	event.preventDefault();
     	v = this.get("value");
-    	if (v.length == 0) {
+    	if (v.length == 0) 
+	{
     	    $("param").set("value", "");
-    	} else {
+    	}
+	else 
+	{
 	    X3.modal("", "'._ARTICLE_PARAM_SETTING.'", "'.BASE_URL.'articles/param/'.$id_area.'/'.$lang.'/'.$id_page.'/"+v);
     	}
     });
@@ -1106,7 +1109,8 @@ window.addEvent("domready", function()
     $("param").addEvent("focus", function(event, target){
     	event.preventDefault();
     	m = $("module").get("value");
-    	if (m != "") {
+    	if (m != "") 
+	{
             v = this.get("value");
             X3.modal("", "'._ARTICLE_PARAM_SETTING.'", "'.BASE_URL.'articles/param/'.$id_area.'/'.$lang.'/'.$id_page.'/"+m+"/"+v);
         }
