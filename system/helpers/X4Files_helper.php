@@ -1461,6 +1461,53 @@ class X4Files_helper
 	}
 	
 	/**
+	 * Get a csv file
+	 * the path of the file will remain anonymous
+	 *
+	 * @param string	$items
+	 * @param boolean	$header of the columns
+	 * @return file
+	 */
+	public static function get_csv($items, $header = false, $head = array())
+	{
+		$csv = tmpfile();
+
+		foreach ($items as $i) 
+		{
+			$row = (array) $i;
+
+			if ($header)
+			{
+				if (empty($head))
+				{
+					fputcsv($csv, array_keys($row));
+				}
+				else
+				{
+					fputcsv($csv, $head);
+				}
+				$header = false;
+			}
+			fputcsv($csv, array_values($row), ';', '"');
+		}
+
+		rewind($csv);
+
+		$filename = "export_".date("Y-m-d").".csv";
+
+		$fstat = fstat($csv);
+
+		header("Content-type: text/csv");
+		header("Content-Length: ".$fstat['size']);
+		header("Content-Disposition: attachment; filename=export_".date('Y_m_d').".csv");
+		header("Pragma: no-cache");
+		header("Expires: 0");
+
+		fpassthru($csv);
+		fclose($csv);
+	}
+
+	/**
 	 * Check if a folder already exists
 	 *
 	 * @param   string	$folder Folder name
