@@ -414,10 +414,11 @@ class Pages_controller extends X3ui_controller
 			'label' => _FAKE_PAGE,
 			'type' => 'checkbox',
 			'value' => $page->fake,
-			'name' => 'hidden',
+			'name' => 'fake',
 			'checked' => $page->fake,
 			'suggestion' => _FAKE_PAGE_MSG
 		);
+
 		$fields[] = array(
 			'label' => null,
 			'type' => 'html', 
