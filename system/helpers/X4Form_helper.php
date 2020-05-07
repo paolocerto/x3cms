@@ -90,7 +90,15 @@ class X4Form_helper
 				// label
 				if (!is_null($i['label']) && $i['type'] != 'button') 
 				{
-					$req = (isset($i['rule']) && (strstr($i['rule'], 'required') != '')) ? ' *' : '';
+					$req = '';
+					if (isset($i['rule']))
+					{
+						$rules = explode('|', $i['rule']);
+						if (in_array('required', $rules))
+						{
+							$req = '*';
+						}
+					}
 					$err = (isset($i['error'])) ? ' class="error"' : '';
 					
 					if ($inline || (isset($i['extra']) && strstr($i['extra'], 'inline') != ''))
@@ -392,23 +400,20 @@ class X4Form_helper
 		$tmp = '';
 		if (isset($e['old']) && !empty($e['old'])) 
 		{
-			$tmp = '<p class="xsmall">';
+			$tmp = '<p>';
+			// for removal
+			if (isset($e['delete']) && $req != ' *') 
+			{
+				$tmp .= '<label class="inline" for="delete_'.$e['name'].'"><input type="checkbox" class="check" name="delete_'.$e['name'].'" id="delete_'.$e['name'].'" value="1" /> '.$e['delete'].'</label><br>';
+			}
+			$tmp .= '<span class="xsmall">';
 			// can display the file only if knowns his path
 			if (isset($e['folder'])) 
 			{
-				$tmp = ($e['folder'] == 'img') 
-					? '<br /><img class="thumb dblock" src="'.FPATH.$e['folder'].'/'.$e['old'].'" alt="thumb" />' 
+				$tmp .= ($e['folder'] == 'img') 
+					? '<br /><img class="mthumb dblock" src="'.FPATH.$e['folder'].'/'.$e['old'].'" alt="thumb" />' 
 					: '';
-
-				if (is_dir(APATH.'files/filemanager/'.$e['folder']))
-				{
-					$tmp .= ' <a target="_blank" href="'.FPATH.$e['folder'].'/'.$e['old'].'" title="">'.$e['old'].'</a><br />';
-				}
-				elseif (is_dir(APATH.'files/'.$e['folder']))
-				{
-					$tmp .= ' <a target="_blank" href="'.APATH.'files/'.$e['folder'].'/'.$e['old'].'" title="">'.$e['old'].'</a><br />';
-				}
-				
+				$tmp .= ' <a href="'.FPATH.$e['folder'].'/'.$e['old'].'" title="">'.$e['old'].'</a>';
 			}
 			elseif (isset($e['aold']))
 			{
@@ -418,15 +423,10 @@ class X4Form_helper
 			{
 				$tmp .= $e['old'];
 			}
+			$tmp .= '</span></p>';
 			
-			// for removal
-			if (isset($e['delete']) && $req != ' *') 
-			{
-				$tmp .= '<label class="inline" for="delete_'.$e['name'].'"><input type="checkbox" class="check" name="delete_'.$e['name'].'" id="delete_'.$e['name'].'" value="1" /> '.$e['delete'].'</label>';
-			}
 			$tmp .= '<input type="hidden" name="old_'.$e['name'].'" id="old_'.$e['name'].'" value="'.$e['old'].'" />';
 		}
-
 		return $field.self::suggestion($e).$tmp;
 	}
 	
@@ -595,15 +595,7 @@ class X4Form_helper
 					
 				if ($inline)
 				{
-					if (isset($e['bootstrap']))
-					{
-						$tmp .= '<input type="radio" class="radio inline custom-control-input" name="'.$e['name'].'" id="'.$e['name'].'_'.$c.'" value="'.$i->$v.'" '.$checked.' /> <label class="inline custom-control-label" for="'.$e['name'].'_'.$c.'" '.$error.'>'.stripslashes($i->$o).'</label>';
-					}
-					else
-					{
-						$tmp .= '<div class="radiobox"><input type="radio" '.$class.' name="'.$e['name'].'" id="'.$e['name'].'_'.$c.'" value="'.$i->$v.'" '.$checked.' /> <label for="'.$e['name'].'_'.$c.'" '.$error.'>'.stripslashes($i->$o).'</label></div>';
-					}
-					
+					$tmp .= '<div class="radiobox"><input type="radio" '.$class.' name="'.$e['name'].'" id="'.$e['name'].'_'.$c.'" value="'.$i->$v.'" '.$checked.' /> <label for="'.$e['name'].'_'.$c.'" '.$error.'>'.stripslashes($i->$o).'</label></div>';
 				}
 				else
 				{
@@ -613,7 +605,7 @@ class X4Form_helper
 			}
 		}
 		
-		if ($inline && !isset($e['bootstrap'])) 
+		if ($inline) 
 		{
 			$tmp = '<div class="inliner clearfix">'.$tmp.'</div>';
 		}
