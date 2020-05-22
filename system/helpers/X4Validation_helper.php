@@ -419,7 +419,7 @@ class X4Validation_helper
 			foreach($toks as $i)
 			{
 				// at least one not empty
-				if (!empty($i) && !self::is_empty($i))
+				if (!empty($i) && self::is_empty($i))
 				{
 					$field['error'][] = array(
 						'msg' => '_ifempty',
