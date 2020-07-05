@@ -27,9 +27,10 @@ class X4Mailer_helper
 	 * @param array		Associative array of attachments (file, filename (optional))
 	 * @param array		Associative array of CC recipients (name, mail)
 	 * @param array		Associative array of BCC recipients (name, mail)
+	 * @param array		Associative array of replyto recipient (name, mail)
 	 * @return boolean
 	 */
-	public static function mailto($from, $html, $subject, $body, $to, $attached = array(), $cc = array(), $bcc = array())
+	public static function mailto($from, $html, $subject, $body, $to, $attached = array(), $cc = array(), $bcc = array(), $replyto = array())
 	{
 		X4Core_core::auto_load('swiftmailer_library');
 		
@@ -124,6 +125,11 @@ class X4Mailer_helper
 				$mail->addBcc(self::sanitize(strtolower($i['mail'])), self::sanitize($i['name']));
 			}
 			
+			if (!empty($replyto))
+			{
+				$mail->setReplyTo($replyto['mail'], $replyto['name']);
+			}
+
 			// if application isn't production STATE
 			$check = (!DEVEL) 
 				? $mailer->send($mail) 
@@ -135,6 +141,10 @@ class X4Mailer_helper
 			{
 				echo $e->getMessage();
 				die;
+			}
+			else
+			{
+				// todo log error message
 			}
 			return DEVEL;
 		}
