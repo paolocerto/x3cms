@@ -42,7 +42,9 @@ class X4Mpdf_helper
 		$mpdf = new \Mpdf\Mpdf([
 		    'mode' => 'utf-8', 
 		    'format' => $page_format, 
-		    'orientation' => $orientation
+			'orientation' => $orientation,
+			'setAutoTopMargin' => 'stretch',
+			'autoMarginPadding' => 5
 		]);
 		
 		// Set a simple Footer including the page number
