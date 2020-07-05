@@ -155,7 +155,16 @@ class X4Validation_helper
 					}
 				}
 				// assign the value
-				if (!in_array($fields[$i]['type'], X4Form_helper::$exclude) && (isset($fields[$i]['name']) && isset(self::$data[$fields[$i]['name']]) && !empty(self::$data[$fields[$i]['name']])))
+				if (!in_array($fields[$i]['type'], X4Form_helper::$exclude) && 
+					(
+						isset($fields[$i]['name']) && 
+						isset(self::$data[$fields[$i]['name']]) && 
+						(
+							self::$data[$fields[$i]['name']] >= 0 || 
+							strlen(self::$data[$fields[$i]['name']]) > 0
+						)
+					)
+				)
 				{
 					switch($fields[$i]['type'])
 					{
@@ -177,10 +186,15 @@ class X4Validation_helper
 							break;
 							
 						default:
+							// handle 0
+							$tmp_value = (self::$data[$fields[$i]['name']] === '0' || strval(self::$data[$fields[$i]['name']]) == '0')
+								? '0'
+								: self::$data[$fields[$i]['name']];
+
 							// check for sanitize
 							$fields[$i]['value'] = (isset($fields[$i]['sanitize']))
-								? self::sanitize(self::$data[$fields[$i]['name']], $fields[$i]['sanitize'])
-								: self::$data[$fields[$i]['name']];
+								? self::sanitize($tmp_value, $fields[$i]['sanitize'])
+								: $tmp_value;
 							break;
 					}
 				}
@@ -201,6 +215,9 @@ class X4Validation_helper
 	{
 		switch($type)
 		{
+		case 'numeric': 
+			return floatval($string);
+			break;
 		case 'string':
 			return htmlentities(strip_tags($string), ENT_QUOTES, 'UTF-8', false);
 			break;
@@ -509,29 +526,41 @@ class X4Validation_helper
 			if ($check)
 			{
 				// we have to check related fields
-
+				$one_field_is_not_empty = false;
 				$emtpy_fields = array();
 				// check if there are empty fields
 				foreach($toks as $i)
 				{
 					if (!empty($i))
 					{
-						if (self::is_empty($i))
+						if (!$one_field_is_not_empty && self::is_empty($i))
 						{
-							$field['error'][] = array(
-								'msg' => '_ifempty',
-								'related' => $i
-							);
-							
+							/*
+							// hidden for simplicity
 							$field['error'][] = array(
 								'msg' => '_requiredif',
 								'related' => $tok[1],
 								'relatedvalue' => self::$data[$tok[1]]
 							);
-
+							*/
 							$e = false;
 						}
+						else
+						{
+							$one_field_is_not_empty = true;
+							$e = true;
+						}
 					}
+				}
+
+
+				if (!$e)
+				{
+					// just one for all
+					$field['error'][] = array(
+						'msg' => '_ifempty',
+						'related' => $i
+					);
 				}
 			}
 		}
@@ -1491,7 +1520,7 @@ class X4Validation_helper
                         else
                         {
                             // empty value (zero is a value)
-                            $res = empty(self::$data[$name]);
+                            $res = empty(self::$data[$name]) && self::$data[$name] !== '0';
                         }
                     }
                     else
