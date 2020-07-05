@@ -93,7 +93,7 @@ if ($theme_in)
 					<td></td>
 					<td>'.$actions.'
 						<a class="btm" href="'.BASE_URL.'templates/index/'.$i->id.'/'.$i->name.'" title="'._TEMPLATES.'"><i class="fas fa-desktop fa-lg"></i></a> 
-						<a class="btm" href="'.BASE_URL.'menus/index/'.$i->id.'/'.$i->name.'" title="'._MENUS.'"><i class="fas fa-navicon fa-lg"></i></a>
+						<a class="btm" href="'.BASE_URL.'menus/index/'.$i->id.'/'.$i->name.'" title="'._MENUS.'"><i class="fas fa-bars fa-lg"></i></a>
 						'.$minify.'
 					<td class="aright">'.$uninstall.'</td>
 					</tr>';
