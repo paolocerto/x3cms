@@ -366,7 +366,7 @@ td.formatted ol li.response {border-left:5px solid #e60;}
 
 .white {color:#fff;}
 .blue {color:#09c;}
-.orange {color:#e80;}
+.orange {color:#e80 !important;}
 .red {color:#a00 !important;}
 .green {color:#790;}
 .error {color:#e70;}
