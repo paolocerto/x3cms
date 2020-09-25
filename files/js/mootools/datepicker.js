@@ -1,26 +1,5 @@
 /*
 ---
-name: Locale.it-IT.DatePicker
-description: Italian Language File for DatePicker
-authors: danielec (https://github.com/danielec)
-requires: [More/Locale]
-provides: Locale.it-IT.DatePicker
-...
-*/
-
-Locale.define('it-IT', 'DatePicker', {
-    select_a_time: 'Scegli un orario',
-    use_mouse_wheel: 'Utilizza la rotellina del mouse per cambiare valore velocemente',
-    time_confirm_button: 'OK',
-    week: 'Sett.'
-});
-/*
-Locale.define('it-IT', 'Date', {
-    days_abbr: ['Lu', 'Ma', 'Me', 'Gi', 'Ve', 'Sa', 'Do']
-});
-*/
-/*
----
 name: Picker
 description: Creates a Picker, which can be used for anything
 authors: Arian Stolwijk
@@ -28,7 +7,6 @@ requires: [Core/Element.Dimensions, Core/Fx.Tween, Core/Fx.Transitions]
 provides: Picker
 ...
 */
-
 
 var Picker = new Class({
 
@@ -386,7 +364,7 @@ Picker.Attach = new Class({
 		toggle: null, // When set it deactivate toggling by clicking on the input */
 		togglesOnly: true, // set to false to always make calendar popup on input element, if true, it depends on the toggles elements set.
 		showOnInit: false, // overrides the Picker option
-		blockKeydown: true
+		blockKeydown: false
 	},
 
 	initialize: function(attachTo, options){
@@ -623,7 +601,7 @@ this.DatePicker = Picker.Date = new Class({
 		}
 		if (options.maxDate){
 			if (!(options.maxDate instanceof Date)) options.maxDate = Date.parse(options.maxDate);
-			options.maxDate.clearTime();
+			options.minDate.clearTime();
 		}
 
 		if (!options.format){
@@ -653,6 +631,15 @@ this.DatePicker = Picker.Date = new Class({
 
 	getInputDate: function(input){
 		this.date = new Date();
+
+		// set default time
+		if (this.options.pickOnly == 'time' && input.get('value') == '' && input.get('data') != null)
+		{
+			hm = input.get('data').split(':');
+			this.date.setHours(hm[0]);
+			this.date.setMinutes(hm[1]);
+		}
+
 		if (!input) return;
 		var date = Date.parse(input.get('value'));
 		if (date == null || !date.isValid()){
@@ -865,6 +852,7 @@ this.DatePicker = Picker.Date = new Class({
 
 	renderTime: function(date, fx){
 		var options = this.options;
+
 		this.setTitle(date, options.time_title);
 
 		var originalColumns = this.originalColumns = options.columns;
