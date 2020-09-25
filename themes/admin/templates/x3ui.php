@@ -153,7 +153,7 @@ if (!$this->site->site->xon)
 </footer>
 
 <div id="modal"></div>
-
+<script src="<?php echo THEME_URL ?>js/fontawesome-all.min.js"></script>
 <script src="<?php echo ROOT ?>files/js/mootools/MooTools-Core-1.6.0-compat-compressed.js" charset="UTF-8"></script>
 <script src="<?php echo ROOT ?>files/js/mootools/MooTools-More-1.6.0-compat-compressed.js" charset="UTF-8"></script>
 <script src="<?php echo ROOT ?>files/js/mootools/MooDropMenu.js" charset="UTF-8"></script>
@@ -162,11 +162,19 @@ if (!$this->site->site->xon)
 var domain = "<?php echo $this->site->site->domain ?>",
 	root = "<?php echo BASE_URL ?>",
 	theme = "",
+	lang = "<?php echo X4Route_core::$lang.'-'.strtoupper(X4Route_core::$lang) ?>",
 	warning = "<?php echo _WARNING ?>",
 	start_page = "<?php echo $start_page ?>",
 	start_title = "<?php echo $start_title ?>";
 </script>
 <script src="<?php echo ROOT ?>files/js/mootools/datepicker.js" charset="UTF-8"></script>
+<?php
+if (X4Route_core::$lang != 'en')
+{
+	// you need a datepicker_locale
+	echo '<script src="'.ROOT.'files/js/mootools/datepicker_locales/Locale.'.X4Route_core::$lang.'-'.strtoupper(X4Route_core::$lang).'.DatePicker.js" charset="UTF-8"></script>';
+}
+?>
 <script src="<?php echo ROOT ?>files/js/mootools/Lasso.js"></script>
 <script src="<?php echo ROOT ?>files/js/mootools/Lasso.Crop.js"></script>
 <script src="<?php echo ROOT ?>files/js/swfobject.js"></script>

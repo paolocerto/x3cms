@@ -129,6 +129,7 @@ input[type="checkbox"], input[type="radio"] {box-sizing:border-box;padding: 0;wi
 input[type="search"] { -webkit-appearance: textfield; -moz-box-sizing: content-box; -webkit-box-sizing: content-box; box-sizing: content-box; }
 input[type="search"]::-webkit-search-decoration, input[type="search"]::-webkit-search-cancel-button { -webkit-appearance: none; }
 
+input.time {text-align:right;display:inline;width:8em;background:#fff url(../img/timer_small.png) 5px center no-repeat;}
 input.date {text-align:right;display:inline;width:8em;background:#fff url(../img/calendar_small.png) 5px center no-repeat;}
 input.datetime {text-align:right;width:150px;background:#fff url(../img/calendar_small.png) 5px center no-repeat;}
 input.rangedate {display:inline;background:#fff url(../img/calendar_small.png) left no-repeat;}
@@ -138,7 +139,7 @@ select.large {width:100%;}
 select.multiple_select {vertical-align:top;}
 input.medium {width:50%;}
 input.check {border:none;}
-label input.check.inline {float:left;width:15px;margin:.2em .5em .5em 1.5em;}
+label input.check.inline {float:left;width:1.5em;height:1.5em;margin:.2em .5em .5em 1.5em;}
 label input.check.inline.first {margin:.2em .5em .5em 0;}
 
 .inliner input.radio:first-child {margin-left:0;}
@@ -156,8 +157,9 @@ input.noborder, input[readonly].noborder {border:1px solid #fff;border:none;}
 .buttons {text-align:center;padding:1em 0;}
 
 button::-moz-focus-inner, input::-moz-focus-inner { border: 0; padding: 0;}
-button {padding:.6em 2em;margin:.2em;font-family:inherit;vertical-align: baseline; *vertical-align: middle;border:none;background:#09c;color:#eee;border-radius:2px;}
-button:hover {background:#08b;color:#fff;}
+button, a.button {padding:.6em 2em;margin:.2em;font-family:inherit;vertical-align: baseline; *vertical-align: middle;border:none;background:#09c;color:#eee;border-radius:2px;}
+button:hover, a.button:hover {background:#08b;color:#fff;text-decoration:none}
+
 button, input {line-height:normal;}
 button, input[type="button"], input[type="reset"], input[type="submit"] { cursor: pointer; -webkit-appearance: button; *overflow: visible; }
 button[disabled], input[disabled] { cursor: default;opacity:.5; }
@@ -176,7 +178,7 @@ tr {border-bottom:1px solid #ddd;}
 tr.noborder {border:none;}
 
 tr.first {border-bottom:1px solid #aaa;}
-tr:hover td {background:#222d32;color:#ccc;}
+tr:not(.no_hover):hover td {background:#222d32;color:#ccc;}
 table.mceToolbar tr:hover td, table.mceLayout tr:hover td {background:#eee;}
 th {text-align:center;background:#ddd;line-height:2em;}
 td {vertical-align:top;line-height:1.8em;padding:.2em 1em 0;}
@@ -184,7 +186,7 @@ td.blue {background-color:#cef;}
 td.red {background-color:#fec;}
 td.alert {color:#c00;}
 td.menu {background:#bbb;color:#222d32;font-weight:bold;text-align:center;padding:.5em 0;}
-td a {font-weight:bold;margin-right:.5em;}
+td a, td > i {font-weight:bold;margin-right:.5em;}
 td a:last-child{margin-right:0;}
 td img {margin-left:.5em;}
 
@@ -284,6 +286,7 @@ td.formatted ol li.response {border-left:5px solid #e60;}
 .four-fifth {float:left;width:80%;-moz-border-sizing:border-box;box-sizing:border-box;}
 .one-sixth {float:left;width:16.66%;-moz-border-sizing:border-box;box-sizing:border-box;}
 .one-seventh {float:left;width:14.28%;-moz-border-sizing:border-box;box-sizing:border-box;}
+.one-heighth {float:left;width:12.5%;-moz-border-sizing:border-box;box-sizing:border-box;}
 .one-ninth {float:left;width:11.11%;-moz-border-sizing:border-box;box-sizing:border-box;}
 
 .push-one-third {margin-left:33.3%;}
@@ -368,8 +371,8 @@ td.formatted ol li.response {border-left:5px solid #e60;}
 .blue {color:#09c;}
 .orange {color:#e80 !important;}
 .red {color:#a00 !important;}
-.green {color:#790;}
-.error {color:#e70;}
+.green {color:#790 !important;}
+.error {color:#e70 !important;}
 .lightgray {color:#ccc;}
 .gray {color:#999;}
 
@@ -412,7 +415,7 @@ td.formatted ol li.response {border-left:5px solid #e60;}
 #spinner {margin:1em;color:#999}
 #spinner.fa-spin {color:#e60;}
 #sidebar div {color:#666;margin:2em 0 1em 0;}
-#sidebar a {padding:2px 0;display:block;color:#888;}
+#sidebar a {padding:2px 0;margin-bottom:4px;display:block;color:#888;}
 #sidebar a:hover {color:#e80;}
 #workarea {display:table-cell;width:auto;height:100%;vertical-align:top;}
 #toolbar {height:3em;line-height:3em;background:#ddd;padding:0;}
@@ -426,7 +429,7 @@ td.formatted ol li.response {border-left:5px solid #e60;}
 #filters input[type=text], #filters select {border:1px solid #ccc;padding:.1em .5em;margin-left:.4em;}
 #filters button {padding:.4em 1.6em;}
 
-#topic {width:auto;min-height:70%;padding-bottom:2em;}
+#topic {width:100%;min-height:70%;padding-bottom:2em;box-sizing:border-box;}
 
 /* scroll to */
 .scroll { position:fixed;color:#09c;cursor:pointer;right:0em;}
@@ -447,6 +450,9 @@ ul.inline-list li {display:inline-block;margin:0 .6em;}
 ul.inline-list li a.on {color:#222d32;}
 
 .sbox {border-bottom:1px dotted #ddd;padding:2px 0;font-size:0.9em;}
+.sbox.border-left {border-left:1px dotted #ddd;padding-left:3em;}
+.sbox2 {border-bottom:1px dotted #ddd;padding:.5em 0;}
+.tbox2 {border-top:1px dotted #ddd;padding:.5em 0;}
 
 /* PAGES */
 .titlebar {background:#ddd;color:#222d32;text-align:center;font-weight:bold;padding:.4em;margin-top:1em;}
@@ -515,10 +521,10 @@ div.widget:hover .wbox {color:#eee;}
 .simple-modal .simple-modal-header {display:none;}
 .simple-modal .simple-modal-body {padding:2em;font-size:1em;font-weight:normal;color:#222d32;background:#eee;}
 .simple-modal .simple-modal-body div.contents {margin:0;padding:0;}
-.simple-modal .simple-modal-body p.success {margin:-2em;padding:2em;color:#fff;background:#6a0;}
-.simple-modal .simple-modal-body p.error {margin:-2em;padding:2em;color:#fff;background:#e80;}
+.simple-modal .simple-modal-body p.success {margin:-2em;padding:2em;color:#fff !important;background:#6a0;}
+.simple-modal .simple-modal-body p.error {margin:-2em;padding:2em;color:#fff !important;background:#e80;}
 
-.simple-modal .simple-modal-body div.error {margin:-2em;padding:3em 2em 2em 2em;color:#fff;background:#e80;}
+.simple-modal .simple-modal-body div.error {margin:-2em;padding:3em 2em 2em 2em;color:#fff !important;background:#e80;}
 .simple-modal .simple-modal-body div.error p {line-height:1.2em;}
 
 .simple-modal .simple-modal-body .buttons {background:#222d32;margin:2em -2em -2.1em -2em;padding:1.5em 2em 2em 2em;text-align:center;}
@@ -606,6 +612,15 @@ ul.autocompleter-choices li.autocompleter-selected span.autocompleter-queried {c
 
 /* SORTABLE ITEMS */
 ul#sortable li:hover {cursor:move;}
+
+/* DRAGGABLE ITEMS */
+.draggable {margin-bottom:1em;}
+div.draggable_column {margin:0;padding:0 !important}
+div.draggable_column div.draggable_head {text-align:center;background:#ddd;line-height:2em;font-weight:bold;margin-top:1em;}
+div.draggable_column div.hour {padding-bottom:.3em;border:1px solid #ddd;}
+div.draggable_column div.hour div.schedule_actions {padding:.2em 0;text-align:right}
+div.draggable_column div.hour div.schedule_lesson {padding:.3em .5em;}
+div.draggable_column div.dragger:hover {cursor:move;background:#222d32;color:#ccc;}
 
 /* TINYMCE */
 .mce-widget button:hover {background:none !important;border-radius:0 !important;}
@@ -697,6 +712,18 @@ img.date_toggler {position:relative;top:4px;margin-left:4px;}
 .datepicker_dashboard th {padding:.3em 0;background:none;font-size:0.8em;}
 .datepicker_dashboard td {padding:.3em 0;}
 
+/* MODULES */
+
+/* X3ANNUITY */
+
+/* FILTER SELECTOR */
+
+/* CHARS SELECTOR */
+#char_btns {clear:both;width:100%;box-sizing:border-box;}
+#char_btns a {float:left;padding:.6em 1em;margin:.2em;font-family:inherit;font-weight:bold;vertical-align: baseline; *vertical-align: middle;border:none;background:#eee;color:#444;border-radius:2px;}
+#char_btns a.on {background:#09c;color:#eee;}
+
+
 
 @media screen and (max-width: 1200px) {
 	
@@ -763,6 +790,8 @@ img.date_toggler {position:relative;top:4px;margin-left:4px;}
 	.sm-hidden {display:none;}
 	#simple-modal {width:90% !important;margin:.5em;position:absolute;}
 	.simple-modal {top:0;}
+
+	.draggable {font-size:1.1em;}
 }
 
 @media screen and (max-width: 420px) {

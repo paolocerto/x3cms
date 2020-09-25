@@ -66,6 +66,30 @@ X3.append({
 		}
 	},
 	
+	/**
+	 * Handle url with query_string
+	 * 
+	 * @param string url 
+	 * @param string div 
+	 * @param string reload 
+	 */
+	finalUrl: function(url, div, reload)
+	{
+		var qs = '';
+		if (div != null && reload != null) {
+			qs = 'div=' + div + '&url=' + encodeURIComponent(reload);
+		}
+		if(qs.length) {
+			if (url.includes('?')) {
+				return X3.cleanUrl(url) + '&' + qs;
+			} else {
+				return X3.cleanUrl(url) + '?' + qs;
+			}
+		} else {
+			return X3.cleanUrl(url);
+		}
+	},
+
 	content: function(container, url, title){
 		var req = new Request.HTML({
 			method: 'get',
@@ -133,15 +157,10 @@ X3.append({
 		if (!data) {
 			data = '';
 		}
-		
-		var qs = '';
-		if (div != null && reload != null) {
-			qs = '?div=' + div + '&url=' + X3.cleanUrl(reload);
-		}
-		
+
 		var req = new Request.JSON({
-			url: X3.cleanUrl(url) + qs, 
-			method: 'post',
+			url: X3.finalUrl(url, div, reload), 
+			method: data.get('method'),
 			loadMethod: 'xhr',
 			data: data,
 			onRequest: function() {
@@ -151,6 +170,7 @@ X3.append({
 					$('formloader').removeClass('hidden');
 					$('editor').hide();
 				}
+
 			},
 			onFailure: function(xhr) {
 				X3.spinnerOff();
@@ -279,6 +299,8 @@ X3.append({
 		};
 	},
 	
+	
+
 	/**
 	 * Returns the object
 	 *
@@ -289,7 +311,7 @@ X3.append({
 	getObject: function(url, div, reload)
 	{
 		return {
-			url: X3.cleanUrl(url) + '?div=' + div + '&url=' + reload,
+			url: X3.finalUrl(url, div, reload),
 			method: 'get',
 			loadMethod: 'xhr',
 			data: '',
@@ -960,7 +982,10 @@ var windowHeight = function (){
 		});
 	},
 	pickerize = function(time, opts) {
+		// set a different locale
+		if (lang != 'en-EN') Locale.use(lang);
 		if (time == null) {
+			// date time
 			if (opts == null) {
 				opts = {
 					pickerClass: 'datepicker_dashboard',
@@ -970,18 +995,43 @@ var windowHeight = function (){
 				}
 			}
 			new Picker.Date($$('input.date_toggled'), opts);
+			$$('input.date_toggled').addEvent('dblclick',function(e) {
+				this.set("value", "");
+			});
 		} else {
-			if (opts == null) {
-				opts = {
-					pickerClass: 'datepicker_dashboard',
-					timePicker: false,
-					format: '%Y-%m-%d'
+			if (time == 2) {
+				// time only
+				if (opts == null) {
+					opts = {
+						pickerClass: 'datepicker_dashboard',
+						pickOnly: 'time',
+						timeWheelStep: 5,
+						format: '%H:%M'
+					}
 				}
+				new Picker.Date($$('input.time_toggled'), opts);
+				$$('input.time_toggled').addEvent('dblclick',function(e) {
+					this.set("value", "");
+				});
+			} else {
+				// date only
+				if (opts == null) {
+					opts = {
+						pickerClass: 'datepicker_dashboard',
+						timePicker: false,
+						format: '%Y-%m-%d'
+					}
+				}
+				new Picker.Date($$('input.date_toggled'), opts);
+				$$('input.date_toggled').addEvent('dblclick',function(e) {
+					this.set("value", "");
+				});
 			}
-			new Picker.Date($$('input.date_toggled'), opts);
 		}
 	},
 	pickerange = function(e, opts) {
+		// set a different locale
+		if (lang != 'en-EN') Locale.use(lang);
 		if (opts == null) {
 			// note: the script uses a specific date_format
 			opts = {
@@ -1090,6 +1140,27 @@ var windowHeight = function (){
 				}
 			});
 	},
+	draggize = function(id_form, container, sort_info) {
+		var sortInput = $(sort_info),
+			droppables = $$('li.dropper'),
+			containers = $(container);
+
+		$$('li.dragger').each(function(drag){
+			new Drag.Move(drag, {
+				droppables: droppables
+			});
+			
+			drag.addEvent('emptydrop', function(){
+				/*
+				sortInput.value = s.serialize();
+				var options = X3.getFormObject($(id_form).get('action'), $(id_form));
+				var r = new Request.JSON(options);
+				r.send();
+				*/
+				this.setStyle('background-color', '#faec8f');
+			});
+		});
+	},
 	autocompletize = function(id_input, url) {
 		new Autocompleter.Request.JSON(id_input, url, {
 			'postVar': 'input',
@@ -1109,11 +1180,20 @@ var windowHeight = function (){
 			}
 		});
 	},
-	bulkize = function(selector, field_class, button) {
+	bulkize = function(selector, field_class, button, style) {
 		var bulker = $(selector),
 			checkboxes = $$('.' + field_class);
-		$(button).setStyle('display','none');
-		
+			// button can be a string or an array of strings
+			if (button instanceof Array) {
+				button.each(function(e) {
+					$(e).setStyle('display','none');
+				});
+			} else {
+				$(button).setStyle('display','none');
+			}
+
+			if (style == null) style = 'inline';
+
             if (bulker != null) {
             bulker.addEvent('click', function() {
                 checkboxes.each(function(el) { 
@@ -1124,17 +1204,24 @@ var windowHeight = function (){
             
             checkboxes.each(function(e) {
                 e.addEvent('change', function(e) {
-                    checkize(checkboxes, button);
+                    checkize(checkboxes, button, style);
                 });
             });
             
-            function checkize(items, button) {
-                var chk = false;
+            function checkize(items, button, style) {
+                var chk = false, display = 'none';
                 items.each(function(e) {
                     if (e.checked) chk = true;
                 });
-                if (chk) $(button).setStyle('display','inline');
-                else $(button).setStyle('display','none');
+                if (chk) display = style;
+				
+				if (button instanceof Array) {
+					button.each(function(e) {
+						$(e).setStyle('display', display);
+					});
+				} else {
+					$(button).setStyle('display', display);
+				}
             }
         }
 	},
@@ -1181,7 +1268,7 @@ var windowHeight = function (){
 		}
 	},
 	loadize = function(id, container, action) {
-	        el = document.getElementById(id);
+	    el = document.getElementById(id);
 		el.addEvent('change', function(e) {
 		    tag = this.get('tag');
 		    if (tag == 'select') {
@@ -1190,6 +1277,45 @@ var windowHeight = function (){
 		        v = this.get('value');
 		    }
 		    $(container).load(action + v);
+		});
+	},
+	changer = function(id, id_form, container) {
+		el = document.getElementById(id);
+		el.addEvent('change', function(e) {
+			X3.spinnerOn();
+			var qs = $(id_form).toQueryString();
+			$(container).load($(id_form).get('action') + '?' + qs);
+			X3.spinnerOff();
+		});
+	},
+	str_searcher = function(id, id_form, container) {
+		el = document.getElementById(id);
+		el.addEvent('keyup:keys(enter)', function(e) {
+			X3.spinnerOn();
+			var qs = $(id_form).toQueryString();
+			$(container).load($(id_form).get('action') + '?' + qs);
+			X3.spinnerOff();
+		});
+	},
+	stepper = function(id, container, stepper, url, where) {
+		$(id).addEvent('click', function(e) {
+			var c = $(stepper).get('value');
+			var step = new Request.HTML({
+				method: 'get',
+				url: root+url+'/'+c,
+				//append: container,
+				onRequest: function() {
+					X3.spinnerOn();
+				},
+				onSuccess: function(responseTree, responseElements, responseHTML, responseJavaScript) {
+					if (where == 'undefined') {
+						where = 'bottom';
+					}
+					$(container).appendHTML(responseHTML, where);
+					X3.spinnerOff();
+				}
+			});
+			step.send();
 		});
 	},
 	floatize = function(s) {
