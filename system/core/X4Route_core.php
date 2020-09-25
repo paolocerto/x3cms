@@ -376,4 +376,16 @@ final class X4Route_core
 		}
 	}
 
+	/**
+	 * get id_area
+	 *
+	 * @static
+	 * @return  integer
+	 */ 
+	public static function get_id_area()
+	{
+	    $mod = new Log_model();
+	    return $mod->find('areas', 'id', array('name' => X4Route_core::$area));
+	}
+
 }	// End X4Route class

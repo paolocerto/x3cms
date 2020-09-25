@@ -16,6 +16,44 @@
 class X4Text_helper 
 {
 	/**
+	 * Chars array
+	 */
+	public static $chars = array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k',
+				   'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
+				   'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G',
+				   'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
+				   'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '1', '2',
+				   '3', '4', '5', '6', '7', '8', '9');
+
+	/**
+	 * Symbols array
+	 */
+	public static $symbols = array('!', '"', '#', '$', '%', '&', '(', ')', '*', '+', '-', '.', '/', ':', ';', '<', '=', '>', '?', '@', '[', ']', '^', '_', '|');
+
+	/**
+	 * Alphabet array
+	 */
+	public static $alphabet = array('A', 'B', 'C', 'D', 'E', 'F', 'G',
+		'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
+		'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z');
+
+	/**
+	 * Create random string
+	 * 
+	 * @static
+	 * @param integer	$length
+	 * @return string
+	 * /
+	public static function randomize($lenght)
+	{
+		$codice_random = bin2hex(openssl_random_pseudo_bytes(6));
+		$xcode = uniqid().$codice_random;
+		
+		
+	}
+	*/
+	
+	/**
 	 * Excerpt
 	 *
 	 * @static
@@ -60,7 +98,7 @@ class X4Text_helper
 				"/(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+/iu",
 				function($m)
 				{
-					return "\n";	
+					return "\n";
 				}, 
 				$str);
 		}
@@ -158,20 +196,15 @@ class X4Text_helper
 	 *
 	 * @static
 	 * @param integer	$len length of the string
+	 * @param string	$what define which group of characters to use
 	 * @return string
 	 */
-	public static function random_string($len)
+	public static function random_string($len, $what = 'chars')
 	{
-	    $chars = array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k',
-				   'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
-				   'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G',
-				   'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
-				   'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '1', '2',
-				   '3', '4', '5', '6', '7', '8', '9');
-	   
-        shuffle($chars);
-        $string = implode('', array_slice($chars, 0, $len));
-        return $string;
+		$chars = self::$$what;
+	    shuffle($chars);
+	    $string = implode('', array_slice($chars, 0, $len));
+	    return $string;
 	}
 	
 	/**

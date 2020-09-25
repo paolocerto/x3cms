@@ -1460,32 +1460,39 @@ class X4Files_helper
 		}
 	}
 	
-	/**
-	 * Get a csv file
-	 * the path of the file will remain anonymous
-	 *
-	 * @param string	$items
-	 * @param boolean	$header of the columns
-	 * @return file
-	 */
-	public static function get_csv($items, $header = false, $head = array())
+	public static function setHeader($filename, $filesize)
+	{
+		// disable caching
+		$now = gmdate("D, d M Y H:i:s");
+		header("Expires: Tue, 01 Jan 2001 00:00:01 GMT");
+		header("Cache-Control: max-age=0, no-cache, must-revalidate, proxy-revalidate");
+		header("Last-Modified: {$now} GMT");
+
+		// force download  
+		header("Content-Type: application/force-download");
+		header("Content-Type: application/octet-stream");
+		header("Content-Type: application/download");
+		header('Content-Type: text/x-csv');
+
+		// disposition / encoding on response body
+		if (isset($filename) && strlen($filename) > 0)
+			header("Content-Disposition: attachment;filename={$filename}");
+		if (isset($filesize))
+			header("Content-Length: ".$filesize);
+		header("Content-Transfer-Encoding: binary");
+		header("Connection: close");
+	}
+
+	public static function get_csv($items, $header = false)
 	{
 		$csv = tmpfile();
 
 		foreach ($items as $i) 
 		{
 			$row = (array) $i;
-
 			if ($header)
 			{
-				if (empty($head))
-				{
-					fputcsv($csv, array_keys($row));
-				}
-				else
-				{
-					fputcsv($csv, $head);
-				}
+				fputcsv($csv, array_keys($row));
 				$header = false;
 			}
 			fputcsv($csv, array_values($row), ';', '"');
@@ -1496,12 +1503,7 @@ class X4Files_helper
 		$filename = "export_".date("Y-m-d").".csv";
 
 		$fstat = fstat($csv);
-
-		header("Content-type: text/csv");
-		header("Content-Length: ".$fstat['size']);
-		header("Content-Disposition: attachment; filename=export_".date('Y_m_d').".csv");
-		header("Pragma: no-cache");
-		header("Expires: 0");
+		self::setHeader($filename, $fstat['size']);
 
 		fpassthru($csv);
 		fclose($csv);

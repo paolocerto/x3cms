@@ -427,7 +427,7 @@ function save_article(bid, content) {
 		{
 			if (isset($i['error']))
 			{
-				foreach($i['error'] as $ii)
+				foreach($i['error'] as $e)
 				{
 					// set the available label
 					$label = ((is_null($i['label']) && isset($i['alabel'])) || isset($i['alabel']))
@@ -435,12 +435,12 @@ function save_article(bid, content) {
 						: $i['label'];
 					
 					// for related fields
-					if (isset($ii['related']))
+					if (isset($e['related']))
 					{
 						$src = array('XXXRELATEDXXX');
 						$rpl = array();
 						
-						$related = $ii['related'];
+						$related = $e['related'];
 						if (isset($fields[$related]))
 						{
 							// if is a related field
@@ -454,18 +454,24 @@ function save_article(bid, content) {
 							$rpl[] = $related;
 						}
 						
-						if (isset($ii['relatedvalue']))
+						if (isset($e['relatedvalue']))
 						{
 							$src[] = 'XXXVALUEXXX';
-							$rpl[] = $ii['relatedvalue'];
+							$rpl[] = $e['relatedvalue'];
 						}
 						
-						$msg .= '<br /><u>'.$label.'</u> '.str_replace($src, $rpl, $dict->get_word($ii['msg'], 'form'));
+						$msg .= '<br /><u>'.$label.'</u> '.str_replace($src, $rpl, $dict->get_word($e['msg'], 'form'));
 					}
 					else
 					{
 					    
-						$msg .= '<br /><u>'.$label.'</u> '.$dict->get_word($ii['msg'], 'form');
+						$msg .= '<br /><u>'.$label.'</u> '.$dict->get_word($e['msg'], 'form');
+					}
+
+					// debug
+					if (isset($e['debug']))
+					{
+						$msg .= '<br />'.$e['debug'];
 					}
 				}
 			}
@@ -492,7 +498,7 @@ function save_article(bid, content) {
 	{
 		$dict = new X4Dict_model(X4Route_core::$folder, X4Route_core::$lang);
 		$fields = self::normalize_form($fields);
-		
+
 		$error = array();
 		foreach($fields as $i)
 		{
@@ -524,6 +530,13 @@ function save_article(bid, content) {
 						$msg = $dict->get_word($ii['msg'], 'form');
 					}
 					
+
+					// debug
+					if (isset($ii['debug']))
+					{
+						$msg .= '<br />'.$ii['debug'];
+					}
+
 					$error[$i['name']] = addslashes(html_entity_decode($msg));
 				}
 			}

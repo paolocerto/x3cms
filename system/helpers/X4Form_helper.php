@@ -410,9 +410,19 @@ class X4Form_helper
 			// can display the file only if knowns his path
 			if (isset($e['folder'])) 
 			{
-				$tmp .= ($e['folder'] == 'img') 
-					? '<br /><img class="mthumb dblock" src="'.FPATH.$e['folder'].'/'.$e['old'].'" alt="thumb" />' 
-					: '';
+				switch($e['folder'])
+				{
+					case 'img';
+						$tmp .= '<br /><img class="mthumb dblock" src="'.FPATH.$e['folder'].'/'.$e['old'].'" alt="thumb" />';
+						break;
+					default:
+						// check if exists a subdirectory of public
+						if (is_dir(PPATH.$e['folder']) && getimagesize(PPATH.$e['folder'].'/'.$e['old']))
+						{
+							$tmp .= '<br /><img class="mthumb dblock" src="'.ROOT.'public/'.$e['folder'].'/'.$e['old'].'" alt="thumb" />';
+						}
+						break;
+				}
 				$tmp .= ' <a href="'.FPATH.$e['folder'].'/'.$e['old'].'" title="">'.$e['old'].'</a>';
 			}
 			elseif (isset($e['aold']))
@@ -903,7 +913,7 @@ class X4Form_helper
 			{
 				$submit = (empty($submit_action)) 
 					? '<button name="'.strrev($form_id).'" type="submit">'.$buttons[1].'</button>' 
-					: '<button name="'.strrev($form_id).'" type="button" '.$submit_action.'>'.$buttons[1].'</button>';
+					: '<button name="'.strrev($form_id).'" id="'.strrev($form_id).'" type="button" '.$submit_action.'>'.$buttons[1].'</button>';
 			}
 		
 			return '<div class="'.$buttons[2].'">'.$reset.$submit.'</div>';
