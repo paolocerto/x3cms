@@ -26,7 +26,9 @@ $app_path = 'cms/';
  * Initialize sessions
  */
 ini_set('session.gc_maxlifetime', 3*3600);
-!ini_get('session.auto_start') ? session_start() : '';
+!ini_get('session.auto_start') 
+    ? session_start() 
+    : '';
 $SID = session_id();
 
 /**
@@ -68,6 +70,12 @@ define('APATH', PATH.$app_path);
  * Relative path
  */
 define('FPATH', ROOT.$app_path.'files/filemanager/');
+
+/**
+ * Define PPATH: the path to public folder
+ * Relative path
+ */
+define('PPATH', PATH.'public/');
 
 unset($system_app, $app_path, $file, $root, $path);
 
