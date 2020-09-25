@@ -81,7 +81,7 @@ foreach($areas as $i)
 window.addEvent("domready", function() {
 	X3.content("filters","areas/filter", "<?php echo X4Utils_helper::navbar($navbar, ' . ', false) ?>");
 	buttonize("topic", "bta", "modal");
-	actionize("topic",  "btl", "topic", escape("areas/index"));
+	actionize("topic",  "btl", "topic", escape("<?php echo BASE_URL ?>areas/index"));
 	zebraTable("zebra");
 	linking("table.zebra a.btt");
 });
