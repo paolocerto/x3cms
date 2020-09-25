@@ -368,7 +368,7 @@ window.addEvent("domready", function()
 			'value' => '',
 			'name' => 'password',
 			'suggestion' => _PASSWORD_RULE,
-			'rule' => $rule.'minlength§6|alphanumeric',
+			'rule' => $rule.'password|minlength§6',
 			'extra' => 'class="large"'
 		);
 		

@@ -87,7 +87,7 @@ class Login_controller extends X4Cms_controller
 			'type' => 'password', 
 			'value' => $pwd,
 			'name' => 'password',
-			'rule' => 'required|minlength§5',
+			'rule' => 'required|password|minlength§6',
 			'sanitize' => 'string'
 		);
 		

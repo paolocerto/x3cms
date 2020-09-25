@@ -107,7 +107,7 @@ class Profile_controller extends X3ui_controller
 			'value' => '',
 			'name' => 'password',
 			'suggestion' => _PASSWORD_RULE,
-			'rule' => 'alphanumeric|minlength§5',
+			'rule' => 'password|minlength§6',
 			'extra' => 'class="large"'
 		);
 		
