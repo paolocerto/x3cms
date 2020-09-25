@@ -24,6 +24,7 @@ class Permission_model extends X4Model_core
 		'_language_creation',
 		'_menu_creation',
 		'_module_install',
+		'_module_uninstall',
 		'_template_install',
 		'_theme_install',
 		'_user_creation',
@@ -343,7 +344,7 @@ class Permission_model extends X4Model_core
 			$res = $this->sync_priv($id_user, $areas, $force);
 		}
 
-		return (isset($res))
+		return (isset($res) && $res[1])
 			? $res 
 			: array(0,1);
 	}
@@ -461,7 +462,7 @@ class Permission_model extends X4Model_core
 				}
 			}
 		}
-		
+
 		return (empty($sql)) 
 			? array(0,1) 
 			: $this->db->multi_exec($sql);

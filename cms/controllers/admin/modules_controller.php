@@ -69,6 +69,8 @@ class Modules_controller extends X3ui_controller
 		$mod = new X4Plugin_model();
 		$view->content->plugged = $mod->get_installed($id_area);
 		
+		$view->content->uninstall = AdmUtils_helper::get_ulevel(1, $_SESSION['xuid'], '_module_uninstall');
+
 		$chk = AdmUtils_helper::get_ulevel(1, $_SESSION['xuid'], '_module_install');
 		$view->content->pluggable = (!$chk || $chk->level < 4)
 		    ? array()
