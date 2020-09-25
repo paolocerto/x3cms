@@ -401,6 +401,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'admin', 'form', '_FORM_DUPLICATE', 'Questo form &egrave; gi&agrave; stato registrato.', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_REQUIRED', '&egrave; un campo obbligatorio.', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_REQUIREDIF', '&Egrave; obbligatorio se impostate "XXXRELATEDXXX" a "XXXVALUEXXX".', 0, 1),
+(NOW(), 'it', 'admin', 'form', '_A_VALUE_OTHER_THAN', 'un valore di verso da ', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_INVALID_VALUE', 'non &egrave; un valore ammesso.', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_INVALID_MAIL', 'non &egrave; un indirizzo email valido.', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_INVALID_URL', 'non &egrave; un URL valido.', 0, 1),
@@ -420,6 +421,13 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'admin', 'form', '_MUST_CONTAIN_ONLY', 'deve contenere solo "XXXRELATEDXXX"', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_MUST_BE_ALPHABETIC', 'deve contenere solo lettere dell\'alfabeto', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_MUST_BE_ALPHANUMERIC', 'deve contenere solo numeri e lettere', 0, 1),
+
+(NOW(), 'it', 'admin', 'form', '_MUST_CONTAIN_UPPERCASE', 'deve contenere almeno una lettera maiuscola', 0, 1),
+(NOW(), 'it', 'admin', 'form', '_MUST_CONTAIN_LOWERCASE', 'deve contenere almeno una lettera minuscola', 0, 1),
+(NOW(), 'it', 'admin', 'form', '_MUST_CONTAIN_NUMBER', 'deve contenere almeno un numero', 0, 1),
+(NOW(), 'it', 'admin', 'form', '_MUST_CONTAIN_SYMBOL', 'deve contenere almeno un carattere non alphanumerico (!"#$%&()*+,\-./:;<=>?@[]^_{|}~)', 0, 1),
+(NOW(), 'it', 'admin', 'form', '_MUST_BE_ALPHANUMERIC_PLUS_SYMBOLS', 'deve contenere solo numeri, lettere e simboli', 0, 1),
+
 (NOW(), 'it', 'admin', 'form', '_MUST_BE_A_TIME', 'deve essere un orario nel formato HH:MM', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_MUST_BE_A_TIMER', 'deve essere un numero di ore e minuti nel formato H:MM', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_MUST_BE_A_DATETIME', 'deve essere una data con orario nel formato aaaa-mm-gg hh:mm[:ss]', 0, 1),
@@ -430,6 +438,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'admin', 'form', '_MUST_BE_AFTER', 'deve essere data successiva a "XXXRELATEDXXX"', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_MUST_BE_AFTER_OR_EQUAL', 'deve essere una data successiva o al limite uguale a "XXXRELATEDXXX"', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_MUST_BE_BEFORE', 'deve essere data precedente a "XXXRELATEDXXX"', 0, 1),
+(NOW(), 'it', 'admin', 'form', '_MUST_BE_BEFORE_OR_EQUAL', 'deve essere una data precedente o al limite uguale a "XXXRELATEDXXX"', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_WRONG_LENGTH', 'numero di caratteri sbagliato (XXXRELATEDXXX)', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_GREATER_THAN', 'deve essere maggiore di "XXXRELATEDXXX".', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_LOWER_THAN', 'deve essere minore di "XXXRELATEDXXX".', 0, 1),
@@ -714,7 +723,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'admin', 'users', '_REPEAT_PASSWORD', 'Ripeti password', 0, 1),
 (NOW(), 'it', 'admin', 'users', '_LEVEL', 'Livello utente', 0, 1),
 (NOW(), 'it', 'admin', 'users', '_USERNAME_RULE', 'Almeno 6 caratteri alfanumerici', 0, 1),
-(NOW(), 'it', 'admin', 'users', '_PASSWORD_RULE', 'Almeno 6 caratteri alfanumerici', 0, 1),
+(NOW(), 'it', 'admin', 'users', '_PASSWORD_RULE', 'Almeno 6 caratteri alfanumerici e simboli', 0, 1),
 (NOW(), 'it', 'admin', 'users', '_USER_DETAIL', 'Dettaglio utente', 0, 1),
 (NOW(), 'it', 'admin', 'users', '_MAIL_USER', 'Scrivi una email', 0, 1),
 (NOW(), 'it', 'admin', 'users', '_PASSWORD_CHANGE_MSG', 'Lasciare vuoto se non si intende modificare la password', 0, 1),
@@ -771,6 +780,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'admin', 'groups', '_LANGUAGE_CREATION', 'Nuove lingue', 0, 1),
 (NOW(), 'it', 'admin', 'groups', '_MENU_CREATION', 'Creazione men&ugrave;', 0, 1),
 (NOW(), 'it', 'admin', 'groups', '_MODULE_INSTALL', 'Installazione moduli', 0, 1),
+(NOW(), 'it', 'admin', 'groups', '_MODULE_UNINSTALL', 'Disinstallazione moduli', 0, 1),
 (NOW(), 'it', 'admin', 'groups', '_PAGE_CREATION', 'Creazione pagine', 0, 1),
 (NOW(), 'it', 'admin', 'groups', '_TEMPLATE_INSTALL', 'Installare template', 0, 1),
 (NOW(), 'it', 'admin', 'groups', '_THEME_INSTALL', 'Installare temi', 0, 1),
@@ -991,6 +1001,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'admin', 'form', '_FORM_DUPLICATE', 'This form was already submitted.', 0, 1),
 (NOW(), 'en', 'admin', 'form', '_REQUIRED', 'is a required field.', 0, 1),
 (NOW(), 'en', 'admin', 'form', '_REQUIREDIF', 'is a requiref field if "XXXRELATEDXXX" is set to "XXXVALUEXXX".', 0, 1),
+(NOW(), 'en', 'admin', 'form', '_A_VALUE_OTHER_THAN', 'a value other than ', 0, 1),
 (NOW(), 'en', 'admin', 'form', '_INVALID_VALUE', 'is an invalid value.', 0, 1),
 (NOW(), 'en', 'admin', 'form', '_INVALID_MAIL', 'is not a valid email address.', 0, 1),
 (NOW(), 'en', 'admin', 'form', '_INVALID_URL', 'is not a valid URL.', 0, 1),
@@ -1009,6 +1020,13 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'admin', 'form', '_MUST_CONTAIN_ONLY', 'can contain only "XXXRELATEDXXX"', 0, 1),
 (NOW(), 'en', 'admin', 'form', '_MUST_BE_ALPHABETIC', 'can contain only alphabetic chars', 0, 1),
 (NOW(), 'en', 'admin', 'form', '_MUST_BE_ALPHANUMERIC', 'can contains only alphanumeric', 0, 1),
+
+(NOW(), 'en', 'admin', 'form', '_MUST_CONTAIN_UPPERCASE', 'it must contain at least one upper case letter', 0, 1),
+(NOW(), 'en', 'admin', 'form', '_MUST_CONTAIN_LOWERCASE', 'it must contain at least one lower case letter', 0, 1),
+(NOW(), 'en', 'admin', 'form', '_MUST_CONTAIN_NUMBER', 'it must contain at least one number', 0, 1),
+(NOW(), 'en', 'admin', 'form', '_MUST_CONTAIN_SYMBOL', 'it must contain at least one non-alphanumeric character (!"#$%&()*+,\-./:;<=>?@[]^_{|}~)', 0, 1),
+(NOW(), 'en', 'admin', 'form', '_MUST_BE_ALPHANUMERIC_PLUS_SYMBOLS', 'it must contain only numbers, letters and symbols', 0, 1),
+
 (NOW(), 'en', 'admin', 'form', '_MUST_BE_A_TIME', 'must be a time HH:MM format', 0, 1),
 (NOW(), 'en', 'admin', 'form', '_MUST_BE_A_TIMER', 'must be a number of hours and minutes in H:MM format', 0, 1),
 (NOW(), 'en', 'admin', 'form', '_MUST_BE_A_DATETIME', 'must be a date time in aaaa-mm-gg hh:mm[:ss] format', 0, 1),
@@ -1019,6 +1037,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'admin', 'form', '_MUST_BE_AFTER', 'must be a later date than "XXXRELATEDXXX"', 0, 1),
 (NOW(), 'en', 'admin', 'form', '_MUST_BE_AFTER_OR_EQUAL', 'must be a later date or at least equal than "XXXRELATEDXXX"', 0, 1),
 (NOW(), 'en', 'admin', 'form', '_MUST_BE_BEFORE', 'must be an earlier date than "XXXRELATEDXXX"', 0, 1),
+(NOW(), 'en', 'admin', 'form', '_MUST_BE_BEFORE_OR_EQUAL', 'must be an earlier or at less equal date than "XXXRELATEDXXX"', 0, 1),
 (NOW(), 'en', 'admin', 'form', '_WRONG_LENGTH', 'wrong length (XXXRELATEDXXX)', 0, 1),
 (NOW(), 'en', 'admin', 'form', '_GREATER_THAN', 'have to be greater than "XXXRELATEDXXX".', 0, 1),
 (NOW(), 'en', 'admin', 'form', '_LOWER_THAN', 'have to be lower than "XXXRELATEDXXX"', 0, 1),
@@ -1303,7 +1322,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'admin', 'users', '_REPEAT_PASSWORD', 'Repeat password', 0, 1),
 (NOW(), 'en', 'admin', 'users', '_LEVEL', 'User level', 0, 1),
 (NOW(), 'en', 'admin', 'users', '_USERNAME_RULE', 'At least 6 alphanumeric chars', 0, 1),
-(NOW(), 'en', 'admin', 'users', '_PASSWORD_RULE', 'At least 6 alphanumeric chars', 0, 1),
+(NOW(), 'en', 'admin', 'users', '_PASSWORD_RULE', 'At least 6 alphanumeric plus symbols chars', 0, 1),
 (NOW(), 'en', 'admin', 'users', '_USER_DETAIL', 'User detail', 0, 1),
 (NOW(), 'en', 'admin', 'users', '_MAIL_USER', 'Send an email to user', 0, 1),
 (NOW(), 'en', 'admin', 'users', '_PASSWORD_CHANGE_MSG', 'Leave blank for no change', 0, 1),
@@ -1361,6 +1380,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'admin', 'groups', '_LANGUAGE_CREATION', 'New languages', 0, 1),
 (NOW(), 'en', 'admin', 'groups', '_MENU_CREATION', 'Men&ugrave; creation', 0, 1),
 (NOW(), 'en', 'admin', 'groups', '_MODULE_INSTALL', 'Plugin installation', 0, 1),
+(NOW(), 'en', 'admin', 'groups', '_MODULE_UNINSTALL', 'Plugin uninstall', 0, 1),
 (NOW(), 'en', 'admin', 'groups', '_PAGE_CREATION', 'Page creation', 0, 1),
 (NOW(), 'en', 'admin', 'groups', '_TEMPLATE_INSTALL', 'Template installation', 0, 1),
 (NOW(), 'en', 'admin', 'groups', '_THEME_INSTALL', 'Theme installation', 0, 1),
@@ -1520,6 +1540,13 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'public', 'form', '_MUST_BE_ALPHABETIC', 'deve contenere solo lettere dell\'alfabeto', 0, 1),
 
 (NOW(), 'it', 'public', 'form', '_MUST_BE_ALPHANUMERIC', 'deve contenere solo numeri e lettere', 0, 1),
+
+(NOW(), 'it', 'public', 'form', '_MUST_CONTAIN_UPPERCASE', 'deve contenere almeno una lettera maiuscola', 0, 1),
+(NOW(), 'it', 'public', 'form', '_MUST_CONTAIN_LOWERCASE', 'deve contenere almeno una lettera minuscola', 0, 1),
+(NOW(), 'it', 'public', 'form', '_MUST_CONTAIN_NUMBER', 'deve contenere almeno un numero', 0, 1),
+(NOW(), 'it', 'public', 'form', '_MUST_CONTAIN_SYMBOL', 'deve contenere almeno un carattere non alphanumerico (!"#$%&()*+,\-./:;<=>?@[]^_{|}~)', 0, 1),
+(NOW(), 'it', 'public', 'form', '_MUST_BE_ALPHANUMERIC_PLUS_SYMBOLS', 'deve contenere solo numeri, lettere e simboli', 0, 1),
+
 (NOW(), 'it', 'public', 'form', '_MUST_BE_A_TIME', 'deve essere un orario nel formato HH:MM', 0, 1),
 (NOW(), 'it', 'public', 'form', '_MUST_BE_A_TIMER', 'deve essere un numero di ore e minuti nel formato H:MM', 0, 1),
 (NOW(), 'it', 'public', 'form', '_MUST_BE_A_DATETIME', 'deve essere una data con orario nel formato aaaa-mm-gg hh:mm[:ss]', 0, 1),
@@ -1530,6 +1557,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'public', 'form', '_MUST_BE_AFTER', 'deve essere data successiva a "XXXRELATEDXXX"', 0, 1),
 (NOW(), 'it', 'public', 'form', '_MUST_BE_AFTER_OR_EQUAL', 'deve essere una data successiva o al limite uguale a "XXXRELATEDXXX"', 0, 1),
 (NOW(), 'it', 'public', 'form', '_MUST_BE_BEFORE', 'deve essere data precedente a "XXXRELATEDXXX"', 0, 1),
+(NOW(), 'it', 'public', 'form', '_MUST_BE_BEFORE_OR_EQUAL', 'deve essere una data precedente o al limite uguale a "XXXRELATEDXXX"', 0, 1),
 (NOW(), 'it', 'public', 'form', '_INVALID_IBAN', 'il codice IBAN inserito non &egrave; valido', 0, 1),
 (NOW(), 'it', 'public', 'form', '_INVALID_DIRECTORY', 'la cartella specificata non esiste', 0, 1),
 
@@ -1688,6 +1716,13 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'public', 'form', '_MUST_BE_ALPHABETIC', 'can contain only alphabetic chars', 0, 1),
 
 (NOW(), 'en', 'public', 'form', '_MUST_BE_ALPHANUMERIC', 'can contains only alphanumeric', 0, 1),
+
+(NOW(), 'en', 'public', 'form', '_MUST_CONTAIN_UPPERCASE', 'it must contain at least one upper case letter', 0, 1),
+(NOW(), 'en', 'public', 'form', '_MUST_CONTAIN_LOWERCASE', 'it must contain at least one lower case letter', 0, 1),
+(NOW(), 'en', 'public', 'form', '_MUST_CONTAIN_NUMBER', 'it must contain at least one number', 0, 1),
+(NOW(), 'en', 'public', 'form', '_MUST_CONTAIN_SYMBOL', 'it must contain at least one non-alphanumeric character (!"#$%&()*+,\-./:;<=>?@[]^_{|}~)', 0, 1),
+(NOW(), 'en', 'public', 'form', '_MUST_BE_ALPHANUMERIC_PLUS_SYMBOLS', 'it must contain only numbers, letters and symbols', 0, 1),
+
 (NOW(), 'en', 'public', 'form', '_MUST_BE_A_TIME', 'must be a time HH:MM format', 0, 1),
 (NOW(), 'en', 'public', 'form', '_MUST_BE_A_TIMER', 'must be a number of hours and minutes in H:MM format', 0, 1),
 (NOW(), 'en', 'public', 'form', '_MUST_BE_A_DATETIME', 'must be a date time in aaaa-mm-gg hh:mm[:ss] format', 0, 1),
@@ -1698,6 +1733,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'public', 'form', '_MUST_BE_AFTER', 'must be a later date than "XXXRELATEDXXX"', 0, 1),
 (NOW(), 'en', 'public', 'form', '_MUST_BE_AFTER_OR_EQUAL', 'must be a later date or at least equal than "XXXRELATEDXXX"', 0, 1),
 (NOW(), 'en', 'public', 'form', '_MUST_BE_BEFORE', 'must be an earlier date than "XXXRELATEDXXX"', 0, 1),
+(NOW(), 'en', 'public', 'form', '_MUST_BE_BEFORE_OR_EQUAL', 'must be an earlier or at less equal date than "XXXRELATEDXXX"', 0, 1),
 (NOW(), 'en', 'public', 'form', '_INVALID_IBAN', 'invalid IBAN code', 0, 1),
 (NOW(), 'en', 'public', 'form', '_INVALID_DIRECTORY', 'the folder not exists', 0, 1),
 
@@ -1844,6 +1880,13 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'private', 'form', '_MUST_CONTAIN_ONLY', 'deve contenere solo "XXXRELATEDXXX"', 0, 1),
 (NOW(), 'it', 'private', 'form', '_MUST_BE_ALPHABETIC', 'deve contenere solo lettere dell\'alfabeto', 0, 1),
 (NOW(), 'it', 'private', 'form', '_MUST_BE_ALPHANUMERIC', 'deve contenere solo numeri e lettere', 0, 1),
+
+(NOW(), 'it', 'private', 'form', '_MUST_CONTAIN_UPPERCASE', 'deve contenere almeno una lettera maiuscola', 0, 1),
+(NOW(), 'it', 'private', 'form', '_MUST_CONTAIN_LOWERCASE', 'deve contenere almeno una lettera minuscola', 0, 1),
+(NOW(), 'it', 'private', 'form', '_MUST_CONTAIN_NUMBER', 'deve contenere almeno un numero', 0, 1),
+(NOW(), 'it', 'private', 'form', '_MUST_CONTAIN_SYMBOL', 'deve contenere almeno un carattere non alphanumerico (!"#$%&()*+,\-./:;<=>?@[]^_{|}~)', 0, 1),
+(NOW(), 'it', 'private', 'form', '_MUST_BE_ALPHANUMERIC_PLUS_SYMBOLS', 'deve contenere solo numeri, lettere e simboli', 0, 1),
+
 (NOW(), 'it', 'private', 'form', '_MUST_BE_A_TIME', 'deve essere un orario nel formato HH:MM', 0, 1),
 (NOW(), 'it', 'private', 'form', '_MUST_BE_A_TIMER', 'deve essere un numero di ore e minuti nel formato H:MM', 0, 1),
 (NOW(), 'it', 'private', 'form', '_MUST_BE_A_DATETIME', 'deve essere una data con orario nel formato aaaa-mm-gg hh:mm[:ss]', 0, 1),
@@ -1853,6 +1896,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'private', 'form', '_MUST_BE_A_PERIODICAL', 'deve essere una stringa formata da un numero seguito da uno dei seguenti termini: year, month, week, day, hour', 0, 1),
 (NOW(), 'it', 'private', 'form', '_MUST_BE_AFTER', 'deve essere data successiva a "XXXRELATEDXXX"', 0, 1),
 (NOW(), 'it', 'private', 'form', '_MUST_BE_BEFORE', 'deve essere data precedente a "XXXRELATEDXXX"', 0, 1),
+(NOW(), 'it', 'private', 'form', '_MUST_BE_BEFORE_OR_EQUAL', 'deve essere una data precedente o al limite uguale a "XXXRELATEDXXX"', 0, 1),
 (NOW(), 'it', 'private', 'form', '_INVALID_IBAN', 'il codice IBAN inserito non &egrave; valido', 0, 1),
 
 (NOW(), 'it', 'private', 'form', '_CHECKED', 'checked="checked"', 0, 1),
@@ -1889,7 +1933,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'private', 'form', '_PHONE', 'Telefono', 0, 1),
 (NOW(), 'it', 'private', 'form', '_REPEAT_PASSWORD', 'Ripeti password', 0, 1),
 (NOW(), 'it', 'private', 'form', '_USERNAME_RULE', 'Almeno 6 caratteri alfanumerici', 0, 1),
-(NOW(), 'it', 'private', 'form', '_PASSWORD_RULE', 'Almeno 6 caratteri alfanumerici', 0, 1),
+(NOW(), 'it', 'private', 'form', '_PASSWORD_RULE', 'Almeno 6 caratteri alfanumerici e simboli', 0, 1),
 (NOW(), 'it', 'private', 'form', '_PASSWORD_CHANGE_MSG', 'Lasciare vuoto se non si intende modificare la password', 0, 1),
 
 (NOW(), 'it', 'private', 'form', '_CAPTCHA', 'Controllo antispam', 0, 1),
@@ -1981,6 +2025,13 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'private', 'form', '_MUST_BE_ALPHABETIC', 'can contain only alphabetic chars', 0, 1),
 
 (NOW(), 'en', 'private', 'form', '_MUST_BE_ALPHANUMERIC', 'can contains only alphanumeric', 0, 1),
+
+(NOW(), 'en', 'private', 'form', '_MUST_CONTAIN_UPPERCASE', 'it must contain at least one upper case letter', 0, 1),
+(NOW(), 'en', 'private', 'form', '_MUST_CONTAIN_LOWERCASE', 'it must contain at least one lower case letter', 0, 1),
+(NOW(), 'en', 'private', 'form', '_MUST_CONTAIN_NUMBER', 'it must contain at least one number', 0, 1),
+(NOW(), 'en', 'private', 'form', '_MUST_CONTAIN_SYMBOL', 'it must contain at least one non-alphanumeric character (!"#$%&()*+,\-./:;<=>?@[]^_{|}~)', 0, 1),
+(NOW(), 'en', 'private', 'form', '_MUST_BE_ALPHANUMERIC_PLUS_SYMBOLS', 'it must contain only numbers, letters and symbols', 0, 1),
+
 (NOW(), 'en', 'private', 'form', '_MUST_BE_A_TIME', 'must be a time HH:MM format', 0, 1),
 (NOW(), 'en', 'private', 'form', '_MUST_BE_A_TIMER', 'must be a number of hours and minutes in H:MM format', 0, 1),
 (NOW(), 'en', 'private', 'form', '_MUST_BE_A_DATETIME', 'must be a date time in aaaa-mm-gg hh:mm[:ss] format', 0, 1),
@@ -1990,6 +2041,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'private', 'form', '_MUST_BE_A_PERIODICAL', 'must be a string consisting of a number followed by one of the following: year, month, week, day, hour', 0, 1),
 (NOW(), 'en', 'private', 'form', '_MUST_BE_AFTER', 'must be a later date ', 0, 1),
 (NOW(), 'en', 'private', 'form', '_MUST_BE_BEFORE', 'must be an earlier date', 0, 1),
+(NOW(), 'en', 'private', 'form', '_MUST_BE_BEFORE_OR_EQUAL', 'must be an earlier or at less equal date than "XXXRELATEDXXX"', 0, 1),
 (NOW(), 'en', 'private', 'form', '_INVALID_IBAN', 'invalid IBAN code', 0, 1),
 
 (NOW(), 'en', 'private', 'form', '_CHECKED', 'checked="checked"', 0, 1),
@@ -2025,7 +2077,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'private', 'form', '_PHONE', 'Phone', 0, 1),
 (NOW(), 'en', 'private', 'form', '_REPEAT_PASSWORD', 'Repeat password', 0, 1),
 (NOW(), 'en', 'private', 'form', '_USERNAME_RULE', 'At least 6 alphanumeric chars', 0, 1),
-(NOW(), 'en', 'private', 'form', '_PASSWORD_RULE', 'At least 6 alphanumeric chars', 0, 1),
+(NOW(), 'en', 'private', 'form', '_PASSWORD_RULE', 'At least 6 alphanumeric plus symbols chars', 0, 1),
 (NOW(), 'en', 'private', 'form', '_PASSWORD_CHANGE_MSG', 'Leave blank for no change', 0, 1),
 
 (NOW(), 'en', 'private', 'form', '_CAPTCHA', 'Antispam control', 0, 1),
@@ -2104,6 +2156,7 @@ INSERT INTO `gprivs` (`updated`, `id_group`, `what`, `level`, `xon`) VALUES
 (NOW(), 1, '_key_import', 4, 1),
 (NOW(), 1, '_menu_creation', 4, 1),
 (NOW(), 1, '_module_install', 4, 1),
+(NOW(), 1, '_module_uninstall', 4, 1),
 (NOW(), 1, '_page_creation', 4, 1),
 (NOW(), 1, '_template_install', 4, 1),
 (NOW(), 1, '_theme_install', 4, 1),
