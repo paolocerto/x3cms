@@ -1309,7 +1309,7 @@ else
 window.addEvent("domready", function() {
 	X3.content("filters","'.$name.'/filter/<?php echo $id_area.\'/\'.$lang.\'/\'.$str ?>", "<?php echo addslashes(X4Utils_helper::navbar($navbar, \' . \', false)) ?>");
 	buttonize("topic", "bta", "modal");
-	actionize("topic",  "btl", "topic", escape("'.$name.'/index/<?php echo $id_area.\'/\'.$lang.\'/\'.$pp.\'/\'.$str ?>"));
+	actionize("topic",  "btl", "topic", escape("'.BASE_URL.$name.'/index/<?php echo $id_area.\'/\'.$lang.\'/\'.$pp.\'/\'.$str ?>"));
 	<?php echo $js ?>
 	linking("ul.inline-list a");
 });

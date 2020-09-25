@@ -48,7 +48,7 @@ class Pages_controller extends X3ui_controller
 	 * @param   string  $xfrom page URL of origin
 	 * @return  void
 	 */
-	public function index($id_area, $lang = '', $xfrom = 'home', $suffix = 1)
+	public function index($id_area, $lang = '', $xfrom = 'home')
 	{
 	    $area = new Area_model();
 	    list($id_area, $areas) = $area->get_my_areas($id_area);

@@ -1137,6 +1137,7 @@ window.addEvent("domready", function()
 	 *
 	 * @param   integer $id_area Area ID
 	 * @param   string $lang Language code
+	 * @param   integer $id_page Page ID
 	 * @param   string $module Module name
 	 * @param   string $param Parameter value
 	 * @return  void
@@ -1271,7 +1272,7 @@ window.addEvent("domready", function()
 			}
 			
 			// adjust date_in value in case of set or update
-			if ($item->id == 0 || $_post['date_in'] != date('Y-m-d', $_post['old_date_in'])) 
+			if ($item->id == 0 || $_post['date_in'] != date('Y-m-d', $_post['old_date_in']))
 			{
 				$post['date_in'] = strtotime($_post['date_in']) + (date('G')*60 + date('i'))*60 + date('s');
 			}
@@ -1297,7 +1298,7 @@ window.addEvent("domready", function()
 			{
 				$post['bid'] = $mod->get_new_bid();
 			}
-			
+
 			$result = $mod->insert($post);
 			if (APC)
 			{
