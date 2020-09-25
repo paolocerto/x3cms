@@ -5,6 +5,9 @@ vendor/*
 node_modules/*
 
 # Config
+cms/config/config.php
+cms/files/*
+.htaccess
 robot.txt
 humans.txt
 

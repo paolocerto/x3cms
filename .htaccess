@@ -1,6 +1,6 @@
 Header unset ETag
 FileETag None
-<FilesMatch "\.(ico|js|css|swf|gif|jpeg|png)$">
+<FilesMatch "\.(ico|js|css|swf|gif|jpeg|png|mp4|m4v|oga|ogv|flv|webm|ttf|eot|woff|woff2|svg)$">
 Header unset Last-Modified
 Header set Expires "Fri, 21 Dec 2028 00:00:00 GMT"
 Header set Cache-Control "public, no-transform"

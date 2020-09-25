@@ -127,6 +127,12 @@ class X3ui_controller extends X4Cms_controller
 					{
 						$error .= '<br /><u>'.$label.'</u> '.$dict->get_word($e['msg'], 'form');
 					}
+
+					// debug
+					if (isset($e['debug']))
+					{
+						$error .= '<br />'.$e['debug'];
+					}
 				}
 			}
 		}
