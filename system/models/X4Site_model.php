@@ -80,7 +80,7 @@ class X4Site_model extends X4Model_core
 	 */
 	private function set_data()
 	{
-		$sql = 'SELECT SQL_CACHE t.name AS theme, a.id, a.id_theme, a.folder, a.private, l.code AS lang 
+		$sql = 'SELECT  t.name AS theme, a.id, a.id_theme, a.folder, a.private, l.code AS lang 
 			FROM themes t
 			JOIN areas a ON a.id_theme = t.id 
 			JOIN alang l ON l.id_area = a.id AND l.predefined = 1
@@ -103,7 +103,7 @@ class X4Site_model extends X4Model_core
 			
 		if (empty($c))
 		{
-			$c = $this->db->query_row('SELECT SQL_CACHE s.*, l.code, l.title, l.description, l.keywords, l.rtl 
+			$c = $this->db->query_row('SELECT s.*, l.code, l.title, l.description, l.keywords, l.rtl 
 				FROM sites s
 				JOIN alang l ON l.code = '.$this->db->escape($this->lang).'
 				WHERE s.id = 1 AND l.id_area = '.intval($id_area));
@@ -123,7 +123,7 @@ class X4Site_model extends X4Model_core
 	 */
 	private function to_define()
 	{
-		$items = $this->db->query('SELECT SQL_CACHE UPPER(name) AS xkey, xvalue FROM param WHERE xrif = \'site\'');
+		$items = $this->db->query('SELECT UPPER(name) AS xkey, xvalue FROM param WHERE xrif = \'site\'');
 		foreach($items as $i)
 		{
 			if (!defined($i->xkey)) define($i->xkey, $i->xvalue);
@@ -145,7 +145,7 @@ class X4Site_model extends X4Model_core
 		
 		if (empty($c))
 		{
-			$c = $this->db->query('SELECT SQL_CACHE pa.*, IF(p.id IS NULL, u.level, p.level) AS level
+			$c = $this->db->query('SELECT pa.*, IF(p.id IS NULL, u.level, p.level) AS level
 				FROM param pa
 				JOIN sites s ON s.id = '.intval($id_site).'
 				JOIN uprivs u ON u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('sites').'
