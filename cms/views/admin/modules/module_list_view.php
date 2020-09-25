@@ -63,12 +63,12 @@ if ($plugged || $pluggable)
             if ($i->hidden) 
             {
                 $hidden = _HIDDEN;
-                $on_hidden = 'chain-broken';
+                $on_hidden = 'inlink';
             }
             else 
             {
                 $hidden = _VISIBLE;
-                $on_hidden = 'chain';
+                $on_hidden = 'link';
             }
             
             $actions = $uninstall = '';
@@ -84,7 +84,7 @@ if ($plugged || $pluggable)
                 $actions = '<a class="btl" href="'.BASE_URL.'modules/set/xon/'.$i->id.'/'.(($i->xon+1)%2).'" title="'._STATUS.' '.$status.'"><i class="far fa-lightbulb fa-lg '.$on_status.'"></i></a>';
                 
                 // admin user
-                if ($i->level == 4 && $i->adminlevel > 1) 
+                if ($i->level == 4 && $i->adminlevel > 1 && $uninstall)
                 {
                     $uninstall ='<a class="btl" href="'.BASE_URL.'modules/set/xlock/'.$i->id.'/'.(($i->xlock+1)%2).'" title="'._STATUS.' '.$lock.'"><i class="fas fa-'.$lock_status.' fa-lg"></i></a> 
                         <a class="bta" href="'.BASE_URL.'modules/uninstall/'.$i->id.'" title="'._UNINSTALL.'"><i class="fas fa-upload fa-lg"></i></a>';
