@@ -199,7 +199,7 @@ window.addEvent('domready', function() {
 	buttonize('topic', 'btm2', 'topic', '<?php echo $referer ?>');
 	buttonize('topic', 'bta', 'modal');
 	buttonize('topic', 'btal', 'topic');
-	actionize('topic',  'btl', 'topic', escape('pages/index/<?php echo $id_area.'/'.$lang.'/'.$xfrom ?>'));
+	actionize('topic',  'btl', 'topic', escape('<?php echo BASE_URL.'pages/index/'.$id_area.'/'.$lang.'/'.$xfrom ?>'));
 	linking('ul.inline-list a');
 	zebraUl('zebra');
 	
@@ -257,7 +257,7 @@ foreach($sort as $k => $v)
 }
 else 
 {
-	if ($_SESSION['level'] > 1)
+	if ($_SESSION['level'] > 3)
 	{
 		if (!isset($page->url) || $page->url == 'home') 
 		{
@@ -279,7 +279,7 @@ window.addEvent("domready", function() {
 	X3.content("filters", "pages/filter/'.$id_area.'/'.$lang.'/'.$page->url.'", "'.addslashes(X4Utils_helper::navbar($navbar, ' . ')).'");
 	linking("ul.inline-list a");
 	buttonize("topic", "btm", "topic");
-	actionize("topic",  "btl", "topic", escape("pages/index/'.$id_area.'/'.$lang.'"));
+	actionize("topic",  "btl", "topic", escape("'.BASE_URL.'pages/index/'.$id_area.'/'.$lang.'"));
 });
 </script>';
 }

@@ -14,6 +14,14 @@ if (isset($tinymce))
 	echo $tinymce;
 }
 
+echo '<div class="block">';
+
+// title
+if (isset($title)) 
+{
+	echo '<h2>'.$title.'</h2>';
+}
+
 // msg
 if (isset($_SESSION['msg']) && !empty($_SESSION['msg']))
 {
@@ -21,4 +29,9 @@ if (isset($_SESSION['msg']) && !empty($_SESSION['msg']))
 	unset($_SESSION['msg']);
 }
 
-echo '<div class="block"><h2>'.$title.'</h2>'.$form.'</div>';
+if (isset($msg)) 
+{
+	echo '<p>'.$msg.'</p>';
+}
+echo $form.'</div>';
+
