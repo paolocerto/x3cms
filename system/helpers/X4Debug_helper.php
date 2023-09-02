@@ -4,16 +4,16 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X4WEBAPP
  */
 
 /**
  * Debug Helper
- * 
+ *
  * @package X4WEBAPP
  */
-class X4Debug_helper 
+class X4Debug_helper
 {
 	/**
 	 * Print Debug informations about a var
@@ -21,7 +21,7 @@ class X4Debug_helper
 	 * @param	string	$name Variable name
 	 * @param	mixed	$var Variable to explore
 	 * @param	boolean	$die Die after print
-	 * @return	string	
+	 * @return	string
 	 */
 	public static function dump($name, $var, $die = false)
 	{

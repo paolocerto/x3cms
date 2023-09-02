@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
 
@@ -28,7 +28,7 @@ class Modules_controller extends X3ui_controller
 	}
 
 	/**
-	 * Show modules
+	 * Default
 	 *
 	 * @return  void
 	 */
@@ -52,42 +52,33 @@ class Modules_controller extends X3ui_controller
 		$amod = new Area_model();
 	    list($id_area, $areas) = $amod->get_my_areas($id_area);
 
-	    $view = new X4View_core('modules/module_list');
-
 		// get page
 		$page = $this->get_page('modules');
-		$navbar = array($this->site->get_bredcrumb($page));
-		$view->navbar = $navbar;
-		$view->page = $page;
 
-		$view->id_area = $id_area;
-		$view->area = $amod->get_by_id($id_area);
+        $view = new X4View_core('page');
+        $view->breadcrumb = array($this->site->get_bredcrumb($page));
+		$view->actions = '';
+
+        $view->content = new X4View_core('modules/module_list');
+
+		$view->content->id_area = $id_area;
+		$view->content->area = $amod->get_by_id($id_area);
 
 		// get installed and installable plugins
 		$mod = new X4Plugin_model();
-		$view->plugged = $mod->get_installed($id_area);
+		$view->content->plugged = $mod->get_installed($id_area);
 
-		$view->uninstall = AdmUtils_helper::get_ulevel(1, $_SESSION['xuid'], '_module_uninstall');
+		$view->content->uninstall = AdmUtils_helper::get_ulevel(1, $_SESSION['xuid'], '_module_uninstall');
 
 		$chk = AdmUtils_helper::get_ulevel(1, $_SESSION['xuid'], '_module_install');
-		$view->pluggable = (!$chk || $chk->level < 4)
+		$view->content->pluggable = (!$chk || $chk->level < 4)
 		    ? array()
 		    : $mod->get_installable($id_area);
 
 		// area switcher
-		$view->areas = $areas;
+		$view->content->areas = $areas;
 
 		$view->render(TRUE);
-	}
-
-	/**
-	 * Modules filter
-	 *
-	 * @return  void
-	 */
-	public function filter()
-	{
-		echo '';
 	}
 
 	/**
@@ -121,10 +112,9 @@ class Modules_controller extends X3ui_controller
 			// set update
 			if ($result[1])
             {
-				$msg->update[] = array(
-					'element' => $qs['div'],
-					'url' => urldecode($qs['url']),
-					'title' => null
+				$msg->update = array(
+					'element' => 'page',
+					'url' => $_SERVER['HTTP_REFERER']
 				);
             }
 		}
@@ -143,102 +133,19 @@ class Modules_controller extends X3ui_controller
 		$this->dict->get_wordarray(array('modules', 'form'));
 
 		// get object
-		$plug = new X4Plugin_model();
-		$plugin = $plug->get_by_id($id);
+		$mod = new X4Plugin_model();
+		$item = $mod->get_by_id($id);
 
 		// get params
-		$params = $plug->get_param($plugin->name, $plugin->id_area);
+		$params = $mod->get_param($item->name, $item->id_area);
 
 		// build the form
-		$fields = array();
-		$fields[] = array(
-			'label' => null,
-			'type' => 'hidden',
-			'value' => $id,
-			'name' => 'id'
-		);
-		$fields[] = array(
-			'label' => null,
-			'type' => 'hidden',
-			'value' => $plugin->name,
-			'name' => 'xrif'
-		);
-		$fields[] = array(
-			'label' => null,
-			'type' => 'hidden',
-			'value' => $plugin->id_area,
-			'name' =>'id_area'
-		);
+        $form_fields = new X4Form_core('module/module_config');
+		$form_fields->item = $item;
+        $form_fields->params = $params;
 
-		// Build specific fields
-		foreach ($params as $i)
-		{
-		    $tmp = array(
-		        'label' => ucfirst(str_replace('_', ' ', $i->name))._TRAIT_.$i->description,
-		        'value' => $i->xvalue,
-		        'name' => $i->name,
-		        'rule' => ''
-		    );
-
-			switch($i->xtype) {
-			    case 'HIDDEN':
-			        // do nothing
-			        break;
-				case '0|1':
-				case 'BOOLEAN':
-				    // boolean
-				    $tmp['type'] = 'checkbox';
-				    $tmp['suggestion'] = _ON.'/'._OFF;
-				    if ($i->xvalue == '1') $tmp['checked'] = 1;
-				    break;
-				case 'IMG':
-					// TODO: manage image set as param
-					break;
-				case 'DECIMAL':
-				    // decimal
-				    $tmp['type'] = 'text';
-				    $tmp['suggestion'] = $i->xtype;
-				    $tmp['extra'] = 'class="aright large"';
-				    $tmp['rule'] = 'numeric|max§1';
-				    break;
-				case 'INTEGER':
-					// integer
-                    $tmp['type'] = 'text';
-                    $tmp['suggestion'] = $i->xtype;
-                    $tmp['extra'] = 'class="aright large"';
-                    $tmp['rule'] = 'numeric';
-					break;
-				case 'EMAIL':
-					// email
-                    $tmp['type'] = 'text';
-                    $tmp['suggestion'] = $i->xtype;
-                    $tmp['extra'] = 'class="large"';
-                    $tmp['rule'] = 'mail';
-					break;
-				case 'BLOB':
-					// long string
-                    $tmp['type'] = 'textarea';
-                    $tmp['suggestion'] = $i->xtype;
-                    $tmp['extra'] = 'class="large"';
-					break;
-				default:
-					// string
-					$tmp['type'] = 'text';
-                    $tmp['suggestion'] = $i->xtype;
-                    $tmp['extra'] = 'class="large"';
-					break;
-			}
-
-			if ($i->required == '1')
-			{
-				$tmp['rule'] = 'required|'.$tmp['rule'];
-			}
-
-			if ($i->xtype != 'HIDDEN')
-			{
-			    $fields[] = $tmp;
-			}
-		}
+		// get the fields array
+		$fields = $form_fields->render();
 
 		// if submitted
 		if (X4Route_core::$post)
@@ -246,7 +153,7 @@ class Modules_controller extends X3ui_controller
 			$e = X4Validation_helper::form($fields, 'configure');
 			if ($e)
 			{
-				$this->configure($plugin, $_POST);
+				$this->configure($item, $_POST);
 			}
 			else
 			{
@@ -255,21 +162,16 @@ class Modules_controller extends X3ui_controller
 			die;
 		}
 
+        $view = new X4View_core('modal');
+        $view->title = _MODULE_CONFIG.': '.$item->name;
+
 		// contents
-		$view = new X4View_core('editor');
-		$view->title = _MODULE_CONFIG.': '.$plugin->name;
+		$view->content = new X4View_core('editor');
+
 
 		// form builder
-		$view->form = '<div id="scrolled">'.X4Form_helper::doform('configure', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
-			'onclick="setForm(\'configure\');"').'</div>';
-
-		$view->js = '
-<script>
-window.addEvent("domready", function()
-{
-var myScroll = new Scrollable($("scrolled"));
-});
-</script>';
+		$view->content->form = X4Form_helper::doform('configure', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
+            '@click="submitForm(\'configure\')"');
 
 		$view->render(TRUE);
 	}
@@ -282,7 +184,7 @@ var myScroll = new Scrollable($("scrolled"));
 	 * @param   array 	$_post _POST array
 	 * @return  void
 	 */
-	private function configure(stdClass $plugin, array $_post)
+	private function configure(stdClass $item, array $_post)
 	{
 		$msg = null;
 		// check permission
@@ -330,7 +232,8 @@ var myScroll = new Scrollable($("scrolled"));
 
 			// update params
 			$result = $mod->update_param($sql);
-			APC && apcu_delete(SITE.'mod_param'.$plugin->name.$plugin->id_area);
+            // reset APC
+			APC && apcu_delete(SITE.'mod_param'.$item->name.$item->id_area);
 
 			// set message
 			$msg = AdmUtils_helper::set_msg($result);
@@ -338,10 +241,9 @@ var myScroll = new Scrollable($("scrolled"));
 			// set what update
 			if ($result[1])
 			{
-				$msg->update[] = array(
-					'element' => 'topic',
-					'url' => BASE_URL.'modules/index/'.$_post['id_area'].'/'.$_post['xrif'],
-					'title' => null
+				$msg->update = array(
+					'element' => 'page',
+					'url' => BASE_URL.'modules/index/'.$_post['id_area'].'/'.$_post['xrif']
 				);
 			}
 		}
@@ -362,8 +264,6 @@ var myScroll = new Scrollable($("scrolled"));
 		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], '_module_install', 0, 4);
 		if (is_null($msg))
 		{
-			//$qs = X4Route_core::get_query_string();
-
 			// load global dictionary
 			$this->dict->get_words();
 
@@ -389,19 +289,22 @@ var myScroll = new Scrollable($("scrolled"));
 				// installed
 				if ($result)
 				{
-					$area = $mod->get_by_id($id_area, 'areas', 'name');
 					// add permission
 					$mod = new Permission_model();
 					$mod->refactory($_SESSION['xuid']);
 
-					// refresh deep, xpos and ordinal
+					// refresh deep, xpos and ordinal for each lang in admin area
 					$mod = new Menu_model();
-					$mod->ordinal(1, X4Route_core::$lang, 'modules', 'A0021005');
+                    $languages = $mod->get_languages(1);
+                    foreach($languages as $lang)
+                    {
+                        $ordinal = $mod->get_ordinal_by_url(1, $lang->code, 'modules');
+					    $mod->ordinal(1, $lang->code, 'modules', $ordinal);
+                    }
 
-					$msg->update[] = array(
-						'element' => 'topic',
-						'url' => BASE_URL.'modules/index/'.$id_area.'/'.$area->name,
-						'title' => null
+					$msg->update = array(
+						'element' => 'page',
+						'url' => $_SERVER['HTTP_REFERER']
 					);
 				}
 			}
@@ -410,7 +313,7 @@ var myScroll = new Scrollable($("scrolled"));
 	}
 
 	/**
-	 * Uninstall a plugin (use Ajax)
+	 * Uninstall a plugin
 	 *
 	 * @param integer	$id Pungin ID
 	 * @return  void
@@ -422,7 +325,7 @@ var myScroll = new Scrollable($("scrolled"));
 
 		// get obj
 		$mod = new X4Plugin_model();
-		$obj = $mod->get_by_id($id, 'modules', 'id, id_area, name');
+		$item = $mod->get_by_id($id, 'modules', 'id, name');
 
 		// build the form
 		$fields = array();
@@ -432,29 +335,22 @@ var myScroll = new Scrollable($("scrolled"));
 			'value' => $id,
 			'name' => 'id'
 		);
-		$fields[] = array(
-			'label' => null,
-			'type' => 'hidden',
-			'value' => $obj->id_area,
-			'name' => 'id_area'
-		);
 
 		// if submitted
 		if (X4Route_core::$post)
 		{
-			$this->uninstalling($obj);
+			$this->uninstalling($item);
 			die;
 		}
-
+        $view = new X4View_core('modal');
+        $view->title = _UNINSTALL_PLUGIN;
 		// contents
-		$view = new X4View_core('uninstall');
-		$view->title = _UNINSTALL_PLUGIN;
-		$view->msg = '';
-		$view->item = $obj->name;
+		$view->content = new X4View_core('uninstall');
+		$view->content->item = $item->name;
 
 		// form builder
-		$view->form = X4Form_helper::doform('uninstall', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
-			'onclick="setForm(\'uninstall\');"');
+		$view->content->form = X4Form_helper::doform('uninstall', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
+            '@click="submitForm(\'uninstall\')"');
 		$view->render(TRUE);
 	}
 
@@ -462,20 +358,19 @@ var myScroll = new Scrollable($("scrolled"));
 	 * Uninstall the plugin
 	 *
 	 * @access	private
-	 * @param   stdClass 	$obj Plugin Objject
+	 * @param   stdClass 	$item Plugin Objject
 	 * @return  void
 	 */
-	private function uninstalling(stdClass $obj)
+	private function uninstalling(stdClass $item)
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'modules', $obj->id, 4);
-
+		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'modules', $item->id, 4);
 		if (is_null($msg))
 		{
 			// do action
 			$mod = new X4Plugin_model();
-			$result = $mod->uninstall($obj->id);
+			$result = $mod->uninstall($item->id);
 
 			// check uninstalling
 			if (is_array($result))
@@ -493,15 +388,13 @@ var myScroll = new Scrollable($("scrolled"));
 				{
 					// clear useless permissions
 					$perm = new Permission_model();
-					$perm->deleting_by_what('modules', $obj->id);
-				}
+					$perm->deleting_by_what('modules', $item->id);
 
-				$area = $mod->get_by_id($obj->id_area, 'areas', 'name');
-				$msg->update[] = array(
-					'element' => 'topic',
-					'url' => BASE_URL.'modules/index/'.$obj->id_area.'/'.$area->name,
-					'title' => null
-				);
+                    $msg->update = array(
+                        'element' => 'page',
+                        'url' => $_SERVER['HTTP_REFERER']
+                    );
+                }
 			}
 		}
 		$this->response($msg);
@@ -519,20 +412,15 @@ var myScroll = new Scrollable($("scrolled"));
 		// load dictionary
 		$this->dict->get_wordarray(array('modules'));
 
-		// contents
-		$view = new X4View_core('editor');
-		$view->title = _MODULE_INSTRUCTIONS.': '.$module;
-		$view->form = '<div id="scrolled">
-						<pre>'.nl2br(htmlspecialchars(file_get_contents(PATH.'plugins/'.$module.'/instructions_'.$lang.'.txt'))).'</pre>
-					</div>'.BR.BR;
+        $view = new X4View_core('modal');
+        $view->title = _MODULE_INSTRUCTIONS.': '.$module;
+        $view->wide = ' xl:w-2/3';
 
-		$view->js = '
-<script>
-window.addEvent("domready", function()
-{
-	var myScroll = new Scrollable($("scrolled"));
-});
-</script>';
+		// contents
+		$view->content = new X4View_core('editor');
+		$view->content->form = '<div class="bg-white text-gray-700 md:px-8 md:pb-8 px-4 pb-4" style="border:1px solid white">
+            <pre class="text-sm">'.nl2br(htmlspecialchars(file_get_contents(PATH.'plugins/'.$module.'/instructions_'.$lang.'.txt'))).'</pre>
+            </div>';
 
 		$view->render(TRUE);
 	}

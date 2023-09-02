@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X4WEBAPP
  */
 
@@ -53,7 +53,7 @@ class X4Form_helper
 	 * @param	boolean	$inline label in the same line of the input field
 	 * @return string
 	 */
-	public static function doform($name, $action, $fields, $buttons = array(_RESET, _SUBMIT, 'xcenter'), $method = 'post', $extra = '', $submit_action = '', $reset_action = '', $inline = false)
+	public static function doform($name, $action, $fields, $buttons = array(_RESET, _SUBMIT, 'text-center'), $method = 'post', $extra = '', $submit_action = '', $reset_action = '', $inline = false)
 	{
 		if (!defined('NOCACHE')) define('NOCACHE', true);
 
@@ -78,7 +78,7 @@ class X4Form_helper
 			$btn = true;
 
 			// build form tag
-			$str = '<form id="'.$name.'" action="'.$action.'" method="'.$method.'" '.$extra.'>';
+			$str = '<form id="'.$name.'" name="'.$name.'" action="'.$action.'" method="'.$method.'" '.$extra.'>';
 
             $str .= self::doform_section($fields, '', $inline);
 		}
@@ -310,9 +310,11 @@ class X4Form_helper
 			: '';
 
 		if ($e['name'] == 'captcha')
+        {
 			$e['value'] = '';
+        }
 
-		// to handle special input types like date or time
+		// to handle special input types like date or time or datetime-local
 		$type = (!isset($e['case']))
 			? 'text'
 			: $e['case'];
@@ -671,7 +673,11 @@ class X4Form_helper
 			? $e['extra']
 			: '';
 
-		return '<textarea cols="60" rows="8" name="'.$e['name'].'" id="'.$e['name'].'" '.$textra.'>'.stripslashes($e['value']).'</textarea>'.self::suggestion($e);
+        $value = (empty($e['value']) || is_null($e['value']))
+            ? ''
+            : stripslashes($e['value']);
+
+		return '<textarea cols="60" rows="8" name="'.$e['name'].'" id="'.$e['name'].'" '.$textra.'>'.$value.'</textarea>'.self::suggestion($e);
 	}
 
 	/**
@@ -701,7 +707,62 @@ class X4Form_helper
 			$tmp .= '<select '.$sextra.' name="'.$e['name'].'" id="'.$e['name'].'">';
 		}
 
-		// empty option
+        // options
+        if (empty($e['options']))
+        {
+            $e['options'] = array([], '', '');
+        }
+
+        if ($e['options'][0] == 'template')
+        {
+            $empty = (isset($e['options'][5]) && !is_null($e['options'][5]))
+                ? $e['options'][5]
+                : null;
+
+            $tmp .= self::get_options_template(
+                $e['options'][1],
+                $e['options'][2],
+                $e['options'][3],
+                $e['options'][4],
+                $empty
+            );
+        }
+        else
+        {
+            // options array = [array of objects, field for value, field for option, empty option]
+
+            // empty option
+            $empty = (isset($e['options'][3]) && !is_null($e['options'][3]))
+                ? $e['options'][3]
+                : null;
+
+            $disabled = (isset($e['disabled']))
+                ? $e['disabled']
+                : '';
+
+            $disabled2 = (isset($e['disabled2']))
+                ? $e['disabled2']
+                : '';
+
+            $disabled3 = (isset($e['disabled3']))
+                ? true
+                : false;
+
+            $tmp .= self::get_options(
+                $e['options'][0],
+                $e['options'][1],
+                $e['options'][2],
+                $e['value'],
+                $empty,
+                isset($i['multiple']),
+                $disabled,
+                $disabled2,
+                $disabled3
+            );
+        }
+
+/*
+        // empty option
 		if (isset($e['options'][3]) && !is_null($e['options'][3]))
 		{
 			if (is_array($e['options'][3]))
@@ -818,6 +879,7 @@ class X4Form_helper
 
 			}
 		}
+*/
 		$tmp .= '</select>';
 
 		// container for select
@@ -893,7 +955,7 @@ class X4Form_helper
 	 */
 	public static function buttons($buttons, $form_id, $submit_action = '', $reset_action = '')
 	{
-		if (sizeof($buttons) == 3)
+		if (sizeof($buttons) >= 3)
 		{
 			// normal solution
 			$reset = $submit = '';
@@ -911,7 +973,27 @@ class X4Form_helper
 					: '<button name="'.strrev($form_id).'" id="'.strrev($form_id).'" type="button" '.$submit_action.'>'.$buttons[1].'</button>';
 			}
 
-			return '<div class="'.$buttons[2].'">'.$reset.$submit.'</div>';
+            // is there an extra button?
+            $extra = '';
+            if (isset($buttons[3]) && is_array($buttons[3]))
+            {
+                switch ($buttons[3]['element'])
+                {
+                    case 'modal':
+                        $click = '@click="popup(\''.$buttons[3]['url'].'\')"';
+                        break;
+                    case 'page':
+                        $click = '@click="pager(\''.$buttons[3]['url'].'\')"';
+                        break;
+                    default:
+                        $click = 'onclick="location.href=\''.$buttons[3]['url'].'\')"';
+                        break;
+                }
+
+                $extra = '<button type="button" class="btn gray" '.$click.'>'.$buttons[3]['title'].'</button>';
+            }
+
+			return '<div class="'.$buttons[2].'">'.$reset.$submit.$extra.'</div>';
 		}
 		else
 		{
@@ -943,7 +1025,7 @@ class X4Form_helper
 	 * @static
 	 * @param integer	$length The length of captcha
 	 * @param string	$font	The font to use
-	 * @param array		$bg	Background color
+	 * @param array		$bg	    Background color
 	 * @return image
 	 */
 	public static function captcha($length = 5, $font = 'espek___.ttf', $bg = array(255, 255, 255))
@@ -957,13 +1039,12 @@ class X4Form_helper
 		$backgroung = imagecolorallocate($img, $bg[0], $bg[1], $bg[2]);
 		// alpha channel for opacity
 		//$color[] = imagecolorallocatealpha($img,110,110,110,50);
-		$color[] = imagecolorallocatealpha($img,68,136,0,50);
-		$color[] = imagecolorallocatealpha($img,187,0,102,60);
-		$color[] = imagecolorallocatealpha($img,54,195,255,60);
-		$color[] = imagecolorallocatealpha($img,254,135,2,60);
-		$color[] = imagecolorallocatealpha($img,170,2,2,60);
-		$color[] = imagecolorallocatealpha($img,255,193,7,60);
-
+		$color[] = imagecolorallocatealpha($img,104,171,48,30);
+		$color[] = imagecolorallocatealpha($img,187,0,102,40);
+		$color[] = imagecolorallocatealpha($img,54,195,255,40);
+		$color[] = imagecolorallocatealpha($img,254,135,2,40);
+		$color[] = imagecolorallocatealpha($img,170,2,2,40);
+		$color[] = imagecolorallocatealpha($img,255,193,7,40);
 
 		shuffle($color);
 		$colors = sizeof($color);
@@ -980,15 +1061,16 @@ class X4Form_helper
 					 $img,
 					 50,
 					 -3+rand(0,15), // rotation
-					 ($k+0.8)*24,
+					 intval($k+0.8)*24+8,
 					 58+rand(-8,8),
 					 $color[$k%$colors],
 					 $_SERVER['DOCUMENT_ROOT'].ROOT.'files/files/'.$font,
 					 $v);
 		}
+
 		// output
 		header('Content-Type: image/png');
-		imagepng($img, null, 0, null);
+		imagepng($img, null, 0, -1);
 		imagedestroy($img);
 		die;
 	}
@@ -1001,36 +1083,37 @@ class X4Form_helper
 	 * @param string	$value	field name for option value
 	 * @param string	$option field name for option name
 	 * @param string	$selected selected value
-	 * @param mixed		$default default value (can be a string ONLY VALUE, or an array(VALUE, OPTION))
+	 * @param mixed		$empty option value (can be a string ONLY VALUE, or an array(VALUE, OPTION))
+     * @param boolean   $multiple
 	 * @param string	$disabled1 field name for disabling check value
 	 * @param string	$disabled2 field name for disabling check value
-	 * @param string	$disabled3 to disable all not selected options
+	 * @param boolean	$disabled3 to disable all not selected options
 	 * @return string
 	 */
-	public static function get_options($o, $value, $option, $selected = '', $default = null, $disabled1 = '', $disabled2 = '', $disabled3 = '')
+	public static function get_options(array $o, string $value, string $option, mixed $selected = '', mixed $empty = null, bool $multiple = false, string $disabled1 = '', string $disabled2 = '', bool $disabled3 = false)
 	{
 		$str = '';
 
 		// empty option
-		if (!is_null($default))
+		if (!is_null($empty))
 		{
-			if (is_array($default))
+			if (is_array($empty))
 			{
 				// selected
-				$sel = ($selected == $default[0])
+				$sel = ($selected == $empty[0])
 						? 'selected="selected"'
 						: '';
 
-				$str .= '<option value="'.$default[0].'" '.$sel.'>'.$default[1].'</option>';
+				$str .= '<option value="'.$empty[0].'" '.$sel.'>'.$empty[1].'</option>';
 			}
 			else
 			{
 				// selected
-				$sel = ($default == $selected)
+				$sel = ($empty == $selected)
 						? 'selected="selected"'
 						: '';
 
-				$str .= '<option value="'.$default.'" '.$sel.'></option>';
+				$str .= '<option value="'.$empty.'" '.$sel.'></option>';
 			}
 		}
 
@@ -1077,15 +1160,66 @@ class X4Form_helper
 				}
 
 				// to disable all not selected options
-				if (empty($sel) && !empty($disabled3))
+				if (empty($sel) && $disabled3)
 				{
 					$dis = ' disabled = "disabled"';
 				}
 
-				$str .= '
-				<option value="'.$i->$value.'" '.$sel.$dis.'>'.$sign.' '.stripslashes($i->$option).'</option>';
+                if (isset($i->$value) && isset($i->$option))
+                {
+                    $str .= '
+                    <option value="'.$i->$value.'" '.$sel.$dis.'>'.$sign.' '.stripslashes($i->$option).'</option>';
+                }
 			}
 		}
 		return $str;
 	}
+
+    /**
+	 * Build options list with template for Alpine.js
+	 *
+	 * @static
+	 * @param string	$alpine_var
+	 * @param string	$value	field name for option value
+	 * @param string	$option field name for option name
+     * @param string    $model
+     * @param mixed     $empty
+	 * @return string
+	 */
+	public static function get_options_template(string $alpine_var, string $value, string $option, string $model, mixed $empty = null)
+    {
+        $str = '';
+        // empty option
+        if (!is_null($empty))
+        {
+            if (is_array($empty))
+            {
+                /*
+                // selected
+                $sel = ($selected == $empty[0])
+                        ? 'selected="selected"' '.$sel.'
+                        : '';
+                */
+                $str .= '<option value="'.$empty[0].'" x-bind:selected="'.$empty[0].' === '.$model.'">'.$empty[1].'</option>';
+            }
+            else
+            {
+                /*
+                // selected
+                $sel = ($empty == $selected)
+                        ? 'selected="selected"'
+                        : '';
+                */
+                $str .= '<option value="'.$empty.'" x-bind:selected="'.$empty.' === '.$model.'"></option>';
+            }
+        }
+
+		$str .= '<template x-for="item in '.$alpine_var.'" :key="item.'.$value.'">
+                <option
+                    :value="item.'.$value.'"
+                    x-text="item.'.$option.'"
+                    x-bind:selected="item.'.$value.' === '.$model.'"></option>
+            </template>';
+        return $str;
+    }
 }

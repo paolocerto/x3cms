@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
 
@@ -37,9 +37,18 @@ class Category_model extends X4Model_core
 	 */
 	public function get_categories(int $id_area, string $lang, string $tag = '')
 	{
-	    $where = (empty($tag))
-	        ? ''
-	        : ' AND c.tag = '.$this->db->escape($tag);
+        switch ($tag)
+        {
+            case 'xxxall':
+                // all tags
+                $where = '';
+                break;
+            case '':
+                $where = ' AND c.tag = \'\'';
+                break;
+            default:
+                $where = ' AND c.tag = '.$this->db->escape($tag);
+        }
 
 		return $this->db->query('SELECT c.*, IF(p.id IS NULL, u.level, p.level) AS level
 			FROM categories c
@@ -47,7 +56,7 @@ class Category_model extends X4Model_core
 			LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = c.id
 			WHERE c.id_area = '.$id_area.' AND c.lang = '.$this->db->escape($lang).$where.'
 			GROUP BY c.id
-			ORDER BY c.name ASC');
+			ORDER BY c.name ASC, c.tag ASC');
 	}
 
 	/**
@@ -61,7 +70,7 @@ class Category_model extends X4Model_core
 	{
 		return $this->db->query('SELECT c.tag
 			FROM categories c
-			WHERE c.id_area = '.$id_area.' AND c.lang = '.$this->db->escape($lang).'
+			WHERE c.id_area = '.$id_area.' AND c.lang = '.$this->db->escape($lang).' AND c.tag <> \'\'
 			GROUP BY c.tag
 			ORDER BY c.tag ASC');
 	}
@@ -73,7 +82,7 @@ class Category_model extends X4Model_core
 	 * @param   integer $id Category ID
 	 * @return  integer	the number of categories with the searched name
 	 */
-	public function exists(string $ctg, int $id = 0)
+	public function exists(array $ctg, int $id = 0)
 	{
 		$where = ($id == 0)
             ? ''
@@ -94,6 +103,7 @@ class Category_model extends X4Model_core
  */
 class Category_obj
 {
+    public $id = 0;
 	public $id_area;
 	public $lang;
 	public $name;
@@ -110,6 +120,7 @@ class Category_obj
 	{
 		$this->id_area = $id_area;
 		$this->lang = $lang;
-		$this->tag = $tag;
+        // exclude fake tag
+		$this->tag = ($tag == 'xxxall') ? '' : $tag;
 	}
 }

@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
 
@@ -25,7 +25,7 @@ function Tinit() {
 		selector: "textarea",
 		theme: "modern",
 		skin : "lightgray",
-		
+
 		language : "<?php echo X4Route_core::$lang ?>",
 		selector: "textarea:not(.NoEditor)",
 		paste_as_text: true,
@@ -36,7 +36,7 @@ function Tinit() {
 				tinymce.triggerSave();
 			});
 		},
-	
+
 <?php
 if (RTL || isset($rtl)) echo 'directionality : "rtl",';
 ?>
@@ -47,15 +47,15 @@ if (RTL || isset($rtl)) echo 'directionality : "rtl",';
 		    "template paste textpattern",
 			"responsivefilemanager importcss youtube"
 		],
-		
+
 		autosave_ask_before_unload: false,
-		
+
 		toolbar1: "undo redo copy paste cut searchreplace insert | styleselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent blockquote | link responsivefilemanager | media youtube | table | charmap | preview code",
-		
+
 		imagetools_toolbar: "rotateleft rotateright | flipv fliph | editimage imageoptions",
-		
+
 		toolbar_items_size: 'small',
-		
+
 		style_formats: [
 		    {title: 'Headers', items: [
 		        {title: 'h1', block: 'h1'},
@@ -83,24 +83,24 @@ if (RTL || isset($rtl)) echo 'directionality : "rtl",';
 		],
 		visualblocks_default_state: true,
 		end_container_on_empty_block: true,
-		
+
 		image_advtab: true,
-		
+
 		insertdatetime_formats: ["%H:%M:%S", "%Y-%m-%d", "%d/%m/%Y", "%I:%M:%S %p", "%D"],
-	
+
 		relative_urls : false,
 		remove_script_host : true,
 		document_base_url : dom,
-	
+
 		extended_valid_elements : "article[class],header[class],section[class],div[class],p[class|style],a[href|title|class|onclick|id|name|rel|rev],figure[class],img[id|class|src|alt|style|onmouseover|onmouseout|name],span[class|style],hr[class|style],div[id|class|style],code,em[class],ul[class],ol[class],i[class]",
 		invalid_elements : "script",
-	
+
 		// Example content CSS (should be your site CSS)
 		importcss_append: true,
 		content_css : "<?php echo THEME_URL ?>css/tinymce.css",
-	
+
 		template_selected_content_classes: ".fake",
-		
+
 		/*
 		// Drop lists for link/image/media/template dialogs
 		templates : "<?php echo BASE_URL.'admin/files/js/'.$id_area.'/template' ?>",
@@ -110,11 +110,11 @@ if (RTL || isset($rtl)) echo 'directionality : "rtl",';
 		*/
 
 		pagebreak_separator : "<!--pagebreak-->",
-	
+
 		external_filemanager_path : "<?php echo ROOT ?>files/js/filemanager/",
 		filemanager_title : "Filemanager" ,
-		filemanager_access_key : "myPrivateKey" 
-	
+		filemanager_access_key : "myPrivateKey"
+
 	});
 }
 </script>

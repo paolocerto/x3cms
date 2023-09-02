@@ -4,14 +4,14 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
 ?>
 <i class="fas fa-refresh fa-spin fa-3x" aria-hidden="true"></i>
 <script>
 <?php
-if (isset($location)) 
+if (isset($location))
 {
 	// set redirect
 	echo 'location.href="'.$location.'";';

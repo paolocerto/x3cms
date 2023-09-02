@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
 
@@ -98,16 +98,16 @@ class Article_model extends X4Model_core
 	/**
 	 * Get where
 	 *
-	 * @param   string	$str String to search
+	 * @param   array	$qs
 	 * @return  string
 	 */
-	private function get_where(string $str)
+	private function get_where(array $qs)
 	{
 		$where = '';
-		if (!empty($str))
+		if (!empty($qs['xstr']))
 		{
 			$w = array();
-			$tok = explode(' ', urldecode($str));
+			$tok = explode(' ', urldecode($qs['xstr']));
 			foreach ($tok as $i)
 			{
 				$a = trim($i);
@@ -124,6 +124,22 @@ class Article_model extends X4Model_core
 				$where .= ' AND ('.implode(') AND (', $w).')';
             }
 		}
+
+        if ($qs['xpage'])
+        {
+            $where .= ' AND id_page = '.intval($qs['xpage']);
+        }
+
+        if ($qs['xcnt'] >= 0)
+        {
+            $where .= ' AND code_context = '.intval($qs['xcnt']);
+        }
+
+        if (!empty($qs['xctg']))
+        {
+            $where .= ' AND category = '.$this->db->escape($qs['xctg']);
+        }
+
 		return $where;
 	}
 
@@ -133,16 +149,15 @@ class Article_model extends X4Model_core
 	 *
 	 * @param   integer	$id_area Area ID
 	 * @param   string 	$lang Language code
-	 * @param   string 	$by Order option
-	 * @param   string 	$str Search string
+	 * @param   array   $qs
 	 * @return  array 	array of article objects
 	 */
-	public function get_articles(int $id_area, string $lang, string $by = 'name', string $str = '')
+	public function get_articles(int $id_area, string $lang, array $qs)
 	{
-		// order condition
-		$order = ($by == 'name') ? 'aa.name ASC' : 'aa.id DESC';
+        // order condition
+		$order = 'aa.id DESC';  // ($by == 'name') ? 'aa.name ASC' :
 
-		$where = $this->get_where($str);
+		$where = $this->get_where($qs);
 
 		return $this->db->query('SELECT aa.*, c.name AS context, pa.name AS page, IF(p.id IS NULL, u.level, p.level) AS level
 			FROM articles aa
@@ -161,6 +176,49 @@ class Article_model extends X4Model_core
 			LEFT JOIN pages pa ON pa.id = aa.id_page
 			GROUP BY aa.id
 			ORDER BY '.$order);
+	}
+
+    /**
+	 * Get contexts by Area ID and Language code
+	 * Join with privs table
+	 *
+	 * @param   integer $id_area Area ID
+	 * @param   string 	$lang Language code
+	 * @return  array	Array of Context objects
+	 */
+	public function get_contexts(int $id_area, string $lang)
+	{
+		return $this->db->query('SELECT c.*, IF(p.id IS NULL, u.level, p.level) AS level
+				FROM contexts c
+				JOIN uprivs u ON u.id_area = c.id_area AND u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('categories').'
+				LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = c.id
+				WHERE c.id_area = '.$id_area.' AND c.lang = '.$this->db->escape($lang).'
+				GROUP BY c.id
+				ORDER BY c.name ASC');
+	}
+
+    /**
+	 * Get categories by Area ID and Language code
+	 * Join with privs table
+	 *
+	 * @param   integer $id_area Area ID
+	 * @param   string 	$lang Language code
+	 * @param   string 	$tag Category tag
+	 * @return  array	array of category objects
+	 */
+	public function get_all_categories(int $id_area, string $lang, string $tag = '')
+	{
+	    $where = (empty($tag))
+	        ? ''
+	        : ' AND c.tag = '.$this->db->escape($tag);
+
+		return $this->db->query('SELECT c.*, IF(p.id IS NULL, u.level, p.level) AS level
+			FROM categories c
+			JOIN uprivs u ON u.id_area = c.id_area AND u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('categories').'
+			LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = c.id
+			WHERE c.id_area = '.$id_area.' AND c.lang = '.$this->db->escape($lang).$where.'
+			GROUP BY c.id
+			ORDER BY c.name ASC');
 	}
 
 	/**

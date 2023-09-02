@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
 
@@ -57,7 +57,7 @@ class Context_model extends X4Model_core
 				LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = c.id
 				WHERE c.id_area = '.$id_area.' AND c.lang = '.$this->db->escape($lang).'
 				GROUP BY c.id
-				ORDER BY c.name ASC');
+				ORDER BY c.id ASC');
 	}
 
 	/**
@@ -109,10 +109,30 @@ class Context_model extends X4Model_core
 
 		// check if context exists
 		$dict = new Dictionary_model();
-		$check = $dict->exists($post);
+		$check = $dict->exists(0, $post);
 
 		// insert
 		if (!$check) $dict->insert($post);
+	}
+
+
+    /**
+	 * Get contexts codes
+	 * Join with privs table
+	 *
+	 * @param   integer $id_area Area ID
+	 * @param   string 	$lang Language code
+	 * @return  array	Array of Context objects
+	 */
+	public function get_codes(int $id_area, string $lang)
+	{
+		return $this->db->query('SELECT c.code, c.name, IF(p.id IS NULL, u.level, p.level) AS level
+				FROM contexts c
+				JOIN uprivs u ON u.id_area = c.id_area AND u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('categories').'
+				LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = c.id
+				WHERE c.id_area = '.$id_area.' AND c.lang = '.$this->db->escape($lang).'
+				GROUP BY c.id
+				ORDER BY c.name ASC');
 	}
 
 	/**
@@ -143,6 +163,7 @@ class Context_model extends X4Model_core
  */
 class Context_obj
 {
+    public $id = 0;
 	public $id_area = 0;
 	public $lang = '';
 	public $name;

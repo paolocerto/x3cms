@@ -4,47 +4,28 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
 ?>
 <h1><?php echo _ADMIN_AREA ?></h1>
 <p><?php echo _HI.' <strong> '.$_SESSION['username'].'</strong>, '._LAST_LOGIN.' '.$_SESSION['last_in'] ?></p>
 
-<div id="dashboard" class="band inner-pad clearfix">
+<div class="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 place-items-stretch space-x-4 mb-20">
 <?php
 // notices from x3cms.net
 if (NOTICES)
 {
-	echo '<div class="one-fourth md-one-half xs-one-whole pad-bottom xs-pad-none">
-			<div class="widget">
-				<div class="wtitle pad-left pad-right">'._NOTICES_AND_UPDATES.'</div>
-				<div class="wbox pad-left pad-right">'.$notices.'</div>
-			</div>
-		</div>';
+	echo '<div>
+            <div class="bg rounded-t px-4 py-4"><h4>'._NOTICES_AND_UPDATES.'</h4></div>
+            <div class="bg2 h-full px-4 pt-4 pb-8">'.$notices.'</div>
+        </div>';
 }
 
 // widgets
-$c = 0;
-$buttonized = '';
-foreach ($widgets as $i)
+foreach ($widgets as $widget)
 {
-	$c++;
-	echo '<div class="one-fourth md-one-half xs-one-whole pad-bottom xs-pad-none"><div id="w'.$c.'" class="widget">'.$i[0].'</div></div>';
-	if ($i[1])
-		$buttonized .= 'buttonize(\'w'.$c.'\', \'btr\', \'w'.$c.'\', \'\', \'w'.$c.'\');'.NL;
+	echo $widget;
 }
 ?>
 </div>
-<script src="<?php echo THEME_URL ?>js/basic.js"></script>
-<script>
-window.addEvent('domready', function()
-{
-	buttonize('dashboard', 'bta', 'topic');
-	buttonize('topic', 'btt', 'topic');
-	<?php echo $buttonized ?>
-	blanking();
-	zebraUl('zebra');
-});
-</script>
-

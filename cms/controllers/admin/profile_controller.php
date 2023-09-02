@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
 
@@ -38,144 +38,14 @@ class Profile_controller extends X3ui_controller
 		$this->dict->get_wordarray(array('form', 'login', 'users', 'profile'));
 
 		// get object
-		$user = new User_model();
-		$u = $user->get_by_id($_SESSION['xuid']);
+		$mod = new Language_model();
 
-		// build the form
-		$fields = array();
-		$fields[] = array(
-			'label' => null,
-			'type' => 'hidden',
-			'value' => $u->id,
-			'name' => 'id'
-		);
+        $form_fields = new X4Form_core('user/profile');
+        $form_fields->user = $mod->get_by_id($_SESSION['xuid'], 'users', 'id, lang, username, mail, phone, description');
+        $form_fields->languages = $mod->get_alanguages(1);
 
-		$lmod = new Language_model();
-
-		$fields[] = array(
-			'label' => null,
-			'type' => 'html',
-			'value' => '<div class="band inner-pad clearfix"><div class="one-half xs-one-whole">'
-		);
-
-		$fields[] = array(
-			'label' => _LANGUAGE,
-			'type' => 'select',
-			'value' => $u->lang,
-			'options' => array($lmod->get_alanguages(1), 'code', 'language'),
-			'name' => 'lang',
-			'extra' => 'class="large"'
-		);
-
-		$fields[] = array(
-			'label' => null,
-			'type' => 'html',
-			'value' => '</div><div class="one-half xs-one-whole">'
-		);
-
-		$fields[] = array(
-			'label' => _USERNAME,
-			'type' => 'text',
-			'value' => $u->username,
-			'name' => 'username',
-			'suggestion' => _USERNAME_RULE,
-			'rule' => 'required|alphanumeric|minlength§5',
-			'extra' => 'class="large"'
-		);
-
-		$fields[] = array(
-			'label' => null,
-			'type' => 'html',
-			'value' => '</div></div>'
-		);
-
-		$fields[] = array(
-			'label' => null,
-			'type' => 'html',
-			'value' => '<h4 class="acenter">'._PASSWORD_CHANGE_MSG.'</h4>'
-		);
-
-		$fields[] = array(
-			'label' => null,
-			'type' => 'html',
-			'value' => '<div class="band inner-pad clearfix"><div class="one-half xs-one-whole">'
-		);
-
-		$fields[] = array(
-			'label' => _PASSWORD,
-			'type' => 'password',
-			'value' => '',
-			'name' => 'password',
-			'suggestion' => _PASSWORD_RULE,
-			'rule' => 'password|minlength§6',
-			'extra' => 'class="large"'
-		);
-
-		$fields[] = array(
-			'label' => null,
-			'type' => 'html',
-			'value' => '</div><div class="one-half xs-one-whole">'
-		);
-
-		$fields[] = array(
-			'label' =>  _REPEAT_PASSWORD,
-			'type' => 'password',
-			'value' => '',
-			'name' => 'password2',
-			'rule' => 'equal-password',
-			'extra' => 'class="large"'
-		);
-
-		$fields[] = array(
-			'label' => null,
-			'type' => 'html',
-			'value' => '</div></div>'
-		);
-
-		$fields[] = array(
-			'label' => _DESCRIPTION,
-			'type' => 'textarea',
-			'value' => $u->description,
-			'name' => 'description',
-			'sanitize' => 'string',
-			'rule' => 'required'
-		);
-
-		$fields[] = array(
-			'label' => null,
-			'type' => 'html',
-			'value' => '<div class="band inner-pad clearfix"><div class="one-half xs-one-whole">'
-		);
-
-		$fields[] = array(
-			'label' => _EMAIL,
-			'type' => 'text',
-			'value' => $u->mail,
-			'name' => 'mail',
-			'rule' => 'required|mail',
-			'extra' => 'class="large"'
-		);
-
-		$fields[] = array(
-			'label' => null,
-			'type' => 'html',
-			'value' => '</div><div class="one-half xs-one-whole">'
-		);
-
-		$fields[] = array(
-			'label' => _PHONE,
-			'type' => 'text',
-			'value' => $u->phone,
-			'name' => 'phone',
-			'rule' => 'phone',
-			'extra' => 'class="large"'
-		);
-
-		$fields[] = array(
-			'label' => null,
-			'type' => 'html',
-			'value' => '</div></div>'
-		);
+        // get the fields array
+        $fields = $form_fields->render();
 
 		// if submitted
 		if (X4Route_core::$post)
@@ -196,16 +66,16 @@ class Profile_controller extends X3ui_controller
 		$page = $this->get_page('profile');
 
 		// contents
-		$view = new X4View_core('editor');
-		$view->close = false;
-		$view->page = $page;
+		$view = new X4View_core('page');
+        $view->breadcrumb = array($this->site->get_bredcrumb($page));
+		$view->actions = '';
+		$view->content = new X4View_core('editor');
 
 		// form builder
-		$view->super_title = _EDIT_PROFILE;
-		$view->form = '<div class="band"><div class="one-third push-one-third sm-one-whole sm-push-none">'.X4Form_helper::doform('profile', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
-			'onclick="setForm(\'profile\');"').'</div></div>';
+		$view->content->super_title = _EDIT_PROFILE;
+		$view->content->form = X4Form_helper::doform('profile', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
+            '@click="submitForm(\'profile\')"');
 
-		$view->js = '<script src="'.THEME_URL.'js/basic.js"></script>';
 		$view->render(TRUE);
 	}
 
@@ -268,10 +138,9 @@ class Profile_controller extends X3ui_controller
 			// set update
 			if ($result[1])
             {
-				$msg->update[] = array(
-					'element' => 'topic',
-					'url' => urldecode(BASE_URL.'profile'),
-					'title' => null
+				$msg->update = array(
+					'element' => 'page',
+					'url' => BASE_URL.'profile'
 				);
             }
 		}

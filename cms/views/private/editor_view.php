@@ -4,12 +4,12 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
 
 // tiny MCE
-if (isset($tinymce)) 
+if (isset($tinymce))
 {
 	echo $tinymce;
 }
@@ -17,12 +17,12 @@ if (isset($tinymce))
 echo '<div class="block">';
 
 // title
-if (isset($title)) 
+if (isset($title))
 {
 	echo '<h2>'.$title.'</h2>';
 }
 
-if (isset($msg)) 
+if (isset($msg))
 {
 	echo '<p>'.$msg.'</p>';
 }

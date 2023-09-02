@@ -4,10 +4,10 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X4WEBAPP
  */
- 
+
 /**
  * Model for matches (table for many to many relations)
  *
@@ -25,7 +25,7 @@ class X4Matches_model extends X4Model_core
 	{
 		parent::__construct('matches');
 	}
-	
+
 	/**
 	 * Get relations by from ID
 	 *
@@ -38,7 +38,7 @@ class X4Matches_model extends X4Model_core
 	{
 		return $this->db->query('SELECT id_to FROM matches WHERE xfrom = '.$this->db->escape($xfrom).' AND xto = '.$this->db->escape($xto).' AND id_from = '.intval($id_from).' AND xon = 1');
 	}
-	
+
 	/**
 	 * Get relations by from ID with fields
 	 * Use external table
@@ -53,19 +53,19 @@ class X4Matches_model extends X4Model_core
 	public function get_by_from_with_fields($xfrom, $xto, $id_from, $fields, $order = '')
 	{
 		// sort order
-		$orderby = (empty($order)) 
-			? '' 
+		$orderby = (empty($order))
+			? ''
 			: ' ORDER BY x.'.$order;
-		
+
 		// prefix fields
 		array_walk($fields, 'prefix', 'x.');
-		
-		return $this->db->query('SELECT '.implode(',', $fields).' 
+
+		return $this->db->query('SELECT '.implode(',', $fields).'
 			FROM matches m
 			JOIN '.$xto.' x ON x.id = m.id_to AND x.xon = 1
 			WHERE m.xfrom = '.$this->db->escape($xfrom).' AND m.xto = '.$this->db->escape($xto).' AND m.id_from = '.intval($id_from).' AND m.xon = 1'.$orderby);
 	}
-	
+
 	/**
 	 * Get related items by from with fields
 	 * Use external table
@@ -81,13 +81,13 @@ class X4Matches_model extends X4Model_core
 	{
 		// prefix fields
 		array_walk($fields, 'prefix', 'x.');
-		
-		return $this->db->query_row('SELECT m.id, '.implode(',', $fields).' 
+
+		return $this->db->query_row('SELECT m.id, '.implode(',', $fields).'
 			FROM matches m
 			JOIN '.$xto.' x ON x.id = m.id_to
 			WHERE m.xfrom = '.$this->db->escape($xfrom).' AND m.xto = '.$this->db->escape($xto).' AND m.id_from = '.intval($id_from).' AND m.id_to = '.intval($id_to));
 	}
-	
+
 	/**
 	 * Get relations by to ID
 	 *
@@ -100,7 +100,7 @@ class X4Matches_model extends X4Model_core
 	{
 		return $this->db->query('SELECT id_from FROM matches WHERE xfrom = '.$this->db->escape($xfrom).' AND xto = '.$this->db->escape($xto).' AND id_to = '.intval($id_to).' AND xon = 1');
 	}
-	
+
 	/**
 	 * Delete relations by from ID
 	 *
@@ -113,7 +113,7 @@ class X4Matches_model extends X4Model_core
 	{
 		return $this->db->single_exec('DELETE FROM matches WHERE xfrom = '.$this->db->escape($xfrom).' AND xto = '.$this->db->escape($xto).' AND id_from = '.intval($id_from));
 	}
-	
+
 	/**
 	 * Delete relations by to ID
 	 *
@@ -132,7 +132,7 @@ class X4Matches_model extends X4Model_core
  * Called by array_walk
  * Prefix item value
  */
-function prefix(&$item, $key, $prefix) 
+function prefix(&$item, $key, $prefix)
 {
  	 $item = $prefix.$item;
 }

@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X4WEBAPP
  */
 
@@ -28,6 +28,8 @@ final class X4Route_core
 	public static $query_string = '';
 	// POST
 	public static $post = false;
+    // php://input
+    public static $input = false;
 
 	// URI
 	public static $uri = '';
@@ -129,6 +131,17 @@ final class X4Route_core
 
 		// check post
 		self::$post = (isset($_POST) && !empty($_POST));
+
+        // check php://input
+        $inputJSON = file_get_contents('php://input');
+        if (!empty($inputJSON))
+        {
+            $tmp = json_decode($inputJSON, TRUE);
+            if (is_array($tmp))
+            {
+                self::$input = $tmp;
+            }
+        }
 
 		// uri segments array
 		self::$args = explode('/', $us[0]);

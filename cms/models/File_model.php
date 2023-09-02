@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
 
@@ -152,44 +152,44 @@ class File_model extends X4Model_core
 	 * Join with privs table
 	 *
 	 * @param   integer $id_area Area ID
-	 * @param   string	$category Category
-	 * @param   string	$subcategory Subcategory
-	 * @param   integer $xtype file type (0 => image, 1 = generic, 2 => media, 3 => template)
-	 * @param   string	$str Search string
+	 * @param   array	$qs
 	 * @return  array	Array of objects
 	 */
-	public function get_files(int $id_area, string $category = '', string $subcategory = '', int $xtype = -1, string $str = '')
+	public function get_files(int $id_area, array $qs) //string $category = '', string $subcategory = '', int $xtype = -1, string $str = '')
 	{
 		// category condition
-		$where = (empty($category) || $category == '-')
+		$where = (empty($qs['xctg']))
 			? ''
-			: ' AND f.category = '.$this->db->escape($category);
+			: ' AND f.category = '.$this->db->escape(urldecode($qs['xctg']));
 
 		// subcategory condition
-		$where .= (empty($subcategory) || $subcategory == '-')
+		$where .= (empty($qs['xsctg']))
 			? ''
-			: ' AND f.subcategory = '.$this->db->escape($subcategory);
+			: ' AND f.subcategory = '.$this->db->escape(urldecode($qs['xsctg']));
 
 		// xtype condition
-		$where .= ($xtype < 0)
+		$where .= ($qs['xxtype'] < 0)
 			? ''
-			: ' AND f.xtype = '.$xtype;
+			: ' AND f.xtype = '.$qs['xxtype'];
 
-		if (!empty($str))
+		if (!empty($qs['xstr']))
 		{
 			$w = array();
-			$tok = explode(' ', urldecode($str));
+			$tok = explode(' ', urldecode($qs['xstr']));
 			foreach ($tok as $i)
 			{
 				$a = trim($i);
 				if (!empty($a))
+                {
 					$w[] = 'name LIKE '.$this->db->escape('%'.$a.'%').' OR
 						alt LIKE '.$this->db->escape('%'.$a.'%');
-
+                }
 			}
 
 			if (!empty($w))
+            {
 				$where .= ' AND ('.implode(') AND (', $w).')';
+            }
 		}
 
 		return $this->db->query('SELECT f.*, IF(p.id IS NULL, u.level, p.level) AS level

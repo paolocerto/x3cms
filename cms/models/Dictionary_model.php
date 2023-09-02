@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
 
@@ -165,18 +165,23 @@ class Dictionary_model extends X4Model_core
 	/**
 	 * Check if an dictionary word already exists
 	 *
+     * @param   integer $id
 	 * @param   array	$_post Associative array ('area' => value, 'lang' => value, 'what' =>, 'key' => )
 	 * @return  integer	the number of words with the searched values
 	 */
-	public function exists(array $post)
+	public function exists(int $id, array $post)
 	{
-		return $this->db->query_var('SELECT COUNT(id)
+        $where = $id
+            ? ' AND id <> '.$id
+            : '';
+
+		return (int) $this->db->query_var('SELECT COUNT(id)
 			FROM dictionary
 			WHERE
 				area = '.$this->db->escape($post['area']).' AND
 				lang = '.$this->db->escape($post['lang']).' AND
 				what = '.$this->db->escape($post['what']).' AND
-				xkey = '.$this->db->escape($post['xkey']));
+				xkey = '.$this->db->escape($post['xkey']).$where);
 	}
 
 	/**
@@ -220,4 +225,25 @@ class Dictionary_model extends X4Model_core
         return $this->db->single_exec($sql);
     }
 
+}
+
+/**
+ * Empty Area object
+ * Necessary for the creation form of new word
+ *
+ * @package X3CMS
+ */
+class Word_obj
+{
+	// object vars
+	public $lang = '';
+	public $area = '';
+	public $what = '';
+	public $xkey = '';
+	public $xval = '';
+
+    public function __construct(string $what = '')
+	{
+		$this->what = $what;
+	}
 }

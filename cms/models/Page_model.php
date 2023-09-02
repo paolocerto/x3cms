@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
 
@@ -101,7 +101,7 @@ class Page_model extends X4Model_core
 	 */
 	public function get_page(string $url)
 	{
-		return $this->db->query_row('SELECT p.*, a.name AS area
+        return $this->db->query_row('SELECT p.*, a.name AS area
 			FROM pages p
 			JOIN areas a ON a.id = p.id_area
 			WHERE
@@ -132,7 +132,7 @@ class Page_model extends X4Model_core
 	 */
 	public function get_from(string $url)
 	{
-		return $this->db->query_row('SELECT p.xfrom, p.url, p.name, p.description
+		return $this->db->query_row('SELECT p.xfrom, p.url, p.name, p.description, p.deep
 			FROM pages p
 			JOIN areas a ON a.id = p.id_area
 			WHERE
@@ -177,9 +177,10 @@ class Page_model extends X4Model_core
 			$from .= ' AND p.url <> '.$this->db->escape($diff);
 		}
 
-		return $this->db->query('SELECT p.*, CONCAT(REPEAT(\'---\', p.deep), \'>&nbsp;\', p.title) AS deep_title, a.title AS area, IF(pr.id IS NULL, u.level, pr.level) AS level
+		return $this->db->query('SELECT p.*, CONCAT(IF(p.id_menu > 0, m.name, \'|\'), REPEAT(\'--\', p.deep), \'>&nbsp;\', p.title) AS deep_title, a.title AS area, IF(pr.id IS NULL, u.level, pr.level) AS level
 			FROM pages p
 			JOIN areas a ON a.id = p.id_area
+            LEFT JOIN menus m ON m.id = p.id_menu
 			JOIN uprivs u ON u.id_area = a.id AND u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('pages').'
 			LEFT JOIN privs pr ON pr.id_who = u.id_user AND pr.what = u.privtype AND pr.id_what = a.id
 			WHERE
@@ -190,17 +191,37 @@ class Page_model extends X4Model_core
 			ORDER BY p.ordinal ASC, p.url ASC');
 	}
 
+    /**
+	 * Get subpages
+	 *
+	 * @param   string	$xfrom Page URL
+     * @param   integer $id_menu
+	 * @return  object
+	 */
+	public function get_subpages(string $xfrom, int $id_menu)
+	{
+		return $this->db->query('SELECT (xpos+1) AS xpos, name
+			FROM pages
+			WHERE
+				id_area = '.$this->id_area.' AND
+				lang = '.$this->db->escape($this->lang).' AND
+				xfrom = '.$this->db->escape($xfrom).' AND
+                url != \'home\' AND
+                id_menu = '.$id_menu.'
+            ORDER BY xpos ASC');
+	}
+
 	/**
 	 * Update page data
 	 * Updating the page must maintain the consistency of relations with the other pages
 	 * After the update we have to refresh the sitemap.xml file
 	 *
-	 * @param   integer	$id Page ID
+	 * @param   stdClass $page
 	 * @param   array	$post array
 	 * @param   string	$domain Domain name
 	 * @return  array
 	 */
-	public function update_page(int $id, array $post, string $domain)
+	public function update_page(stdClass $page, array $post, string $domain)
 	{
 		// build the update query
 		$update = '';
@@ -209,15 +230,12 @@ class Page_model extends X4Model_core
 			$update .= ', '.addslashes($k).' = '.$this->db->escape($v);
 		}
 		$sql = array();
-		$sql[] = 'UPDATE pages SET updated = NOW() '.$update.' WHERE id = '.$id;
-
-		// get page data (before the update)
-		$page = $this->get_by_id($id);
+		$sql[] = 'UPDATE pages SET updated = NOW() '.$update.' WHERE id = '.$page->id;
 
 		// if the Page URL is changed we need to update subpages data
-		if (isset($array['url']) && $array['url'] != $page->url)
+		if (isset($post['url']) && $post['url'] != $page->url)
 		{
-			$sql[] = 'UPDATE pages SET xfrom = '.$this->db->escape($array['url']).'
+			$sql[] = 'UPDATE pages SET xfrom = '.$this->db->escape($post['url']).'
 				WHERE
 					id_area = '.$page->id_area.' AND
 					lang = '.$this->db->escape($page->lang).' AND
@@ -225,25 +243,27 @@ class Page_model extends X4Model_core
 		}
 
 		// if the parent page is changed we need to update xpos and deep
-		if (isset($array['xfrom']) && $array['xfrom'] != $page->xfrom)
+        $deep = $page->deep;
+		if (isset($post['xfrom']) && $post['xfrom'] != $page->xfrom)
 		{
-			if ($array['xfrom'] == 'home')
+            // handle id_menu, xpos and deep
+			if ($post['xfrom'] == 'home')
 			{
 				// simple case
-				$sql[] = 'UPDATE pages SET updated = NOW(), id_menu = 0, xpos = 0, deep = 1 WHERE id = '.$id;
+                $deep = 1;
+				$sql[] = 'UPDATE pages SET updated = NOW(), deep = 1 WHERE id = '.$page->id;
 			}
 			else
 			{
-				// get new deep value
-				$deep = $this->get_deep($array['xfrom']);
-				$deep++;
-				$sql[] = 'UPDATE pages SET updated = NOW(), id_menu = 0, xpos = 0, deep = '.$deep.' WHERE id = '.$id;
+				// get id_menu and deep of parent
+				$deep = $this->get_deep($post['xfrom']) + 1;
+				$sql[] = 'UPDATE pages SET updated = NOW(), deep = '.$deep.' WHERE id = '.$page->id;
 			}
 
-			// we need to update the page order in which it was, the page now moved
+			// we need to update the page order in which it was the page now moved
 			if ($page->xpos > 0)
 			{
-				// reorder old xfrom
+				// shift back xpos in old xfrom
 				$sql[] = 'UPDATE pages
 					SET updated = NOW(), xpos = (xpos - 1)
 					WHERE
@@ -254,7 +274,35 @@ class Page_model extends X4Model_core
 						deep = '.$page->deep.' AND
 						xpos > '.$page->xpos;
 			}
+
+            // there are subpages?
+            $deep_gap = $deep - $page->deep;
+            if ($deep_gap != 0)
+            {
+                $deep_change = $deep_gap > 0
+                    ? ', deep = (deep +'.$deep_gap.')'
+                    : ', deep = (deep '.$deep_gap.')';
+
+                $sql[] = 'UPDATE pages
+					SET updated = NOW() '.$deep_change.'
+					WHERE
+						id_area = '.$page->id_area.' AND
+						lang = '.$this->db->escape($page->lang).' AND
+						xfrom = '.$this->db->escape($page->url);
+            }
 		}
+        // we need to update xpos of the pages where me moved
+        // shift xpos in new xfrom
+        $sql[] = 'UPDATE pages
+            SET updated = NOW(), xpos = (xpos + 1)
+            WHERE
+                id_area = '.$page->id_area.' AND
+                lang = '.$this->db->escape($page->lang).' AND
+                xfrom = '.$this->db->escape($post['xfrom']).' AND
+                id_menu = '.$post['id_menu'].' AND
+                deep = '.$deep.' AND
+                url != '.$this->db->escape($page->url).' AND
+                xpos >= '.$post['xpos'];
 
 		// perform the update
 		$result = $this->db->multi_exec($sql);
@@ -314,7 +362,7 @@ class Page_model extends X4Model_core
 	}
 
 	/**
-	 * Get the depth of a page in the site tree by Parent URL
+	 * Get deep of a page in the site tree by Parent URL
 	 *
 	 * @param   string	$xfrom Parent URL
 	 * @return  integer

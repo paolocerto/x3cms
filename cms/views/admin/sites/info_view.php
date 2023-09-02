@@ -4,78 +4,36 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
 
-?>
+// site/info
 
-<table class="zebra">
-<?php
-switch($case)
-{
-case 'apache':
-	$modules = apache_get_modules();
-
-	echo '<tr>
-		<th>'._INFO_APACHE.'</th>
-	</tr>';
-	sort($modules);
-	foreach ($modules as $i)
-	{
-		echo '<tr>
-		<td>'.$i.'</td>
-		</tr>';
-	}
-	break;
-
-case 'mysql':
-	echo '<tr>
-		<th>'._INFO_MYSQL.'</th>
-	</tr>';
-
-	echo '<tr>
-		<td>'.$sinfo.'</td>
-		</tr>';
-	break;
-
-case 'php':
-	$modules = get_loaded_extensions();
-	echo '<tr>
-		<th>'._INFO_PHP.'</th>
-	</tr>';
-	sort($modules);
-	foreach ($modules as $i)
-	{
-		echo '<tr>
-		<td>'.$i.'</td>
-		</tr>';
-	}
-	break;
-default:
-	echo '<tr>
-		<th style="width:25em">'._INFO_KEY.'</th>
-		<th>'._INFO_VALUE.'</th>
-	</tr>
-	<tr><td>OS</td><td>'.php_uname().'</td></tr>';
+echo '<table>
+<thead>
+    <tr>
+        <th class="w-4">'._INFO_KEY.'</th>
+        <th>'._INFO_VALUE.'</th>
+    </tr>
+</thead>
+<tbody>
+	<tr>
+        <td>OS</td>
+        <td>'.php_uname().'</td>
+    </tr>';
 
 	foreach ($_SERVER as $k => $v)
 	{
+        $value = is_array($v)
+            ? json_encode($v)
+            : $v;
+
 		echo '<tr>
 		<td>'.$k.'</td>
-		<td>'.$v.'</td>
+		<td>'.$value.'</td>
 		</tr>';
 	}
-	break;
-}
-?>
-</table>
-<script src="<?php echo THEME_URL ?>js/basic.js"></script>
-<script>
-window.addEvent('domready', function()
-{
-	X3.content('filters','info/filter', null);
-	zebraTable('zebra');
-});
-</script>
 
+echo '</tbody>
+</table>';

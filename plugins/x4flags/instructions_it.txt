@@ -1,0 +1,21 @@
+X4FLAGS
+
+REQUISITI: Tailwind CSS e Alpine.js
+---
+COSA FA: visualizza link per passare da una lingua all'altra
+---
+COME FUNZIONA: la soluzione pi&ugrave; semplice &egrave; quella di inserirlo nel template come fatto nel template base del tema di default
+---
+CONFIGURAZIONE:
+il parametro FLAGS permette di visualizzare bandiere o testo
+il parametro SHORT_TEXT permette di visualizzare il codice lingua invece di nome lingua per esteso
+---
+HTML: none
+---
+REGOLE CSS: usa TailwindCSS e regole relative a #navbar .menu_item presenti nel CSS del template
+---
+JS: richiede Alpine.js
+---
+FILE NECESSARI:
+le bandiere (in formato png) vengono cercate nella cartella files/files e devono essere nominate come segue codice_lingua.png (es. it.png)
+Quelle presenti nel sistema sono 16x16 px e sono prese da https://www.countryflags.com/

@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X4WEBAPP
  */
 
@@ -35,7 +35,7 @@ class X4Site_model extends X4Model_core
 	 */
 	public $now;
 
-    
+
 	/**
 	 * Constructor
 	 * Initialize site model
@@ -71,7 +71,7 @@ class X4Site_model extends X4Model_core
 		$this->now = time();
 
 		// Load site parameters
-		$this->to_define();
+		$this->to_define($this->site->id);
 	}
 
 	/**
@@ -136,9 +136,9 @@ class X4Site_model extends X4Model_core
 	 *
 	 * @return void
 	 */
-	private function to_define()
+	private function to_define(int $id_site)
 	{
-		$items = $this->db->query('SELECT UPPER(name) AS xkey, xvalue FROM param WHERE xrif = \'site\'');
+		$items = $this->db->query('SELECT UPPER(name) AS xkey, xvalue FROM param WHERE id_area = '.$id_site.' AND xrif = \'site\'');
 		foreach ($items as $i)
 		{
 			if (!defined($i->xkey)) define($i->xkey, $i->xvalue);
@@ -222,7 +222,9 @@ class X4Site_model extends X4Model_core
 
 					$articles = array();
 					// get bids
-					$bids = explode('|', $i->articles);
+					$bids = empty($i->articles)
+                        ? []
+                        : json_decode($i->articles, true);
 					foreach ($bids as $bid)
 					{
 						// get articles
@@ -513,6 +515,54 @@ class X4Site_model extends X4Model_core
 		return $c;
 	}
 
+    /**
+	 * Get menus by area ID
+	 *
+	 * @param   integer	$id_area area ID
+     * @param   string  $xfrom  url value of origin page
+	 * @return array	associative array of array of objects
+	 */
+	public function get_subpages(int $id_area, string $xfrom)
+	{
+		// check APC
+		$pages = ($id_area > 1 && APC)
+			? apcu_fetch(SITE.'subpages'.$id_area.'_'.$xfrom)
+			: array();
+
+		if (empty($pages))
+		{
+			// privs
+			if ($id_area == 1)
+			{
+				$level = ', IF (p.id IS NULL, u.level, p.level) AS level';
+				$page_privs = 'JOIN uprivs u ON u.id_area = pa.id_area AND u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('pages').'
+					LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = pa.id AND p.level > 0';
+			}
+			else
+			{
+				$level = $page_privs = '';
+			}
+
+            $pages = $this->db->query('SELECT pa.url, pa.redirect, pa.name, pa.title, pa.xfrom, pa.hidden, pa.fake, pa.deep, pa.ordinal '.$level.'
+                FROM pages pa
+                '.$page_privs.'
+                WHERE
+                    pa.id_area = '.$id_area.' AND
+                    pa.lang = '.$this->db->escape($this->lang).' AND
+                    pa.xfrom = '.$this->db->escape($xfrom).' AND
+                    pa.xon = 1 AND
+                    pa.hidden = 0
+                GROUP BY pa.id
+                ORDER BY pa.ordinal ASC');
+
+			if (APC)
+			{
+				apcu_store(SITE.'subpages'.$id_area.'_'.$xfrom, $pages);
+			}
+		}
+		return $pages;
+	}
+
 	/**
 	 * Get breadcrumb
 	 *
@@ -582,7 +632,7 @@ class X4Site_model extends X4Model_core
 				? ' AND (SELECT SUM(p.xon) FROM pages p WHERE p.id_area = a.id_area AND p.lang = a.lang '.$phidden.$pwhere.' AND INSTR(a.ordinal, p.ordinal) > 0) = (a.deep + 1)'
 				: '';
 
-			$c = $this->db->query('SELECT a.xfrom, a.url, a.name, a.title, a.description, a.ordinal, a.lang, a.id_menu, a.deep
+			$c = $this->db->query('SELECT a.xfrom, a.url, a.name, a.title, a.description, a.ordinal, a.lang, a.id_menu, a.deep, a.fake
 				FROM pages a
 				WHERE a.id_area = '.intval($page->id_area).' AND
 					a.ordinal LIKE '.$this->db->escape($ordinal.'%').' AND

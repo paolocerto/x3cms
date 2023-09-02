@@ -4,154 +4,116 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
 
+// theme manager
+
+echo '<h1 class="mt-6">'.$page->title.'</h1>';
+
 if (empty($theme_in))
 {
-?>
-<p><?php echo _NOT_PERMITTED ?></p>
-<script src="<?php echo THEME_URL ?>js/basic.js"></script>
-<script>
-window.addEvent('domready', function()
-{
-	X3.content('filters','themes/filter', null);
-});
-</script>
-<?php
+    // user cannot see this contents
+    echo '<p>'._NOT_PERMITTED.'</p>';
 }
 else
 {
-?>
 
-<table class="zebra">
-	<tr class="first">
-		<th style="width:24em;"><?php echo _THEME ?></th>
-		<th><?php echo _AREA ?></th>
-		<th></th>
-		<th style="width:12em;"><?php echo _ACTIONS ?></th>
-		<th style="width:6em;"></th>
-	</tr>
+    echo '<table>
+        <thead>
+            <tr>
+                <th class="w-4">'._AREA.'</th>
+                <th class="text-left pl-4">'._THEME.'</th>
+                <th class="w-52">'._ACTIONS.'</th>
+            </tr>
+        </thead>
+        <tbody>';
 
-<?php
-if ($theme_in)
-{
-	echo '<tr><td colspan="5" class="menu">'._INSTALLED_THEMES.'</td></tr>';
-	$tmp = 0;
-	foreach ($theme_in as $i)
-	{
-		if ($i->xon)
-		{
-			$status = _ON;
-			$on_status = 'orange';
-		}
-		else
-		{
-			$status = _OFF;
-			$on_status = 'gray';
-		}
+    if ($theme_in)
+    {
+        echo '<tr><td colspan="3" class="bg text-center">'._INSTALLED_THEMES.'</td></tr>';
 
-		if ($i->xlock) {
-			$lock = _LOCKED;
-			$lock_status = 'lock';
-		}
-		else
-		{
-			$lock = _UNLOCKED;
-			$lock_status = 'unlock-alt';
-		}
-		$actions = $uninstall = $area = '';
+        $tmp = 0;
+        foreach ($theme_in as $i)
+        {
+            $statuses = AdmUtils_helper::statuses($i, ['xon', 'xlock']);
 
-		if (($i->level > 2 && $i->xlock == 0) || $i->level == 4)
-		{
-			$actions = '<a class="btl" href="'.BASE_URL.'themes/set/xon/'.$i->id.'/'.(($i->xon+1)%2).'" title="'._STATUS.' '.$status.'"><i class="far fa-lightbulb fa-lg '.$on_status.'"></i></a> ';
+            $actions = $area = '';
 
-			if ($i->level == 4)
-			{
-				$uninstall = '<a class="btl" href="'.BASE_URL.'themes/set/xlock/'.$i->id.'/'.(($i->xlock+1)%2).'" title="'._STATUS.' '.$lock.'"><i class="fas fa-'.$lock_status.' fa-lg"></i></a>';
-				if (empty($i->area))
-					$uninstall .= '<a class="bta" href="'.BASE_URL.'themes/uninstall/'.$i->id.'" title="'._UNINSTALL.'"><i class="fas fa-upload fa-lg"></i></a>';
-				else
-				{
-					$uninstall .= '<a><i class="fa faupload invisible fa-lg"></i></a>';
-					$area = '['.$i->area.']';
-				}
-			}
-		}
-		if ($tmp != $i->id)
-		{
-			$tmp = $i->id;
+            if (($i->level > 2 && $i->xlock == 0) || $i->level >= 3)
+            {
+                $actions .= AdmUtils_helper::link('xon', 'themes/set/xon/'.$i->id.'/'.(($i->xon+1)%2), $statuses);
 
-			$minify = ($i->level == 4)
-			    ? '<a class="btl" href="'.BASE_URL.'themes/minimize/'.$i->id.'/'.$i->name.'" title="'._MINIMIZE.'"><i class="fas fa-recycle fa-lg"></i></a></td>'
-			    : '';
+                if ($i->level >= 4)
+                {
+                    $actions .= AdmUtils_helper::link('xlock', 'themes/set/xlock/'.$i->id.'/'.(($i->xlock+1)%2), $statuses);
 
-			echo '<tr>
-					<td><strong>'.$i->name.'</strong> <span class="xs-hidden"> - '.$i->description.'</span></td>
-					<td>'.$area.'</td>
-					<td></td>
-					<td>'.$actions.'
-						<a class="btm" href="'.BASE_URL.'templates/index/'.$i->id.'/'.$i->name.'" title="'._TEMPLATES.'"><i class="fas fa-desktop fa-lg"></i></a>
-						<a class="btm" href="'.BASE_URL.'menus/index/'.$i->id.'/'.$i->name.'" title="'._MENUS.'"><i class="fas fa-bars fa-lg"></i></a>
-						'.$minify.'
-					<td class="aright">'.$uninstall.'</td>
-					</tr>';
-		}
-		else
-		{
-			echo '<tr>
-					<td></td>
-					<td></td>
-					<td>'.$area.'</td>
-					<td></td>
-					<td></td>
-					</tr>';
-		}
-	}
-}
+                    // templates
+                    $actions .= '<a class="link" @click="pager(\''.BASE_URL.'templates/index/'.$i->id.'/'.$i->name.'\')" title="'._TEMPLATES.'">
+                        <i class="fa-solid fa-lg fa-object-group"></i>
+                    </a>';
+                    // menus
+                    $actions .= '<a class="link" @click="pager(\''.BASE_URL.'menus/index/'.$i->id.'/'.$i->name.'\')" title="'._MENUS.'">
+                        <i class="fa-solid fa-bars fa-lg"></i>
+                    </a>';
 
-if ($theme_out && $_SESSION['level'] == 4)
-{
-	echo '<tr><td colspan="5" class="menu">'._INSTALLABLE_THEMES.'</td></tr>';
-	foreach ($theme_out as $i)
-	{
-		if(function_exists('preg_replace_callback'))
-		{
-			$name = preg_replace_callback(
-				'/(.*)\/(.*)/is',
-				function($m)
-				{
-					return $m[2];
-				},
-				$i);
-		}
-		else
-		{
-			$name = preg_replace('/(.*)\/(.*)/is', '$2', $i, 1);
-		}
+                    if (empty($i->area))
+                    {
+                        $uninstall = '<a class="link" @click="popup(\''.BASE_URL.'themes/uninstall/'.$i->id.'\')" title="'._UNINSTALL.'">
+                            <i class="fa-solid fa-download fa-lg warn"></i>
+                        </a>';
+                    }
+                    else
+                    {
+                        $uninstall = '<a><i class="fa-solid fa-download fa-lg off"></i></a>';
+                        $area = '['.$i->area.']';
+                    }
+                }
+            }
+            if ($tmp != $i->id)
+            {
+                $tmp = $i->id;
 
-		$install = '<a class="btl" href="'.BASE_URL.'themes/install/'.$name.'" title="'._INSTALL.'"><i class="fas fa-download fa-lg"></i></a>';
-		echo '<tr>
-				<td colspan="2">'.$name.'</td>
-				<td></td>
-				<td></td>
-				<td class="aright">'.$install.'</td>
-				</tr>';
-	}
-}
-?>
-</table>
-<script src="<?php echo THEME_URL ?>js/basic.js"></script>
-<script>
-window.addEvent('domready', function()
-{
-	X3.content('filters','themes/filter', null);
-	buttonize('topic', 'btm', 'tdown');
-	buttonize('topic', 'bta', 'modal');
-	actionize('topic',  'btl', 'tdown', escape('themes'));
-	zebraTable('zebra');
-});
-</script>
-<?php
+                $actions .= ($i->level >= 4)
+                    ? AdmUtils_helper::link('refresh', 'themes/set/minimize/'.$i->id, [], _MINIMIZE)
+                    : '';
+
+                echo '<tr>
+                        <td class="w-6">'.$area.'</td>
+                        <td><strong>'.$i->name.'</strong> <span class="xs-hidden"> - '.$i->description.'</span></td>
+                        <td class="space-x-2 text-right">'.$actions.$uninstall.'</td>
+                        </tr>';
+            }
+            else
+            {
+                echo '<tr>
+                        <td>'.$area.'</td>
+                        <td></td>
+                        <td></td>
+                        </tr>';
+            }
+        }
+    }
+
+    if ($theme_out && $_SESSION['level'] >= 4)
+    {
+        echo '<tr><td colspan="3" class="bg text-center">'._INSTALLABLE_THEMES.'</td></tr>';
+        foreach ($theme_out as $i)
+        {
+            $name = preg_replace('/(.*)\/(.*)/is', '$2', $i, 1);
+
+            $install = '<a class="link" @click="setter(\''.BASE_URL.'themes/install/'.$name.'\')" title="'._INSTALL.'">
+                <i class="fa-solid fa-upload fa-lg"></i>
+            </a>';
+            echo '<tr>
+                    <td></td>
+                    <td>'.$name.'</td>
+                    <td class="space-x-2 text-right">'.$install.'</td>
+                </tr>';
+        }
+    }
+
+    echo '</tbody>
+        </table>';
 }

@@ -4,16 +4,16 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
- 
+
 /**
  * x4search model
  *
  * @package		X3CMS
  */
-class X4search_model extends X4Model_core 
+class X4search_model extends X4Model_core
 {
 	/**
 	 * Constructor
@@ -25,5 +25,5 @@ class X4search_model extends X4Model_core
 	{
 		parent::__construct('matches');
 	}
-	
+
 }

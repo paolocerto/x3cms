@@ -1,0 +1,258 @@
+Italia (Repubblica Italiana), IT
+Afghanistan (Repubblica Islamica dell’Afghanistan), AF
+Albania (Repubblica d’Albania), AL
+Algeria (Repubblica Popolare Democratica Algerina), DZ
+Andorra (Principato di Andorra),AD
+Angola (Repubblica dell’Angola), AO
+Antigua e Barbuda (Antigua e Barbuda), AG
+Arabia Saudita (Regno dell’Arabia Saudita), SA
+Argentina (Repubblica Argentina), AR
+Armenia (Repubblica di Armenia), AM
+Australia (Commonwealth dell’Australia), AU
+Austria (Repubblica d’Austria), AT
+Azerbaigian (Repubblica dell’Azerbaigian), AZ
+Bahamas (Commonwealth delle Bahamas), BS
+Bahrein (Regno del Bahrain), BH
+Bangladesh (Repubblica Popolare del Bangladesh), BD
+Barbados, BB
+Belgio (Regno del Belgio), BE
+Belize, BZ
+Benin (Repubblica del Benin), BJ
+Bhutan (Regno del Bhutan), BT
+Bielorussia (Repubblica di Bielorussia), BY
+Bolivia (Stato Plurinazionale di Bolivia), BO
+Bosnia ed Erzegovina, BA
+Botswana (Repubblica del Botswana), BW
+Brasile (Repubblica Federale del Brasile), BR
+Brunei (Stato del Brunei, Dimora della Pace), BN
+Bulgaria (Repubblica di Bulgaria), BG
+Burkina Faso, BF
+Burundi (Repubblica del Burundi), BI
+Cambogia (Regno della Cambogia), KH
+Camerun (Repubblica del Camerun), CM
+Canada, CA
+Capo Verde (Repubblica di Capo Verde), CV
+Ciad (Repubblica del Ciad), TD
+Cile (Repubblica del Cile), CL
+Cina (Repubblica Popolare Cinese), CN
+Cipro (Repubblica di Cipro), CY
+Città del Vaticano (Stato della Città del Vaticano), VA
+Colombia (Repubblica di Colombia), CO
+Comore (Unione delle Comore), KM
+Corea del Nord (Repubblica Democratica Popolare di Corea), KP
+Corea del Sud (Repubblica di Corea), KR
+Costa d’Avorio (Repubblica della Costa d’Avorio), CI
+Costa Rica (Repubblica di Costa Rica), CR
+Croazia (Repubblica di Croazia), HR
+Cuba (Repubblica di Cuba), CU
+Danimarca (Regno di Danimarca), DK
+Dominica (Commonwealth di Dominica), DM
+Ecuador (Repubblica dell’Ecuador), EC
+Egitto (Repubblica Araba d’Egitto), EG
+El Salvador (Repubblica di El Salvador), SV
+Emirati Arabi Uniti, AE
+Eritrea, ER
+Estonia, EE
+Etiopia (Repubblica Democratica Federale d’Etiopia), ET
+Figi (Repubblica delle Isole Figi), FJ
+Filippine (Repubblica delle Filippine), PH
+Finlandia (Repubblica di Finlandia), FI
+Francia (Repubblica Francese), FR
+Gabon (Repubblica Gabonese), GA
+Gambia (Repubblica del Gambia), GM
+Georgia, GE
+Germania (Repubblica Federale di Germania), DE
+Ghana (Repubblica del Ghana), GH
+Giamaica, JM
+Giappone, JP
+Gibuti (Repubblica di Gibuti), DJ
+Giordania (Regno Hascemita di Giordania), JO
+Grecia, GR
+Grenada, GD
+Guatemala (Repubblica del Guatemala), GT
+Guinea (Repubblica di Guinea), GN
+Guinea-Bissau (Repubblica di Guinea-Bissau), GW
+Guinea Equatoriale (Repubblica della Guinea Equatoriale), GQ
+Guyana (Repubblica Cooperativa della Guyana), GY
+Haiti (Repubblica di Haiti), HT
+Honduras (Repubblica dell’Honduras), HN
+India (Repubblica dell’India), IN
+Indonesia (Repubblica dell’Indonesia), ID
+Iran (Repubblica Islamica dell’Iran), IR
+Iraq (Repubblica dell’Iraq), IQ
+Irlanda (Repubblica d’Irlanda), IE
+Islanda (Repubblica d’Islanda), IS
+Isole Marshall (Repubblica delle Isole Marshall), MH
+Isole Salomone, SB
+Israele (Stato d’Israele), IL
+Italia (Repubblica Italiana), IT
+Kazakistan (Repubblica del Kazakistan), KZ
+Kenya (Repubblica del Kenya), KE
+Kirghizistan (Repubblica del Kirghizistan), KG
+Kiribati (Repubblica di Kiribati), KI
+Kuwait (Stato del Kuwait), KW
+Laos (Repubblica Popolare Democratica del Laos), LA
+Lesotho (Regno del Lesotho), LS
+Lettonia (Repubblica di Lettonia), LV
+Libano (Repubblica Libanese), LB
+Liberia (Repubblica di Liberia),LR
+Libia (Stato della Libia), LY
+Liechtenstein (Principato del Liechtenstein), LI
+Lituania (Repubblica di Lituania), LT
+Lussemburgo (Granducato di Lussemburgo), LU
+Macedonia (Repubblica di Macedonia), MK
+Madagascar (Repubblica del Madagascar), MG
+Malawi (Repubblica di Malawi), MW
+Maldive (Repubblica delle Maldive), MV
+Malesia, MY
+Mali (Repubblica del Mali), ML
+Malta (Repubblica di Malta), MT
+Marocco (Regno del Marocco), MA
+Mauritania (Repubblica Islamica della Mauritania), MR
+Mauritius (Repubblica di Mauritius), MU
+Messico (Stati Uniti Messicani), MX
+Micronesia (Stati Federati di Micronesia), FM
+Moldavia (Repubblica Moldava), MD
+Monaco (Principato di Monaco), MC
+Mongolia, MN
+Montenegro (Repubblica del Montenegro), ME
+Mozambico (Repubblica del Mozambico)MZ
+Myanmar o Birmania (Repubblica dell’Unione del Myanmar)
+Namibia (Repubblica della Namibia), NA
+Nauru (Repubblica di Nauru), NR
+Nepal (Repubblica Federale Democratica del Nepal), NP
+Nicaragua (Repubblica del Nicaragua), NI
+Niger (Repubblica del Niger), NE
+Nigeria (Repubblica Federale della Nigeria), NG
+Norvegia (Regno di Norvegia), NO
+Nuova Zelanda, NZ
+Oman (Sultanato di Oman), OM
+Paesi Bassi (Regno dei Paesi Bassi), NL
+Pakistan (Repubblica Islamica del Pakistan), PK
+Palau (Repubblica di Palau), PW
+Palestina (Stato di Palestina), PS
+Panama (Repubblica di Panamá), PA
+Papua Nuova Guinea (Stato Indipendente della Papua Nuova Guinea), PG
+Paraguay (Repubblica del Paraguay), PY
+Perù (Repubblica del Perù), PE
+Polonia (Repubblica di Polonia), PL
+Portogallo (Repubblica Portoghese), PT
+Qatar (Stato del Qatar), QA
+Regno Unito (Regno Unito di Gran Bretagna e Irlanda del Nord), GB
+Repubblica Ceca, CZ
+Repubblica Centrafricana (Repubblica Centrafricana), CF
+Repubblica del Congo, CG
+Repubblica Democratica del Congo, CD
+Repubblica Dominicana, DO
+Romania, RO
+Ruanda (Repubblica del Ruanda), RW
+Russia (Federazione Russa), RU
+Saint Kitts e Nevis (Federazione di Saint Christopher e Nevis), KN
+Saint Vincent e Grenadine, VC
+Samoa (Stato Indipendente di Samoa), WS
+San Marino (Serenissima Repubblica di San Marino), SM
+Santa Lucia, LC
+São Tomé e Príncipe (Repubblica Democratica di São Tomé e Príncipe), ST
+Senegal (Repubblica del Senegal), SN
+Serbia (Repubblica di Serbia), RS
+Seychelles (Repubblica delle Seychelles), SC
+Sierra Leone (Repubblica della Sierra Leone), SL
+Singapore (Repubblica di Singapore), SG
+Siria (Repubblica Araba di Siria), SY
+Slovacchia (Repubblica Slovacca), SK
+Slovenia (Repubblica di Slovenia), SI
+Somalia, SO
+Spagna (Regno di Spagna), ES
+Sri Lanka (Repubblica Democratica Socialista dello Sri Lanka), LK
+Stati Uniti (Stati Uniti d’America), US
+Stati Uniti - Alabama, AL
+Stati Uniti - Alaska, AK
+Stati Uniti - Arizona, AZ
+Stati Uniti - Arkansas, AR
+Stati Uniti - California, CA
+Stati Uniti - Carolina del Nord, NC
+Stati Uniti - Carolina del Sud, SC
+Stati Uniti - Colorado, CO
+Stati Uniti - Connecticut, CT
+Stati Uniti - Dakota del Nord, ND
+Stati Uniti - Dakota del Sud, SD
+Stati Uniti - Delaware, DE
+Stati Uniti - Florida, FL
+Stati Uniti - Georgia, GA
+Stati Uniti - Hawaii, HI
+Stati Uniti - Idaho, ID
+Stati Uniti - Illinois, IL
+Stati Uniti - Indiana, IN
+Stati Uniti - Iowa, IA
+Stati Uniti - Kansas, KS
+Stati Uniti - Kentucky, KY
+Stati Uniti - Louisiana, LA
+Stati Uniti - Maine, ME
+Stati Uniti - Maryland, MD
+Stati Uniti - Massachusetts, MA
+￼Stati Uniti - Michigan, MI
+Stati Uniti - Minnesota, MN
+Stati Uniti - Mississippi, MS
+Stati Uniti - Missouri, MO
+Stati Uniti - Montana, MT
+Stati Uniti - Nebraska, NE
+Stati Uniti - Nevada, NV
+Stati Uniti - New Hampshire, NH
+Stati Uniti - New Jersey, NJ
+Stati Uniti - New York, NY
+Stati Uniti - Nuovo Messico, NM
+Stati Uniti - Ohio, OH
+Stati Uniti - Oklahoma, OK
+Stati Uniti - Oregon, OR
+Stati Uniti - Pennsylvania, PA
+Stati Uniti - Rhode Island, RI
+Stati Uniti - Tennessee, TN
+Stati Uniti - Texas, TX
+Stati Uniti - Utah, UT
+Stati Uniti - Vermont, VY
+Stati Uniti - Virginia, VA
+Stati Uniti - Virginia Occidentale, WV
+Stati Uniti - Washington, WA
+Stati Uniti - Wisconsin, WI
+Stati Uniti - Wyoming, WY
+Sudafrica (Repubblica del Sudafrica), ZA
+Sudan (Repubblica del Sudan), SD
+Sudan del Sud (Repubblica del Sudan del Sud), SS
+Suriname (Repubblica del Suriname), SR
+Svezia (Regno di Svezia), SE
+Svizzera (Confederazione Svizzera), CH
+Swaziland (Regno dello Swaziland), SZ
+Tagikistan (Repubblica del Tagikistan), TJ
+Taiwan (Repubblica di Cina), TW
+Tanzania (Repubblica Unita di Tanzania), TZ
+Thailandia (Regno di Thailandia), TH
+Timor Est (Repubblica Democratica di Timor Est), TL
+Togo (Repubblica Togolese), TG
+Tonga (Regno di Tonga), TO
+Trinidad e Tobago (Repubblica di Trinidad e Tobago), TT
+Tunisia (Repubblica Tunisina), TN
+Turchia (Repubblica Turca), TR
+Turkmenistan, TM
+Tuvalu, TV
+Ucraina (Ucraina), UA
+Uganda (Repubblica dell’Uganda), UG
+Ungheria (Ungheria), HU
+Uruguay (Repubblica Orientale dell’Uruguay), UY
+Uzbekistan (Repubblica dell’Uzbekistan), UZ
+Vanuatu (Repubblica di Vanuatu), VU
+Venezuela (Repubblica Bolivariana del Venezuela), VE
+Vietnam (Repubblica Socialista del Vietnam)VN
+Yemen (Repubblica dello Yemen), YE
+Zambia (Repubblica dello Zambia), ZM
+Zimbabwe (Repubblica dello Zimbabwe), ZW
+- STATI NON RICONOSCIUTI
+Abcasia (Repubblica di Abcasia)
+Artsakh (Repubblica dell’Artsakh)
+Cipro del Nord (Repubblica Turca di Cipro del Nord)
+Repubblica Popolare di Doneck
+Kosovo (Repubblica del Kosovo)
+Repubblica Popolare di Lugansk
+Ossezia del Sud (Repubblica di Ossezia del Sud)
+Sahara Occidentale (Repubblica Democratica Araba Sahraui)
+Somaliland (Repubblica di Somaliland)
+Transnistria (Repubblica di Transnistria)

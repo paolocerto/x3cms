@@ -4,104 +4,71 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
-?>
-<h2><?php echo _GROUP_LIST ?></h2>
-<?php
+
+// group list view
+
+echo '<h1 class="mt-6">'._GROUP_LIST.'</h1>';
+
 if (empty($groups))
 {
-?>
-<p><?php echo _NOT_PERMITTED ?></p>
-<script src="<?php echo THEME_URL ?>js/basic.js"></script>
-<script>
-window.addEvent('domready', function()
-{
-	X3.content('filters','groups/filter', null);
-});
-</script>
-<?php
+    echo '<p>'._NOT_PERMITTED.'</p>';
 }
 else
 {
-?>
-<table class="zebra">
-	<tr class="first">
-		<th><?php echo _AREA ?></th>
-		<th><?php echo _GROUP ?></th>
-		<th style="width:12em;"><?php echo _ACTIONS ?></th>
-		<th style="width:6em;"></th>
-	</tr>
-<?php
-foreach ($groups as $i)
-{
-	if ($i->xon)
-	{
-		$status = _ON;
-		$on_status = 'orange';
-	}
-	else
-	{
-		$status = _OFF;
-		$on_status = 'gray';
-	}
+    echo '<table>
+        <thead>
+            <tr>
+                <th class="w-20">'._AREA.'</th>
+                <th>'._GROUP.'</th>
+                <th class="w-56">'._ACTIONS.'</th>
+            </tr>
+        </thead>
+        <tbody>';
 
-	if ($i->xlock)
-	{
-		$lock = _LOCKED;
-		$lock_status = 'lock';
-	}
-	else
-	{
-		$lock = _UNLOCKED;
-		$lock_status = 'unlock-alt';
-	}
-	$actions = $delete = '';
+    foreach ($groups as $i)
+    {
+        $statuses = AdmUtils_helper::statuses($i);
 
-	// check permission
-	if (($i->level > 1 && $i->xlock == 0) || $i->level == 4)
-	{
-		$actions = '<a class="bta" href="'.BASE_URL.'groups/edit/'.$i->id.'" title="'._EDIT.'"><i class="fas fa-pencil-alt fa-lg"></i></a>
-			<a class="bta" href="'.BASE_URL.'users/edit/0/'.$i->id.'" title="'._ADD_USER.'"><i class="fas fa-user-plus fa-lg"></i></a>';
+        $actions = '';
 
-		// manager user
-		if ($i->level > 2 && $i->id > 1)
-			$actions .= ' <a class="btl" href="'.BASE_URL.'groups/set/xon/'.$i->id.'/'.(($i->xon+1)%2).'" title="'._STATUS.' '.$status.'"><i class="far fa-lightbulb fa-lg '.$on_status.'"></i></a>';
+        // check permission
+        if (($i->level > 1 && $i->xlock == 0) || $i->level >= 3)
+        {
+            // edit group
+            $actions = AdmUtils_helper::link('edit', 'groups/edit/'.$i->id);
 
-		// admin user
-		if ($i->level == 4 && $i->id > 1)
-		{
-			$delete = '<a class="btl" href="'.BASE_URL.'groups/set/xlock/'.$i->id.'/'.(($i->xlock+1)%2).'" title="'._STATUS.' '.$lock.'"><i class="fas fa-'.$lock_status.' fa-lg"></i></a>
-			 <a class="bta" href="'.BASE_URL.'groups/delete/'.$i->id.'" title="'._DELETE.'"><i class="fas fa-trash fa-lg red"></i></a>';
+            // manager group but not admin
+            if ($i->level > 2 && $i->id > 1)
+            {
+                $actions .= AdmUtils_helper::link('xon', 'groups/set/xon/'.$i->id.'/'.(($i->xon+1)%2), $statuses);
+            }
 
-			if ($i->id > 1)
-				$actions .= ' <a class="bta" href="'.BASE_URL.'groups/gperm/'.$i->id.'" title="'._EDIT_GPRIV.'"><i class="fas fa-cogs fa-lg"></i></a>';
-		}
+            // new user
+            $actions .= '<a class="link" @click="popup(\''.BASE_URL.'users/edit/0/'.$i->id.'\')" title="'._ADD_USER.'">
+                <i class="fa-solid fa-user-plus fa-lg"></i>
+            </a>';
 
-	}
+            // admin super user
+            if ($i->level >= 4)
+            {
+                if ($i->id > 1)
+                {
+                    $actions .= AdmUtils_helper::link('settings', 'groups/gperm/'.$i->id, [], _EDIT_GPRIV);
+                }
+                $actions .= AdmUtils_helper::link('xlock', 'groups/set/xlock/'.$i->id.'/'.(($i->xlock+1)%2), $statuses);
+                $actions .= AdmUtils_helper::link('delete', 'groups/delete/'.$i->id);
+            }
+        }
 
-	//$items = $umod->get_users($i->id);
-
-	echo '<tr>
-			<td>'.$i->title.'</td>
-			<td><a class="bta" href="'.BASE_URL.'users/users/'.$i->id.'" title="">'.$i->name.'</a>'._TRAIT_.$i->description.'</td>
-			<td>'.$actions.'</td>
-			<td class="aright">'.$delete.'</td>
-			</tr>';
-}
-?>
-</table>
-<script src="<?php echo THEME_URL ?>js/basic.js"></script>
-<script>
-window.addEvent('domready', function()
-{
-	X3.content('filters','groups/filter', null);
-	buttonize('topic', 'btm', 'tdown');
-	buttonize('topic', 'bta', 'modal');
-	actionize('topic',  'btl', 'tdown', escape('users'));
-	zebraTable('zebra');
-});
-</script>
-<?php
+        echo '<tr>
+                <td>'.$i->title.'</td>
+                <td><a class="link" @click="popup(\''.BASE_URL.'users/users/'.$i->id.'\')" title="">'.$i->name.'</a>'._TRAIT_.$i->description.'</td>
+                <td class="space-x-2 text-right">'.$actions.'</td>
+            </tr>';
+    }
+    echo '</tbody>
+        </table>';
 }

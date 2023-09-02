@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
 
@@ -47,11 +47,11 @@ class User_model extends X4Model_core
 	public function get_user_by_id(int $id)
 	{
 		return $this->db->query_row('SELECT u.*, g.name AS groupname, IF(p.id IS NULL, up.level, p.level) AS plevel
-				FROM users u
-				JOIN uprivs up ON up.id_user = '.intval($_SESSION['xuid']).' AND up.privtype = '.$this->db->escape('users').'
-				LEFT JOIN privs p ON p.id_who = up.id_user AND p.what = up.privtype AND p.id_what = u.id
-				JOIN xgroups g ON g.id = u.id_group
-				WHERE u.id = '.$id);
+            FROM users u
+            JOIN uprivs up ON up.id_user = '.intval($_SESSION['xuid']).' AND up.privtype = '.$this->db->escape('users').'
+            LEFT JOIN privs p ON p.id_who = up.id_user AND p.what = up.privtype AND p.id_what = u.id
+            JOIN xgroups g ON g.id = u.id_group
+            WHERE u.id = '.$id);
 	}
 
 	/**
@@ -63,15 +63,15 @@ class User_model extends X4Model_core
 	 */
 	public function get_users(int $id_group)
 	{
-        	return $this->db->query('SELECT u.*, IF(p.id IS NULL, up.level, p.level) AS level
-				FROM users u
-				JOIN uprivs up ON up.id_user = '.intval($_SESSION['xuid']).' AND up.privtype = '.$this->db->escape('users').'
-				LEFT JOIN privs p ON p.id_who = up.id_user AND p.what = up.privtype AND p.id_what = u.id
-				JOIN aprivs ap ON ap.id_user = '.intval($_SESSION['xuid']).' AND ap.id_area != 1
-				JOIN aprivs ap2 ON ap2.id_user = u.id AND ap2.id_area = ap.id_area
-				WHERE u.id_group = '.$id_group.' AND (u.hidden = 0 OR '.intval($_SESSION['level']).' = 4)
-				GROUP BY u.id
-				ORDER BY u.username ASC');
+        return $this->db->query('SELECT u.*, IF(p.id IS NULL, up.level, p.level) AS level
+            FROM users u
+            JOIN uprivs up ON up.id_user = '.intval($_SESSION['xuid']).' AND up.privtype = '.$this->db->escape('users').'
+            LEFT JOIN privs p ON p.id_who = up.id_user AND p.what = up.privtype AND p.id_what = u.id
+            JOIN aprivs ap ON ap.id_user = '.intval($_SESSION['xuid']).' AND ap.id_area != 1
+            JOIN aprivs ap2 ON ap2.id_user = u.id AND ap2.id_area = ap.id_area
+            WHERE u.id_group = '.$id_group.' AND (u.hidden = 0 OR '.intval($_SESSION['level']).' >= 4)
+            GROUP BY u.id
+            ORDER BY u.username ASC');
 	}
 
 	/**

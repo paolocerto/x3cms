@@ -4,10 +4,10 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X4WEBAPP
  */
-?> 
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -26,7 +26,7 @@
 
 	<h1>Warning!</h1>
 	<p>The requested view was not found.</p>
-	
+
 	<p class="copyright">
 		Copyright &copy; 2010-<?php echo date('Y') ?> Cblu.net
 	</p>

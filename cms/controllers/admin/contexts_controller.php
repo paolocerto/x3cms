@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
 
@@ -54,44 +54,41 @@ class Contexts_controller extends X3ui_controller
 
 		// get page
 		$page = $this->get_page('contexts');
-		$navbar = array($this->site->get_bredcrumb($page), array('articles' => 'index/'.$id_area.'/'.$lang));
+
+        $view = new X4View_core('page');
+        $view->breadcrumb = array($this->site->get_bredcrumb($page));
+		$view->actions = $this->actions($id_area, $lang);
 
 		// content
 		$mod = new Context_model();
-		$view = new X4View_core('articles/context_list');
-		$view->page = $page;
-		$view->navbar = $navbar;
-		$view->items = $mod->get_contexts($id_area, $lang);
+		$view->content = new X4View_core('contexts/context_list');
+		$view->content->items = $mod->get_contexts($id_area, $lang);
 
 		// area switcher
-		$view->id_area = $id_area;
-		$view->areas = $areas;
+		$view->content->id_area = $id_area;
+		$view->content->areas = $areas;
 
 		// language switcher
-		$view->lang = $lang;
-		$lang = new Language_model();
-		$view->langs = $lang->get_languages();
+		$view->content->lang = $lang;
+        if (MULTILANGUAGE)
+        {
+            $lang = new Language_model();
+            $view->content->langs = $lang->get_languages();
+        }
 
 		$view->render(TRUE);
 	}
 
 	/**
-	 * Contexts filter
+	 * Contexts actions
 	 *
 	 * @return  void
 	 */
-	public function filter(int $id_area, string $lang)
+	private function actions(int $id_area, string $lang)
 	{
-		// load the dictionary
-		$this->dict->get_wordarray(array('contexts'));
-
-		echo '<a class="btf" href="'.BASE_URL.'contexts/edit/'.$id_area.'/'.$lang.'/-1" title="'._NEW_CONTEXT.'"><i class="fas fa-plus fa-lg"></i></a>
-<script>
-window.addEvent("domready", function()
-{
-	buttonize("filters", "btf", "modal");
-});
-</script>';
+		return '<a class="link" @click="popup(\''.BASE_URL.'contexts/edit/'.$id_area.'/'.$lang.'\')" title="'._NEW_CONTEXT.'">
+            <i class="fa-solid fa-lg fa-circle-plus"></i>
+        </a>';
 	}
 
 	/**
@@ -112,8 +109,6 @@ window.addEvent("domready", function()
 		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'contexts', $id, $val);
 		if (is_null($msg))
 		{
-			$qs = X4Route_core::get_query_string();
-
 			// do action
 			$mod = new Context_model();
 			$obj = $mod->get_by_id($id);
@@ -129,17 +124,18 @@ window.addEvent("domready", function()
 
 			// set update
 			if ($result[1])
-			$msg->update[] = array(
-				'element' => $qs['div'],
-				'url' => urldecode($qs['url']),
-				'title' => null
-			);
+            {
+                $msg->update = array(
+                    'element' => 'page',
+					'url' => $_SERVER['HTTP_REFERER']
+                );
+            }
 		}
 		$this->response($msg);
 	}
 
 	/**
-	 * New / Edit context form (use Ajax)
+	 * New / Edit context form
 	 *
      * @param   integer $id_area Area ID
 	 * @param   string 	$lang Language code
@@ -151,55 +147,23 @@ window.addEvent("domready", function()
 		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'contexts'));
 
-		// to switch render at the end of this method
-		$chk = false;
-		if ($id < 0)
-		{
-			$id = 0;
-			$chk = true;
-		}
-
 		// get object
 		$mod = new Context_model();
-		$obj = ($id)
+		$item = ($id)
 			? $mod->get_by_id($id)
 			: new Context_obj($id_area, $lang);
 
-		// build the form
-		$fields = array();
-		$fields[] = array(
-			'label' => null,
-			'type' => 'hidden',
-			'value' => $id,
-			'name' => 'id'
-		);
-		$amod = new Area_model();
-		$fields[] = array(
-			'label' => _AREA,
-			'type' => 'select',
-			'value' => $obj->id_area,
-			'options' => array($amod->get_areas(), 'id', 'name'),
-			'name' => 'id_area',
-			'extra' => 'class="large"'
-		);
+        $form_fields = new X4Form_core('context/context_edit');
+		$form_fields->item = $item;
 
-		$lmod = new Language_model();
-		$fields[] = array(
-			'label' => _LANGUAGE,
-			'type' => 'select',
-			'value' => $obj->lang,
-			'options' => array($lmod->get_languages(), 'code', 'language'),
-			'name' => 'lang',
-			'extra' => 'class="large"'
-		);
-		$fields[] = array(
-			'label' => _NAME,
-			'type' => 'text',
-			'value' => $obj->name,
-			'name' => 'name',
-			'rule' => 'required',
-			'extra' => 'class="large"'
-		);
+        $mod = new Area_model();
+        $form_fields->areas = $mod->get_areas();
+
+        $mod = new Language_model();
+        $form_fields->languages = $mod->get_languages();
+
+		// get the fields array
+		$fields = $form_fields->render();
 
 		// if submitted
 		if (X4Route_core::$post)
@@ -215,27 +179,18 @@ window.addEvent("domready", function()
 			}
 			die;
 		}
-
-		// content
-		$view = new X4View_core('editor');
-		$view->title = ($id)
+        $view = new X4View_core('modal');
+        $view->title = ($id)
 			? _EDIT_CONTEXT
 			: _ADD_CONTEXT;
 
+		// content
+		$view->content = new X4View_core('editor');
 		// form builder
-		$view->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
-			'onclick="setForm(\'editor\');"');
+		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
+            '@click="submitForm(\'editor\')"');
 
-		$view->js = '';
-
-		if ($id > 0 || $chk)
-		{
-			$view->render(TRUE);
-		}
-		else
-		{
-			return $view->render();
-		}
+        $view->render(TRUE);
 	}
 
 	/**
@@ -278,7 +233,6 @@ window.addEvent("domready", function()
 				if ($id)
 				{
 					$result = $mod->update($id, $post);
-
 					// check if dictionary name for the context already exists
 					if ($result[1])
 					{
@@ -290,7 +244,7 @@ window.addEvent("domready", function()
 					// get the code of the new context
 					$code = $mod->get_max_code($post['id_area'], $post['lang']);
 
-					// this implies that the site can't have more than 33 languages
+					// this implies that one site can't have more than 33 languages
 					// you have 3 default contexts (draft, page, multipages) for each language and for each area
 					$post['code'] = ($code > 100) ? ($code+1) : 101;
 
@@ -308,10 +262,9 @@ window.addEvent("domready", function()
 				// set what update
 				if ($result[1])
 				{
-					$msg->update[] = array(
+					$msg->update = array(
 						'element' => 'topic',
-						'url' => BASE_URL.'contexts/index/'.$post['id_area'].'/'.$post['lang'],
-						'title' => null
+						'url' => BASE_URL.'contexts/index/'.$post['id_area'].'/'.$post['lang']
 					);
 				}
 			}
@@ -329,10 +282,10 @@ window.addEvent("domready", function()
 	{
 		// get object
 		$mod = new Context_model();
-		$obj = $mod->get_by_id($id, 'contexts', 'id_area, lang, name, code');
+		$item = $mod->get_by_id($id, 'contexts', 'id, id_area, lang, name, code');
 
 		// only added context can be deleted
-		if ($obj->code > 100)
+		if ($item->code > 100)
 		{
 			// load dictionaries
 			$this->dict->get_wordarray(array('form', 'contexts'));
@@ -349,18 +302,19 @@ window.addEvent("domready", function()
 			// if submitted
 			if (X4Route_core::$post)
 			{
-				$this->deleting($id, $obj);
+				$this->deleting($item);
 				die;
 			}
-
+            $view = new X4View_core('modal');
+            $view->title = _DELETE_CONTEXT;
 			// contents
-			$view = new X4View_core('delete');
-			$view->title = _DELETE_CONTEXT;
-			$view->item = $obj->name;
+			$view->content = new X4View_core('delete');
+
+			$view->content->item = $item->name;
 
 			// form builder
-			$view->form = X4Form_helper::doform('delete', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
-				'onclick="setForm(\'delete\');"');
+			$view->content->form = X4Form_helper::doform('delete', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
+                '@click="submitForm(\'delete\')"');
 			$view->render(TRUE);
 		}
 	}
@@ -369,21 +323,19 @@ window.addEvent("domready", function()
 	 * Delete context
 	 *
 	 * @access	private
-	 * @param   integer     $id Context ID
-	 * @param   stdClass    $obj Context Obj
+	 * @param   stdClass    $item Context item
 	 * @return  void
 	 */
-	private function deleting(int $id, stdClass $obj)
+	private function deleting(stdClass $item)
 	{
 		$msg = null;
 		// check permissions
-		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'contexts', $id, 4);
-
+		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'contexts', $item->id, 4);
 		if (is_null($msg))
 		{
 			// do action
 			$mod = new Context_model();
-			$result = $mod->delete($id);
+			$result = $mod->delete($item->id);
 
 			// set message
 			$msg = AdmUtils_helper::set_msg($result);
@@ -392,13 +344,12 @@ window.addEvent("domready", function()
 			if ($result[1])
             {
 				$perm = new Permission_model();
-				$perm->deleting_by_what('contexts', $id);
+				$perm->deleting_by_what('contexts', $item->id);
 
 				// set what update
-				$msg->update[] = array(
-					'element' => 'topic',
-					'url' => BASE_URL.'contexts/index/'.$obj->id_area.'/'.$obj->lang,
-					'title' => null
+				$msg->update = array(
+					'element' => 'page',
+					'url' => BASE_URL.'contexts/index/'.$item->id_area.'/'.$item->lang
 				);
 			}
 		}

@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
 
@@ -182,11 +182,14 @@ class Menu_model extends X4Model_core
 				// exclude home page
 				if ($i->url != $xfrom)
 				{
-					$menu = ($i->deep == 1) ? str_pad(base_convert(strval($i->id_menu), 10, 36), 3, '0', STR_PAD_LEFT) : '';
-
 					// build base token
 					// is a four chars value: the first is a marker (no menu/in menu), other store position up to 46656
 					$pos = intval($i->id_menu > 0).str_pad(base_convert(strval($i->xpos), 10, 36), 3, '0', STR_PAD_LEFT);
+
+                    // menu token
+					$menu = ($i->deep == 1)
+                    ? str_pad(base_convert(strval($i->id_menu), 10, 36), 3, '0', STR_PAD_LEFT)
+                    : '';
 
 					// update query
 					$sql[] = 'UPDATE pages SET ordinal = '.$this->db->escape($base.$menu.$pos).' WHERE id = '.$i->id;
@@ -283,19 +286,34 @@ class Menu_model extends X4Model_core
             ORDER BY ordinal ASC');
 	}
 
+    /**
+	 * Get languages in area
+	 *
+	 * @param integer	$id_area
+	 * @return array	array
+	 */
+	public function get_languages(int $id_area)
+	{
+		return $this->db->query('SELECT code
+            FROM alang
+            WHERE id_area = '.$id_area);
+	}
+
 	/**
 	 * Get ordinal of a page by url
 	 *
 	 * @param integer	area ID
+     * @param string    lang
 	 * @param string	url
 	 * @return string
 	 */
-	public function get_ordinal_by_url(int $id_area, string $url)
+	public function get_ordinal_by_url(int $id_area, string $lang, string $url)
 	{
 		return $this->db->query_var('SELECT ordinal
             FROM pages
             WHERE
                 id_area = '.$id_area.' AND
+                lang = '.$this->db->escape($lang).' AND
                 url = '.$this->db->escape($url));
 	}
 

@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
 
@@ -71,101 +71,19 @@ class Login_controller extends X4Cms_controller
 			// contents
 			$view = new X4View_core(X4Theme_helper::set_tpl($page->tpl));
 			$view->page = $page;
-			$view->menus = array();
 			$view->content = new X4View_core('login');
 
-			// check if user have used remember me
-			if (isset($_COOKIE[COOKIE.'_login']))
-			{
-				list($usr, $hidden_pwd) = explode('-', $_COOKIE[COOKIE.'_login']);
-				$pwd = '12345678';
-				$chk = true;
-			}
-			else
-			{
-				$usr = $pwd = '';
-				$chk = false;
-			}
+			$form_fields = new X4Form_core('login');
+            $form_fields->site = $this->site->site;
 
-			// build the form
-			$fields = array();
-
-			// antispam control
-			$fields[] = array(
-				'label' => null,
-				'type' => 'hidden',
-				'value' => time(),
-				'name' => 'antispam'
-			);
-			$fields[] = array(
-				'label' => _USERNAME,
-				'type' => 'text',
-				'value' => $usr,
-				'name' => 'username',
-				'rule' => 'required',
-				'sanitize' => 'string',
-				'extra' => 'class="large"'
-			);
-			$fields[] = array(
-				'label' => _PASSWORD,
-				'type' => 'password',
-				'value' => $pwd,
-				'name' => 'password',
-				'rule' => 'required|minlength§5',
-				'sanitize' => 'string',
-				'extra' => 'class="large"'
-			);
-
-			if ($chk)
-			{
-				$fields[] = array(
-					'label' => null,
-					'type' => 'hidden',
-					'value' => $hidden_pwd,
-					'name' => 'hpwd'
-				);
-			}
-
-			$fields[] = array(
-				'label' => _REMEMBER_ME,
-				'type' => 'checkbox',
-				'value' => '1',
-				'name' => 'remember_me',
-				'checked' => $chk
-			);
-
-			// if site is on line and user is unknown or fails his login add captcha
-			if ($this->site->site->xon && !$chk && isset($_SESSION['failed']))
-			{
-				$fields[] = array(
-					'label' => _CAPTCHA,
-					'type' => 'text',
-					'value' => '',
-					'name' => 'captcha',
-					'rule' => 'required|captcha',
-					'suggestion' => _CAPTCHA_MSG,
-					'extra' => 'class="large" autocomplete="off"'
-				);
-
-				$fields[] = array(
-					'label' => null,
-					'type' => 'html',
-					'value' => '<div id="cha" class="acenter">
-                        <img id="captcha_img" src="'.BASE_URL.'captcha/34/45/50" alt="captcha" /></div>',
-				);
-				$fields[] = array(
-					'label' => null,
-					'type' => 'html',
-					'value' => '<p class="small"><a href="'.BASE_URL.'captcha/34/45/50" title="reload" id="reload_captcha">'._RELOAD_CAPTCHA.'</a></p>'
-				);
-
-			}
+            // get the fields array
+            $fields = $form_fields->render();
 
 			// if submitted, check control field
 			if (X4Route_core::$post && array_key_exists(strrev('formlogin'), $_POST))
 			{
 				$e = X4Validation_helper::form($fields, 'formlogin');
-				if ($e && !isset($_POST['antispam']))
+				if ($e) // && !isset($_POST['antispam']))
 				{
 					$this->do_login($_POST);
 					die;
@@ -243,11 +161,13 @@ class Login_controller extends X4Cms_controller
 				$_SESSION['site'] = SITE;
 				$_SESSION['id_area'] = 1;	// admin AREA ID
 
+                /*
 				// set cookie for remember me
 				if (isset($_post['remember_me']))
 				{
 					setcookie(COOKIE.'_login', $conditions['username'].'-'.$conditions['password'], time() + 2592000, '/', $_SERVER['HTTP_HOST']);
 				}
+                */
 
 				// refactory permissions
 				$mod = new Permission_model();
@@ -350,7 +270,7 @@ class Login_controller extends X4Cms_controller
 			'name' => 'email',
 			'rule' => 'required|mail',
 			'sanitize' => 'string',
-			'extra' => 'class="large"'
+			'extra' => 'class="w-full"'
 		);
 
 		// if submitted, check control field

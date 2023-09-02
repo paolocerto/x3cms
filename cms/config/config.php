@@ -83,6 +83,9 @@ define('EDITOR_OPTIONS', false);        // enable a dedicated section for option
 // use APC
 define('APC', false);					// if true the most frequently executed queries will be cached
 
+// Flmngr API Key for TinyMCE
+define('FLMNGR_API_KEY', 'FLMNFLMN');   // default API key
+
 // database configuration array
 $db_config = array();
 
@@ -102,4 +105,3 @@ $db_config['default'] = array(
 
 // Set character encoding to UTF8
 mb_internal_encoding('UTF-8');
-

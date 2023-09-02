@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright		(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
 
@@ -27,7 +27,7 @@ class AdmUtils_helper
 	public static function set_msg($res, string $ok = _MSG_OK, string $ko = _MSG_ERROR)
 	{
 		$msg = new Msg();
-		$close = '<div id="close-modal" class="zerom double-gap-top white" title="'._CLOSE.'"><i class="fas fa-times fa-lg"></i></div>';
+		//$close = '<div id="close-modal" class="zerom double-gap-top white" title="'._CLOSE.'"><i class="fas fa-times fa-lg"></i></div>';
 		switch(gettype($res))
 		{
 			case 'boolean':
@@ -35,13 +35,13 @@ class AdmUtils_helper
 				{
 					$msg->message_type = 'success';
 					$msg->message = $ok;
-					$msg->message_close = '';
+					//$msg->message_close = '';
 				}
 				else
 				{
 					$msg->message_type = 'error';
 					$msg->message = $ko;
-					$msg->message_close = $close;
+					//$msg->message_close = $close;
 				}
 				break;
 			case 'array':
@@ -50,12 +50,12 @@ class AdmUtils_helper
 				case 0:
 					$msg->message_type = 'error';
 					$msg->message = $ko;
-					$msg->message_close = $close;
+					//$msg->message_close = $close;
 					break;
 				default:
 					$msg->message_type = 'success';
 					$msg->message = $ok;
-					$msg->message_close = '';
+					//$msg->message_close = '';
 					break;
 				}
 				break;
@@ -63,7 +63,7 @@ class AdmUtils_helper
 				// is a string so is an error
 				$msg->message_type = 'error';
 				$msg->message = $ko;
-				$msg->message_close = $close;
+				//$msg->message_close = $close;
 				break;
 		}
 		return $msg;
@@ -205,74 +205,157 @@ class AdmUtils_helper
 		}
 	}
 
-	/**
-	 * Build arrows to sort orderable items
+    /**
+	 * Build a simple breadcrumb
 	 *
 	 * @static
-	 * @param   integer	$c Current position in the list
-	 * @param   integer	$n Number of items
-	 * @param   string	$link URL to move item
-	 * @return  string
+	 * @param array		$array array of pages
+	 * @param string	$sep separator
+	 * @param boolean	$home show the home page link in navbar
+	 * @return string
 	 */
-	public static function updown(int $c, int $n, string $link)
+	public static function navbar($array, $sep = ' > ', $home = true)
 	{
-		// if there are items to sort
-		if ($n > 1)
+		$str = '';
+		if (!empty($array))
 		{
-			// switch by  position
-			switch($c)
+			// chain of pages
+			$item = array_pop($array[0]);
+
+			// additional URL params
+			$url_params = (isset($array[1]))
+				? $array[1]
+				: array();
+
+			foreach ($array[0] as $i)
 			{
-				case 0:
-					// only down
-					return '<a href="'.$link.'/1" title="'._MOVE_DOWN.'"><img src="'.THEME_URL.'img/down.png" alt="'._DOWN.'" /></a>';
-					break;
-				case ($n-1):
-					// only up
-					return '<a href="'.$link.'/-1" title="'._MOVE_UP.'"><img src="'.THEME_URL.'img/up.png" alt="'._UP.'" /></a>';
-					break;
-				default:
-					// up and down
-					return '<a href="'.$link.'/-1" title="'._MOVE_UP.'"><img src="'.THEME_URL.'img/up.png" alt="'._UP.'" /></a> <a href="'.$link.'/1" title="'._MOVE_DOWN.'"><img src="'.THEME_URL.'img/down.png" alt="'._DOWN.'" /></a>';
-					break;
+				// handle params
+				$param = (isset($url_params[$i->url]))
+					? '/'.$url_params[$i->url]
+					: '';
+
+                // is the URL the home page?
+				$url = ($i->url == 'home')
+					? 'home/dashboard'
+					: $i->url;
+
+				// add a crumb
+				if ($home || $i->url != 'home')
+				{
+					$str .= '<a @click="pager(\''.BASE_URL.$url.$param.'\')" title="'.stripslashes($i->description).'">'.stripslashes($i->name).'</a><span>'.$sep.'</span>';
+				}
+			}
+			// do we have to show home?
+			if ($home || $item->url != 'home')
+			{
+				$str .= '<span>'.stripslashes($item->name).'</span>';
 			}
 		}
+		return $str.'&nbsp;';
 	}
 
-	/**
-	 * Build option list for select fields
+    /**
+	 * Build statuses info
 	 *
 	 * @static
-	 * @param   array	$items Array of options as objects
-	 * @param   string	$value Field name for values
-	 * @param   string	$name Field name for names
-	 * @param   mixed	$selected Selected value
+	 * @param   object	$obj to analyze
+	 * @return  array
+	 */
+	public static function statuses(stdClass $obj, array $fields = ['xon', 'xlock'])
+	{
+        // available options
+        $options = [
+            'xon' => [_ON, 'on', _OFF, 'off'],
+            'xlock' => [_LOCKED, 'fa-lock', _UNLOCKED, 'fa-unlock'],
+            'hidden' => [_HIDDEN, 'fa-link-slash', _VISIBLE, 'fa-link'],
+        ];
+
+        // where we store info
+        $status = [];
+        foreach($fields as $i)
+        {
+            if ($obj->$i)
+            {
+                $status[$i]['label'] = $options[$i][0];
+                $status[$i]['class'] = $options[$i][1];
+            }
+            else
+            {
+                $status[$i]['label'] = $options[$i][2];
+                $status[$i]['class'] = $options[$i][3];
+            }
+        }
+        return $status;
+	}
+
+    /**
+	 * Build admin links
+	 *
+	 * @static
+	 * @param   string	$action
+	 * @param   string	$url
+     * @param   array   $statuses
+     * @param   string  $title
 	 * @return  string
 	 */
-	public static function get_opt(array $items, string $value, string $name, mixed $selected = null)
+	public static function link(string $action, string $url, array $statuses = [], $title = '')
 	{
-		$opt = '';
-		foreach ($items as $i)
-		{
-			// check for selected
-			$sel = (!is_null($selected) && $i->$value == $selected)
-				? SELECTED
-				: '';
+		switch ($action)
+        {
+            case 'edit':
+                return '<a class="link" @click="popup(\''.BASE_URL.$url.'\')" title="'._EDIT.'">
+                    <i class="fa-solid fa-lg fa-pen-to-square"></i>
+                </a>';
+                break;
+            case 'settings':
+                return '<a class="link" @click="popup(\''.BASE_URL.$url.'\')" title="'._SETTINGS.'">
+                    <i class="fa-solid fa-lg fa-sliders"></i>
+                </a>';
+            case 'xon':
+                return '<a class="link" @click="setter(\''.BASE_URL.$url.'\')" title="'._STATUS.' '.$statuses['xon']['label'].'">
+                    <i class="far fa-lightbulb fa-lg '.$statuses['xon']['class'].'"></i>
+                </a>';
+                break;
+            case 'xlock':
+                return '<a class="link" @click="setter(\''.BASE_URL.$url.'\')" title="'._STATUS.' '.$statuses['xlock']['label'].'">
+                    <i class="fa-solid fa-lg '.$statuses['xlock']['class'].'"></i>
+                </a>';
+                break;
+            case 'delete':
+                return '<a class="link" @click="popup(\''.BASE_URL.$url.'\')" title="'._DELETE.'">
+                    <i class="fa-solid fa-lg fa-trash warn"></i>
+                </a>';
+                break;
+            case 'refresh':
+                $title = (empty($title))
+                    ? _GENERATE
+                    : $title;
+                return '<a class="link" @click="setter(\''.BASE_URL.$url.'\')" title="'.$title.'">
+                    <i class="fa-solid fa-rotate fa-lg"></i>
+                </a>';
+                break;
+            case 'duplicate':
+                $title = (empty($title))
+                    ? _DUPLICATE
+                    : $title;
+                return '<a class="link" @click="popup(\''.BASE_URL.$url.'\')" title="'.$title.'">
+                    <i class="fa-solid fa-copy fa-lg"></i>
+                </a>';
+                break;
 
-			// option
-			$opt .= '<option value="'.$i->$value.'" '.$sel.'>' . $i->$name . '</option>';
-		}
-		return $opt;
+        }
 	}
 
     /**
 	 * Return recorded selected options
 	 *
 	 * @param   string 	$str Encoded options
+     * @param   array   $fields structure
 	 * @param   boolean	$move With or without direction buttons
 	 * @param   boolean	$echo Return or echo
 	 * @return  string
 	 */
-	public static function decompose(string $str = '', int $move = 0, int $echo = 0)
+	public static function decompose(string $str, array $fields, int $move = 0, int $echo = 0)
 	{
         $res = '';
 		if (!empty($str))
@@ -283,35 +366,51 @@ class AdmUtils_helper
                 // is an AJAX call so we have to replace some character
 			    $str = str_replace(array('_ZZZ_', '_XXX_'), array(NL, '#'), $str);
 			}
-			$c = 1;
-			$rows = explode(NL, $str);
-			foreach ($rows as $r)
+            // for values
+            $data = [];
+            // table head
+            $res = '<tr>';
+            foreach($fields as $f)
+            {
+                $data[] = $f['name'];
+                $res .= '<th>'.$f['name'].'</th>';
+            }
+            $res .= '<th></th></tr>';
+
+			$c = 0;
+			$items = json_decode($str, true);
+            $n = sizeof($items);
+			foreach ($items as $k => $v)
 			{
-			    if ($r != '')
+                $actions = '';
+			    if ($v != [])
 				{
-                    $i = explode('|', $r);
                     if ($move)
                     {
-                        $res .= '<tr class="row'.$c.'" rel="'.$c.'">
-                                    <td>'.implode('</td><td>', $i).'</td>
-                                    <td class="aright">
-                                        <a class="tdown" href="#"><i class="fas fa-chevron-down fa-lg"></i></a>
-                                        <a class="tup" href="#"><i class="fas fa-chevron-up fa-lg"></i></a>
-                                        <a class="tedit" href="#"><i class="fas fa-pencil-alt fa-lg"></i></a>
-                                        <a class="tdelete" href="#"><i class="fas fa-trash fa-lg red"></i></a>
-                                    </td>
-                                </tr>';
+                        if ($k < $n - 1)
+                        {
+                            // down
+                            $actions = '<a class="link" @click="moveItem('.$c.', 1)"><i class="fa-solid fa-lg fa-chevron-down"></i></a>';
+                        }
+                        if ($k > 0)
+                        {
+                            // up
+                            $actions .= '<a class="link" @click="moveItem('.$c.', -1)"><i class="fa-solid fa-lg fa-chevron-up"></i></a>';
+                        }
                     }
-                    else
+                    $res .= '<tr class="row'.$c.'" rel="'.$c.'">';
+                    // show values
+                    foreach ($data as $i)
                     {
-                        $res .= '<tr class="row'.$c.'" rel="'.$c.'">
-                                    <td>'.implode('</td><td>', $i).'</td>
-                                    <td class="aright">
-                                        <a class="tedit" href="#"><i class="fas fa-pencil-alt fa-lg"></i></a>
-                                        <a class="tdelete" href="#"><i class="fas fa-trash fa-lg red"></i></a>
-                                    </td>
-                                </tr>';
+                        $res .= '<td>'.$v[$i].'</td>';
                     }
+
+                    $res .= '<td class="space-x-2 text-right">
+                                '.$actions.'
+                                <a class="link" @click="editItem('.$c.')"><i class="fa-solid fa-lg fa-pen-to-square"></i></a>
+                                <a class="link" @click="deleteItem('.$c.')"><i class="fa-solid fa-lg fa-trash warn"></i></a>
+                            </td>
+                        </tr>';
                     $c++;
                 }
 			}
@@ -327,9 +426,9 @@ class AdmUtils_helper
  */
 class Msg
 {
-	public $id;
+	//public $id;
 	public $message_type = 'error';
-	public $message_close = '';
+	//public $message_close = '';
 	public $message = '';
 	public $command = array();
 	public $update = array();

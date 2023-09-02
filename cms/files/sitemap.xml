@@ -1,6 +1,19 @@
-<?xml version='1.0' encoding='UTF-8'?>
-			<urlset xmlns="http://www.google.com/schemas/sitemap/0.84"
-			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-			xsi:schemaLocation="http://www.google.com/schemas/sitemap/0.84
-			http://www.google.com/schemas/sitemap/0.84/sitemap.xsd">
+<?xml version="1.0" encoding="utf-8"?><urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<url>
+    <loc>http://x3cms.xdev:8080/en</loc>
+    <lastmod>2023-08-25T15:56:42+01:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+</url>
+<url>
+    <loc>http://x3cms.xdev:8080/en/info</loc><lastmod>2023-06-23T17:11:19+01:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+<url>
+    <loc>http://x3cms.xdev:8080/en/map</loc>
+    <lastmod>2023-09-01T12:32:43+01:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+</url>
 </urlset>

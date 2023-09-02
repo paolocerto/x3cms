@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X4WEBAPP
  */
 
@@ -157,7 +157,7 @@ class X4Auth_model extends X4Model_core
 		if ($id_area > 1)
 		{
 			return $this->db->query_row('SELECT * FROM x3_users WHERE id_area = '.$id_area.' AND xon = 1 AND hashkey = '.$this->db->escape($hash));
-            
+
 		}
 		else
 		{
@@ -198,7 +198,7 @@ class X4Auth_model extends X4Model_core
                 $_SESSION['uid'] = $u->id;
                 $_SESSION['nickname'] = $u->nickname;
                 $_SESSION['email'] = $u->email;
-                
+
 			}
 			return true;
 		}

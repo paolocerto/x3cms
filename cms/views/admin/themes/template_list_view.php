@@ -4,116 +4,92 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
-?>
-<h2><?php echo $theme._TRAIT_._TEMPLATE_LIST ?></h2>
-<table class="zebra">
-	<tr class="first">
-		<th><?php echo _TEMPLATE ?></th>
-		<th></th>
-		<th style="width:120px;"><?php echo _ACTIONS ?></th>
-		<th style="width:90px;"></th>
-	</tr>
 
-<?php
+// templates list
+
+echo '<h1 class="mt-6">'.$theme._TRAIT_._TEMPLATE_LIST.'</h1>';
+
+echo '<table>
+    <thead>
+        <tr>
+            <th class="w-40">'._TEMPLATE.'</th>
+            <th></th>
+            <th class="w-44">'._ACTIONS.'</th>
+        </tr>
+    </thead>
+    <tbody>';
+
 if ($tpl_in)
 {
-	echo '<tr><td colspan="4" class="menu">'._INSTALLED_TEMPLATES.'</td></tr>';
+	echo '<tr><td colspan="3" class="bg text-center">'._INSTALLED_TEMPLATES.'</td></tr>';
+
 	foreach ($tpl_in as $i)
 	{
-		if ($i->xon)
-		{
-			$status = _ON;
-			$on_status = 'orange';
-		}
-		else
-		{
-			$status = _OFF;
-			$on_status = 'gray';
-		}
+        $statuses = AdmUtils_helper::statuses($i, ['xon', 'xlock']);
 
-		if ($i->xlock)
-		{
-			$lock = _LOCKED;
-			$lock_status = 'lock';
-		}
-		else
-		{
-			$lock = _UNLOCKED;
-			$lock_status = 'unlock-alt';
-		}
 		$actions = $uninstall = '';
 
 		// check permission
-		if (($i->level > 2 && $i->xlock == 0) || $i->level == 4)
+		if (($i->level > 2 && $i->xlock == 0) || $i->level >= 3)
 		{
-			$actions = '<a class="bta" href="'.BASE_URL.'templates/edit/template/'.$theme.'/'.$i->id.'/" title="'._EDIT.'"><i class="fas fa-pencil-alt fa-lg"></i></a>
-				<a class="bta" href="'.BASE_URL.'templates/edit/css/'.$theme.'/'.$i->id.'/" title="'._EDIT.' css"><i class="fas fa-paint-brush fa-lg"></i></a>
-				<a class="btl" href="'.BASE_URL.'templates/set/xon/'.$i->id.'/'.(($i->xon+1)%2).'" title="'._STATUS.' '.$status.'"><i class="far fa-lightbulb fa-lg '.$on_status.'"></i></a>';
+            $actions = AdmUtils_helper::link('edit', 'templates/edit/template/'.$theme.'/'.$i->id);
+
+			$actions .= '<a class="link" @click="pager(\''.BASE_URL.'templates/edit/css/'.$theme.'/'.$i->id.'\')" title="'._EDIT.' css">
+                <i class="fa-solid fa-paintbrush fa -lg"></i>
+            </a>';
+
+            $actions .= AdmUtils_helper::link('xon', 'templates/set/xon/'.$i->id.'/'.(($i->xon+1)%2), $statuses);
 
 			// admin user
-			if ($i->level == 4)
+			if ($i->level >= 4)
 			{
-				$uninstall ='<a class="btl" href="'.BASE_URL.'templates/set/xlock/'.$i->id.'/'.(($i->xlock+1)%2).'" title="'._STATUS.' '.$lock.'"><i class="fas fa-'.$lock_status.' fa-lg"></i></a>';
-				$uninstall .= ($i->name != 'base')
-					? '<a class="bta" href="'.BASE_URL.'templates/uninstall/'.$i->id.'" title="'._UNINSTALL_TEMPLATE.'"><i class="fas fa-upload fa-lg"></i></a>'
-					: '<a><i class="fas fa-upload invisible fa-lg"></i></a>';
+                $actions .= AdmUtils_helper::link('xlock', 'templates/set/xlock/'.$i->id.'/'.(($i->xlock+1)%2), $statuses);
+
+				$actions .= ($i->name != 'base')
+					? '<a class="link" @click="popup(\''.BASE_URL.'templates/uninstall/'.$i->id.'\')" title="'._UNINSTALL_TEMPLATE.'">
+                            <i class="fa-solid fa-download fa-lg warn"></i>
+                        </a>'
+					: '<a><i class="fa-solid fa-download fa-lg off"></i></a>';;
 			}
 		}
 		echo '<tr>
 				<td><strong>'.$i->name.'</strong></td>
 				<td>'.$i->description.' ['.$i->sections.']</td>
-				<td>'.$actions.'</td>
-				<td class="aright">'.$uninstall.'</td>
-				</tr>';
+				<td class="space-x-2 text-right">'.$actions.'</td>
+			</tr>';
 	}
 }
 
 // only for admin users
-if ($tpl_out && $_SESSION['level'] == 4)
+if (!empty($tpl_out) && $_SESSION['level'] >= 4)
 {
-	echo '<tr><td colspan="4" class="menu">'._INSTALLABLE_TEMPLATES.'</td></tr>';
+
+    $tmp = '';
 	foreach ($tpl_out as $i)
 	{
-		if(function_exists('preg_replace_callback'))
-		{
-			$name = preg_replace_callback(
-				'/(.*)\/(.*)/is',
-				function($m)
-				{
-					return $m[2];
-				},
-				$i);
-		}
-		else
-		{
-			$name = preg_replace('/(.*)\/(.*)/is', '$2', $i, 1);
-		}
-		$install = '<a class="bta" href="'.BASE_URL.'templates/install/'.$id_theme.'/'.urlencode($name).'" title="'._INSTALL.'"><i class="fas fa-download fa-lg"></i></a>';
+		$name = preg_replace('/(.*)\/(.*)/is', '$2', $i, 1);
+		$install = '<a class="link" @click="setter(\''.BASE_URL.'templates/install/'.$id_theme.'/'.$name.'\')" title="'._INSTALL.'">
+            <i class="fa-solid fa-upload fa-lg"></i>
+        </a>';
 
 		if ($name != 'x3ui' && $name != 'mail' && $name != 'login')
 		{
-			echo '<tr>
+			$tmp .= '<tr>
 					<td>'.$name.'</td>
-					<td></td>
 					<td></td>
 					<td class="aright">'.$install.'</td>
 					</tr>';
 		}
 	}
+
+    if (!empty($tmp))
+    {
+        echo '<tr><td colspan="3" class="bg text-center">'._INSTALLABLE_TEMPLATES.'</td></tr>'.$tmp;
+    }
 }
-?>
-</table>
-<script src="<?php echo THEME_URL ?>js/basic.js"></script>
-<script>
-window.addEvent('domready', function()
-{
-	X3.content('filters','templates/filter', null);
-	buttonize('topic', 'btm', 'tdown');
-	buttonize('topic', 'bta', 'modal');
-	actionize('topic',  'btl', 'tdown', escape('templates/index/<?php echo $id_theme.'/'.$theme ?>'));
-	zebraTable('zebra');
-});
-</script>
+
+echo '</tbody>
+</table>';

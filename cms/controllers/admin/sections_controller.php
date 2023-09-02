@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
 
@@ -39,21 +39,24 @@ class Sections_controller extends X3ui_controller
 		// load the dictionary
 		$this->dict->get_wordarray(array('sections'));
 
+        $lang = X4Route_core::$lang;
+
 		// get page
 		$page = $this->get_page('sections');
-		$navbar = array($this->site->get_bredcrumb($page));
 
-		// contents
-		$view = new X4View_core('sections/sections');
-		$view->page = $page;
-		$view->navbar = $navbar;
+        $view = new X4View_core('page');
+        $view->breadcrumb = array($this->site->get_bredcrumb($page));
+		$view->actions = $this->actions($id_area, $lang, $id_page, '');
 
-		$mod = new Section_model();
-		$view->xpage = $mod->get_by_id($id_page, 'pages', 'id, id_area, lang, name, url, xfrom');
-
+        $mod = new Section_model();
 		// get page template sections
 		$tpl_sections = $mod->get_template_data($id_page, 'sections');
-		$view->sections = $tpl_sections;
+
+		// contents
+		$view->content = new X4View_core('sections/sections');
+        $view->content->xpage = $mod->get_by_id($id_page, 'pages', 'id, id_area, lang, name, url, xfrom');
+
+		$view->content->sections = $tpl_sections;
 
 		$items = $mod->get_items($id_page);
 
@@ -62,16 +65,15 @@ class Sections_controller extends X3ui_controller
 		{
 			// create default sections
 			$mod->initialize($id_area, $id_page);
-
 			$items = $mod->get_items($id_page);
 		}
-		$view->items = $items;
+		$view->content->items = $items;
 
 		$view->render(TRUE);
 	}
 
 	/**
-	 * Compose filter
+	 * Compose actions
 	 *
 	 * @param   integer $id_area Area ID
 	 * @param   string	$lang Language code
@@ -79,31 +81,22 @@ class Sections_controller extends X3ui_controller
 	 * @param	string	$page
 	 * @return  string
 	 */
-	public function filter(int $id_area, string $lang, int $id_page, string $page = 'compose')
+	public function actions(int $id_area, string $lang, int $id_page, string $page = 'compose')
 	{
 		if ($page == 'compose')
 		{
-			// load the dictionary
-			$this->dict->get_wordarray(array('articles'));
-			echo '<a class="btf" href="'.BASE_URL.'articles/edit/'.$id_area.'/'.$lang.'/1/x3/'.$id_page.'" title="'._NEW_ARTICLE.'"><i class="fas fa-plus fa-lg"></i></a>
-<script>
-window.addEvent("domready", function()
-{
-	buttonize("filters", "btf", "topic", "'.urlencode('sections/compose/'.$id_page).'");
-});
-</script>';
+			return '<a class="link" @click="pager(\''.BASE_URL.'sections/index/'.$id_area.'/'.$id_page.'\')" title="'._SECTIONS.'">
+                <i class="fa-regular fa-object-group fa-lg"></i>
+            </a>
+            <a class="link" @click="pager(\''.BASE_URL.'articles/edit/'.$id_area.'/'.$lang.'/1/x3/'.$id_page.'\')" title="'._NEW_ARTICLE.'">
+                <i class="fa-solid fa-lg fa-circle-plus"></i>
+            </a>';
 		}
 		else
 		{
-			// load the dictionary
-			$this->dict->get_wordarray(array('sections'));
-			echo '<a class="btf" href="'.BASE_URL.'sections/edit/'.$id_area.'/'.$id_page.'" title="'._SECTION_NEW.'"><i class="fas fa-plus fa-lg"></i></a>
-<script>
-window.addEvent("domready", function()
-{
-	buttonize("filters", "btf", "modal");
-});
-</script>';
+            return '<a class="link" @click="popup(\''.BASE_URL.'sections/edit/'.$id_area.'/'.$id_page.'\')" title="'._SECTION_NEW.'">
+                <i class="fa-solid fa-lg fa-circle-plus"></i>
+            </a>';
 		}
 	}
 
@@ -125,8 +118,6 @@ window.addEvent("domready", function()
 		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'sections', $id, $val);
 		if (is_null($msg))
 		{
-			$qs = X4Route_core::get_query_string();
-
 			// do action
 			$mod = new Section_model();
 			$obj = $mod->get_by_id($id);
@@ -140,10 +131,9 @@ window.addEvent("domready", function()
 			// set update
 			if ($result[1])
             {
-                $msg->update[] = array(
-                    'element' => $qs['div'],
-                    'url' => urldecode($qs['url']),
-                    'title' => null
+                $msg->update = array(
+                    'element' => 'page',
+                    'url' => $_SERVER['HTTP_REFERER']
                 );
             }
 		}
@@ -164,32 +154,41 @@ window.addEvent("domready", function()
 
 		// get object
 		$mod = new Section_model();
-
 		if ($id)
 		{
 			$item = $mod->get_by_id($id);
 		}
 		else
 		{
-			// get page template settings
-			$tpl_settings = $mod->get_template_data($id_page, 'settings');
-
+            // get model settings, we use those if the template have not settings
 			$settings = json_encode($mod->settings);
+
+            // get page template settings
+			$tpl_settings = $mod->get_template_data($id_page, 'settings');
 			if (!empty($tpl_settings))
 			{
 				$tps = json_decode($tpl_settings, true);
 
-				if (isset($tps['sn']) && !empty($tps['sn']))
+                // $tps['sn'] is the settings for the a New Section
+                if (isset($tps['sn']) && !empty($tps['sn']))
 				{
-					// template could have less or more or different keys of model settings
-					$settings = json_encode($tps['sn']);
+                    $tmp = $tps['sn'];
+                    // template could have less or more or different keys of model settings
+                    foreach ($mod->settings as $k => $v)
+                    {
+                        if (!isset($tmp[$k]))
+                        {
+                            $tmp[$k] = $v;
+                        }
+                    }
+					$settings = json_encode($tmp);
 				}
 			}
 			$item = new Section_obj($id_area, $id_page, $settings);
 		}
 
 		// build the form
-		$form_fields = new X4Form_core('section_edit', '', array('fields' => array()));
+		$form_fields = new X4Form_core('section/section_edit');
 		$form_fields->id = $id;
 		$form_fields->item = $item;
 		$form_fields->mod_settings = $mod->settings;
@@ -200,12 +199,12 @@ window.addEvent("domready", function()
 		$file_array = $form_fields->__get('file_array');
 
         // get js array
-        $js_array = $form_fields->__get('js_array');
+        //$js_array = $form_fields->__get('js_array');
 
 		// if submitted
 		if (X4Route_core::$post)
 		{
-			$e = X4Validation_helper::form($fields, 'upload');
+			$e = X4Validation_helper::form($fields, 'editor');
 			if ($e)
 			{
 				$this->editing($id, $_POST, $file_array);
@@ -217,40 +216,18 @@ window.addEvent("domready", function()
 			die;
 		}
 
-		// content
-		$view = new X4View_core('editor');
-		$view->title = ($id)
+        $view = new X4View_core('modal');
+        $view->title = ($id)
 			? _SECTION_EDIT.' - #'.$item->progressive
 			: _SECTION_NEW;
-
-        $view->msg = _SECTION_EDIT_MSG;
+		// content
+		$view->content = new X4View_core('editor');
+        $view->content->msg = _SECTION_EDIT_MSG;
 
 		// form builder
-		$view->form = '<div id="scrolled">'.X4Form_helper::doform('upload', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', 'enctype="multipart/form-data"',
-			'onclick="let n=0;let c=$(\'columns\').get(\'value\');let cs=$(\'col_sizes\').get(\'value\');if(cs!=\'\'){eval(\'n=\'+cs+\';\');if(n!=c){$(\'col_sizes\').addClass(\'softwarn\');return false;}};setUploadForm(\'upload\', \'img_h|img_v\', \'topic\', \''.BASE_URL.'sections/index/'.$id_area.'/'.$id_page.'\');"').'</div>';
-
-		$view->js = '
-<script>
-var picker1 = new JSColor("#bgcolor");
-var picker2 = new JSColor("#fgcolor");
-'.implode(NL, $js_array).'
-
-window.addEvent("domready", function()
-{
-	var myScroll = new Scrollable($("scrolled"));
-    saccordion("accordion", "#accordion h4", "#accordion .section");
-
-	X3.single_upload("editor", "img_h");
-	X3.single_upload("editor", "img_v");
-
-    $("col_sizes").addEvent("keyup", function(e){
-		e.stop();
-		this.removeClass("softwarn");
-	});
-});
-</script>';
-
-		$view->render(TRUE);
+		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', 'enctype="multipart/form-data"',
+            '@click="submitForm(\'editor\')"');
+        $view->render(TRUE);
 	}
 
 	/**
@@ -281,7 +258,6 @@ window.addEvent("domready", function()
 
 			// used only with files
 			$error = array();
-
 			$mod = new Section_model();
 
             // get the previuos
@@ -310,108 +286,108 @@ window.addEvent("domready", function()
             }
 
 			// get data for settings
-			if (!$_post['locked'])
-			{
-				$settings = array(
-					'locked' => $_post['locked'],
-					'columns' => $_post['columns'],
-                    'col_sizes' => $_post['col_sizes'],
-					'bgcolor' => $_post['bgcolor'],
-					'fgcolor' => $_post['fgcolor'],
-					'width' => $_post['width'],
-					'height' => $_post['height'],
-					'class' => $_post['class'],
-				);
+            $settings = array(
+                'columns' => $_post['columns'],
+                'col_sizes' => $_post['col_sizes'],
+                'bgcolor' => $_post['bgcolor'],
+                'fgcolor' => $_post['fgcolor'],
+                'width' => $_post['width'],
+                'height' => $_post['height'],
+                'class' => $_post['classx'],
+            );
 
-                // col_sizes
-                if (empty($settings['col_sizes']))
+            // col_sizes
+            if (empty($settings['col_sizes']))
+            {
+                $cs = array_fill(0, $settings['columns'], '1');
+                $settings['col_sizes'] = implode('+', $cs);
+            }
+
+            // handle column settings
+            $nc = sizeof(explode('+', $settings['col_sizes']));
+            $tmp = array();
+            for ($i = 0; $i < $nc; $i++)
+            {
+                if (isset($_post['bg'.$i]))
                 {
-                    $cs = array_fill(0, $settings['columns'], '1');
-                    $settings['col_sizes'] = implode('+', $cs);
+                    // store data
+                    $tmp['bg'.$i] = isset($_post['bg'.$i.'_reset'])
+                        ? ''
+                        : $_post['bg'.$i];
+                    $tmp['fg'.$i] = isset($_post['fg'.$i.'_reset'])
+                        ? ''
+                        : $_post['fg'.$i];
+                    $tmp['class'.$i] = $_post['class'.$i];
                 }
+            }
+            $settings['col_settings'] = $tmp;
 
-                // handle column settings
-                $nc = sizeof(explode('+', $settings['col_sizes']));
-                $tmp = array();
-                for ($i = 0; $i < $nc; $i++)
+            // check for default colors
+            if (empty($settings['bgcolor']) || isset($_post['bgcolor_default']))
+            {
+                $settings['bgcolor'] = 'default';
+            }
+
+            if (empty($settings['fgcolor']) || isset($_post['fgcolor_default']))
+            {
+                $settings['fgcolor'] = 'default';
+            }
+
+            // there are files?
+            $w4k = 3840;
+            $h4k = 2160;
+
+            $path = APATH.'files/'.SPREFIX.'/filemanager/';
+            $sizes = array($w4k, $h4k, 'RESIZE', $w4k, $h4k);
+            $mimes = array('image/jpeg', 'image/pjpeg', 'image/png', 'image/x-png');
+
+            // delete previous
+            if (isset($_post['delete_img_h']))
+            {
+                if (!empty($settings['img_h'])) unlink($path.'img/'.$settings['img_h']);
+                $settings['img_h'] = '';
+            }
+
+            // handle img_h
+            if (!empty($_FILES['img_h']['name']))
+            {
+                // upload file
+                $filename = X4Files_helper::upload('img_h', $path, '', 0, $sizes, $mimes);
+
+                // check for errors
+                if (!is_array($filename))
                 {
-                    if (isset($_post['bg'.$i]))
-                    {
-                        // store data
-                        $tmp['bg'.$i] = $_post['bg'.$i];
-                        $tmp['fg'.$i] = $_post['fg'.$i];
-                        $tmp['class'.$i] = $_post['class'.$i];
-                    }
+                    $settings['img_h'] = $filename;
                 }
-                $settings['col_settings'] = $tmp;
+                else
+                {
+                    $error = array_merge($error, $filename[0]);
+                }
+            }
 
-				// check for default colors
-				if (empty($settings['bgcolor']) || isset($_post['bgcolor_default']))
-				{
-					$settings['bgcolor'] = 'default';
-				}
+            // delete previous
+            if (isset($_post['delete_img_v']))
+            {
+                if (!empty($settings['img_v'])) unlink($path.'img/'.$settings['img_v']);
+                $settings['img_v'] = '';
+            }
 
-				if (empty($settings['fgcolor']) || isset($_post['fgcolor_default']))
-				{
-					$settings['fgcolor'] = 'default';
-				}
+            if (!empty($_FILES['img_v']['name']))
+            {
+                // upload file
+                $filename = X4Files_helper::upload('img_v', $path, '', 0, $sizes, $mimes);
 
-				// there are files?
-				$w4k = 3840;
-				$h4k = 2160;
-
-				$path = APATH.'files/'.SPREFIX.'/filemanager/';
-				$sizes = array($w4k, $h4k, 'RESIZE', $w4k, $h4k);
-				$mimes = array('image/jpeg', 'image/pjpeg', 'image/png', 'image/x-png');
-
-				// delete previous
-				if (isset($_post['delete_img_h']))
-				{
-					if (!empty($settings['img_h'])) unlink($path.'img/'.$settings['img_h']);
-					$settings['img_h'] = '';
-				}
-
-				// handle img_h
-				if (!empty($_FILES['img_h']['name']))
-				{
-					// upload file
-					$filename = X4Files_helper::upload('img_h', $path, '', 0, $sizes, $mimes);
-
-					// check for errors
-					if (!is_array($filename))
-					{
-						$settings['img_h'] = $filename;
-					}
-					else
-					{
-						$error = array_merge($error, $filename[0]);
-					}
-				}
-
-				// delete previous
-				if (isset($_post['delete_img_v']))
-				{
-					if (!empty($settings['img_v'])) unlink($path.'img/'.$settings['img_v']);
-					$settings['img_v'] = '';
-				}
-
-				if (!empty($_FILES['img_v']['name']))
-				{
-					// upload file
-					$filename = X4Files_helper::upload('img_v', $path, '', 0, $sizes, $mimes);
-
-					// check for errors
-					if (!is_array($filename))
-					{
-						$settings['img_v'] = $filename;
-					}
-					else
-					{
-						$error = array_merge($error, $filename[0]);
-					}
-				}
-				$post['settings'] = json_encode($settings);
-			}
+                // check for errors
+                if (!is_array($filename))
+                {
+                    $settings['img_v'] = $filename;
+                }
+                else
+                {
+                    $error = array_merge($error, $filename[0]);
+                }
+            }
+            $post['settings'] = json_encode($settings);
 
 			if (empty($error))
 			{
@@ -436,10 +412,9 @@ window.addEvent("domready", function()
 				// set what update
 				if ($result[1])
 				{
-					$msg->update[] = array(
-						'element' => 'topic',
-						'url' => BASE_URL.'sections/index/'.$post['id_area'].'/'.$post['id_page'],
-						'title' => null
+					$msg->update = array(
+						'element' => 'page',
+						'url' => BASE_URL.'sections/index/'.$post['id_area'].'/'.$post['id_page']
 					);
 				}
 			}
@@ -472,7 +447,7 @@ window.addEvent("domready", function()
 	{
 		// get object
 		$mod = new Section_model();
-		$obj = $mod->get_by_id($id, 'sections', 'id_area, name, progressive, id_page');
+		$item = $mod->get_by_id($id, 'sections', 'id, id_area, name, progressive, id_page');
 
 		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'sections'));
@@ -489,18 +464,19 @@ window.addEvent("domready", function()
 		// if submitted
 		if (X4Route_core::$post)
 		{
-			$this->deleting($id, $obj);
+			$this->deleting($item);
 			die;
 		}
-
+        $view = new X4View_core('modal');
+        $view->title = _SECTION_DELETE;
 		// contents
-		$view = new X4View_core('delete');
-		$view->title = _SECTION_DELETE;
-		$view->item = '#'.$obj->progressive.' - '.$obj->name;
+		$view->content = new X4View_core('delete');
+
+		$view->content->item = '#'.$item->progressive.' - '.$item->name;
 
 		// form builder
-		$view->form = X4Form_helper::doform('delete', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
-			'onclick="setForm(\'delete\');"');
+		$view->content->form = X4Form_helper::doform('delete', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
+            '@click="submitForm(\'delete\')"');
 		$view->render(TRUE);
 	}
 
@@ -508,21 +484,20 @@ window.addEvent("domready", function()
 	 * Delete section
 	 *
 	 * @access	private
-	 * @param   integer     $id Section ID
-	 * @param   stdClass	$obj Section Obj
+	 * @param   stdClass	$item Section Obj
 	 * @return  void
 	 */
-	private function deleting(int $id, stdClass $obj)
+	private function deleting(stdClass $item)
 	{
 		$msg = null;
 		// check permissions
-		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'sections', $id, 4);
+		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'sections', $item->id, 4);
 
 		if (is_null($msg))
 		{
 			// do action
 			$mod = new Section_model();
-			$result = $mod->delete($id);
+			$result = $mod->delete($item->id);
 
 			// set message
 			$msg = AdmUtils_helper::set_msg($result);
@@ -531,13 +506,12 @@ window.addEvent("domready", function()
 			if ($result[1])
             {
 				$perm = new Permission_model();
-				$perm->deleting_by_what('sections', $id);
+				$perm->deleting_by_what('sections', $item->id);
 
 				// set what update
-				$msg->update[] = array(
-					'element' => 'topic',
-					'url' => BASE_URL.'sections/index/'.$obj->id_area.'/'.$obj->id_page,
-					'title' => null
+				$msg->update = array(
+					'element' => 'page',
+					'url' => $_SERVER['HTTP_REFERER']
 				);
 			}
 		}
@@ -553,17 +527,16 @@ window.addEvent("domready", function()
 	public function ordering(int $id_page)
 	{
 		$msg = null;
-		if (is_null($msg) && X4Route_core::$post)
+        $msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], '_section_creation', 0, 4);
+		if (is_null($msg) && X4Route_core::$input)
 		{
+            // handle post
+            $_post = X4Route_core::$input;
+			$elements = $_post['sort_order'];
+
+            // do action
 		    $mod = new Section_model();
-
-			// handle post
-			if (isset($_POST['sort_order']))
-			{
-			    $elements = explode(',', '0,'.$_POST['sort_order']);
-			}
-
-			$items = $mod->get_items($id_page);
+            $items = $mod->get_items($id_page);
 
 			// get fixed sections
 			$n = $mod->get_template_data($id_page, 'sections');
@@ -573,11 +546,11 @@ window.addEvent("domready", function()
 			{
 				foreach ($items as $i)
 				{
-					$p = array_search($i->id, $elements);
-					if ($i->progressive > $n && $i->progressive != $p+$n)
+					$p = array_search($i->id, $elements) + 1;
+                    if ($i->progressive > $n && $i->progressive != $p+$n)
 					{
 						$res = $mod->update($i->id, array('progressive' => $p+$n));
-						if ($result[1] == 1)
+						if ($res[1])
 						{
 							$result = $res;
 						}
@@ -606,28 +579,29 @@ window.addEvent("domready", function()
 
 		// get object
 		$mod = new Page_model(2, X4Route_core::$lang);
-		$page_to_edit = $mod->get_page_by_id($id_page);
+        // page to edit
+		$epage = $mod->get_page_by_id($id_page);
 
 		// get page
 		$page = $this->get_page('sections/compose');
-		$navbar = array($this->site->get_bredcrumb($page), array('pages' => 'index/'.$page_to_edit->id_area.'/'.$page_to_edit->lang));
+
+        $view = new X4View_core('page');
+        $view->breadcrumb = array($this->site->get_bredcrumb($page));
+		$view->actions = $this->actions($epage->id_area, $epage->lang, $id_page, 'compose');
 
 		// content
-		$view = new X4View_core('left');
+		$view->content = new X4View_core('sections/compose');
+		$view->content->pagetoedit = $epage;
 
-		// left
-		$view->left = new X4View_core('sections/compose');
-		$view->left->navbar = $navbar;
-		$view->left->pagetoedit = $page_to_edit;
 		$smod = new Section_model();
-		$view->left->mod = $smod;
+		$view->content->mod = $smod;
 
 		// get contexts
-		$view->left->dict = $this->dict;
-		$view->left->codes = $smod->get_contexts($page_to_edit->id_area, $page_to_edit->lang);
+		$view->content->dict = $this->dict;
+		$view->content->codes = $smod->get_contexts($epage->id_area, $epage->lang);
 
 		// get articles in area/language
-		$view->left->articles = $smod->get_articles_to_publish($page_to_edit, $by);
+		$view->content->articles = $smod->get_articles_to_publish($epage, $by);
 
 		// get sections
 		$sections = $smod->get_sections($id_page);
@@ -636,119 +610,70 @@ window.addEvent("domready", function()
 		    // initialize
 		    //$n = $smod->count_default_sections($id_page);
 		    // create default sections
-			$smod->initialize($page_to_edit->id_area, $id_page);
+			$smod->initialize($epage->id_area, $id_page);
 		    $sections = $smod->get_sections($id_page);
 		}
-		$view->left->sections = $sections;
-		$view->left->referer = urlencode('sections/compose/'.$id_page);
+		$view->content->sections = $sections;
+		$view->content->referer = urlencode('sections/compose/'.$id_page);
 
 		// template image
-		$theme = $mod->get_theme($page_to_edit->id_area);
-		$view->left->layout = (file_exists(PATH.'themes/'.$theme->name.'/img/'.$page_to_edit->tpl.'.png'))
-			? ROOT.'themes/'.$theme->name.'/img/'.$page_to_edit->tpl.'.png'
+		$theme = $mod->get_theme($epage->id_area);
+		$view->content->layout = (file_exists(PATH.'themes/'.$theme->name.'/img/'.$epage->tpl.'.png'))
+			? ROOT.'themes/'.$theme->name.'/img/'.$epage->tpl.'.png'
 			: '';
 
 		$view->render(TRUE);
 	}
 
-    /**
-     * Initialize sections
-     *
-     * @param integer   $id_page
-     * @return array    Array of objects
-     * /
-    private function initialize($method, $id_page)
-    {
-        //$items = $mod->get_items($id_page);
-
-		$n = $mod->count_default_sections($id_page);
-		if ($n != $tpl_sections)
-		{
-			// create default sections
-			$mod->initialize($id_area, $id_page);
-
-			$items = $mod->get_items($id_page);
-		}
-    }
-    */
-
 	/**
-	 * Update article settings (context and Page ID) and return article
-	 * Called via Ajax
+	 * Get article to show in composer
 	 * During composition of page contents, user drag and drop articles from context list to page sections and vice versa
-	 * When an article move from contexts to sections the system calls this method
+	 * When an article move the system calls this method
 	 *
-	 * @param   integer $id_area Area ID
-	 * @param   string  $lang Language code
 	 * @param   integer $id_page Page ID
+     * @param   string  $destination (section-[progessive] or context-[draft|pages|multi])
 	 * @param   string  $bid, article unique ID
 	 * @return  string
 	 */
-	public function get_article(int $id_area, string $lang, int $id_page, string $bid)
+	public function get_article(int $id_page, string $destination, string $bid)
 	{
 		// load dictionary
 		$this->dict->get_wordarray(array('articles'));
 
 		// get object
 		$mod = new Section_model();
-		$art = $mod->get_by_bid($id_area, $lang, $bid);
+		$art = $mod->get_by_bid($bid);
 
-		// set context and id page
-		$this->recode_article($id_area, $lang, 'pages', $bid, $id_page);
+        // page
+        $page = $mod->get_by_id($id_page, 'pages', 'id_area, lang');
 
-		// plugin info
-		$m = (empty($art->module))
-			? _TRAIT_
-			: $art->module;
+        // target
+        $target = explode('-', $destination);
+        if ($target[0] == 'context')
+        {
+            // moved to context
+            echo '<strong>'.stripslashes($art->name).'</strong>';
+        }
+        else
+        {
+            // moved to section
+            // plugin info
+            $m = (empty($art->module))
+                ? _TRAIT_
+                : $art->module;
 
-		// parameter info
-		$p = (empty($art->param))
-			? _TRAIT_
-			: $art->param;
+            // parameter info
+            $p = (empty($art->param))
+                ? _TRAIT_
+                : $art->param;
 
-		// return article
-		echo '<div class="sbox"><b>'.stripslashes($art->name).'</b>'._TRAIT_.'<a class="btm" href="'.BASE_URL.'articles/edit/'.$id_area.'/'.$lang.'/'.$art->code_context.'/'.$art->bid.'" title="'._EDIT.'">'._EDIT.'</a></div>
-			'.$art->content.'
-			<div class="tbox">'._MODULE.': '.$m.'&nbsp;&nbsp;|&nbsp;&nbsp;'._PARAM.': '.$p.'</div>';
-	}
-
-	/**
-	 * Recode an article, set context code and page ID
-	 * This method is called from get_article and via Ajax
-	 *
-	 * @param   integer $id_area Area ID
-	 * @param   string  $lang Language code
-	 * @param   string  $holder context name
-	 * @param   string  $bid, article unique ID
-	 * @param   integer $id_page Page ID
-	 * @return  void
-	 */
-	public function recode_article(int $id_area, string $lang, string $holder, string $bid, int $id_page = 0)
-	{
-		// set context and id_page
-		$mod = new Section_model();
-		$mod->recode($id_area, $lang, $holder, $bid, $id_page);
-	}
-
-	/**
-	 * Return article's title
-	 * Called via Ajax
-	 * During composition of page contents, user drag and drop articles from context list to page sections and vice versa
-	 * When an article move from sections to contexts the system calls this method
-	 *
-	 * @param   integer $id_area Area ID
-	 * @param   string  $lang Language code
-	 * @param   string  $bid, article unique ID
-	 * @return  string
-	 */
-	public function get_title(int $id_area, string $lang, string $bid)
-	{
-		// get article object
-		$mod = new Section_model();
-		$art = $mod->get_by_bid($id_area, $lang, $bid);
-
-		// return article's title
-		echo '<strong>'.stripslashes($art->name).'</strong>';
+            // return article
+            echo '<div class="relative h-full pb-16">
+                <div class="border-b border-gray-200"><b>'.stripslashes($art->name).'</b>'._TRAIT_.'<a class="link" @click="pager(\''.BASE_URL.'articles/edit/'.$page->id_area.'/'.$page->lang.'/'.$art->code_context.'/'.$art->bid.'\')" title="'._EDIT.'">'._EDIT.'</a></div>
+                '.stripslashes($art->content).'
+                <div class="absolute bottom-0 w-full border-t border-gray-200 space-x-6"><span>'._MODULE.': '.$m.'</span><span>'._PARAM.': '.$p.'</span></div>
+            </div>';
+        }
 	}
 
 	/**
@@ -765,7 +690,7 @@ window.addEvent("domready", function()
 		// check permission
 		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'pages', $_POST['id_page'], 3);
 
-		if (is_null($msg))
+		if (is_null($msg) && X4Route_core::$post)
 		{
 			// handle _POST
 			$sections = array();
@@ -775,32 +700,40 @@ window.addEvent("domready", function()
 				'xon' => 1
 			);
 
+            $mod = new Section_model();
+
 			// handle _POST for each section
-			for($i = 1; $i <= $_POST['snum']; $i++)
+			for ($i = 1; $i <= $_POST['snum']; $i++)
 			{
-				$sort = $_POST['sort'.$i];
-				$post['progressive'] = $i;
+                $post['progressive'] = $i;
+                // json_encoded array of bids
+				$sort = $_POST['sort-'.$i];
+
 			    // disable strange behaviour
 			    if (strlen($sort) >= 32)
 			    {
-                    // delete first comma
-                    $articles = (substr($sort, 0, 1) == ',')
-                        ? substr($_POST['sort'.$i], 1)
-                        : $_POST['sort'.$i];
-
-                    $post['articles'] = str_replace(',', '|', $articles);
+                    $post['articles'] = $sort;
                     $sections[] = $post;
-				}
+                    // update draft
+                    $artts = json_decode($sort);
+                    foreach ($artts as $bid)
+                    {
+                        $art = $mod->get_by_bid($bid);
+                        if (!$art->code_context)
+                        {
+                            $mod->recode($post['id_area'], 'pages', $bid, $post['id_page']);
+                        }
+                    }
+                }
 				else
 				{
 					// empty sections
-					$post['articles'] = '';
+					$post['articles'] = json_encode([]);
 					$sections[] = $post;
 				}
 			}
 
 			// register composition
-			$mod = new Section_model();
 			$result = $mod->compose($sections);
 			APC && apcu_delete(SITE.'sections'.$post['id_page']);
 
@@ -811,10 +744,9 @@ window.addEvent("domready", function()
 			// add permissions on new sections
 			if ($result[1])
 			{
-				$msg->update[] = array(
-					'element' => 'topic',
-					'url' => BASE_URL.'sections/compose/'.$post['id_page'],
-					'title' => null
+				$msg->update = array(
+					'element' => 'page',
+					'url' => BASE_URL.'sections/compose/'.$post['id_page']
 				);
 			}
 		}

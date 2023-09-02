@@ -4,11 +4,11 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
 
-$msg = (empty($msg)) 
+$msg = (empty($msg))
 	? 'An error occurred'
 	: $msg;
 ?>

@@ -4,67 +4,190 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
 
-// draggable item
-$drag = array();
-// sortable item
-$sort = array();
+// page compose view
+
+// x-data for page composer
+$page_composer = '{
+    pageId: 0,
+    cols: {},
+    changes: false,
+    setup(pageId, containers, cols) {
+        this.pageId = pageId;
+        this.cols = cols;
+        let elements = [];
+        containers.forEach(function(value) {
+            elements.push(document.getElementById(value));
+        });
+        // for reference inside dragula
+        let obj = this;
+        // set drag
+        dragula(elements, {
+            revertOnSpill: true,
+            invalid: function (el, handle) {
+                if (el.classList.contains("listitem")) {
+                    return false;
+                }
+                return el.tagName !== "DIV";
+            },
+            moves: function (el) {
+                if (el.classList.contains("nodrag")) {
+                    return false;
+                }
+                return true;
+            }
+        })
+        .on("drop", function (el, target, source, sibling) {
+            var bid = el.id;
+
+            // update article
+            obj.updateArticle(bid, target.id);
+
+            var targetId = target["id"].split("-");
+            var sourceId = source["id"].split("-");
+
+            if (sourceId[0] == "context") {
+                // update context counter
+                let event = new CustomEvent("compose"+sourceId[1], {detail: source.id});
+                window.dispatchEvent(event);
+            } else {
+                // update order in previous section
+                obj.updateSort(sourceId[1], bid, 0);
+            }
+
+            if (targetId[0] == "context") {
+                // update context counter
+                let event = new CustomEvent("compose"+targetId[1], {detail: target.id});
+                window.dispatchEvent(event);
+            } else {
+                // update order
+                obj.updateSort(targetId[1], bid, sibling);
+                // warn for unsaved changes
+                obj.changes = true;
+            }
+        });
+    },
+    updateSort(progressive, bid, sibling) {
+        // get previous order
+        let tmp = document.getElementById("sort-"+progressive).value;
+        //console.log(tmp);
+        let sort = (tmp == "")
+            ? []
+            : JSON.parse(tmp);
+        let index;
+        switch (sibling)
+        {
+            case 0:
+                // we have to remove bid from sort
+                index = sort.indexOf(bid);
+                sort.splice(index, 1);
+                break;
+            case null:
+                // we have to add at the end of sort
+                sort.push(bid);
+                break;
+            default:
+                // we have to insert before sibling.id
+                index = sort.indexOf(sibling.id);
+                sort.splice(index, 0, bid);
+                break;
+        }
+        // update
+        document.getElementById("sort-"+progressive).value = JSON.stringify(sort);
+        this.updateSize(progressive, sort);
+    },
+    updateArticle(bid, container) {
+        document.getElementById(bid).classList.remove("softwarn");
+        fetch(root+"sections/get_article/"+this.pageId+"/"+container+"/"+bid, {
+            method: "GET",
+            headers: { "Content-Type": "text/html" }
+        })
+        .then(res => res.text())
+        .then(txt => {
+            document.getElementById(bid).innerHTML = txt;
+        })
+        .catch(() => {
+            document.getElementById(bid).classList.add("softwarn");
+        });
+    },
+    updateSize(progressive, sort) {
+        let sizes = this.cols["section-"+progressive].split("+");
+        let n = sizes.length;
+        for (var i = 0; i < sort.length; i++) {
+            // reset
+            let bid = sort[i];
+            document.getElementById(bid).classList.remove("md:col-span-2", "md:col-span-3", "md:col-span-4", "md:col-span-5", "md:col-span-6");
+            let pos = i % n;
+            if (sizes[pos] > 1) {
+                document.getElementById(bid).classList.add("md:col-span-"+sizes[pos]);
+            }
+        }
+    }
+}';
+// x-data for context accordions
+$context_accordion = '{
+    open: false,
+    count: 0,
+    setup(id) {
+        this.count = "("+document.querySelectorAll("#"+id+" .listitem").length+")";
+    },
+    update(id) {
+        this.count = "("+document.querySelectorAll("#"+id+" .listitem").length+")";
+    }
+}';
+
+// to setup pageComposer Alpine componenet
+// containers
+$containers = array();
+// columns subdivision
+$sizes = array();
+
+// sections
+$left = '';
+// contexts with articles
+$right = '';
+
+// to store articles order in each section
+$artts = array();
+// to hide already in the page
+$published = array();
 
 // SECTIONS
-$ltmp = $rtmp = '';
-$published = array();
-$artts = array();
-
-$cols = array(
-	1 => 'w100',
-	2 => 'w50',
-	3 => 'w33',
-	4 => 'w25',
-	5 => 'w20'
-);
-
-$subs = array(
-    11 => 'w100',
-    12 => 'w50',
-    21 => 'w50',
-    31 => 'w33',
-    32 => 'w66',
-    41 => 'w25',
-    42 => 'w50',
-    43 => 'w75',
-    51 => 'w20',
-    52 => 'w40',
-    53 => 'w60',
-    54 => 'w80',
-);
-
 foreach ($sections as $i)
 {
 	// get settings
 	$settings = json_decode($i->settings, true);
 
-	$sorter = array();
-	$ltmp .= '<h4>'._SECTION.' '.$i->progressive.': '.$i->name.'</h4>';
+    // handle cols subdivision
+    $csizes = isset($settings['col_sizes'])
+        ? explode('+', $settings['col_sizes'])
+        : array_fill(0, $settings['columns'], 1);
+    // this is the real number of columns with subdivion
+    $nc = sizeof($csizes);
 
-	if ($settings['locked'] == 0)
+    $edit = '';
+    if ($_SESSION['level'] >= 3)
 	{
 		// you can edit settings
-		$ltmp .= ' <a class="bta" href="'.BASE_URL.'sections/edit/'.$pagetoedit->id_area.'/'.$pagetoedit->id.'/'.$i->id.'" title="'._EDIT.'"><i class="fas fa-pencil-alt fa-lg"></i></a>';
+		$edit = ' <a class="link" @click="popup(\''.BASE_URL.'sections/edit/'.$pagetoedit->id_area.'/'.$pagetoedit->id.'/'.$i->id.'\')" title="'._EDIT.'">
+            <i class="fa-solid fa-pen-to-square"></i>
+        </a> ';
 	}
+    // section title
+	$left .= '<h4 class="mt-4">'.$edit._SECTION.' '.$i->progressive.': '.$i->name.' <span class="text-xs">('.$settings['columns'].'/'.$settings['col_sizes'].')</span></h4>';
 
-	// resize section
-    /*
-	$width = ($settings['width'] == 'fullwidth')
-		? ''
-		: ' style="width:'.$settings['width'].'%"';
-    */
-	$sort[$i->progressive] = '#section'.$i->progressive;
-	$ltmp .= '<ul id="section'.$i->progressive.'" class="cdroppable clearfix">';    //'.$width.'
-	$artts[$i->progressive] = [];
+    // add container and section size for Alpine
+	$containers[] = 'section-'.$i->progressive;
+    $sizes['section-'.$i->progressive] = $settings['col_sizes'];
 
+	$left .= '<div id="section-'.$i->progressive.'" class="grid grid-cols-'.$settings['columns'].' gap-2 p-2 border-2 border-color-gray-500 rounded">';
+
+    $artts[$i->progressive] = [];
+
+    // ad articles
 	if (isset($i->articles) && !empty($i->articles))
 	{
 		$artt = $mod->get_articles($pagetoedit->id_area, $pagetoedit->lang, $i->articles);
@@ -72,21 +195,6 @@ foreach ($sections as $i)
 		// if there are articles
 		if ($artt)
 		{
-            // handle subdivision
-            $csizes = isset($settings['col_sizes'])
-                ? explode('+', $settings['col_sizes'])
-                : array_fill(0, $settings['columns'], 1);
-            // this is the real number of columns with subdivion
-            $nc = sizeof($csizes);
-
-			// get fake number of column
-			$ncol = $settings['columns'];
-            // if we have less articles than columns we reset columns to number of articles
-			if ($ncol > 1 && sizeof($artt) < $nc)
-            {
-                $ncol = sizeof($artt);
-            }
-
 			// article counter
 			$c = 0;
 			foreach ($artt as $ii)
@@ -100,23 +208,13 @@ foreach ($sections as $i)
 					? _TRAIT_
 					: $ii->param;
 
-				// simple case: fake and real number of columns are equal
-                if ($ncol == $nc)
-				{
-					// we define col size equal for all
-					$col = $cols[$ncol];
-				}
-                else
-                {
-                    // in most complex case we have subs
-                    // we need index for csizes
-                    $ci = ($c < ($nc - 1))
-                        ? $c            // we are in article less than real columns
-                        : $c % $nc;     // we are in article equal or greater than real columns
-
-                    // we build the subs index to get the CSS class for width
-                    $col = $subs[$ncol.''.$csizes[$ci]];
-                }
+                // in most complex case we have subs
+                // get the column we are in
+                $ci = $c % $nc;
+                // get the span to use
+                $col = ($csizes[$ci] > 1)
+                    ? 'md:col-span-'.$csizes[$ci]
+                    : '';
 
                 // handle colors
                 $style = '';
@@ -134,25 +232,23 @@ foreach ($sections as $i)
                 }
 
                 // DEBUG
-				$ltmp .= '<li class="listitem '.$col.'" id="'.$ii->bid.'" style="'.$style.'">
-                    <div class="padded">
-                        <div class="sbox"><b>'.stripslashes($ii->name).'</b>'._TRAIT_.'<a class="btt" href="'.BASE_URL.'articles/edit/'.$pagetoedit->id_area.'/'.$pagetoedit->lang.'/'.$ii->code_context.'/'.$ii->bid.'" title="'._EDIT.'">'._EDIT.'</a></div>
+				$left .= '<div class="listitem '.$col.' rounded py-2 px-4 bg-gray-100 cursor-move" id="'.$ii->bid.'" style="'.$style.'">
+                    <div class="relative h-full pb-16">
+                        <div class="border-b border-gray-200"><b>'.stripslashes($ii->name).'</b>'._TRAIT_.'<a class="link" @click="pager(\''.BASE_URL.'articles/edit/'.$pagetoedit->id_area.'/'.$pagetoedit->lang.'/'.$ii->code_context.'/'.$ii->bid.'\')" title="'._EDIT.'">'._EDIT.'</a></div>
                         '.stripslashes($ii->content).'
-                        <div class="tbox">'._MODULE.': '.$m.'&nbsp;&nbsp;|&nbsp;&nbsp;'._PARAM.': '.$p.'</div>
+                        <div class="absolute bottom-0 w-full border-t border-gray-200 space-x-6"><span>'._MODULE.': '.$m.'</span><span>'._PARAM.': '.$p.'</span></div>
                     </div>
-					</li>';
+				</div>';
+
+                $artts[$i->progressive][] = $ii->bid;
 				$c++;
 			}
 		}
-		$artts[$i->progressive] = $i->articles;
 	}
 
-    $progressive = is_array($artts[$i->progressive])
-        ? implode(',', $artts[$i->progressive])
-        : $artts[$i->progressive];
-
-	$ltmp .= '</ul>
-		<input type="hidden" name="sort'.$i->progressive.'" id="sort'.$i->progressive.'" value="'.$progressive.'"  />';
+    // here we store order
+	$left .= '</div>
+		<input type="hidden" name="sort-'.$i->progressive.'" id="sort-'.$i->progressive.'" value=\''.json_encode($artts[$i->progressive]).'\'  />';
 }
 
 // ARTICLES by context code
@@ -164,8 +260,9 @@ foreach ($codes as $i)
 		? constant($const)
 		: $dict->get_word($const, 'articles', $pagetoedit->lang);
 
-	$rtmp .= '<h4 class="context">'.$context.'</h4><ul id="'.$i->xkey.'" class="section cartts">';
-	$drag[] = '#'.$i->xkey;
+    $containers[] = 'context-'.$i->xkey;
+
+    $tmp = [];
 	foreach ($articles as $ii)
 	{
 		if($ii->code_context == $i->code)
@@ -174,22 +271,32 @@ foreach ($codes as $i)
 			// only if no published
 			if (!in_array($a->bid, $published))
 			{
-				$rtmp .= '<li class="listitem" id="'.$a->bid.'"><strong>'.stripslashes($a->name).'</strong></li>';
+				$tmp[] = '<div class="listitem rounded py-2 px-4 bg-gray-100 cursor-move" id="'.$a->bid.'"><strong>'.stripslashes($a->name).'</strong></div>';
 			}
 		}
 	}
-	$rtmp .= '<li class="listdrop">'._DROP_HERE.'</li></ul>';
+    $tmp[] = '<div class="nodrag py-2 px-4">'._DROP_HERE.'</div>';
+
+    $n = sizeof($tmp);
+    $right .= '<div
+                x-data=\''.$context_accordion.'\'
+                x-init="setup(\'context-'.$i->xkey.'\')"
+                x-on:compose-'.$i->xkey.'.window="update($event.detail)"
+            >
+            <button @click="open = !open" class="cursor-pointer bg2 rounded flex items-center justify-between w-full py-2 px-4 text-left select-none mb-1">'.$context.' <span class="text-sm" x-text="count"></span></button>
+            <div id="context-'.$i->xkey.'" x-show="open" class="grid grid-cols-1 gap-y-1" x-cloak>
+                '.implode('', $tmp).'
+            </div>
+        </div>';
 }
 ?>
+<div x-data='<?php echo $page_composer ?>' x-init='setup(<?php echo $pagetoedit->id ?>, <?php echo json_encode($containers) ?>, <?php echo json_encode($sizes) ?>)' class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
 
-<div class="band inner-pad clearfix">
-
-	<div class="two-third sm-one-half">
-		<h1><span class="sm-hidden"><?php echo _COMPOSE_EDITOR.' </span><a class="btt" href="'.BASE_URL.'pages/index/'.$pagetoedit->id_area.'/'.$pagetoedit->lang.'/'.$pagetoedit->xfrom.'/1" title="">'.$pagetoedit->name.'</a>'._TRAIT_.$pagetoedit->area.'/'.$pagetoedit->lang ?></h1>
-		<h2><?php echo _SECTIONS ?>&nbsp;<span id="alert_box" class="error"></span></h2>
+	<div class="md:col-span-2 lg:col-span-3">
+		<h1><span class="hidden md:inline-block"><?php echo _COMPOSE_EDITOR.' </span> <a class="link" @click="pager(\''.BASE_URL.'pages/index/'.$pagetoedit->id_area.'/'.$pagetoedit->lang.'/'.$pagetoedit->xfrom.'/1\')" title="">'.$pagetoedit->name.'</a>'._TRAIT_.$pagetoedit->area.'/'.$pagetoedit->lang ?></h1>
+		<h2><?php echo _SECTIONS ?><span class="warn" x-show="changes"><?php echo _TRAIT_._UNSAVED_CHANGES ?></span></h2>
 		<p><?php echo _SECTIONS_MSG ?></p>
 
-		<div id="droppable">
 <?php
 
 	echo '<form id="compose" action="'.BASE_URL.'sections/compositing" method="post" onsubmit="return false">
@@ -198,113 +305,28 @@ foreach ($codes as $i)
 			<input type="hidden" name="id_page" id="id_page" value="'.$pagetoedit->id.'" />
 			<input type="hidden" name="snum" id="snum" value="'.sizeof($sections).'" />';
 
-	echo $ltmp.'<div class="buttons"><button id="esopmoc" type="button" onclick="setForm(\'compose\');">'._SUBMIT.'</button></div>
+	echo $left.'<div class="buttons"><button id="esopmoc" type="button" @click="submitForm(\'compose\')">'._SUBMIT.'</button></div>
 			</form>';
 ?>
-		</div>
 	</div>
 
-	<div class="one-third sm-one-half fixed">
+	<div>
 		<h2><?php echo _ARTICLES_LIST ?></h2>
 		<p><?php echo _ARTICLES_MSG ?></p>
-		<div id="accordion">
+		<div class="mt-4">
 <?php
-	echo $rtmp;
+	echo $right;
 
 if (!empty($layout))
 {
-	echo '<h4 class="context">'._SECTIONS.'</h4><div class="section acenter pad-top"><img src="'.$layout.'" alt="layout" /></div>';
+	echo '<div x-data="{ open: false }">
+        <button @click="open = !open" class="cursor-pointer bg2 rounded flex items-center justify-between w-full py-2 px-4 text-left select-none mb-1">
+            '._SECTIONS.'
+        </button>
+        <div x-show="open" x-cloak><img src="'.$layout.'" alt="layout"  class="mt-4 mx-auto" /></div>
+    </div>';
 }
 ?>
 		</div>
 	</div>
 </div>
-
-<script src="<?php echo THEME_URL ?>js/basic.js"></script>
-<script>
-var ns = <?php echo sizeof($sections) ?>;
-window.addEvent('domready', function() {
-	buttonize("topic", "bta", "modal");
-	buttonize('topic', 'btt', 'topic', '<?php echo $referer ?>');
-
-	for (var i = 1; i <= ns; i++) {
-		equalize('ul#section'+i+' > li.listitem', 1);
-	}
-
-//get data
-var id_area = $('id_area').get('value');
-var lang = $('lang').get('value');
-var id_page = $('id_page').get('value');
-var modified = false;
-
-X3.content('filters','sections/filter/<?php echo $pagetoedit->id_area.'/'.$pagetoedit->lang.'/'.$pagetoedit->id ?>', '<?php echo X4Theme_helper::navbar($navbar, ' . ', false) ?>');
-new Fx.Accordion($('accordion'), '#accordion .context', '#accordion .section', {
-			onActive: function(toggler) { toggler.addClass("active-accordion"); },
-			onBackground: function(toggler) { toggler.removeClass("active-accordion");},
-			display:1
-		});
-
-<?php
-
-// create javascript for composition
-echo 'var sortableListsArray = ["'.implode('", "', $sort).'", "'.implode('", "', $drag).'"];
-
-var sortableLists = new Sortables(sortableListsArray, {
-	clone: true,
-	handle: ".handle",
-	revert: {duration: 50},
-	opacity: .5,
-
-	onStart: function(el){
-		//passes element you are dragging
-		//el.highlight("#aacc00");
-		var bid = el.get("id"),
-			holder = el.getParent("ul").get("id"),
-			req = new Request.HTML({
-				url: root+"sections/get_title/"+id_area+"/"+lang+"/"+bid,
-				method:"get",
-				update: el
-			}).send();
-		el.setStyle("background", "none");
-	},
-	onComplete: function(el){
-		var bid = el.get("id"),
-			holder = el.getParent("ul").get("id");
-
-		// replace content
-		if (holder.contains("section")){
-			var req = new Request.HTML({
-				url: root+"sections/get_article/"+id_area+"/"+lang+"/"+id_page+"/"+bid,
-				method:"get",
-				async:false,
-				update: el,
-				onComplete: function(ele){
-					buttonize(holder, "btt", "topic", "'.$referer.'");
-				}
-			}).send();
-			el.setStyle("background", "white");
-		} else {
-			var req = new Request({
-				url: root+"sections/recode_article/"+id_area+"/"+lang+"/"+holder+"/"+bid+"/"+id_page,
-				method:"get"
-			}).send();
-		}
-
-		if (!modified){
-			modified = true;
-			$("alert_box").set("html", "'._TRAIT_._UNSAVED_CHANGES.'");
-		}
-
-';
-// on complete
-foreach ($sort as $k => $v)
-{
-	echo 'var sect'.$k.' = sortableLists.serialize('.($k-1).');
-		$("sort'.$k.'").set("value", sect'.$k.');'.NL;
-	echo 'console.log(sect'.$k.');';
-}
-	echo '}
-	});';
-?>
-});
-</script>

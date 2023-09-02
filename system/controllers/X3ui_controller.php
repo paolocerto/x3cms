@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X4WEBAPP
  */
 
@@ -27,47 +27,15 @@ class X3ui_controller extends X4Cms_controller
 	}
 
 	/**
-     * Send an answer to the browser depending on the incoming request
-     * If the request cames from XHR, sends a JSON object as response
-     * else, check if redirect is defined and redirect
+     * Send an answer to the browser
      *
      * @param	array	Message array
-     * @param	array	Additional data to put to the answer. Optional.
      *
      */
-    public function response($msg, $addon_data = null)
+    public function response($msg)
     {
-    	/* XHR request : JSON answer
-    	 * Sends a JSON javascript object
-    	 */
-    	if ($this->is_xhr() === true)
-    	{
-			// Puts additional data to answer
-			if (!empty($addon_data))
-			{
-				$msg = array_merge($msg, $addon_data);
-			}
-			echo json_encode($msg);
-			exit();
-    	}
+    	echo json_encode($msg);
     }
-
-    /**
-	 * Returns true if this is an XMLHttpRequest (ie. Javascript).
-	 *
-	 * This requires a special header to be sent from the JS
-	 * (usually the Javascript frameworks' Ajax/XHR methods add it automatically):
-	 *
-	 * <code>
-	 * X-Requested-With: XMLHttpRequest
-	 * </code>
-	 *
-	 * @return bool
-	 */
-	private function is_xhr()
-	{
-		return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
-	}
 
 	/**
 	 * Return error message
@@ -153,7 +121,7 @@ class X3ui_controller extends X4Cms_controller
 		    // set message
 		    $msg = AdmUtils_helper::set_msg(false, $error, $error);
 
-		    $this->response($msg);
+            echo json_encode($msg);
 		}
 	}
 }

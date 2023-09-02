@@ -4,16 +4,15 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
 
-
-// close button
-echo '<div id="close-modal" title="'._CLOSE.'"><i class="fas fa-times fa-lg"></i></div>';
+// area map view
 
 ?>
-<h2><?php echo _AREA_LANG_MAP ?></h2>
+<div class="bg-white text-gray-700 md:px-8 md:pb-8 px-4 pb-4" style="border:1px solid white">
+
 <div class="small">
 <?php
 
@@ -22,11 +21,11 @@ $openul = $openli = 1;
 foreach ($map as $i)
 {
 	$ilen = strlen($i->ordinal)/4;
-	$class = '';
+	$menu = '';
 	if ($ilen > $len)
 	{
 		// change subpages
-		echo '<ul>';
+		echo '<ul style="list-style:disc">';
 		$openul++;
 	}
 	elseif ($ilen < $len)
@@ -58,12 +57,12 @@ foreach ($map as $i)
 	// menus
 	if ($ilen == 2 && $i->id_menu)
 	{
-		$class = 'class="map"';
+		$menu = '--&nbsp;';
 	}
 
 	$len = $ilen;
 	$description = stripslashes($i->description);
-	echo '<li '.$class.'><a class="btm" href="'.BASE_URL.'pages/index/'.$area->id.'/'.$i->lang.'/'.str_replace('/', '$', $i->xfrom).'" title="'.$description.'">'.stripslashes($i->name).'</a>'._TRAIT_.$description;
+	echo '<li>'.$menu.'<a class="link" @click="$dispatch(\'pager\', \''.BASE_URL.'pages/index/'.$area->id.'/'.$i->lang.'/'.str_replace('/', '$', $i->xfrom).'\');modal=false" title="'.$description.'">'.stripslashes($i->name).'</a>'._TRAIT_.$description;
 	$openli++;
 }
 
@@ -80,10 +79,4 @@ while ($openli > 0)
 
 ?>
 </div>
-<script src="<?php echo THEME_URL ?>js/basic.js"></script>
-<script>
-window.addEvent("domready", function()
-{
-	buttonize("simple-modal", 'btm', 'topic');
-});
-</script>
+</div>

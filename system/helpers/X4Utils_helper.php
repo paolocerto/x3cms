@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X4WEBAPP
  */
 
@@ -330,8 +330,9 @@ class X4Utils_helper
 	 * @param string	$from_enc original encoding
 	 * @return string
 	 */
-	public static function to7bit($text, $from_enc) {
-		$text = mb_convert_encoding($text,'HTML-ENTITIES',$from_enc);
+	public static function to7bit($text, $from_enc)
+    {
+        $text = htmlspecialchars_decode(mb_convert_encoding(htmlentities($text, ENT_COMPAT, $from_enc, false), 'UTF-8', mb_list_encodings()));
 		if (function_exists('preg_replace_callback'))
 		{
 			$text = preg_replace_callback(

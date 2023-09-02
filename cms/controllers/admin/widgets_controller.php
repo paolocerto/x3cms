@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
 
@@ -40,32 +40,28 @@ class Widgets_controller extends X3ui_controller
 		// get page
 		$page = $this->get_page('widgets');
 
-		// content
-		$view = new X4View_core('widgets/widgets_list');
-		$view->page = $page;
+		// contents
+		$view = new X4View_core('page');
+        $view->breadcrumb = array($this->site->get_bredcrumb($page));
+		$view->actions = $this->actions();
+
+		$view->content = new X4View_core('widgets/widgets_list');
+		$view->content->page = $page;
 
 		$mod = new Widget_model();
-		$view->items = $mod->get_my_widgets();
+		$view->content->items = $mod->get_my_widgets();
 		$view->render(TRUE);
 	}
 
 	/**
-	 * Widget filter
+	 * Widget actions
 	 *
+     * @access	private
 	 * @return  void
 	 */
-	public function filter()
+	private function actions()
 	{
-		// load the dictionary
-		$this->dict->get_wordarray(array('widgets'));
-
-		echo '<a class="btf" href="'.BASE_URL.'widgets/edit" title="'._WIDGETS_NEW.'"><i class="fas fa-plus fa-lg"></i></a>
-<script>
-window.addEvent("domready", function()
-{
-	buttonize("filters", "btf", "modal");
-});
-</script>';
+		return '<a class="link" @click="popup(\''.BASE_URL.'widgets/edit\')" title="'._WIDGETS_NEW.'"><i class="fa-solid fa-lg fa-circle-plus"></i></a>';
 	}
 
 	/**
@@ -100,10 +96,9 @@ window.addEvent("domready", function()
 			// set update
 			if ($result[1])
             {
-				$msg->update[] = array(
-					'element' => $qs['div'],
-					'url' => urldecode($qs['url']),
-					'title' => null
+				$msg->update = array(
+					'element' => 'page',
+					'url' => $_SERVER['HTTP_REFERER']
 				);
             }
 		}
@@ -124,13 +119,19 @@ window.addEvent("domready", function()
 		$mod = new Widget_model();
 		$items = $mod->get_available_widgets($_SESSION['xuid']);
 
-		$view = new X4View_core('editor');
+		$view = new X4View_core('modal');
 		$view->title = _WIDGETS_NEW;
 
 		if ($items)
 		{
 			// build the form
 			$fields = array();
+
+            $fields[] = array(
+                'label' => null,
+                'type' => 'html',
+                'value' => '<div class="bg-white text-gray-700 md:px-8 md:pb-8 px-4 pb-4" style="border:1px solid white">'
+            );
 
 			$fields[] = array(
 				'label' => _WIDGETS_AVAILABLE,
@@ -140,8 +141,14 @@ window.addEvent("domready", function()
 				'options' => array($items, 'id', 'what', ''),
 				'disabled' => 'wid',
 				'rule' => 'required',
-				'extra' => 'class="large"'
+				'extra' => 'class="w-full"'
 			);
+
+            $fields[] = array(
+                'label' => null,
+                'type' => 'html',
+                'value' => '</div>'
+            );
 
 			// if submitted
 			if (X4Route_core::$post)
@@ -159,15 +166,18 @@ window.addEvent("domready", function()
 			}
 
 			// contents
-			$view->msg = _WIDGETS_NEW_MSG;
+            $view->content = new X4View_core('editor');
+			$view->content->msg = _WIDGETS_NEW_MSG;
 
 			// form builder
-			$view->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
-				'onclick="setForm(\'editor\');"');
+			$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
+                '@click="submitForm(\'editor\')"');
 		}
 		else
 		{
-			$view->form = '<p>'._NO_WIDGETS_TO_SET.'</p>';
+			$view->content = '<div class="bg-white text-gray-700 md:px-8 md:pb-8 px-4 pb-4" style="border:1px solid white">
+                <p>'._NO_WIDGETS_TO_SET.'</p>
+            </div>';
 		}
 		$view->render(TRUE);
 	}
@@ -220,10 +230,9 @@ window.addEvent("domready", function()
 						'level' => 4);
 				$perm->pexec('widgets', $array, $post['id_area']);
 
-				$msg->update[] = array(
-					'element' => 'topic',
-					'url' => BASE_URL.'widgets',
-					'title' => null
+				$msg->update = array(
+					'element' => 'page',
+					'url' => BASE_URL.'widgets'
 				);
 			}
 		}
@@ -238,17 +247,18 @@ window.addEvent("domready", function()
 	public function ordering()
 	{
 		$msg = null;
-		if (X4Route_core::$post)
+		if (X4Route_core::$input)
 		{
 			// handle post
-			$elements = explode(',', $_POST['sort_order']);
+            $_post = X4Route_core::$input;
+			$elements = $_post['sort_order'];
 
 			// do action
 			$mod = new Widget_model();
 			$items = $mod->get_my_widgets();
 
 			$result = array(0, 1);
-			if ($items)
+			if ($items && !empty($elements))
 			{
 				foreach ($items as $i)
 				{
@@ -256,8 +266,10 @@ window.addEvent("domready", function()
 					if ($p && $i->xpos != $p)
 					{
 						$res = $mod->update($i->id, array('xpos' => $p), 'widgets');
-						if ($result[1] == 1)
+						if ($res[1])
+                        {
 							$result = $res;
+                        }
 					}
 				}
 			}
@@ -282,7 +294,7 @@ window.addEvent("domready", function()
 
 		// get object
 		$mod = new Widget_model();
-		$obj = $mod->get_by_id($id, 'widgets', 'name');
+		$item = $mod->get_by_id($id, 'widgets', 'description AS name');
 
 		// build the form
 		$fields = array();
@@ -299,15 +311,16 @@ window.addEvent("domready", function()
 			$this->deleting($_POST);
 			die;
 		}
-
+        $view = new X4View_core('modal');
+        $view->title = _WIDGETS_DELETE;
 		// contents
-		$view = new X4View_core('delete');
-		$view->title = _WIDGETS_DELETE;
-		$view->item = $obj->name;
+		$view->content = new X4View_core('delete');
+
+		$view->content->item = $item->name;
 
 		// form builder
-		$view->form = X4Form_helper::doform('delete', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
-			'onclick="setForm(\'delete\');"');
+		$view->content->form = X4Form_helper::doform('delete', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
+            '@click="submitForm(\'delete\')"');
 		$view->render(TRUE);
 	}
 
@@ -340,10 +353,9 @@ window.addEvent("domready", function()
 				$perm->deleting_by_what('widgets', $_post['id']);
 
 				// set what update
-				$msg->update[] = array(
-					'element' => 'topic',
-					'url' => BASE_URL.'widgets',
-					'title' => null
+				$msg->update = array(
+					'element' => 'page',
+					'url' => BASE_URL.'widgets'
 				);
 			}
 		}

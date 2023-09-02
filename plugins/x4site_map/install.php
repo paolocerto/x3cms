@@ -4,17 +4,17 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
 
 // X4site_map module installer
 
 // plugin version
-$version = '0.6';
+$version = '1.0';
 
 // compatibility
-$compatibility = '0.4.3 STABLE';
+$compatibility = '0.9.0 STABLE';
 
 // plugin name
 $mod_name = 'x4site_map';

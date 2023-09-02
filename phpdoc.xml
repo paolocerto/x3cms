@@ -13,18 +13,9 @@
     <ignore>.git/*</ignore>
     <ignore>DOCS/*</ignore>
     <ignore>system/libraries/JShrink/*</ignore>
-	<ignore>system/libraries/facebook_sdk/*</ignore>
-    <ignore>system/libraries/getID3/*</ignore>
-   	<ignore>system/libraries/google-translate/*</ignore>
-	<ignore>system/libraries/hybridauth/*</ignore>
-	<ignore>system/libraries/mcapi/*</ignore>
-	<ignore>system/libraries/mpdf60/*</ignore>
-    <ignore>system/libraries/openinviter/*</ignore>
-    <ignore>system/libraries/restler/*</ignore>
+	<ignore>system/libraries/restler/*</ignore>
     <ignore>system/libraries/simplehtmldom/*</ignore>
-    <ignore>system/libraries/spreadsheet-reader/*</ignore>        
-    <ignore>system/libraries/swiftmailer/*</ignore>
-    <ignore>system/libraries/tcpdf/*</ignore>
+    <ignore>system/libraries/spreadsheet-reader/*</ignore>
     <ignore>themes/*/css/*</ignore>
   </files>
   <logging>

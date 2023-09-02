@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
 
@@ -62,68 +62,54 @@ class Pages_controller extends X3ui_controller
 
 		// load dictionary
 		$this->dict->get_wordarray(array('pages', 'sections', 'msg'));
+        // get page
+        $page = $this->get_page('pages');
 
-		$view = new X4View_core('pages/pages');
+        $view = new X4View_core('page');
+        $view->breadcrumb = array($this->site->get_bredcrumb($page), array('areas' => 'index'));
+		$view->actions = $this->actions($id_area, $lang, $xfrom);
+
+		$view->content = new X4View_core('pages/pages');
 
 		// content
 		$mod = new Page_model($id_area, $lang);
-		$view->id_area = $id_area;
-		$view->lang = $lang;
-		$view->xfrom = $xfrom;
-		$view->area = $mod->get_var($id_area, 'areas', 'name');
+		$view->content->id_area = $id_area;
+		$view->content->lang = $lang;
+		$view->content->xfrom = $xfrom;
+		$view->content->area = $mod->get_var($id_area, 'areas', 'name');
 
 		$obj = $mod->get_page($xfrom);
-		$view->page = ($obj)
+		$view->content->page = ($obj)
 			? $obj
 			: new Page_obj($id_area, $lang);
 
-		$page = $this->get_page('pages');
-		$navbar = array($this->site->get_bredcrumb($page), array('areas' => 'index'));
-		$view->navbar = $navbar;
-
-		// referer
-		$view->referer = urlencode('pages/index/'.$id_area.'/'.$lang.'/'.$xfrom);
-
 		// pages to show
-		$view->pages = $mod->get_pages($xfrom, $view->page->deep);
+		$view->content->pages = $mod->get_pages($xfrom, $view->content->page->deep);
 		// available menus
 		$mod = new Menu_model();
-		$view->menus = $mod->get_menus($id_area, '', 'id');
+		$view->content->menus = $mod->get_menus($id_area, '', 'id');
 		// language switcher
-		$lang = new Language_model();
-		$view->langs = $lang->get_languages();
+        if (MULTILANGUAGE)
+        {
+		    $lang = new Language_model();
+		    $view->content->langs = $lang->get_languages();
+        }
 		// area switcher
-
-		$view->areas = $areas;
+		$view->content->areas = $areas;
 
 		$view->render(TRUE);
 	}
 
 	/**
-	 * Pages filter
+	 * Pages actions
 	 *
+     * @access	private
 	 * @return  void
 	 */
-	public function filter(int $id_area, string $lang, string $xfrom = '')
+	private function actions(int $id_area, string $lang, string $xfrom = '')
 	{
-		if ($id_area)
-		{
-			// load the dictionary
-			$this->dict->get_wordarray(array('pages'));
-
-			echo '<a class="btf" href="'.BASE_URL.'areas/map/'.$id_area.'/'.$lang.'" title="'._SITE_MAP.'"><i class="fas fa-map-marker fa-lg"></i></a>
-				<a class="btf" href="'.BASE_URL.'pages/add/'.$id_area.'/'.$lang.'/'.$xfrom.'" title="'._NEW_PAGE.'"><i class="fas fa-plus fa-lg"></i></a>
-	<script>
-	window.addEvent("domready", function()
-	{
-		buttonize("filters", "btf", "modal");
-	});
-	</script>';
-		}
-		else
-        {
-			echo '';
-        }
+		return '<a class="link" @click="popup(\''.BASE_URL.'areas/map/'.$id_area.'/'.$lang.'\')" title="'._SITE_MAP.'"><i class="fa-solid fa-lg fa-location-dot"></i></i></a>
+				<a class="link" @click="popup(\''.BASE_URL.'pages/add/'.$id_area.'/'.$lang.'/'.$xfrom.'\')" title="'._NEW_PAGE.'"><i class="fa-solid fa-lg fa-circle-plus"></i></a>';
 	}
 
 	/**
@@ -142,94 +128,47 @@ class Pages_controller extends X3ui_controller
 			? 4
 			: 3;
 		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'pages', $id, $val);
-
 		if (is_null($msg))
 		{
-			$qs = X4Route_core::get_query_string();
 			// do action
 			$mod = new Page_model(2, X4Route_core::$lang, $id);
-			$result = $mod->update_page($id, array($what => $value), $this->site->site->domain);
-
-			// get page xfrom
-			$page = $mod->get_by_id($id, 'pages', 'xfrom');
-			$encoded_xfrom = str_replace('/', '$', $page->xfrom);
+			$result = $mod->update($id, array($what => $value));
 
 			// set message
 			$this->dict->get_words();
 			$msg = AdmUtils_helper::set_msg($result);
 
 			// set update
-			$msg->update[] = array(
-				'element' => $qs['div'],
-				'url' => urldecode(str_replace($page->xfrom, $encoded_xfrom, $qs['url'])),
-				'title' => null
+			$msg->update = array(
+				'element' => 'page',
+				'url' => $_SERVER['HTTP_REFERER']
 			);
 		}
 		$this->response($msg);
 	}
 
 	/**
-	 * New page form (use Ajax)
+	 * Add page form
 	 *
 	 * @param   integer $id_area Area ID
 	 * @param   string	$lang Language code
 	 * @param   string	$xfrom Page URL of parent page
-	 * @param   boolean	$check Switcher between string or echo
 	 * @return  mixed
 	 */
-	public function add(int $id_area, string $lang, string $xfrom, int $check = 1)
+	public function add(int $id_area, string $lang, string $xfrom)
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'pages'));
 
-		// get object
-		$pages = new Page_model($id_area, $lang);
-
 		// build the form
-		$fields = array();
-		$fields[] = array(
-			'label' => null,
-			'type' => 'hidden',
-			'value' => $lang,
-			'name' =>'lang'
-		);
-		$fields[] = array(
-			'label' => null,
-			'type' => 'hidden',
-			'value' => $id_area,
-			'name' =>'id_area'
-		);
-		$fields[] = array(
-			'label' => _NAME,
-			'type' => 'text',
-			'value' => '',
-			'name' => 'name',
-			'rule' => 'required',
-			'extra' => 'class="large"'
-		);
-		$fields[] = array(
-			'label' => _DESCRIPTION,
-			'type' => 'textarea',
-			'value' => '',
-			'name' => 'description'
-		);
-		$fields[] = array(
-			'label' => _FROM_PAGE,
-			'type' => 'select',
-			'value' => str_replace('§', '/', urldecode($xfrom)),
-			'options' => array($pages->get_pages(), 'url', 'title'),
-			'name' => 'xfrom',
-			'rule' => 'required',
-			'extra' => 'class="large"'
-		);
-		$fields[] = array(
-			'label' => _TEMPLATE,
-			'type' => 'select',
-			'value' => '',
-			'options' => array($pages->get_templates(), 'name', 'description'),
-			'name' =>'tpl',
-			'extra' => 'class="large"'
-		);
+		$form_fields = new X4Form_core('page/page_add');
+		$form_fields->id_area = $id_area;
+		$form_fields->lang = $lang;
+        $form_fields->xfrom = $xfrom;
+        $form_fields->mod = new Page_model($id_area, $lang);
+
+		// get the fields array
+		$fields = $form_fields->render();
 
 		// if submitted
 		if (X4Route_core::$post)
@@ -246,22 +185,16 @@ class Pages_controller extends X3ui_controller
 			die;
 		}
 
+        $view = new X4View_core('modal');
+        $view->title = _ADD_PAGE;
+
 		// contents
-		$view = new X4View_core('editor');
-		$view->title = _ADD_PAGE;
-
+		$view->content = new X4View_core('editor');
 		// form builder
-		$view->form = X4Form_helper::doform('editor', BASE_URL.'pages/add/'.$id_area.'/'.$lang.'/'.$xfrom.'/'.intval($check), $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
-			'onclick="setForm(\'editor\');"');
+		$view->content->form = X4Form_helper::doform('editor', BASE_URL.'pages/add/'.$id_area.'/'.$lang.'/'.$xfrom, $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
+            '@click="submitForm(\'editor\')"');
 
-		if ($check)
-		{
-			$view->render(true);
-		}
-		else
-		{
-			return $view->render();
-		}
+		$view->render(true);
 	}
 
 	/**
@@ -307,6 +240,10 @@ class Pages_controller extends X3ui_controller
 			}
 			else
 			{
+                // get deep
+                $page_from = $mode->get_from($post['xfrom']);
+                $post['deep'] = $page_from->deep + 1;
+
 				// set css for the template of the new page
 				$tmod = new Template_model();
 				$css = $tmod->get_css($_post['id_area'], $_post['tpl']);
@@ -326,16 +263,166 @@ class Pages_controller extends X3ui_controller
 				// set what update
 				if ($result[1])
 				{
-					$msg->update[] = array(
-						'element' => 'topic',
-						'url' => BASE_URL.'pages/index/'.$post['id_area'].'/'.$post['lang'].'/'.str_replace('/', '-', $post['xfrom']),
-						'title' => null
+					$msg->update = array(
+						'element' => 'page',
+						'url' => $_SERVER['HTTP_REFERER']   //BASE_URL.'pages/index/'.$post['id_area'].'/'.$post['lang'].'/'.str_replace('/', '-', $post['xfrom'])
 					);
 				}
 			}
 		}
 		$this->response($msg);
 	}
+
+    /**
+	 * Change page position
+	 *
+	 * @param   integer  $id Page ID
+	 * @return  void
+	 */
+	public function move(int $id)
+	{
+		// load dictionaries
+		$this->dict->get_wordarray(array('form', 'pages'));
+
+		// get object
+		$mod = new Page_model(2, X4Route_core::$lang, $id);
+		$page = $mod->get_by_id($id);
+
+		// build the form
+		$form_fields = new X4Form_core('page/page_move');
+		$form_fields->id = $id;
+		$form_fields->page = $page;
+        $form_fields->pages = $mod->get_pages('', 0, $page->url);
+
+        $from = $mod->get_page($page->xfrom);
+        $form_fields->from = $from;
+
+        $items = $mod->get_subpages($page->xfrom, $page->id_menu);
+
+        $form_fields->siblings = X4Form_helper::get_options($items, 'xpos', 'name', $page->xpos, [1, 'As first']);
+
+		// get the fields array
+		$fields = $form_fields->render();
+
+		// if submitted
+		if (X4Route_core::$post)
+		{
+			$e = X4Validation_helper::form($fields, 'editor');
+			if ($e)
+			{
+				$this->moving($_POST);
+			}
+			else
+			{
+				$this->notice($fields);
+			}
+			die;
+		}
+
+        $view = new X4View_core('modal');
+        $view->title = $page->name.': '._MENU_AND_ORDER;
+
+		// contents
+		$view->content = new X4View_core('pages/page_move');
+        $view->content->page = $page;
+        $view->content->from = $from;
+
+		// form builder
+		$view->content->form = X4Form_helper::doform('editor', BASE_URL.'pages/move/'.$id, $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
+            '@click="submitForm(\'editor\')"');
+
+		$view->render(TRUE);
+	}
+
+
+    /**
+	 * Subpages
+	 *
+	 * @param   integer $id_area
+     * @param   string  $lang
+     * @param   string  $xfrom
+     * @param   integer $id_menu
+	 * @return  string
+	 */
+	public function subpages(int $id_area, string $lang, string $xfrom, int $id_menu)
+	{
+		$mod = new Page_model($id_area, $lang);
+
+        $items = $mod->get_subpages($xfrom, $id_menu);
+        $parent = $mod->get_page($xfrom);
+
+        $a = [
+            'from_menu' => $parent->id_menu,
+            'subpages' => X4Form_helper::get_options($items, 'xpos', 'name', '', [1, 'As first'])
+        ];
+        header('Content-type: application/json');
+		echo json_encode($a);
+	}
+
+    /**
+	 * Save new position
+	 *
+	 * @access	private
+	 * @param   array 	$_post _POST array
+	 * @return  void
+	 */
+	private function moving(array $_post)
+	{
+		$msg = null;
+		// check permissions
+		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'pages', $_post['id'], 2);
+
+		if (is_null($msg))
+		{
+			// get object
+			$mod = new Page_model(2, X4Route_core::$lang, $_post['id']);
+			$page = $mod->get_by_id($_post['id'], 'pages', 'id, id_area, lang, url, xfrom, id_menu, xpos, deep');
+
+			// this pages cannot be changed
+			$no_change = array('home', 'msg', 'search');
+
+            // id menù?
+            if ($_post['xfrom'] == 'home' && $_post['id_menu'] > 0)
+            {
+                $id_menu = $_post['id_menu'];
+            }
+            else
+            {
+                $id_menu = (isset($_post['in_menu']) && $_post['from_menu'] > 0)
+                    ? $_post['from_menu']
+                    : 0;
+            }
+
+			// handle _post
+			$post = array(
+				'xfrom' => (!in_array($page->url, $no_change)) ? $_post['xfrom'] : $page->xfrom,
+				'hidden' => intval(isset($_post['hidden'])),
+                'id_menu' => $id_menu,
+				'fake' => intval($_post['id_menu'] > 0 && isset($_post['fake'])),
+                'xpos' => $_post['xpos']
+			);
+
+            // update page data
+            $result = $mod->update_page($page, $post, $this->site->site->domain);
+
+            // clear cache
+            APC && apcu_clear_cache();
+
+            // set message
+            $msg = AdmUtils_helper::set_msg($result);
+
+            // set what update
+            if ($result[1])
+            {
+                $msg->update = array(
+                    'element' => 'page',
+                    'url' => $_SERVER['HTTP_REFERER']   //BASE_URL.'pages/index/'.$page->id_area.'/'.$page->lang.'/'.str_replace('/', '-', $page->xfrom)
+                );
+            }
+		}
+		$this->response($msg);
+	}
+
 
 	/**
 	 * Edit SEO data of a page (use Ajax)
@@ -353,203 +440,13 @@ class Pages_controller extends X3ui_controller
 		$page = $mod->get_page_by_id($id);
 
 		// build the form
-		$fields = array();
-		$fields[] = array(
-			'label' => null,
-			'type' => 'hidden',
-			'value' => $id,
-			'name' => 'id'
-		);
+		$form_fields = new X4Form_core('page/page_seo');
+		$form_fields->id = $id;
+		$form_fields->page = $page;
+        $form_fields->mod = $mod;
 
-		$fields[] = array(
-			'label' => null,
-			'type' => 'html',
-			'value' => '<div class="band inner-pad clearfix"><div class="one-half xs-one-whole">'
-		);
-
-		$fields[] = array(
-			'label' => _FROM_PAGE,
-			'type' => 'select',
-			'value' => $page->xfrom,
-			'options' => array($mod->get_pages('', 0, $page->url), 'url', 'deep_title'),
-			'name' =>'xfrom',
-			'rule' => 'required',
-			'extra' => 'class="large"'
-		);
-
-		$fields[] = array(
-			'label' => null,
-			'type' => 'html',
-			'value' => '</div><div class="one-fourth xs-one-whole">'
-		);
-
-		$fields[] = array(
-			'label' => _NOT_IN_MAP,
-			'type' => 'checkbox',
-			'value' => $page->hidden,
-			'name' => 'hidden',
-			'checked' => $page->hidden
-		);
-
-		$fields[] = array(
-			'label' => null,
-			'type' => 'html',
-			'value' => '</div><div class="one-fourth xs-one-whole">'
-		);
-
-		$fields[] = array(
-			'label' => _FAKE_PAGE,
-			'type' => 'checkbox',
-			'value' => $page->fake,
-			'name' => 'fake',
-			'checked' => $page->fake,
-			'suggestion' => _FAKE_PAGE_MSG
-		);
-
-		$fields[] = array(
-			'label' => null,
-			'type' => 'html',
-			'value' => '</div></div>'
-		);
-
-		$fields[] = array(
-			'label' => null,
-			'type' => 'html',
-			'value' => '<div id="accordion" class="gap-top">'
-		);
-
-		$fields[] = array(
-            'label' => null,
-            'type' => 'html',
-            'value' => '<h4 class="context">'._TEMPLATE.'</h4><div class="section">'
-        );
-
-		$fields[] = array(
-			'label' => _TEMPLATE,
-			'type' => 'select',
-			'value' => $page->tpl,
-			'options' => array($mod->get_templates(), 'name', 'description'),
-			'name' =>'tpl',
-			'extra' => 'class="large"'
-		);
-
-		$fields[] = array(
-            'label' => null,
-            'type' => 'html',
-            'value' => '</div><h4 class="context">'._SEO_TOOLS.'</h4><div class="section">'
-        );
-
-		$fields[] = array(
-			'label' => _URL,
-			'type' => 'text',
-			'value' => $page->url,
-			'name' => 'url',
-			'rule' => 'required',
-			'extra' => 'class="large"'
-		);
-
-		$fields[] = array(
-			'label' => null,
-			'type' => 'html',
-			'value' => '<div class="band inner-pad clearfix"><div class="one-half xs-one-whole">'
-		);
-
-		$fields[] = array(
-			'label' => _NAME,
-			'type' => 'text',
-			'value' => $page->name,
-			'name' => 'name',
-			'rule' => 'required',
-			'extra' => 'class="large"'
-		);
-
-		$fields[] = array(
-			'label' => null,
-			'type' => 'html',
-			'value' => '</div><div class="one-half xs-one-whole">'
-		);
-
-		$fields[] = array(
-			'label' => _TITLE,
-			'type' => 'text',
-			'value' => $page->title,
-			'name' => 'title',
-			'rule' => 'required',
-			'extra' => 'class="large"'
-		);
-
-		$fields[] = array(
-			'label' => null,
-			'type' => 'html',
-			'value' => '</div></div>'
-		);
-
-		$fields[] = array(
-			'label' => _DESCRIPTION,
-			'type' => 'textarea',
-			'value' => $page->description,
-			'name' => 'description'
-		);
-
-		$fields[] = array(
-			'label' => _KEYS,
-			'type' => 'textarea',
-			'value' => $page->xkeys,
-			'name' => 'xkeys'
-		);
-
-		$fields[] = array(
-			'label' => _ROBOT,
-			'type' => 'text',
-			'value' => $page->robot,
-			'name' => 'robot',
-			'suggestion' => _ROBOT_MSG,
-			'extra' => 'class="large"'
-		);
-
-		$fields[] = array(
-			'label' => null,
-			'type' => 'html',
-			'value' => '<div class="band inner-pad clearfix"><div class="one-fifth xs-one-whole">'
-		);
-
-		$codes = array(301, 302);
-		$fields[] = array(
-			'label' => _REDIRECT_CODE,
-			'type' => 'select',
-			'value' => $page->redirect_code,
-			'name' => 'redirect_code',
-			'options' => array(X4Array_helper::simplearray2obj($codes, 'value', 'option'), 'value', 'option', ''),
-			'extra' => 'class="large"'
-		);
-
-		$fields[] = array(
-			'label' => null,
-			'type' => 'html',
-			'value' => '</div><div class="four-fifth xs-one-whole">'
-		);
-
-		$fields[] = array(
-			'label' => _REDIRECT,
-			'type' => 'text',
-			'value' => $page->redirect,
-			'name' => 'redirect',
-			'rule' => 'requiredif§redirect_code§!',
-			'suggestion' => _REDIRECT_MSG,
-			'extra' => 'class="large"'
-		);
-
-		$fields[] = array(
-			'label' => null,
-			'type' => 'html',
-			'value' => '</div></div>'
-		);
-
-		$fields[] = array(
-            'label' => null,
-            'type' => 'html',
-            'value' => '</div></div>'
-        );
+		// get the fields array
+		$fields = $form_fields->render();
 
 		// if submitted
 		if (X4Route_core::$post)
@@ -566,22 +463,15 @@ class Pages_controller extends X3ui_controller
 			die;
 		}
 
+        $view = new X4View_core('modal');
+        $view->title = _SEO_TOOLS;
+
 		// contents
-		$view = new X4View_core('editor');
-		$view->title = _SEO_TOOLS;
+		$view->content = new X4View_core('editor');
 
 		// form builder
-		$view->form = '<div id="scrolled">'.X4Form_helper::doform('editor', BASE_URL.'pages/seo/'.$id, $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
-			'onclick="setForm(\'editor\');"').'</div>';
-
-		$view->js = '
-<script>
-window.addEvent("domready", function()
-{
-    var myScroll = new Scrollable($("scrolled"));
-	saccordion("accordion", "#accordion h4", "#accordion .section");
-});
-</script>';
+		$view->content->form = X4Form_helper::doform('editor', BASE_URL.'pages/seo/'.$id, $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
+            '@click="submitForm(\'editor\')"');
 
 		$view->render(TRUE);
 	}
@@ -603,7 +493,7 @@ window.addEvent("domready", function()
 		{
 			// get object
 			$mod = new Page_model(2, X4Route_core::$lang, $_post['id']);
-			$page = $mod->get_by_id($_post['id'], 'pages', 'id, id_area, lang, url, xfrom, tpl');
+			$page = $mod->get_by_id($_post['id'], 'pages');
 
 			// this pages cannot be changed
 			$no_change = array('home', 'msg', 'search');
@@ -620,9 +510,6 @@ window.addEvent("domready", function()
 				'name' => $_post['name'],
 				'title' => $_post['title'],
 				'description' => $_post['description'],
-				'xfrom' => (!in_array($page->url, $no_change)) ? $_post['xfrom'] : $page->xfrom,
-				'hidden' => intval(isset($_post['hidden'])),
-				'fake' => intval(isset($_post['fake'])),
 				'xkeys' => $_post['xkeys'],
 				'robot' => $_post['robot'],
 				'redirect_code' => $_post['redirect_code'],
@@ -650,7 +537,7 @@ window.addEvent("domready", function()
 				}
 
 				// update page data
-				$result = $mod->update_page($page->id, $post, $this->site->site->domain);
+				$result = $mod->update_page($page, $post, $this->site->site->domain);
 
 				// clear cache
 				APC && apcu_clear_cache();
@@ -661,10 +548,9 @@ window.addEvent("domready", function()
 				// set what update
 				if ($result[1])
 				{
-					$msg->update[] = array(
-						'element' => 'topic',
-						'url' => BASE_URL.'pages/index/'.$page->id_area.'/'.$page->lang.'/'.str_replace('/', '-', $page->xfrom).'/1',
-						'title' => null
+					$msg->update = array(
+						'element' => 'page',
+						'url' => $_SERVER['HTTP_REFERER']   // BASE_URL.'pages/index/'.$page->id_area.'/'.$page->lang.'/'.str_replace('/', '-', $page->xfrom)
 					);
 				}
 			}
@@ -703,14 +589,17 @@ window.addEvent("domready", function()
 			die;
 		}
 
+        $view = new X4View_core('modal');
+        $view->title = _DELETE_PAGE;
+
 		// contents
-		$view = new X4View_core('delete');
-		$view->title = _DELETE_PAGE;
-		$view->item = $page->name;
+		$view->content = new X4View_core('delete');
+
+		$view->content->item = $page->name;
 
 		// form builder
-		$view->form = X4Form_helper::doform('delete', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
-			'onclick="setForm(\'delete\');"');
+		$view->content->form = X4Form_helper::doform('delete', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
+            '@click="submitForm(\'delete\')"');
 		$view->render(TRUE);
 	}
 
@@ -726,7 +615,6 @@ window.addEvent("domready", function()
 		$msg = null;
 		// check permissions
 		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'pages', $id, 4);
-
 		if (is_null($msg))
 		{
 			// action
@@ -747,10 +635,9 @@ window.addEvent("domready", function()
 			// set what update
 			if ($result[1])
 			{
-				$msg->update[] = array(
-					'element' => 'topic',
-					'url' => BASE_URL.'pages/index/'.$page->id_area.'/'.$page->lang.'/'.str_replace('/', '-', $page->xfrom),
-					'title' => null
+				$msg->update = array(
+					'element' => 'page',
+					'url' => $_SERVER['HTTP_REFERER']   // BASE_URL.'pages/index/'.$page->id_area.'/'.$page->lang.'/'.str_replace('/', '-', $page->xfrom)
 				);
 			}
 		}
@@ -772,8 +659,6 @@ window.addEvent("domready", function()
 
 		if (is_null($msg))
 		{
-			$qs = X4Route_core::get_query_string();
-
 			// get object: the area
 			$area = new Area_model();
 			$a = $area->get_by_id($id_area);
@@ -862,10 +747,9 @@ window.addEvent("domready", function()
 				$mod->refactory($_SESSION['xuid']);
 
 				// set update
-				$msg->update[] = array(
-					'element' => $qs['div'],
-					'url' => urldecode($qs['url']),
-					'title' => null
+				$msg->update = array(
+					'element' => 'page',
+					'url' => $_SERVER['HTTP_REFERER']
 				);
 			}
 		}

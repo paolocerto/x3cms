@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X4WEBAPP
  */
 
@@ -453,7 +453,7 @@ class X4Validation_helper
 	 */
 	private static function _required(&$field, $tok, &$e,  $_post, $_files)
 	{
-		if (self::is_empty($field['name']))
+		if (!isset($field['name']) || self::is_empty($field['name']))
 		{
 			$field['error'][] = array('msg' => '_required');
 			$e = false;
@@ -1049,7 +1049,12 @@ class X4Validation_helper
 	 */
 	private static function _inarray(&$field, $tok, &$e, $_post, $_files)
 	{
-        if (isset($tok[2]) && $tok[2] == '!' && is_array(self::$data[$tok[1]]) && in_array($_post[$field['name']], self::$data[$tok[1]]))
+        if (
+                isset($tok[2]) &&
+                $tok[2] == '!' &&
+                is_array(self::$data[$tok[1]]) &&
+                in_array($_post[$field['name']], self::$data[$tok[1]])
+            )
         {
             // check not in array
             $field['error'][] = array(
@@ -1059,7 +1064,11 @@ class X4Validation_helper
             );
             $e = false;
         }
-        elseif (!isset($tok[2]) && !in_array($_post[$field['name']], self::$data[$tok[1]]))
+        elseif (
+                !isset($tok[2]) &&
+                isset(self::$data[$tok[1]]) &&
+                !in_array($_post[$field['name']], self::$data[$tok[1]])
+            )
         {
             $field['error'][] = array('msg' => '_inarray');
             $e = false;

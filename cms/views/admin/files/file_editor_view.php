@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
 
@@ -12,18 +12,22 @@ $js = '';
 
 switch($file->xtype)
 {
-case 0:
-	// images
-	$chk = file_exists(APATH.'files/'.SPREFIX.'/filemanager/img'.$file->name);
-	if (!$chk)
-	{
-		sleep(1);
-	}
+    case 0:
+        // images
+        $chk = file_exists(APATH.'files/'.SPREFIX.'/filemanager/img'.$file->name);
+        if (!$chk)
+        {
+            sleep(1);
+        }
+// <img src="<?php echo FPATH.'img/'.$file->name ? >" id="img" /> class="bg-gray-100 p-4 w-full overflow-hidden"
 ?>
-<h1><?php echo _IMAGE_EDIT.': '.$file->name ?></h1>
-<div id="image_editor"  class="acenter bmiddlegray padded hide-o">
-	<img src="<?php echo FPATH.'img/'.$file->name ?>" id="img" />
-</div>
+    <h1><?php echo _IMAGE_EDIT.': '.$file->name ?></h1>
+    <div id="image_editor" ></div>
+    <?php
+	// end image case
+	break;
+}
+/*
 <script src="<?php echo THEME_URL ?>js/basic.js"></script>
 <script src="<?php echo ROOT ?>files/js/mootools/Lasso.js"></script>
 <script src="<?php echo ROOT ?>files/js/mootools/Lasso.Crop.js"></script>
@@ -118,19 +122,6 @@ window.addEvent('domready', function()
 	$('img').set('height', <?php echo $height ?>);
 
 	new Crop_handler();
-
-	var slider = $('slider');
-	new Slider(slider, slider.getElement('.knob'), {
-		range: [0, 359],
-		steps: 359,
-		snap:true,
-		wheel:true,
-		onChange: function(value){
-			old = parseInt($('rotate').get('value'));
-			$('rotate').set('value', value);
-			rotateElement('imagethumb', value);
-		}
-	 });
 
 });
 </script>
@@ -340,4 +331,4 @@ window.addEvent("domready", function()
 }
 
 echo $js;
-
+*/

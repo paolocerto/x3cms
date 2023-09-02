@@ -1,0 +1,8 @@
+{
+    "require": {
+        "tedivm/jshrink": "~1.0",
+        "mpdf/mpdf": "^8.0",
+        "swiftmailer/swiftmailer": "^6.0",
+        "edsdk/flmngr-server-php": "^1.6"
+    }
+}

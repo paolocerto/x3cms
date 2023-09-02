@@ -4,10 +4,10 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X4WEBAPP
  */
- 
+
 /**
 * This library is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -22,34 +22,34 @@
 * You should have received a copy of the GNU General Public License
 * along with this software; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-* 
+*
 * Copyright 2005 Richard Heyes
 */
 
 /**
 * Caching Libraries for PHP5
-* 
+*
 * Handles data and output caching. Defaults to /dev/shm
 * (shared memory). All methods are static.
-* 
+*
 * Eg: (output caching)
-* 
+*
 * if (!OutputCache::Start('group', 'unique id', 600)) {
-* 
+*
 *   // ... Output
-* 
+*
 *   OutputCache::End();
 * }
-* 
+*
 * Eg: (data caching)
-* 
+*
 * if (!$data = DataCache::Get('group', 'unique id')) {
-* 
+*
 *   $data = time();
-* 
+*
 *   DataCache::Put('group', 'unique id', 10, $data);
 * }
-* 
+*
 * echo $data;
 *
 * ------------------------
@@ -60,22 +60,22 @@
 
 class Cache
 {
-	
+
 	/**
 	* Place to store the cache files
 	* @var string
 	*/
 	protected static $store = '';
-	
+
 	/**
 	* Prefix to use on cache files
 	* @var string
 	*/
 	protected static $prefix = '';
-	
+
 	/**
 	* Stores data
-	* 
+	*
 	* @static
 	* @param string $id    Unique ID of this data
 	* @param int    $ttl   How long to cache for (in seconds)
@@ -88,10 +88,10 @@ class Cache
 		// Set filemtime
 		touch($filename, time() + $ttl);
 	}
-	
+
 	/**
 	* Reads data
-	* 
+	*
 	* @static
 	* @param string $id    Unique ID of this data
 	*/
@@ -100,27 +100,27 @@ class Cache
 		$filename = self::getFilename($id);
 		return file_get_contents($filename);
 	}
-	
+
 	/**
 	* Determines if an entry is cached
-	* 
+	*
 	* @static
 	* @param string $id    Unique ID of this data
 	*/
 	protected static function isCached($id)
 	{
 		$filename = self::getFilename($id);
-		if (file_exists($filename) && filemtime($filename) > time()) 
+		if (file_exists($filename) && filemtime($filename) > time())
 			return true;
-		
+
 		@unlink($filename);
 		return false;
 	}
-	
+
 	/**
 	* Builds a filename/path from group, id and
 	* store.
-	* 
+	*
 	* @static
 	* @param string $id    Unique ID of this data
 	*/
@@ -129,10 +129,10 @@ class Cache
 		$id = md5($id);
 		return self::$store . self::$prefix . "_{$id}";
 	}
-	
+
 	/**
 	* Sets the filename prefix to use
-	* 
+	*
 	* @static
 	* @param string $prefix Filename Prefix to use
 	*/
@@ -144,7 +144,7 @@ class Cache
 	/**
 	* Sets the store for cache files. Defaults to
 	* /dev/shm. Must have trailing slash.
-	* 
+	*
 	* @static
 	* @param string $store The dir to store the cache data in
 	*/
@@ -165,7 +165,7 @@ class X4Cache_core extends Cache
 	* @var string
 	*/
 	private static $id;
-	
+
 	/**
 	* Ttl of currently being recorded data
 	* @var int
@@ -175,7 +175,7 @@ class X4Cache_core extends Cache
 	/**
 	* Starts caching off. Returns true if cached, and dumps
 	* the output. False if not cached and start output buffering.
-	* 
+	*
 	* @static
 	* @param  string $id    Unique ID of this data
 	* @param  int    $ttl   How long to cache for (in seconds)
@@ -183,19 +183,19 @@ class X4Cache_core extends Cache
 	*/
 	public static function Start($id, $ttl)
 	{
-		if (self::isCached($id)) 
+		if (self::isCached($id))
 		{
 			echo self::read($id);
 			return true;
-		} 
-		else 
+		}
+		else
 		{
 			self::$id    = $id;
 			self::$ttl   = $ttl;
 			return false;
 		}
 	}
-	
+
 	/**
 	* Ends caching. Writes data to disk.
 	*
@@ -217,21 +217,21 @@ class DataCache extends Cache
 {
 	/**
 	* Retrieves data from the cache
-	* 
+	*
 	* @static
 	* @param  string $id    Unique ID of the data
 	* @return mixed         Either the resulting data, or null
 	*/
 	public static function Get($id)
 	{
-		if (self::isCached($id)) 
+		if (self::isCached($id))
 			return unserialize(self::read($id));
 		return null;
 	}
-	
+
 	/**
 	* Stores data in the cache
-	* 
+	*
 	* @static
 	* @param string $id    Unique ID of the data
 	* @param int    $ttl   How long to cache for (in seconds)

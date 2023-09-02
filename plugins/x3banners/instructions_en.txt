@@ -1,0 +1,18 @@
+X3BANNERS
+
+REQUIREMENTS: none
+---
+WHAT IT DOES: show a banner on top of a page
+---
+HOW IT WORKS:
+- you can create one or more banners for each page with different colors and texts with a defined time window
+- if one page have more than one active banner the system will pick one randomly
+---
+CONFIGURATION: none
+---
+HTML: none
+---
+CSS RULES: require Tailwindcss
+---
+JAVASCRIPT: require Alpine.js
+---

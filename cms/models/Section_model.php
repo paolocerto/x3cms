@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
 
@@ -16,7 +16,6 @@
 class Section_model extends X4Model_core
 {
 	public $settings = array(
-		'locked' => 0,
 		'columns' => 3,
         'col_sizes' => '2+1',
 		'bgcolor' => '#ffffff',
@@ -151,14 +150,21 @@ class Section_model extends X4Model_core
 
 		if ($tpl)
 		{
+            // get sections
+		    $sections = X4Array_helper::indicize($this->get_sections($id_page), 'progressive');
+
 			// get template settings
 			$settings = json_decode($tpl->settings, true);
 
-			// get sections
-			$sections = X4Array_helper::indicize($this->get_sections($id_page), 'progressive');
-
 			for($i = 1; $i <= $tpl->sections; $i++)
 			{
+                // fix for missing col_sizes
+                if (!isset($settings['s'.$i]['col_sizes']))
+                {
+                    $cs = array_fill(0, $settings['s'.$i]['columns'], '1');
+                    $settings['s'.$i]['col_sizes'] = implode('+', $cs);
+                }
+
 				// recreate missing sections
 				if (!isset($sections[$i]))
 				{
@@ -292,19 +298,19 @@ class Section_model extends X4Model_core
 	 * Use articles
 	 *
 	 * @param   integer	$id_area Area ID
-	 * @param   string	$lang Language code
 	 * @param   string	$holder Context type
 	 * @param   string	$bid, article unique ID
 	 * @param   integer	$id_page Page ID
 	 * @return  void
 	 */
-	public function recode(int $id_area, string $lang, string $holder, string $bid, int $id_page)
+	public function recode(int $id_area, string $holder, string $bid, int $id_page)
 	{
 		// default contexts
 		$codes = array('drafts' => 0, 'pages' => 1, 'multi' => 2);
 
 		// update articles
-		$sql = 'UPDATE articles SET updated = NOW(), code_context = '.$codes[$holder].', id_page = '.$id_page.' WHERE code_context != 2 AND bid = '.$this->db->escape($bid).' AND id_area = '.$id_area.' AND lang = '.$this->db->escape($lang);
+		$sql = 'UPDATE articles SET updated = NOW(), code_context = '.$codes[$holder].', id_page = '.$id_page.'
+            WHERE code_context != 2 AND bid = '.$this->db->escape($bid).' AND id_area = '.$id_area;
 		$this->db->single_exec($sql);
 	}
 
@@ -314,12 +320,12 @@ class Section_model extends X4Model_core
 	 *
 	 * @param   integer	$id_area Area ID
 	 * @param   string	$lang Language code
-	 * @param   string	$bid_str bid's chain, where bid is the article unique ID
+	 * @param   string	$jbids, json_encoded arrayof bids, where a bid is the article unique ID
 	 * @return  array	Array of articles
 	 */
-	public function get_articles(int $id_area, string $lang, string $bid_str)
+	public function get_articles(int $id_area, string $lang, string $jbids)
 	{
-		$bids = explode('|', $bid_str);
+		$bids = json_decode($jbids, true);
 
 		$artt = array();
 		if ($bids)
@@ -395,16 +401,14 @@ class Section_model extends X4Model_core
 	 * Get article by bid
 	 * Use articles
 	 *
-	 * @param   object	$id_area Area ID
-	 * @param   string	$lang Language code
 	 * @param   string	$bid, article unique ID
 	 * @return  object
 	 */
-	public function get_by_bid(int $id_area, string $lang, string $bid)
+	public function get_by_bid(string $bid)
 	{
 		return $this->db->query_row('SELECT *
 			FROM articles
-			WHERE xon = 1 AND id_area = '.$id_area.' AND lang = '.$this->db->escape($lang).' AND bid = '.$this->db->escape($bid).'
+			WHERE xon = 1 AND bid = '.$this->db->escape($bid).'
 			ORDER BY updated DESC');
 	}
 }
@@ -421,13 +425,13 @@ class Section_obj
 	public $id_page = 0;
 	public $name;
 	public $progressive = 1;
-	public $setings = '';
+	public $settings = '';
 
 	/**
 	 * Constructor
 	 * Initialize the new section
 	 *
-		 * @return  void
+	 * @return  void
 	 */
 	public function __construct(int $id_area, int $id_page, string $settings)
 	{

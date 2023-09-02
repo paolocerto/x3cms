@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
 
@@ -25,19 +25,25 @@ if (isset($page)) {
 ?>
 <!doctype html>
 <html lang="<?php echo X4Route_core::$lang ?>">
-<head>
-<meta charset="utf-8">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+        <meta http-equiv="Pragma" content="no-cache" />
+        <meta http-equiv="Expires" content="0" />
+        <title><?php echo $title.$this->site->site->title ?></title>
+        <meta name="description" content="<?php echo $description ?>">
+        <meta name="keywords" content="<?php echo $this->site->site->keywords.','.$xkeys ?>">
+        <meta name="author" content="cblu.net">
+        <meta name="robots" content="all">
 
-<title><?php echo $title.$this->site->site->title ?></title>
-<meta name="description" content="<?php echo $description ?>">
-<meta name="keywords" content="<?php echo $this->site->site->keywords.','.$xkeys ?>">
-<meta name="author" content="cblu.net">
-<meta name="robots" content="all">
+        <link rel="apple-touch-icon" sizes="180x180" href="<?php echo ROOT ?>apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="<?php echo ROOT ?>favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="<?php echo ROOT ?>favicon-16x16.png">
+        <link rel="manifest" href="<?php echo ROOT ?>site.webmanifest">
 
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<link rel="shortcut icon" href="<?php echo THEME_URL ?>favicon.ico" type="image/x-icon">
-<link rel="stylesheet" href="<?php echo THEME_URL ?>css/fontawesome-all.min.css">
-<link rel="stylesheet" href="<?php echo THEME_URL ?>css/normalize.css">
+        <link rel="stylesheet" href="<?php echo THEME_URL ?>css/fontawesome-all.min.css">
+
 <?php
 echo (!DEVEL && file_exists(PATH.'themes/'.$this->site->area->theme.'/css/'.$css.'.min.css'))
 	? '<link rel="stylesheet" href="'.THEME_URL.'css/'.$css.'.min.css">'
@@ -49,25 +55,22 @@ if (RTL)
 	echo '<link title="normal" rel="stylesheet" type="text/css" href="'.THEME_URL.'/css/rtl.css" media="all" />';
 }
 ?>
+        <script src="https://kit.fontawesome.com/2e7ce67797.js" crossorigin="anonymous"></script>
+        <script src="https://cdn.tailwindcss.com"></script>
 
-<script defer src="<?php echo ROOT ?>files/js/mootools/MooTools-Core-1.6.0-compat-compressed.js" ></script>
-<script defer src="<?php echo ROOT ?>files/js/mootools/MooTools-More-1.6.0-compat-compressed.js" ></script>
-<script>var root = "<?php echo $this->site->site->domain ?>";</script>
-<!-- datepicker -->
-<script defer src="<?php echo ROOT ?>files/js/mootools/datepicker.js"></script>
-<script defer src="<?php echo THEME_URL ?>js/domready.js" ></script>
+        <script defer src="<?php echo THEME_URL ?>js/alpine.min.js"></script>
+        <script src="<?php echo THEME_URL ?>js/x3ui.js"></script>
+
+        <script>var root = "<?php echo $this->site->site->domain ?>";</script>
 </head>
 
 <body>
+    <header id="head" class="bg-white w-full px-6 py-4">
+        <img src="<?php echo THEME_URL ?>img/x3cms_extended_dark.png" alt="X3 CMS" class="w-60 m-auto mb-4" />
+    </header>
+    <div id="page" class="py-4">
+        <div class="w-full md:w-96 px-4 md:m-auto text-gray-300">
 
-	<div class="band bwhite clearfix">
-		<div id="login_logo" class="one-fifth md-one-third sx-one-whole push-two-fifth md-push-one-third sx-push-one align-center"><a href="<?php echo BASE_URL ?>" title="Home">
-			<img src="<?php echo THEME_URL ?>img/x3cms_white.png" alt="X3CMS" width="200" /></a>
-		</div>
-	</div>
-	<div class="band padded clearfix">
-		<div class="one-fifth md-one-third xs-one-whole push-two-fifth md-push-one-third xs-push-none lightgray">
-			<div id="logger-box" >
 <?php
 // check user agent
 $browser = $_SERVER['HTTP_USER_AGENT'];
@@ -76,7 +79,7 @@ if (strstr($browser, 'MSIE') == '' || strstr($browser, 'MSIE 10.0;') != '')
 	// msg
 	if (isset($_SESSION['msg']) && !empty($_SESSION['msg']))
 	{
-		echo '<div id="msg"><div><p>'.$_SESSION['msg'].'</p></div></div>';
+		echo '<div id="msg"><p class="failed px-4 py-4 rounded">'.$_SESSION['msg'].'</p></div>';
 		unset($_SESSION['msg']);
 	}
 
@@ -100,14 +103,15 @@ if (strstr($browser, 'MSIE') == '' || strstr($browser, 'MSIE 10.0;') != '')
 	}
 	else
 	{
-		echo '<div class="block"><h1>'._WARNING.'</h1>',
-				'<p>'._GLOBAL_PAGE_NOT_FOUND.'</p>',
-				'</div>';
+		echo '<div class="failed px-4 py-4 rounded">
+                <h1>'._WARNING.'</h1>
+				<p>'._GLOBAL_PAGE_NOT_FOUND.'</p>
+			</div>';
 	}
 }
 else
 {
-	echo '<div id="msg"><div><p>'._UNSUPPORTED_BROWSER.'</p></div></div>';
+	echo '<div id="msg"><p class="failed px-4 py-4 rounded">'._UNSUPPORTED_BROWSER.'</p></div>';
 
 	echo '<div class="block"><h4>'._SUPPORTED_BROWSER.'</h4>',
 		'<a href="https://www.google.com/chrome" title="Google Chrome"><img src="'.THEME_URL.'img/chrome.png" alt="Google Chrome" /></a>',
@@ -135,12 +139,9 @@ else
 			</div>
 		</div>
 	</div>
-	<div class="band padded clearfix">
-		<footer class="one-half sm-one-whole push-one-fourth sm-push-none small gray double-padded">
-			<p class="small acenter"><a href="https://www.x3cms.net" title="X3 your next Content Management System">X3 CMS</a> &copy; <a href="https://www.cblu.net" title="Cblu.net - Software &amp; Web design">Cblu.net</a></p>
-		</footer>
-		</div>
-	</div>
+	<footer class="bg  text-center text-xs py-6">
+	    <a href="http://www.x3cms.net" title="X3 your next Content Management System">X3 CMS</a> &copy; <a href="http://www.cblu.net" title="CBlu.net - Freelance PHP Developer">CBlu.net</a>
+    </footer>
 
 </body>
 </html>

@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
 
@@ -43,153 +43,102 @@ class Dictionary_controller extends X3ui_controller
 	 *
 	 * @param   string 	$code Language code
 	 * @param   string 	$area Area name
-	 * @param   string 	$what Dictionary key
-     * @param   string  $str  Searched string
 	 * @return  void
 	 */
-	public function keys(string $code = '', string $area = 'public', string $what = '', string $str = '')
+	public function keys(string $lang = '', string $area = 'public')
 	{
+        $lang = (empty($lang))
+            ? X4Route_core::$lang
+            : $lang;
+
 	    // load dictionary
 		$this->dict->get_wordarray(array('dictionary'));
 
+        // get area info
         $id_area = X4Route_core::get_id_area($area);
-
 		$area_mod = new Area_model();
 		list($id_area, $areas) = $area_mod->get_my_areas($id_area);
 
-		if ($id_area != 2)
-		{
-			$area = $area_mod->get_var($id_area, 'areas', 'name');
-		}
+        // get query string from filter
+        $qs = X4Route_core::get_query_string();
 
-		if (empty($str))
-		{
-            $code = (empty($code))
-                ? X4Route_core::$lang
-                : $code;
+        // keys, sections of the dictionary
+        $mod = new Dictionary_model();
+        $keys = $mod->get_keys($lang, $area);
 
-            // get page
-            $page = $this->get_page('dictionary/keys');
 
-            // contents
-            $view = new X4View_core('languages/words');
-            $view->page = $page;
-
-            // keys
-            $dict = new Dictionary_model();
-            $keys = $dict->get_keys($code, $area);
-            $view->keys = $keys;
-
-            // check empty what
-            if (empty($what) && !empty($keys))
-            {
-                $what = $keys[0]->what;
-            }
-            $view->items = $dict->get_words($code, $area, $what);
-            $view->what = $what;
-            $view->str = '';
-
-            // area switcher
-            $view->area = $area;
-
-            $view->areas = $areas;
-
-            // language switcher
-            $view->lang = $code;
-            $lang = new Language_model();
-            $view->langs = $lang->get_languages();
-
-            header('Content-Type: text/html; charset=utf-8');
-
-            $view->render(TRUE);
-        }
-        else
+        // handle filters
+        $qs['xstr'] = $qs['xstr'] ?? '';
+        $qs['xwhat'] = $qs['xwhat'] ?? '';
+        // check empty what
+        if (!empty($keys) && empty($qs['xwhat']) && empty($qs['xstr']))
         {
-            $this->search($code, $area, $what, $str);
+            $qs['xwhat'] = $keys[0]->what;
         }
-	}
-
-	/**
-	 * Dictionary filter
-	 *
-	 * @param   string 	$code Language code
-	 * @param   string 	$area Area name
-	 * @param   string 	$what Dictionary key
-	 * @param   string 	$str  Searched string
-	 * @return  string
-	 */
-	public function filter(string $lang, string $area, string $what, string $str = '')
-	{
-		// load the dictionary
-		$this->dict->get_wordarray(array('dictionary'));
-
-		if (X4Route_core::$post)
-		{
-		    // set message
-            $msg = AdmUtils_helper::set_msg(array(0,1));
-            $msg->update[] = array(
-                    'element' => 'tdown',
-                    'url' => BASE_URL.'dictionary/keys/'.$lang.'/'.$area.'/'.$what.'/'.urlencode(trim($_POST['search'])),
-                    'title' => null
-                );
-            $this->response($msg);
-		}
-		else
-		{
-		    echo '<form id="searchitems" name="searchitems" action="'.BASE_URL.'dictionary/filter/'.$lang.'/'.$area.'/'.$what.'" method="POST" onsubmit="return false;">
-                <input type="text" name="search" id="search" value="'.urldecode($str).'" title="'._DICTIONARY_SEARCH_MSG.'" />
-                <button type="button" name="searcher" class="button" onclick="setForm(\'searchitems\');">'._FIND.'</button>
-                </form>';
-
-            echo '
-        	<a class="btf" href="'.BASE_URL.'dictionary/clean/'.$lang.'/'.$area.'/'.$what.'" title="'._DICTIONARY_DELETE_DUPLICATES.'"><i class="fas fa-broom fa-lg"></i></a>
-		<a class="btf" href="'.BASE_URL.'dictionary/import/'.$lang.'/'.$area.'" title="'._IMPORT_KEYS.'"><i class="fas fa-download fa-lg"></i></a>
-		<a class="btf" href="'.BASE_URL.'dictionary/add/'.$lang.'/'.$area.'" title="'._NEW_WORD.'"><i class="fas fa-plus fa-lg"></i></a>
-
-<script>
-window.addEvent("domready", function()
-{
-	buttonize("filters", "btf", "modal");
-});
-</script>';
-        }
-	}
-
-	/**
-	 * Show search results on dictionary words
-	 *
-	 * @param   string 	$code Language code
-	 * @param   string 	$area Area name
-	 * @param   string 	$what Dictionary key
-	 * @param   string 	$str  Searched string
-	 * @return  void
-	 */
-	public function search(string $code, string $area, string $what, string $str)
-	{
-	    // load dictionary
-		$this->dict->get_wordarray(array('dictionary'));
 
         // get page
         $page = $this->get_page('dictionary/keys');
 
-        // contents
-        $view = new X4View_core('languages/search');
-        $view->page = $page;
+        $view = new X4View_core('page');
+        $view->breadcrumb = array($this->site->get_bredcrumb($page));
+        $view->actions = $this->actions($lang, $area, $qs['xwhat']);
 
-        $dict = new Dictionary_model();
-        $view->items = $dict->search_words($area, $str);
-        $view->lang = $code;
-        $view->what = $what;
-        $view->str = $str;
+        // contents
+        $view->content = new X4View_core('languages/words');
+        $view->content->keys = $keys;
+        $view->content->id_area = $id_area;
+
+        // get items
+        if (empty($qs['xstr']))
+        {
+            $view->content->items = $mod->get_words($lang, $area, $qs['xwhat']);
+        }
+        else
+        {
+            $qs['xwhat'] = '';
+            $view->content->items = $mod->search_words($area, $qs['xstr']);
+        }
+
+        $view->content->what = $qs['xwhat'];
+        $view->content->qs = $qs;
 
         // area switcher
-        $view->area = $area;
-        $area = new Area_model();
-        $view->areas = $area->get_areas();
+        $view->content->area = $area;
+        $view->content->areas = $areas;
 
+        // language switcher
+        $view->content->lang = $lang;
+        if (MULTILANGUAGE)
+        {
+            $lang = new Language_model();
+            $view->content->langs = $lang->get_languages();
+        }
+        // to fix charset
         header('Content-Type: text/html; charset=utf-8');
 
         $view->render(TRUE);
+	}
+
+	/**
+	 * Dictionary actions
+	 *
+     * @access	private
+	 * @param   string 	$code Language code
+	 * @param   string 	$area Area name
+	 * @param   string 	$what Dictionary key
+	 * @return  string
+	 */
+	private function actions(string $lang, string $area, string $what = '')
+	{
+		return '<a class="link" @click="popup(\''.BASE_URL.'dictionary/clean\')" title="'._DICTIONARY_DELETE_DUPLICATES.'">
+            <i class="fa-solid fa-lg fa-broom"></i>
+        </a>
+        <a class="link" @click="popup(\''.BASE_URL.'dictionary/import/'.$lang.'/'.$area.'\')" title="'._IMPORT_KEYS.'">
+            <i class="fa-solid fa-upload fa-lg"></i>
+        </a>
+        <a class="link" @click="popup(\''.BASE_URL.'dictionary/edit/'.$lang.'/'.$area.'?xwhat='.$what.'\')" title="'._NEW_WORD.'">
+            <i class="fa-solid fa-lg fa-circle-plus"></i>
+        </a>';
 	}
 
 	/**
@@ -207,11 +156,10 @@ window.addEvent("domready", function()
 		$val = ($what == 'xlock')
 			? 4
 			: 3;
+
 		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'dictionary', $id, $val);
 		if (is_null($msg))
 		{
-			$qs = X4Route_core::get_query_string();
-
 			// do action
 			$dict = new Dictionary_model();
 			$result = $dict->update($id, array($what => $value));
@@ -223,10 +171,9 @@ window.addEvent("domready", function()
 			// set update
 			if ($result[1])
             {
-				$msg->update[] = array(
-					'element' => $qs['div'],
-					'url' => urldecode($qs['url']),
-					'title' => null
+				$msg->update = array(
+					'element' => 'page',
+					'url' => $_SERVER['HTTP_REFERER']
 				);
             }
 		}
@@ -234,40 +181,34 @@ window.addEvent("domready", function()
 	}
 
 	/**
-	 * Edit dictionary word form (use Ajax)
+	 * Edit dictionary word form
 	 *
+     * @param   string 	$code Language code
+	 * @param   string 	$area Area name
 	 * @param   integer $id Dictionary ID
 	 * @return  void
 	 */
-	public function edit(int $id)
+	public function edit(string $lang, string $area, int $id = 0)
 	{
-		// get object
-		$dict = new Dictionary_model();
-		$obj = $dict->get_by_id($id);
-
-		// load dictionary
+        // load dictionary
 		$this->dict->get_wordarray(array('form', 'dictionary'));
 
-		// build the form
-		$fields = array();
-		$fields[] = array(
-			'label' => null,
-			'type' => 'hidden',
-			'value' => $id,
-			'name' => 'id'
-		);
-		$fields[] = array(
-			'label' => null,
-			'type' => 'html',
-			'value' => '<h4>'.$obj->xkey.'</h4>'
-		);
-		$fields[] = array(
-			'label' => _WORD,
-			'type' => 'textarea',
-			'value' => str_replace(array("\n", '<br />', '<br>', '<br/>'), array('', "\n", "\n", "\n"), $obj->xval),
-			'name' => 'xval',
-			'rule' => 'required'
-		);
+        $qs = X4Route_core::get_query_string();
+        $qs['xwhat'] = $qs['xwhat'] ?? '';
+
+		// get object
+		$mod = new Dictionary_model();
+        $item = ($id)
+			? $mod->get_by_id($id)
+			: new Word_obj($qs['xwhat']);
+
+        // build the form
+		$form_fields = new X4Form_core('dictionary/word_edit');
+		$form_fields->id = $id;
+		$form_fields->item = $item;
+
+		// get the fields array
+		$fields = $form_fields->render();
 
 		// if submitted
 		if (X4Route_core::$post)
@@ -275,7 +216,7 @@ window.addEvent("domready", function()
 			$e = X4Validation_helper::form($fields, 'editor');
 			if ($e)
 			{
-				$this->editing($obj, $_POST);
+				$this->editing($id, $_POST);
 			}
 			else
 			{
@@ -284,55 +225,90 @@ window.addEvent("domready", function()
 			die;
 		}
 
+        $view = new X4View_core('modal');
+        $view->title = _EDIT_WORD;
 		// content
-		$view = new X4View_core('editor');
-		$view->title = _EDIT_WORD;
+		$view->content = new X4View_core('editor');
 
 		// form builder
-		$view->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
-			'onclick="setForm(\'editor\');"');
+		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
+            '@click="submitForm(\'editor\')"');
 		$view->render(TRUE);
 	}
 
 	/**
-	 * Register Edit dictionary word form data
+	 * Register Edit dictionary word
 	 *
 	 * @access	private
-	 * @param   stdClass    $obj word object
+     * @param   integer     $id
 	 * @param   array       $_post _POST array
 	 * @return  void
 	 */
-	private function editing(stdClass $obj, array $_post)
+	private function editing(int $id, array $_post)
 	{
 		$msg = null;
-		// check permission
-		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'dictionary', $_post['id'], 2);
+        // check permissions
+        $id_area = X4Route_core::get_id_area($_post['area']);
+		$msg = ($id)
+            ? AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'dictionary', $id_area, 2)
+            : AdmUtils_helper::chk_priv_level($_SESSION['xuid'], '_word_creation', 0, 4);
 
 		if (is_null($msg))
 		{
 			// handle _post
+            // handle _post
 			$post = array(
-				'xval' => nl2br(trim($_post['xval']))
+				'lang' => $_post['lang'],
+				'area' => $_post['area'],
+				'what' => X4Utils_helper::slugify($_post['what'], true, true),
+				'xkey' => strtoupper(trim($_post['xkey']))
 			);
 
+            $value = trim($_post['xval']);
+            if (strip_tags($value) == $value)
+            {
+                // no HTML so we replace \n with <br>
+                $value = nl2br($value);
+            }
+			$post['xval'] = $value;
+
 			// update
-			$dict = new Dictionary_model();
-			$result = $dict->update($_post['id'], $post);
+			$mod = new Dictionary_model();
 
-			// set message
-			$msg = AdmUtils_helper::set_msg($result);
-
-			// set what update
-			if ($result[1])
+            // check if words already exists
+			$check = $mod->exists($id, $post);
+			if ($check)
+            {
+				$msg = AdmUtils_helper::set_msg(false, '', $this->dict->get_word('_XKEY_ALREADY_EXISTS', 'msg'));
+            }
+			else
 			{
-				APC && apcu_delete(SITE.'dict'.$obj->area.$obj->lang.$obj->what);
+                $obj = $mod->get_by_id($id);
+                // update or insert
+				if ($id)
+				{
+                    $result = $mod->update($id, $post);
+				}
+				else
+				{
+				    $result = $mod->insert($post);
+                }
 
-				$msg->update[] = array(
-					'element' => 'tdown',
-					'url' => BASE_URL.'dictionary/keys/'.$obj->lang.'/'.$obj->area.'/'.$obj->what,
-					'title' => null
-				);
-			}
+                // set message
+                $msg = AdmUtils_helper::set_msg($result);
+
+                // set what update
+                if ($result[1])
+                {
+                    // reset cache
+                    APC && apcu_delete(SITE.'dict'.$obj->area.$obj->lang.$obj->what);
+
+                    $msg->update = array(
+                        'element' => 'page',
+                        'url' => BASE_URL.'dictionary/keys/'.$post['lang'].'/'.$post['area'].'?xwhat='.$post['what']
+                    );
+                }
+            }
 		}
 		$this->response($msg);
 	}
@@ -349,8 +325,8 @@ window.addEvent("domready", function()
 		$this->dict->get_wordarray(array('form', 'dictionary'));
 
 		// get object
-		$dict = new Dictionary_model();
-		$obj = $dict->get_by_id($id, 'dictionary', 'id, xkey, lang, area, what');
+		$mod = new Dictionary_model();
+		$item = $mod->get_by_id($id, 'dictionary', 'id, xkey');
 
 		// build the form
 		$fields = array();
@@ -364,18 +340,19 @@ window.addEvent("domready", function()
 		// if submitted
 		if (X4Route_core::$post)
 		{
-			$this->deleting($obj);
+			$this->deleting($id);
 			die;
 		}
 
-		// contents
-		$view = new X4View_core('delete');
+        $view = new X4View_core('modal');
 		$view->title = _DELETE_WORD;
-		$view->item = $obj->xkey;
+		// contents
+        $view->content = new X4View_core('delete');
+		$view->content->item = $item->xkey;
 
 		// form builder
-		$view->form = X4Form_helper::doform('delete', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
-			'onclick="setForm(\'delete\');"');
+		$view->content->form = X4Form_helper::doform('delete', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
+            '@click="submitForm(\'delete\')"');
 		$view->render(TRUE);
 	}
 
@@ -383,20 +360,20 @@ window.addEvent("domready", function()
 	 * Delete dictionary word
 	 *
 	 * @access	private
-	 * @param   stdClass 	$obj Word object
+	 * @param   integer     $id
 	 * @return  void
 	 */
-	private function deleting(stdClass $obj)
+	private function deleting(int $id)
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'dictionary', $obj->id, 4);
+		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'dictionary', $id, 4);
 
 		if (is_null($msg))
 		{
 			// do action
-			$dict = new Dictionary_model();
-			$result = $dict->delete($obj->id);
+			$mod = new Dictionary_model();
+			$result = $mod->delete($id);
 
 			// set message
 			$msg = AdmUtils_helper::set_msg($result);
@@ -405,13 +382,12 @@ window.addEvent("domready", function()
 			if ($result[1])
             {
 				$perm = new Permission_model();
-				$perm->deleting_by_what('dictionary', $obj->id);
+				$perm->deleting_by_what('dictionary', $id);
 
 				// set what update
-				$msg->update[] = array(
-					'element' => 'tdown',
-					'url' => BASE_URL.'dictionary/keys/'.$obj->lang.'/'.$obj->area.'/'.$obj->what,
-					'title' => null
+				$msg->update = array(
+					'element' => 'page',
+					'url' => $_SERVER['HTTP_REFERER']
 				);
 			}
 		}
@@ -421,12 +397,9 @@ window.addEvent("domready", function()
     /**
 	 * Remove duplicates in dictionary table
 	 *
-     * @param   integer $id_area
-     * @param   string  $lang
-     * @param   string  $what
 	 * @return  void
 	 */
-	public function clean(string $lang, string $area, string $what)
+	public function clean()
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'dictionary'));
@@ -443,18 +416,20 @@ window.addEvent("domready", function()
 		// if submitted
 		if (X4Route_core::$post)
 		{
-			$this->cleaning($area, $lang, $what);
+			$this->cleaning();
 			die;
 		}
 
+        $view = new X4View_core('modal');
+        $view->title = _DICTIONARY_DELETE_DUPLICATES;
+
 		// contents
-		$view = new X4View_core('delete');
-		$view->title = _DICTIONARY_DELETE_DUPLICATES;
-		$view->item = '';   //_DICTIONARY_DELETE_DUPLICATES;
+		$view->content = new X4View_core('delete');
+		$view->content->item = _DICTIONARY_DELETE_DUPLICATES_MSG;
 
 		// form builder
-		$view->form = X4Form_helper::doform('delete', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
-			'onclick="setForm(\'delete\');"');
+		$view->content->form = X4Form_helper::doform('delete', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
+            '@click="submitForm(\'delete\')"');
 		$view->render(TRUE);
 	}
 
@@ -462,12 +437,9 @@ window.addEvent("domready", function()
 	 * Remove duplicates
 	 *
 	 * @access	private
-	 * @param   integer $id_area
-     * @param   string  $lang
-     * @param   string  $what
 	 * @return  void
 	 */
-	private function cleaning(string $area, string $lang, string $what)
+	private function cleaning()
 	{
 		$msg = null;
 		// check permission
@@ -476,8 +448,8 @@ window.addEvent("domready", function()
 		if (is_null($msg))
 		{
 			// do action
-			$dict = new Dictionary_model();
-			$result = $dict->remove_duplicates();
+			$mod = new Dictionary_model();
+			$result = $mod->remove_duplicates();
 
 			// set message
 			$msg = AdmUtils_helper::set_msg($result);
@@ -486,154 +458,10 @@ window.addEvent("domready", function()
 			if ($result[1])
             {
                 // set what update
-				$msg->update[] = array(
-					'element' => 'tdown',
-					'url' => BASE_URL.'dictionary/keys/'.$lang.'/'.$area.'/'.$what,
-					'title' => null
+				$msg->update = array(
+					'element' => 'page',
+					'url' => $_SERVER['HTTP_REFERER']
 				);
-			}
-		}
-		$this->response($msg);
-	}
-
-	/**
-	 * New dictionary word form (use Ajax)
-	 *
-	 * @param   string 	$lang Language code
-	 * @param   string 	$area Area name
-	 * @param   string	$what Key value
-	 * @return  void
-	 */
-	public function add(string $lang, string $area, string $what = '')
-	{
-		// load dictionary
-		$this->dict->get_wordarray(array('form', 'dictionary'));
-
-		// build the form
-		$fields = array();
-		$fields[] = array(
-			'label' => null,
-			'type' => 'hidden',
-			'value' => $lang,
-			'name' => 'lang'
-		);
-		$fields[] = array(
-			'label' => null,
-			'type' => 'hidden',
-			'value' => $area,
-			'name' => 'area',
-			'extra' => 'class="large"'
-		);
-		$fields[] = array(
-			'label' => _SECTION,
-			'type' => 'text',
-			'value' => $what,
-			'name' => 'what',
-			'rule' => 'required',
-			'extra' => 'class="large"'
-		);
-		$fields[] = array(
-			'label' => _KEY,
-			'type' => 'text',
-			'value' => '',
-			'name' => 'xkey',
-			'rule' => 'required',
-			'extra' => 'class="large"'
-		);
-		$fields[] = array(
-			'label' => _WORD,
-			'type' => 'textarea',
-			'value' => '',
-			'name' => 'xval',
-			'rule' => 'required',
-			'extra' => 'class="large"'
-		);
-
-		// if submitted
-		if (X4Route_core::$post)
-		{
-			$e = X4Validation_helper::form($fields, 'editor');
-			if ($e)
-			{
-				$this->adding($_POST);
-			}
-			else
-			{
-				$this->notice($fields);
-			}
-			die;
-		}
-
-		// contents
-		$view = new X4View_core('editor');
-		$view->title = _ADD_WORD;
-
-		// form builder
-		$view->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
-			'onclick="setForm(\'editor\');"');
-		$view->render(TRUE);
-	}
-
-	/**
-	 * Register New dictionary word form data
-	 *
-	 * @access	private
-	 * @param   array 	$_post _POST array
-	 * @return  void
-	 */
-	private function adding(array $_post)
-	{
-		$msg = null;
-		// check permission
-		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], '_word_creation', 0, 4);
-
-		if (is_null($msg))
-		{
-			// handle _post
-			$post = array(
-				'lang' => $_post['lang'],
-				'area' => $_post['area'],
-				'what' => X4Utils_helper::slugify($_post['what']),
-				'xkey' => strtoupper(trim($_post['xkey'])),
-				'xval' => nl2br(trim($_post['xval']))
-			);
-
-			$dict = new Dictionary_model();
-
-			// check if words already exists
-			$check = $dict->exists($post);
-			if ($check)
-            {
-				$msg = AdmUtils_helper::set_msg(false, '', $this->dict->get_word('_XKEY_ALREADY_EXISTS', 'msg'));
-            }
-			else
-			{
-				// insert
-				$result = $dict->insert($post);
-
-				// set message
-				$msg = AdmUtils_helper::set_msg($result);
-
-				// add permission
-				if ($result[1])
-				{
-					$amod = new Area_model();
-					$id_area = $amod->get_area_id($_post['area']);
-
-					$perm = new Permission_model();
-					$array[] = array(
-							'action' => 'insert',
-							'id_what' => $result[0],
-							'id_user' => $_SESSION['xuid'],
-							'level' => 4);
-					$perm->pexec('dictionary', $array, $id_area);
-
-					$msg->update[] = array(
-						'element' => 'tdown',
-						'url' => BASE_URL.'dictionary/keys/'.$post['lang'].'/'.$post['area'].'/'.$post['what'],
-						'title' => null
-					);
-				}
 			}
 		}
 		$this->response($msg);
@@ -651,36 +479,15 @@ window.addEvent("domready", function()
 		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'dictionary'));
 
-		// build the form
-		$fields = array();
-		$fields[] = array(
-			'label' => null,
-			'type' => 'hidden',
-			'value' => $lang,
-			'name' => 'lang'
-		);
-		$fields[] = array(
-			'label' => null,
-			'type' => 'hidden',
-			'value' => $area,
-			'name' => 'area',
-			'extra' => 'class="large"'
-		);
-		$fields[] = array(
-			'label' => null,
-			'type' => 'html',
-			'value' => '<h4>'._IMPORT_INTO.' '.$lang.'/'.$area.'</h4>'._IMPORT_INTO_MSG
-		);
-		$dict = new Dictionary_model();
-		$fields[] = array(
-			'label' => _SECTION,
-			'type' => 'select',
-			'value' => '',
-			'name' => 'what',
-			'options' => array($dict->get_section_options(), 'value', 'option'),
-			'rule' => 'required',
-			'extra' => 'class="large"'
-		);
+        $mod = new Dictionary_model();
+
+        $form_fields = new X4Form_core('dictionary/word_import');
+		$form_fields->lang = $lang;
+		$form_fields->area = $area;
+        $form_fields->sections = $mod->get_section_options();
+
+		// get the fields array
+		$fields = $form_fields->render();
 
 		// if submitted
 		if (X4Route_core::$post)
@@ -697,13 +504,16 @@ window.addEvent("domready", function()
 			die;
 		}
 
+        $view = new X4View_core('modal');
+        $view->title = _IMPORT_KEYS;
+
 		// contents
-		$view = new X4View_core('editor');
-		$view->title = _IMPORT_KEYS;
+		$view->content = new X4View_core('editor');
+
 
 		// form builder
-		$view->form = X4Form_helper::doform('import', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
-			'onclick="setForm(\'import\');"');
+		$view->content->form = X4Form_helper::doform('import', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
+            '@click="submitForm(\'import\')"');
 
 		$view->render(TRUE);
 	}
@@ -735,18 +545,18 @@ window.addEvent("domready", function()
 			);
 
 			// get words to import
-			$dict = new Dictionary_model();
+			$mod = new Dictionary_model();
 
 			if ($what == 'ALL')
 			{
 				// import all sections in an area
-				$sections = $dict->get_sections($lang, $area);
+				$sections = $mod->get_sections($lang, $area);
 
 				$result = true;
 				foreach ($sections as $s)
 				{
 					// get words in section
-					$words = $dict->get_words_to_import($lang, $area, $s->what, $post['lang'], $post['area']);
+					$words = $mod->get_words_to_import($lang, $area, $s->what, $post['lang'], $post['area']);
 
 					if (!empty($words))
 					{
@@ -756,28 +566,10 @@ window.addEvent("domready", function()
 						foreach ($words as $i)
 						{
 							$post['xkey'] = $i->xkey;
-
-							// we can't try to translate
-
-							// set the word
 							$post['xval'] = $i->xval;
 
 							// insert
-							$result = $dict->insert($post);
-
-							// add permission
-							if ($result[1])
-                            {
-								$amod = new Area_model();
-								$id_area = $amod->get_area_id($_post['area']);
-								$perm = new Permission_model();
-								$array[] = array(
-										'action' => 'insert',
-										'id_what' => $result[0],
-										'id_user' => $_SESSION['xuid'],
-										'level' => 4);
-								$perm->pexec('dictionary', $array, $id_area);
-							}
+							$result = $mod->insert($post);
 						}
 					}
 				}
@@ -788,7 +580,7 @@ window.addEvent("domready", function()
 			else
 			{
 				// import only one section
-				$words = $dict->get_words_to_import($lang, $area, $what, $post['lang'], $post['area']);
+				$words = $mod->get_words_to_import($lang, $area, $what, $post['lang'], $post['area']);
 
 				$result = true;
 
@@ -796,14 +588,10 @@ window.addEvent("domready", function()
 				foreach ($words as $i)
 				{
 					$post['xkey'] = $i->xkey;
-
-					// we can't try to translate
-
-					// set the word
-					$post['xval'] = $i->xval;
+                    $post['xval'] = $i->xval;
 
 					// insert
-					$result = $dict->insert($post);
+					$result = $mod->insert($post);
 				}
 			}
 
@@ -812,10 +600,9 @@ window.addEvent("domready", function()
 			// set what update
 			if ($result[1])
 			{
-				$msg->update[] = array(
-					'element' => 'tdown',
-					'url' => BASE_URL.'dictionary/keys/'.$post['lang'].'/'.$post['area'].'/'.$what,
-					'title' => null
+				$msg->update = array(
+					'element' => 'page',
+					'url' => BASE_URL.'dictionary/keys/'.$post['lang'].'/'.$post['area'].'/'.$what
 				);
 			}
 		}

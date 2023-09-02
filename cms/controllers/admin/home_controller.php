@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
 
@@ -59,10 +59,9 @@ class Home_controller extends X3ui_controller
 	 * This page displays Notices and Bookmarks
 	 *
 	 * @param   string  $start_page URL of first page to load
-	 * @param   string  $start_title Title of first page to load
 	 * @return  void
 	 */
-	public function start(string $start_page = 'home-dashboard', string $start_title = 'Home')
+	public function start(string $start_page = 'home§dashboard')
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('home'));
@@ -72,10 +71,10 @@ class Home_controller extends X3ui_controller
 		$page = $this->get_page('home');
 		$view = new X4View_core(X4Theme_helper::set_tpl('x3ui'));
 		$view->page = $page;
-		$view->menus = $this->site->get_menus(1);
 
-        $view->start_page = BASE_URL.str_replace('-', '/', $start_page).'?'.http_build_query($qs);
-		$view->start_title = urldecode($start_title);
+        $view->menus = $this->site->get_menus(1);
+
+        $view->start_page = BASE_URL.str_replace('§', '/', urldecode($start_page)).'?'.http_build_query($qs);
 
 		// languages
 		$mod = new Language_model();
@@ -96,16 +95,18 @@ class Home_controller extends X3ui_controller
 
 		// get page
 		$page = $this->get_page('home');
-		$view = new X4View_core(X4Theme_helper::set_tpl($page->tpl));
-		$view->page = $page;
 
-		// content
-		$view = new X4View_core('home');
+        // contents
+		$view = new X4View_core('page');
+        $view->breadcrumb = array($this->site->get_bredcrumb($page));
+		$view->actions = '';
+
+		$view->content = new X4View_core('home');
 		// notices
-		$view->notices = (NOTICES) ? $this->get_notices($page->lang) : '';
+		$view->content->notices = (NOTICES) ? $this->get_notices($page->lang) : '';
 		// widgets
 		$mod = new Widget_model();
-		$view->widgets = $mod->widgets();
+		$view->content->widgets = $mod->widgets();
 
 		$view->render(TRUE);
 	}
@@ -121,16 +122,6 @@ class Home_controller extends X3ui_controller
 		$view = new X4View_core('menu');
 		$view->menus = $this->site->get_menus(1);
 		$view->render(TRUE);
-	}
-
-	/**
-	 * Dashboard filter
-	 *
-	 * @return  void
-	 */
-	public function filter()
-	{
-		echo '';
 	}
 
 	/**

@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
 
@@ -19,12 +19,12 @@ class Articles_controller extends X3ui_controller
 	 * tabs cases
 	 */
 	protected $cases = array(
-			'latest_articles' => array('articles/index', 'btm'),
-			'by_page' => array('articles/by_page', 'bta'),
-			'context_order' => array('articles/index', 'btm'),
-			'category_order' => array('articles/index', 'btm'),
-			'author_order' => array('articles/index', 'btm'),
-			'key_order' => array('articles/index', 'btm')
+			'latest_articles' => array('articles/index'),
+			'by_page' => array('articles/page'),
+			'context_order' => array('articles/context'),
+			'category_order' => array('articles/category', 'btm'),
+			'author_order' => array('articles/author', 'btm'),
+			'key_order' => array('articles/key', 'btm')
 		);
 
 	/**
@@ -46,7 +46,6 @@ class Articles_controller extends X3ui_controller
 	 */
 	public function _default()
 	{
-		// redirect to index
 		$this->index(2, X4Route_core::$lang);
 	}
 
@@ -57,156 +56,80 @@ class Articles_controller extends X3ui_controller
 	 *
 	 * @param   integer $id_area Area ID
 	 * @param   string 	$lang Language code
-	 * @param   string	$case view switcher
-	 * @param   mixed   $id_what view parameter
 	 * @param   integer $pp index for pagination
-	 * @param   string	$str Search string
 	 * @return  void
 	 */
-	public function index(int $id_area = 2, string $lang = '' , string $case = 'latest_articles', int $id_what = 0, int $pp = 0, string $str = '')
+	public function index(int $id_area = 2, string $lang = '' , int $pp = 0)
 	{
 		// load dictionary
 		$this->dict->get_wordarray(array('articles'));
 
-		$area = new Area_model();
-	    	list($id_area, $areas) = $area->get_my_areas($id_area);
+        // get query string from filter
+        $qs = X4Route_core::get_query_string();
 
-		$_SESSION['referer'] = 'index/'.$id_area.'/'.$lang.'/'.$case.'/'.$id_what.'/'.$pp.'/'.$str;
+		$area = new Area_model();
+	    list($id_area, $areas) = $area->get_my_areas($id_area);
 
 		// get page
 		$page = $this->get_page('articles');
-		$navbar = array($this->site->get_bredcrumb($page));
+
+        $view = new X4View_core('page');
+        $view->breadcrumb = array($this->site->get_bredcrumb($page));
+		$view->actions = $this->actions($id_area, $lang);
 
 		$mod = new Article_model();
 
-        	// contents
-        	$view = new X4View_core('articles/article_list');
-		$view->navbar = $navbar;
-		switch($case)
-		{
-			case 'context_order':
-				$cmod = new Context_model();
-				$con = $cmod->get_contexts($id_area, $lang);
-				if ($id_what == 0 && $con)
-				{
-				    $id_what = $con[0]->code;
-				}
-				$view->items = X4Pagination_helper::paginate($mod->get_by_context($id_area, $lang, $id_what, $str), $pp);
-				$view->contexts = $con;
-				break;
-			case 'category_order':
-				$cmod = new Category_model();
-				$ctg = $cmod->get_categories($id_area, $lang);
-				if ($id_what === 0 && $ctg)
-				{
-					$id_what = $ctg[0]->name;
-				}
-				$view->items = X4Pagination_helper::paginate($mod->get_by_category($id_area, $lang, $id_what, $str), $pp);
-				$view->categories = $ctg;
-				break;
-			case 'author_order':
-				$aut = $mod->get_authors($id_area, $lang);
-				if ($id_what == 0 && $aut)
-				{
-					$id_what = $aut[0]->id_editor;
-				}
-				$view->items = X4Pagination_helper::paginate($mod->get_by_author($id_area, $lang, $id_what, $str), $pp);
-				$view->authors = $aut;
-				break;
-			case 'key_order':
-				$keys = $mod->get_keys($id_area, $lang);
-				if ($id_what == 0 && $keys)
-				{
-					$id_what = $keys[0]->xkeys;
-				}
-				$view->items = X4Pagination_helper::paginate($mod->get_by_key($id_area, $lang, $id_what, $str), $pp);
-				$view->keys = $keys;
-				break;
-			case 'by_page':
-				$pmod = new Page_model();
-				$spage = $pmod->get_by_id($id_what);
-				$view->items = X4Pagination_helper::paginate($mod->get_by_page($id_area, $lang, $id_what, $str), $pp);
-				$view->page = $spage;
-				break;
-			default:
-				$view->items = X4Pagination_helper::paginate($mod->get_articles($id_area, $lang, 'id', $str), $pp);
-				break;
-		}
+        // contents
+        $view->content = new X4View_core('articles/article_list');
 
-		// for the construction of the tabs
-		$view->xcase = $case;
-		$view->cases = $this->cases;
-		$view->id_what = $id_what;
-		$view->pp = $pp;
-		$view->str = $str;
+        // handle filters
+        $qs['xstr'] = $qs['xstr'] ?? '';
+        $qs['xcnt'] = $qs['xcnt'] ?? -1;
+        $qs['xctg'] = $qs['xctg'] ?? '';
+        $qs['xkey'] = $qs['xkey'] ?? '';
+        $qs['xpage'] = $qs['xpage'] ?? 0;
+        $qs['xaut'] = $qs['xaut'] ?? 0;
+
+        $view->content->contexts = $mod->get_contexts($id_area, $lang);
+        $view->content->categories = $mod->get_all_categories($id_area, $lang);
+        $view->content->keys = $mod->get_keys($id_area, $lang);
+        $view->content->authors = $mod->get_authors($id_area, $lang);
+
+        $view->content->items = X4Pagination_helper::paginate($mod->get_articles($id_area, $lang, $qs), $pp);
+
+        $mod = new Page_model($id_area, $lang);
+        $view->content->pages = $mod->get_pages();
+
+        $view->content->qs = $qs;
+		$view->content->pp = $pp;
 
 		// area switcher
-		$view->id_area = $id_area;
-		$view->areas = $areas;
+		$view->content->id_area = $id_area;
+		$view->content->areas = $areas;
 
 		// language switcher
-		$view->lang = $lang;
-		$lang = new Language_model();
-		$view->langs = $lang->get_languages();
-
+		$view->content->lang = $lang;
+        if (MULTILANGUAGE)
+        {
+		    $lang = new Language_model();
+            $view->content->langs = $lang->get_languages();
+        }
 		$view->render(TRUE);
 	}
 
 	/**
-	 * Article filter
+	 * Article actions
 	 *
+     * @access	private
 	 * @param   integer $id_area Area ID
 	 * @param   string $lang Language code
-	 * @param   string $xcase
-	 * @param   integer $id_what view parameter
-	 * @param   string $str
-	 * @return  void
+	 * @return  string
 	 */
-	public function filter(int $id_area, string $lang, string $xcase = '', int $id_what = 0, string $str = '')
+	public function actions(int $id_area, string $lang)
 	{
-		// load the dictionary
-		$this->dict->get_wordarray(array('articles'));
-
-		if (X4Route_core::$post)
-		{
-		    // set message
-            $msg = AdmUtils_helper::set_msg(array(0,1));
-            $msg->update[] = array(
-                    'element' => 'topic',
-                    'url' => BASE_URL.'articles/index/'.$id_area.'/'.$lang.'/'.$xcase.'/'.$id_what.'/0/'.urlencode(trim($_POST['search'])),
-                    'title' => null
-                );
-            $this->response($msg);
-		}
-		else
-		{
-		    $js = '';
-            switch ($xcase)
-            {
-                case 'bulk':
-                    $js = 'bulkize("bulk_selector", "bulkable", "bulk");';
-                    echo ' <button type="button" name="bulk" id="bulk" class="button" onclick="setForm(\'bulk_action\');">'._DELETE_BULK.'</button>';
-                    break;
-                case '':
-                    // add nothing
-                    break;
-                default:
-                    echo '<form id="searchitems" name="searchitems" action="'.BASE_URL.'articles/filter/'.$id_area.'/'.$lang.'/'.$xcase.'/'.$id_what.'" method="POST" onsubmit="return false;">
-                        <input type="text" name="search" id="search" value="'.urldecode($str).'" title="'._ARTICLES_SEARCH_MSG.'" />
-                        <button type="button" name="searcher" class="button" onclick="setForm(\'searchitems\');">'._FIND.'</button>
-                        </form>';
-                    break;
-            }
-
-            echo '<a class="btf" href="'.BASE_URL.'articles/edit/'.$id_area.'/'.$lang.'" title="'._NEW_ARTICLE.'"><i class="fas fa-plus fa-lg"></i></a>
-<script>
-window.addEvent("domready", function()
-{
-	buttonize("filters", "btf", "topic");
-	'.$js.'
-});
-</script>';
-		}
+        return '<a class="link" @click="pager(\''.BASE_URL.'articles/edit/'.$id_area.'/'.$lang.'\')" title="'._NEW_ARTICLE.'">
+            <i class="fa-solid fa-lg fa-circle-plus"></i>
+        </a>';
 	}
 
 	/**
@@ -220,122 +143,39 @@ window.addEvent("domready", function()
 	public function bulk(int $id_area, string $lang, string $bid)
 	{
 		$msg = null;
-		if (X4Route_core::$post)
+        $_post = X4Route_core::$input;
+		if (!empty($_post) && isset($_post['bulk']) && is_array($_post['bulk']) && !empty($_post['bulk']))
 		{
-			if (isset($_POST['bulk']))
-			{
-				if (is_array($_POST['bulk']) && !empty($_POST['bulk']))
-				{
-					$mod = new Article_model();
-					$perm = new Permission_model();
-					foreach ($_POST['bulk'] as $i)
-					{
-						$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'articles', $i, 4);
-						if (is_null($msg))
-						{
-							$result = $mod->delete($i);
+            $mod = new Article_model();
+            $perm = new Permission_model();
 
-							if ($result[1])
-							{
-								$perm->deleting_by_what('articles', $i);
-							}
-						}
-					}
+            // NOTE: we here have only bulk_action = delete
+            foreach ($_post['bulk'] as $i)
+            {
+                $msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'articles', $i, 4);
+                if (is_null($msg))
+                {
+                    $result = $mod->delete($i);
+                    if ($result[1])
+                    {
+                        $perm->deleting_by_what('articles', $i);
+                    }
+                }
+            }
 
-					// set message
-					$this->dict->get_words();
-					$msg = AdmUtils_helper::set_msg($result);
+            // set message
+            $this->dict->get_words();
+            $msg = AdmUtils_helper::set_msg($result);
 
-					// set update
-					if ($result[1])
-					{
-						$msg->update[] = array(
-							'element' => 'topic',
-							'url' => BASE_URL.'articles/history/'.$id_area.'/'.$lang.'/'.$bid.'/0',
-							'title' => null
-						);
-					}
-				}
-			}
-		}
-		$this->response($msg);
-	}
-
-	/**
-	 * Page selector form (use Ajax)
-	 *
-	 * @param   integer $id_area Area ID
-	 * @param   string  $lang language code
-	 * @return  void
-	 */
-	public function by_page(int $id_area, string $lang)
-	{
-		// load dictionaries
-		$this->dict->get_wordarray(array('form', 'articles'));
-
-		// build form
-		$fields = array();
-		$fields[] = array(
-			'label' => null,
-			'type' => 'hidden',
-			'value' => $_SERVER["HTTP_REFERER"],
-			'name' => 'from'
-		);
-		$fields[] = array(
-			'label' => null,
-			'type' => 'hidden',
-			'value' => $id_area,
-			'name' => 'id_area'
-		);
-		$fields[] = array(
-			'label' => null,
-			'type' => 'hidden',
-			'value' => $lang,
-			'name' => 'lang'
-		);
-
-		$mod = new Article_model();
-		$fields[] = array(
-			'label' => ucfirst(_PAGE),
-			'type' => 'select',
-			'value' => '',
-			'name' => 'id_page',
-			'options' => array($mod->get_pages($id_area, $lang), 'id', 'name'),
-			'extra' => 'class="large"'
-		);
-
-		// if submitted
-		if (X4Route_core::$post)
-		{
-			$this->search_list(BASE_URL.'articles/index/'.$_POST['id_area'].'/'.$_POST['lang'].'/by_page/'.$_POST['id_page']);
-			die;
-		}
-
-		// contents
-		$view = new X4View_core('editor');
-		$view->title = _BY_PAGE;
-
-		// form builder
-		$view->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SEARCH, 'buttons'), 'post', '',
-			'onclick="setForm(\'editor\');"');
-		$view->render(TRUE);
-	}
-
-	/**
-	 * URL redirection
-	 *
-	 * @access	private
-	 * @param   string  $url URL
-	 * @return  void
-	 */
-	private function search_list(string $url)
-	{
-		$msg = AdmUtils_helper::set_msg(true);
-		$msg->update[] = array(
-			'element' => 'topic',
-			'url' => urldecode($url),
-			'title' => null
-		);
+            // set update
+            if ($result[1])
+            {
+                $msg->update = array(
+                    'element' => 'page',
+                    'url' => $_SERVER['HTTP_REFERER']
+                );
+            }
+        }
 		$this->response($msg);
 	}
 
@@ -356,8 +196,6 @@ window.addEvent("domready", function()
 		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'articles', $id, $val);
 		if (is_null($msg))
 		{
-			$qs = X4Route_core::get_query_string();
-
 			// do action
 			$mod = new Article_model();
 			$result = $mod->update($id, array($what => $value));
@@ -368,11 +206,12 @@ window.addEvent("domready", function()
 
 			// set update
 			if ($result[1])
-				$msg->update[] = array(
-					'element' => $qs['div'],
-					'url' => urldecode($qs['url']),
-					'title' => null
+            {
+				$msg->update = array(
+					'element' => 'page',
+					'url' => $_SERVER['HTTP_REFERER']
 				);
+            }
 		}
 		$this->response($msg);
 	}
@@ -395,8 +234,6 @@ window.addEvent("domready", function()
 		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'articles', $id, $val);
 		if (is_null($msg))
 		{
-			$qs = X4Route_core::get_query_string();
-
 			// do action
 			$mod = new Article_model();
 			$result = $mod->update_by_bid($id, array($what => $value));
@@ -407,16 +244,75 @@ window.addEvent("domready", function()
 
 			// set update
 			if ($result[1])
-				$msg->update[] = array(
-					'element' => $qs['div'],
-					'url' => urldecode($qs['url']),
-					'title' => null
+            {
+				$msg->update = array(
+					'element' => 'page',
+					'url' => $_SERVER['HTTP_REFERER']
 				);
+            }
 		}
 		$this->response($msg);
 	}
 
+    /**
+	 * Get the list of available areas
+	 * Called via Ajax
+	 *
+	 * @param   integer $id_area Area ID
+	 * @return  string 	Options list
+	 */
+	public function refresh_areas()
+	{
+		$mod = new Area_model();
+		$items = $mod->get_areas();
+        echo json_encode($items);
+	}
+
+    /**
+	 * Get the list of available languages
+	 * Called via Ajax
+	 *
+	 * @param   integer $id_area Area ID
+	 * @return  string 	Options list
+	 */
+	public function refresh_languages(int $id_area)
+	{
+		$mod = new Language_model();
+		$items = $mod->get_alanguages($id_area);
+        echo X4Form_helper::get_options($items, 'code', 'language');
+	}
+
 	/**
+	 * Get the list of available contexts
+	 * Called via Ajax
+	 *
+	 * @param   integer $id_area Area ID
+	 * @param   string	$lang Language code
+	 * @return  string 	Options list
+	 */
+	public function refresh_contexts(int $id_area, string $lang)
+	{
+		$mod = new Context_model();
+		$items = $mod->get_codes($id_area, $lang, 1);
+        echo X4Form_helper::get_options($items, 'code', 'name');
+	}
+
+	/**
+	 * Get the list of available pages
+	 * Called via Ajax
+	 *
+	 * @param   integer $id_area Area ID
+	 * @param   string	$lang Language code
+	 * @return  string 	Options list
+	 */
+	public function refresh_pages(int $id_area, string $lang)
+	{
+		$mod = new Context_model();
+        $items = $mod->get_pages($id_area, $lang);
+        echo X4Form_helper::get_options($items, 'id', 'name');
+	}
+
+    /**
 	 * Get the list of available modules
 	 * Called via Ajax
 	 *
@@ -428,66 +324,7 @@ window.addEvent("domready", function()
 		// get array of modules
 		$plugin = new X4Plugin_model();
 		$items = $plugin->get_modules($id_area);
-
-		// build options list
-		$str = '<option value=""></option>';
-		foreach ($items as $i)
-		{
-			$str .= '<option value="'.$i->name.'">'.$i->description.'</option>';
-		}
-		echo $str;
-	}
-
-	/**
-	 * Get the list of available contexts
-	 * Called via Ajax
-	 *
-	 * @param   integer $id_area Area ID
-	 * @param   string	$lang Language code
-	 * @return  string 	Options list
-	 */
-	public function refresh_context(int $id_area, string $lang)
-	{
-		// get array of contexts
-		$mod = new Context_model();
-		$items = $mod->get_contexts($id_area, $lang, 1);
-
-		// build options list
-		$str = '';
-		foreach ($items as $i)
-		{
-			$str .= '<option value="'.$i->code.'">'.$i->name.'</option>';
-		}
-		echo $str;
-	}
-
-	/**
-	 * Get the list of available pages
-	 * Called via Ajax
-	 *
-	 * @param   integer $id_area Area ID
-	 * @param   string	$lang Language code
-	 * @param   integer	$code_context Context code
-	 * @return  string 	Options list
-	 */
-	public function refresh_pages(int $id_area, string $lang, int $code_context)
-	{
-		// get context key
-		$mod = new Context_model();
-		$context = $mod->get_by_code($id_area, $lang, $code_context);
-
-		$str = '';
-		// only if code key is pages return options list
-		if ($context->xkey == 'pages')
-		{
-			// get pages
-			$items = $mod->get_pages($id_area, $lang);
-			foreach ($items as $i)
-			{
-				$str .= '<option value="'.$i->id.'">'.$i->name.'</option>';
-			}
-		}
-		echo $str;
+        echo X4Form_helper::get_options($items, 'name', 'description', '');
 	}
 
 	/**
@@ -554,12 +391,13 @@ window.addEvent("domready", function()
 		$lmod = new Language_model();
 
 		// build the form
-		$form_fields = new X4Form_core('article_edit', '', array('fields' => array()));
+        $form_fields = new X4Form_core('article/article_edit');
+
 		$form_fields->referer = $referer;
 		$form_fields->item = $item;
 		$form_fields->lmod = $lmod;
-        	$form_fields->time_window = $time_window;
-        	$form_fields->bid = $bid;
+        $form_fields->time_window = $time_window;
+        $form_fields->bid = $bid;
 		// get the fields array
 		$fields = $form_fields->render();
 
@@ -578,31 +416,28 @@ window.addEvent("domready", function()
 			die;
 		}
 
-		// content
-		$view = new X4View_core('editor');
-		$view->close = false;
-
-		// Set the navbar
+        // Set the navbar
 		$page = $this->get_page('articles/edit');
 
-		$ref = (isset($_SESSION['referer']))
-			? $_SESSION['referer']
-			: 'index/'.$id_area.'/'.$lang;
+        $view = new X4View_core('page');
+        $view->breadcrumb = array($this->site->get_bredcrumb($page), array('articles' => 'index/'.$id_area.'/'.$lang));
+		$view->actions = $this->actions($id_area, $lang);
 
-		$navbar = array($this->site->get_bredcrumb($page), array('articles' => $ref));
+		// content
+		$view->content = new X4View_core('editor');
 
 		$pmod = new Page_model();
 		if ($id_page && $bid != 'x3')
 		{
 			// simple editing
 			$page = $pmod->get_by_id($id_page);
-			$view->super_title = _CONTENT_EDITOR.' <a class="bta" href="'.BASE_URL.'pages/index/'.$page->id_area.'/'.$page->lang.'/'.$page->xfrom.'/1" title="'._GO_BACK.'">'.stripslashes($page->name).'</a>'._TRAIT_.$lang;
+			$view->content->super_title = _CONTENT_EDITOR.' <a class="link" @click="pager(\''.BASE_URL.'pages/index/'.$page->id_area.'/'.$page->lang.'/'.$page->xfrom.'/1\')" title="'._GO_BACK.'">'.stripslashes($page->name).'</a>'._TRAIT_.$lang;
 			$view->js = '';
 		}
 		else
 		{
 			// generic back
-			$back = '<a class="bta" href="'.BASE_URL.'pages/index/'.$id_area.'/'.$lang.'/home/1" title="'._GO_BACK.'">'._PAGES.'</a>';
+			$back = '<a class="link" @click="pager(\''.BASE_URL.'pages/index/'.$id_area.'/'.$lang.'/home\')" title="'._GO_BACK.'">'._PAGES.'</a>';
 			if ($bid)
 			{
 				if ($item->id_page)
@@ -610,76 +445,25 @@ window.addEvent("domready", function()
 					// back to the right page
 					$page = $pmod->get_by_id($item->id_page);
 					$back = (ADVANCED_EDITING)
-						? '<a class="bta" href="'.BASE_URL.'sections/compose/'.$page->id.'" title="'._GO_BACK.'">'.stripslashes($page->name).'</a>'
-						: '<a class="bta" href="'.BASE_URL.'pages/index/'.$page->id_area.'/'.$page->lang.'/'.$page->xfrom.'/1" title="'._GO_BACK.'">'.stripslashes($page->name).'</a>';
+						? '<a class="link" @click="pager(\''.BASE_URL.'sections/compose/'.$page->id.'\')" title="'._GO_BACK.'">'.stripslashes($page->name).'</a>'
+						: '<a class="link" @click="pager(\''.BASE_URL.'pages/index/'.$page->id_area.'/'.$page->lang.'/'.$page->xfrom.'/1\')" title="'._GO_BACK.'">'.stripslashes($page->name).'</a>';
 				}
-				$view->super_title = $back._TRAIT_._EDIT_ARTICLE._TRAIT_.$lang;
+				$view->content->super_title = $back._TRAIT_._EDIT_ARTICLE._TRAIT_.$lang;
 			}
 			else
 			{
-				$view->super_title = $back._TRAIT_._ADD_ARTICLE._TRAIT_.$lang;
+				$view->content->super_title = $back._TRAIT_._ADD_ARTICLE._TRAIT_.$lang;
 			}
-			$view->js = '
-<script>
-window.addEvent("domready", function()
-{
-	if ($chk($("spinner1_data"))) {
-		var sdata = $("spinner1_data").get("value").split("|");
-		spinnerize(sdata, ".spinner");
-	}
-
-	if ($chk($("spinner2_data"))) {
-		var sdata = $("spinner2_data").get("value").split("|");
-		spinnerize(sdata, ".spinner");
-	}
-
-	if ($chk($("spinner3_data"))) {
-		var sdata = $("spinner3_data").get("value").split("|");
-		spinnerize(sdata, ".spin2");
-	}
-});
-</script>';
 		}
 
-		$view->js .= '
-<script src="'.THEME_URL.'js/basic.js"></script>
-<script>
-window.addEvent("domready", function()
-{
-	X3.content("filters","articles/filter/'.$id_area.'/'.$lang.'", "'.addslashes(X4Theme_helper::navbar($navbar, ' . ')).'");
-	pickerize("date");
-
-	$("module").addEvent("change", function(event, target){
-    	event.preventDefault();
-    	v = this.get("value");
-    	if (v.length == 0) {
-    	    $("param").set("value", "");
-    	} else {
-	    	X3.modal("", "'._ARTICLE_PARAM_SETTING.'", "'.BASE_URL.'articles/param/'.$id_area.'/'.$lang.'/'.$id_page.'/"+v);
-    	}
-    });
-
-    $("param").addEvent("focus", function(event, target){
-    	event.preventDefault();
-    	m = $("module").get("value");
-    	if (m != "") {
-            v = this.get("value");
-            X3.modal("", "'._ARTICLE_PARAM_SETTING.'", "'.BASE_URL.'articles/param/'.$id_area.'/'.$lang.'/'.$id_page.'/"+m+"/"+v);
-        }
-    });
-});
-</script>';
-
 		// form builder
-		$view->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
-			'onclick="setForm(\'editor\', \'content\');"');
-		$view->tinymce = new X4View_core('tinymce');
-		$view->tinymce->id_area = $id_area;
+		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
+            '@click="submitForm(\'editor\')"');
 
 		// rtl
 		if ($lmod->rtl($lang))
 		{
-			$view->tinymce->rtl = 1;
+			$view->content->tinymce->rtl = 1;
 		}
 		$view->render(TRUE);
 	}
@@ -714,7 +498,6 @@ window.addEvent("domready", function()
 			{
 			    // handle POST data
 			    $p = array();
-
 			    if (isset($_POST['no_options']))
 			    {
 			        $result = array(0, 1);
@@ -734,16 +517,18 @@ window.addEvent("domready", function()
                             }
                         }
                     }
-
                     $result = array(0, !empty($p));
                 }
 
 				// set message
 				$msg = AdmUtils_helper::set_msg($result);
-
 				if (!empty($p))
 				{
-				    $msg->command = '$("param").set("value", "'.implode('|', $p).'");';
+				    $msg->update = array(
+                        'element' => 'field',
+                        'field' => 'param',
+                        'value' => implode('|', $p)
+                    );
 				}
 				$this->response($msg);
 			}
@@ -754,13 +539,14 @@ window.addEvent("domready", function()
 			die;
 		}
 
+        $view = new X4View_core('modal');
+        $view->title = _ARTICLE_PARAM_SETTING;
 		// contents
-		$view = new X4View_core('editor');
-		$view->title = _ARTICLE_PARAM_SETTING;
+		$view->content = new X4View_core('editor');
 
 		// form builder
-		$view->form = X4Form_helper::doform('configurator', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
-			'onclick="setForm(\'configurator\', null, \'simple-modal\');"');
+		$view->content->form = X4Form_helper::doform('configurator', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
+            '@click="submitForm(\'configurator\')"');
 
 		$view->render(TRUE);
 	}
@@ -883,20 +669,13 @@ window.addEvent("domready", function()
 			// add permission
 			if ($result[1])
 			{
-				$perm = new Permission_model();
-				$array[] = array(
-						'action' => 'insert',
-						'id_what' => $result[0],
-						'id_user' => $_SESSION['xuid'],
-						'level' => 4);
-				$perm->pexec('articles', $array, $_post['id_area']);
-
 				if (!empty($_post['from']))
-					$msg->update[] = array(
-						'element' => 'topic',
-						'url' => urldecode($_post['from']),
-						'title' => null
+                {
+					$msg->update = array(
+						'element' => 'page',
+						'url' => urldecode($_post['from'])
 					);
+                }
 			}
 		}
 		$this->response($msg);
@@ -920,18 +699,20 @@ window.addEvent("domready", function()
 		// get the page
 		$page = $this->get_page('articles/history');
 
-		// left
-		$view = new X4View_core('articles/history');
-		$view->page = $page;
-		$view->id_area = $id_area;
-		$view->lang = $lang;
-		$view->bid = $bid;
-		$view->navbar = array($this->site->get_bredcrumb($page), array('articles' => $_SESSION['referer']));
+        $view = new X4View_core('page');
+        $view->breadcrumb = array($this->site->get_bredcrumb($page), ['articles' => 'index/'.$id_area.'/'.$lang]);
+		$view->actions = '';
+
+		// content
+		$view->content = new X4View_core('articles/history');
+		$view->content->id_area = $id_area;
+		$view->content->lang = $lang;
+		$view->content->bid = $bid;
 
 		// left
 		$mod = new Article_model();
-		$view->art = $mod->get_by_bid($id_area, $lang, $bid);
-		$view->history = $mod->get_history($id_area, $bid);
+		$view->content->art = $mod->get_by_bid($id_area, $lang, $bid);
+		$view->content->history = $mod->get_history($id_area, $bid);
 		$view->render(TRUE);
 	}
 
@@ -948,53 +729,14 @@ window.addEvent("domready", function()
 
 		// get object
 		$mod = new Article_model();
-		$obj = $mod->get_by_id($id, 'articles', 'date_in, date_out');
+		$item = $mod->get_by_id($id, 'articles', 'id, date_in, date_out');
 
 		// build the form
-		$fields = array();
+        $form_fields = new X4Form_core('article/article_date');
+		$form_fields->item = $item;
 
-		$fields[] = array(
-			'label' => null,
-			'type' => 'html',
-			'value' => '<div class="band inner-pad clearfix"><div class="one-half xs-one-whole">'
-		);
-
-		$fields[] = array(
-			'label' => null,
-			'type' => 'hidden',
-			'value' => $id,
-			'name' =>'id'
-		);
-		$fields[] = array(
-			'label' => _START_DATE,
-			'type' => 'text',
-			'value' => date('Y-m-d', $obj->date_in),
-			'name' =>'date_in',
-			'rule' => 'required|date',
-			'extra' => 'class="date date_toggled large"  autocomplete="off"'
-		);
-
-		$fields[] = array(
-			'label' => null,
-			'type' => 'html',
-			'value' => '</div><div class="one-half xs-one-whole">'
-		);
-
-		$fields[] = array(
-			'label' => _END_DATE,
-			'type' => 'text',
-			'value' => ($obj->date_out > 0) ? date('Y-m-d', $obj->date_out) : '',
-			'name' =>'date_out',
-			'suggestion' => _LEAVE_EMPTY_FOR_UNDEFINED,
-			'rule' => 'date|after-date_in',
-			'extra' => 'class="date date_toggled large sweep"'
-		);
-
-		$fields[] = array(
-			'label' => null,
-			'type' => 'html',
-			'value' => '</div></div>'
-		);
+		// get the fields array
+		$fields = $form_fields->render();
 
 		// if submitted
 		if (X4Route_core::$post)
@@ -1011,23 +753,14 @@ window.addEvent("domready", function()
 			die;
 		}
 
+        $view = new X4View_core('modal');
+        $view->title = _SET_DATE;
 		// content
-		$view = new X4View_core('editor');
-		$view->title = _SET_DATE;
+		$view->content = new X4View_core('editor');
 
 		// form builder
-		$view->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
-			'onclick="setForm(\'editor\');"');
-
-		$view->js = '
-<script>
-window.addEvent("domready", function()
-{
-	if ($chk($$("input.date"))) {
-		pickerize("date");
-	}
-});
-</script>';
+		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
+            '@click="submitForm(\'editor\')"');
 
 		$view->render(TRUE);
 	}
@@ -1044,7 +777,6 @@ window.addEvent("domready", function()
 		$msg = null;
 		// check permissions
 		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'articles', $_post['id'], 2);
-
 		if (is_null($msg))
 		{
 			// handle _post
@@ -1055,7 +787,6 @@ window.addEvent("domready", function()
 
 			// do action
 			$mod = new Article_model();
-			$obj = $mod->get_by_id($_post['id'], 'articles', 'id_area, lang, bid');
 			$result = $mod->update($_post['id'], $post);
 
 			// set message
@@ -1064,10 +795,9 @@ window.addEvent("domready", function()
 			// set what update
 			if ($result[1])
 			{
-				$msg->update[] = array(
-					'element' => 'topic',
-					'url' => BASE_URL.'articles/history/'.$obj->id_area.'/'.$obj->lang.'/'.$obj->bid,
-					'title' => null
+				$msg->update = array(
+					'element' => 'page',
+					'url' => $_SERVER['HTTP_REFERER']
 				);
 			}
 		}
@@ -1088,7 +818,7 @@ window.addEvent("domready", function()
 
 		// get object
 		$mod = new Article_model();
-		$obj = $mod->get_by_bid($id_area, $lang, $bid);
+		$item = $mod->get_by_bid($id_area, $lang, $bid);
 
 		// build the form
 		$fields = array();
@@ -1098,34 +828,22 @@ window.addEvent("domready", function()
 			'value' => $bid,
 			'name' => 'bid'
 		);
-		$fields[] = array(
-			'label' => null,
-			'type' => 'hidden',
-			'value' => $obj->id_area,
-			'name' => 'id_area'
-		);
-		$fields[] = array(
-			'label' => null,
-			'type' => 'hidden',
-			'value' => $obj->lang,
-			'name' => 'lang'
-		);
 
 		// if submitted
 		if (X4Route_core::$post)
 		{
-			$this->deleting($_POST);
+			$this->deleting($item);
 			die;
 		}
-
+        $view = new X4View_core('modal');
+        $view->title = _DELETE_ARTICLE;
 		// contents
-		$view = new X4View_core('delete');
-		$view->title = _DELETE_ARTICLE;
-		$view->item = $obj->name;
+		$view->content = new X4View_core('delete');
+		$view->content->item = $item->name;
 
 		// form builder
-		$view->form = X4Form_helper::doform('delete', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
-			'onclick="setForm(\'delete\');"');
+		$view->content->form = X4Form_helper::doform('delete', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
+            '@click="submitForm(\'delete\')"');
 		$view->render(TRUE);
 	}
 
@@ -1134,34 +852,38 @@ window.addEvent("domready", function()
 	 * Delete all versions of an article
 	 *
 	 * @access	private
-	 * @param   array 	$_post _POST array
+	 * @param   stdClass $item
 	 * @return  void
 	 */
-	private function deleting(array $_post)
+	private function deleting(stdClass $item)
 	{
 		$msg = null;
 		// check permissions on articles
 		$mod = new Article_model();
-		$artt = $mod->get_all_by_bid($_post['id_area'], $_post['lang'], $_post['bid']);
+		$artt = $mod->get_all_by_bid($item->id_area, $item->lang, $item->bid);
 		foreach ($artt as $i)
 		{
 			if (is_null($msg))
+            {
 				$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'articles', $i->id, 4);
+            }
 		}
 
 		// check permissions on pages
 		$smod = new Section_model();
-		$pp = $smod->get_pages_by_bid($_post['bid']);
+		$pp = $smod->get_pages_by_bid($item->bid);
 		foreach ($pp as $i)
 		{
 			if (is_null($msg))
+            {
 				$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'pages', $i->id, 3);
+            }
 		}
 
 		if (is_null($msg))
 		{
 			// do action
-			$result = $mod->delete_by_bid($_post['id_area'], $_post['lang'], $_post['bid']);
+			$result = $mod->delete_by_bid($item->id_area, $item->lang, $item->bid);
 
 			// set message
 			$msg = AdmUtils_helper::set_msg($result);
@@ -1169,10 +891,9 @@ window.addEvent("domready", function()
 			// set what update
 			if ($result[1])
 			{
-				$msg->update[] = array(
-					'element' => 'topic',
-					'url' => BASE_URL.'articles/index/'.$_post['id_area'].'/'.$_post['lang'],
-					'title' => null
+				$msg->update = array(
+					'element' => 'page',
+					'url' => $_SERVER['HTTP_REFERER']
 				);
 			}
 		}
@@ -1208,16 +929,17 @@ window.addEvent("domready", function()
 
 		// get object
 		$mod = new Article_model();
-		$obj = $mod->get_by_id($id, 'articles', 'updated');
+		$item = $mod->get_by_id($id, 'articles', 'name, updated');
 
+        $view = new X4View_core('modal');
+        $view->title = _DELETE_ARTICLE;
 		// contents
-		$view = new X4View_core('delete');
-		$view->title = _DELETE_ARTICLE;
-		$view->item = $obj->updated;
+		$view->content = new X4View_core('delete');
+		$view->content->item = $item->name.' '.$item->updated;
 
 		// form builder
-		$view->form = X4Form_helper::doform('delete', $_SERVER["REQUEST_URI"], $fields, array(_NO, _YES, 'xcenter'), 'post', '',
-			'onclick="setForm(\'delete\');"');
+		$view->content->form = X4Form_helper::doform('delete', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
+            '@click="submitForm(\'delete\')"');
 		$view->render(TRUE);
 	}
 
@@ -1239,7 +961,6 @@ window.addEvent("domready", function()
 		{
 			// do action
 			$mod = new Article_model();
-			$obj = $mod->get_by_id($id, 'articles', 'id_area, lang, bid');
 			$result = $mod->delete($id);
 
 			// clear useless permissions
@@ -1255,50 +976,12 @@ window.addEvent("domready", function()
 			// set what update
 			if ($result[1])
 			{
-				$msg->update[] = array(
-					'element' => 'topic',
-					'url' => BASE_URL.'articles/history/'.$obj->id_area.'/'.$obj->lang.'/'.$obj->bid,
-					'title' => null
+				$msg->update = array(
+					'element' => 'page',
+					$_SERVER['HTTP_REFERER']
 				);
 			}
 		}
 		$this->response($msg);
-	}
-
-	/**
-	 * Populate ftext field
-	 *
-	 * @return  string
-	 */
-	public function ftextize()
-	{
-		$mod = new Article_model();
-
-		// check if not already done
-		$n = $mod->chk_ftext();
-
-		if (true || $n == 0)
-		{
-		    // do it now
-		    $items = $mod->get_article_ftext();
-
-		    foreach ($items as $i)
-		    {
-		        $post = array(
-		            'ftext' => $i->name.' '.strip_tags($i->content)
-		        );
-		        $mod->update($i->id, $post);
-		    }
-
-		    // add index to table
-
-		    $res = $mod->add_filter();
-
-		    echo 'done!';
-		}
-		else
-		{
-		    echo 'already done!';
-		}
 	}
 }

@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
 
@@ -133,11 +133,11 @@ class Language_model extends X4Model_core
 	 * If an user call a page without language code then X3CMS will serve the predefined language
 	 *
 	 * @param   integer $id_area Area ID
-	 * @param   array 	$langs Array of Language code
+	 * @param   array 	$languages Array of Language code
 	 * @param   string 	$predefined predefined Language code
 	 * @return  array
 	 */
-	public function set_alang(int $id_area, array $langs, string $predefined)
+	public function set_alang(int $id_area, array $languages, string $predefined)
 	{
 		// get languages setted
 		$setted = $this->db->query('SELECT id, code FROM alang WHERE id_area = '.$id_area.' ORDER BY language ASC');
@@ -154,7 +154,7 @@ class Language_model extends X4Model_core
 
 		// check differences between codes_lang and setted
 		$sql = array();
-		foreach ($langs as $i)
+		foreach ($languages as $i)
 		{
 			if (!isset($set[$i]))
 			{

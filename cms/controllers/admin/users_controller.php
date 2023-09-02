@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
 
@@ -40,12 +40,16 @@ class Users_controller extends X3ui_controller
 		// get page
 		$page = $this->get_page('users');
 
+        $view = new X4View_core('page');
+        $view->breadcrumb = array($this->site->get_bredcrumb($page));
+		$view->actions = $this->actions('group');
+
 		// content
-		$view = new X4View_core('users/group_list');
+		$view->content = new X4View_core('users/group_list');
 		$view->page = $page;
 
-		$group = new Group_model();
-		$view->groups = $group->get_groups();
+		$mod = new Group_model();
+		$view->content->groups = $mod->get_groups();
 		$view->render(TRUE);
 	}
 
@@ -64,108 +68,83 @@ class Users_controller extends X3ui_controller
 
 		$group = $mod->get_var($id_group, 'xgroups', 'name');
 
-		// content
-		$view = new X4View_core('editor');
-		$view->title = $group._TRAIT_._USERS_LIST;
-		// list
-		$view->form = new X4View_core('ul');
-		$view->form->items = $mod->get_users($id_group);
-		$view->form->link = BASE_URL.'users/detail';
-		$view->form->class = 'class="btr"';
-		$view->form->title = 'username';
-		$view->form->value = 'username';
+        $view = new X4View_core('modal');
+        $view->title = $group._TRAIT_._USERS_LIST;
 
-		$view->js = '
-<script>
-window.addEvent("domready", function()
-{
-	buttonize("simple-modal", "btr", "tdown");
-});
-</script>';
+		// content
+		$view->content = new X4View_core('users/users_list');
+		$view->content->items = $mod->get_users($id_group);
+		$view->content->link = BASE_URL.'users/user';
+		$view->content->class = 'class="link"';
+		$view->content->title = 'username';
+		$view->content->value = 'username';
+
 		$view->render(TRUE);
 	}
 
 	/**
-	 * Users filter
+	 * Group and Users actions
 	 *
+     * @access	private
+     * @param   string  $what
      * @param   integer $id_group
      * @param   integer $id User
 	 * @return  void
 	 */
-	public function filter(int $id_group, int $id)
+	private function actions(string $what, int $id_group = 0, int $id = 0)
 	{
-		// load the dictionary
-		$this->dict->get_wordarray(array('users'));
+        if ($what == 'group')
+        {
+            return '<a class="link" @click="popup(\''.BASE_URL.'groups/edit\')" title="'._NEW_GROUP.'">
+                <i class="fa-solid fa-lg fa-circle-plus"></i>
+            </a>';
+        }
+        else
+        {
+            // get obj
+            $mod = new User_model();
+            $user = $mod->get_user_by_id($id);
 
-		// get obj
-		$mod = new User_model();
-		$u = $mod->get_user_by_id($id);
+            $statuses = AdmUtils_helper::statuses($user, ['xon', 'xlock']);
 
-		if ($u->xon)
-		{
-			$status = _ON;
-			$on_status = 'orange';
-		}
-		else
-		{
-			$status = _OFF;
-			$on_status = 'gray';
-		}
+            $actions = '';
 
-		if ($u->xlock)
-		{
-			$lock = _LOCKED;
-			$lock_status = 'lock';
-		}
-		else
-		{
-			$lock = _UNLOCKED;
-			$lock_status = 'unlock-alt';
-		}
+            // check permission
+            if ((($user->plevel > 1 && $user->xlock == 0) || $user->plevel >= 3))
+            {
+                $actions = AdmUtils_helper::link('edit', 'users/edit/'.$user->id.'/'.$user->id_group);
+                // manager or admin user
+                if ($user->plevel > 2)
+                {
+                    $actions .= AdmUtils_helper::link('xon', 'users/set/xon/'.$user->id.'/'.(($user->xon+1)%2), $statuses);
+                }
 
-		if ($u->hidden)
-		{
-			$hide = _HIDE_USER;
-			$hide_status = 'gray';
-		}
-		else
-		{
-			$hide = _SHOW_USER;
-			$hide_status = 'orange';
-		}
+                // admin user
+                if ($user->plevel >= 4)
+                {
+                    if ($user->hidden == 1)
+                    {
+                        $hide = _HIDE_USER;
+			            $hide_status = 'off';
+                    }
+                    else
+                    {
+                        $hide = _SHOW_USER;
+			            $hide_status = 'on';
+                    }
 
-		$hide = ($u->hidden == 1)
-			? _HIDE_USER
-			: _SHOW_USER;
-
-		$actions = $delete = '';
-
-		// check permission
-		if ((($u->plevel > 1 && $u->xlock == 0) || $u->plevel == 4))
-		{
-			$actions = '<a class="btf" href="'.BASE_URL.'users/edit/'.$u->id.'/'.$u->id_group.'" title="'._EDIT.'"><i class="fas fa-pencil-alt fa-lg"></i></a>';
-
-			// manager or admin user
-			if ($u->plevel > 2 || $u->plevel == 4)
-			{
-				$actions .= ' <a class="btl" href="'.BASE_URL.'users/set/xon/'.$u->id.'/'.(($u->xon+1)%2).'" title="'._STATUS.' '.$status.'"><i class="far fa-lightbulb fa-lg '.$on_status.'"></i></a>';
-			}
-
-			// admin user
-			if ($u->plevel == 4)
-				$delete =  ' <a class="btl" href="'.BASE_URL.'users/set/hidden/'.$u->id.'/'.(($u->hidden+1)%2).'" title="'._STATUS.' '.$hide.'"><i class="fas fa-user fa-lg '.$hide_status.'"></i></a>
-				<a class="btl" href="'.BASE_URL.'users/set/xlock/'.$u->id.'/'.(($u->xlock+1)%2).'" title="'._STATUS.' '.$lock.'"><i class="fas fa-'.$lock_status.' fa-lg"></i></a>
-				<a class="btf" href="'.BASE_URL.'users/delete/'.$u->id.'" title="'._DELETE.'"><i class="fas fa-trash fa-lg red"></i></a>';
-		}
-
-		echo $actions.$delete.'
-<script>
-window.addEvent("domready", function()
-{
-	buttonize("filters", "btf", "modal");
-	actionize("filters",  "btl", "filters", escape("users/filter/'.$id_group.'/'.$id.'"));
-});
-</script>';
+                    $actions .= '<a class="link" @click="setter(\''.BASE_URL.'users/set/hidden/'.$user->id.'/'.(($user->hidden+1)%2).'\')" title="'._STATUS.' '.$hide.'">
+                        <i class="fa-solid fa-lg fa-user '.$hide_status.'"></i>
+                    </a>';
+                    $actions .= AdmUtils_helper::link('xlock', 'users/set/xlock/'.$user->id.'/'.(($user->xon+1)%2), $statuses);
+                    if ($user->id > 1 || $user->id == $_SESSION['xuid'])
+                    {
+                        $actions .= AdmUtils_helper::link('delete','users/delete/'.$user->id);
+                    }
+                }
+            }
+            return $actions;
+        }
 	}
 
 	/**
@@ -186,8 +165,6 @@ window.addEvent("domready", function()
 		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'users', $id, $val);
 		if (is_null($msg))
 		{
-			$qs = X4Route_core::get_query_string();
-
 			// do action
 			$mod = new User_model();
 			$result = $mod->update($id, array($what => $value));
@@ -199,10 +176,9 @@ window.addEvent("domready", function()
 			// set update
 			if ($result[1])
             {
-				$msg->update[] = array(
-					'element' => $qs['div'],
-					'url' => urldecode($qs['url']),
-					'title' => null
+				$msg->update = array(
+					'element' => 'page',
+					'url' => $_SERVER['HTTP_REFERER']
 				);
             }
 		}
@@ -215,7 +191,7 @@ window.addEvent("domready", function()
 	 * @param   integer $id User ID
 	 * @return  void
 	 */
-	public function detail(int $id, bool $dialog = false)
+	public function user(int $id)
 	{
 	    // load dictionaries
 		$this->dict->get_wordarray(array('users', 'form', 'login'));
@@ -223,37 +199,23 @@ window.addEvent("domready", function()
 		// check permission
 		AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'users', $id, 3);
 
+        // get user data
+        $mod = new User_model();
+        $user = $mod->get_user_by_id($id);
+
 		// get page
 		$page = $this->get_page('users/detail');
 
-		// content
-		if ($dialog)
-		{
-			$view = new X4View_core('editor');
-			$view->form = new X4View_core('users/user_detail');
-			$view->form->dialog = 1;
+        $view = new X4View_core('page');
+        $view->breadcrumb = array($this->site->get_bredcrumb($page));
+		$view->actions = $this->actions('user', $user->id_group, $id);
 
-			// get user data
-			$user = new User_model();
-			$view->form->u = $user->get_user_by_id($id);
+        $view->content = new X4View_core('users/user_detail');
+        $view->content->user = $user;
 
-			// get user privileges
-			$perm = new Permission_model();
-			$view->form->a = $perm->get_aprivs($id);
-		}
-		else
-		{
-			$view = new X4View_core('users/user_detail');
-			$view->page = $page;
-
-			// get user data
-			$user = new User_model();
-			$view->u = $user->get_user_by_id($id);
-
-			// get user privileges
-			$perm = new Permission_model();
-			$view->a = $perm->get_aprivs($id);
-		}
+        // get user privileges
+        $perm = new Permission_model();
+        $view->content->aprivs = $perm->get_aprivs($id);
 		$view->render(TRUE);
 	}
 
@@ -272,207 +234,31 @@ window.addEvent("domready", function()
 		$lang = X4Route_core::$lang;
 
 		// get object
-		$user = new User_model();
-		$u = ($id)
-			? $user->get_by_id($id)
+		$mod = new User_model();
+		$user = ($id)
+			? $mod->get_by_id($id)
 			: new User_obj($id_group, $lang);
 
 		// get group
-		$group = new Group_model();
-		$g = $group->get_by_id($u->id_group, 'xgroups', 'id_area, name');
+		$group = $mod->get_by_id($user->id_group, 'xgroups', 'id_area, name');
 
 		// build the form
-		$fields = array();
-		$fields[] = array(
-			'label' => null,
-			'type' => 'hidden',
-			'value' => $u->id_group,
-			'name' => 'id_group'
-		);
-		$fields[] = array(
-			'label' => null,
-			'type' => 'hidden',
-			'value' => $g->id_area,
-			'name' => 'id_area'
-		);
+		$form_fields = new X4Form_core('user/user_edit');
+		$form_fields->id = $id;
+		$form_fields->user = $user;
+        $form_fields->group = $group;
+        $form_fields->levels = $mod->get_levels();
+        // languages
+		$mod = new Language_model();
+        $form_fields->languages = $mod->get_languages();
 
-		$fields[] = array(
-			'label' => null,
-			'type' => 'html',
-			'value' => '<h4>'._GROUP.': '.$g->name.'</h4>'
-		);
+        $mod = new Permission_model();
+        $form_fields->aprivs = $mod->get_aprivs($id);
+		$mod = new Area_model();
+        $form_fields->areas = $mod->get_areas($group->id_area);
 
-		$fields[] = array(
-			'label' => null,
-			'type' => 'html',
-			'value' => '<div class="band inner-pad clearfix"><div class="one-half xs-one-whole">'
-		);
-
-		// languages
-		$lmod = new Language_model();
-		$fields[] = array(
-			'label' => ucfirst(_LANGUAGE),
-			'type' => 'select',
-			'value' => $u->lang,
-			'options' => array($lmod->get_languages(), 'code', 'language'),
-			'name' => 'lang',
-			'extra' => 'class="large"'
-		);
-
-		$fields[] = array(
-			'label' => null,
-			'type' => 'html',
-			'value' => '</div><div class="one-half xs-one-whole">'
-		);
-
-		$fields[] = array(
-			'label' => _USERNAME,
-			'type' => 'text',
-			'value' => $u->username,
-			'name' => 'username',
-			'suggestion' => _USERNAME_RULE,
-			'rule' => 'required|minlength§6|alphanumeric',
-			'extra' => 'class="large"'
-		);
-
-		$fields[] = array(
-			'label' => null,
-			'type' => 'html',
-			'value' => '</div></div>'
-		);
-
-		// password
-		if ($id)
-		{
-			$fields[] = array(
-				'label' => null,
-				'type' => 'html',
-				'value' => '<h4 class="acenter zerom">'._PASSWORD_CHANGE_MSG.'</h4>'
-			);
-			$rule = '';
-		}
-		else
-		{
-			// for a new user you must insert a password
-			$rule = 'required|';
-		}
-
-		$fields[] = array(
-			'label' => null,
-			'type' => 'html',
-			'value' => '<div class="band inner-pad clearfix"><div class="one-half xs-one-whole">'
-		);
-
-		$fields[] = array(
-			'label' => _PASSWORD,
-			'type' => 'password',
-			'value' => '',
-			'name' => 'password',
-			'suggestion' => _PASSWORD_RULE,
-			'rule' => $rule.'password|minlength§6',
-			'extra' => 'class="large"'
-		);
-
-		$fields[] = array(
-			'label' => null,
-			'type' => 'html',
-			'value' => '</div><div class="one-half xs-one-whole">'
-		);
-
-		$fields[] = array(
-			'label' => _REPEAT_PASSWORD,
-			'type' => 'password',
-			'value' => '',
-			'name' => 'password2',
-			'rule' => $rule.'equal-password',
-			'extra' => 'class="large"'
-		);
-
-		$fields[] = array(
-			'label' => null,
-			'type' => 'html',
-			'value' => '</div></div>'
-		);
-
-		$fields[] = array(
-			'label' => _DESCRIPTION,
-			'type' => 'textarea',
-			'value' => $u->description,
-			'name' => 'description',
-			'sanitize' => 'string',
-			'rule' => 'required'
-		);
-
-		$fields[] = array(
-			'label' => null,
-			'type' => 'html',
-			'value' => '<div class="band inner-pad clearfix"><div class="one-half xs-one-whole">'
-		);
-
-		$fields[] = array(
-			'label' => _EMAIL,
-			'type' => 'text',
-			'value' => $u->mail,
-			'name' => 'mail',
-			'rule' => 'required|mail',
-			'extra' => 'class="large"'
-		);
-
-		$fields[] = array(
-			'label' => null,
-			'type' => 'html',
-			'value' => '</div><div class="one-half xs-one-whole">'
-		);
-
-		$fields[] = array(
-			'label' => _PHONE,
-			'type' => 'text',
-			'value' => $u->phone,
-			'name' => 'phone',
-			'rule' => 'phone',
-			'extra' => 'class="large"'
-		);
-
-		$fields[] = array(
-			'label' => null,
-			'type' => 'html',
-			'value' => '</div></div><div class="band inner-pad clearfix"><div class="one-half xs-one-whole">'
-		);
-
-		$fields[] = array(
-			'label' => _LEVEL,
-			'type' => 'select',
-			'value' => $u->level,
-			'options' => array($user->get_levels(), 'id', 'name'),
-			'name' => 'level',
-			'extra' => 'class="large"'
-		);
-
-		$fields[] = array(
-			'label' => null,
-			'type' => 'html',
-			'value' => '</div><div class="one-half xs-one-whole">'
-		);
-
-		// permissions on areas
-		$perm = new Permission_model();
-		$area = new Area_model();
-		$fields[] = array(
-			'label' => _DOMAIN,
-			'type' => 'select',
-			'value' => X4Array_helper::obj2array($perm->get_aprivs($id), null, 'id_area'),
-			'options' => array($area->get_areas($g->id_area), 'id', 'name'),
-			'multiple' => 4,
-			'name' => 'domain',
-			'rule' => 'required',
-			'extra' => 'class="large"'
-		);
-
-		$fields[] = array(
-			'label' => null,
-			'type' => 'html',
-			'value' => '</div></div>'
-		);
+        // get the fields array
+		$fields = $form_fields->render();
 
 		// if submitted
 		if (X4Route_core::$post)
@@ -489,15 +275,16 @@ window.addEvent("domready", function()
 			die;
 		}
 
-		// contents
-		$view = new X4View_core('editor');
-		$view->title = ($id)
+        $view = new X4View_core('modal');
+        $view->title = ($id)
 			? _EDIT_USER
 			: _ADD_USER;
 
+		// contents
+		$view->content = new X4View_core('editor');
 		// form builder
-		$view->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
-			'onclick="setForm(\'editor\');"');
+		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
+            '@click="submitForm(\'editor\')"');
 		$view->render(TRUE);
 	}
 
@@ -536,9 +323,8 @@ window.addEvent("domready", function()
 			}
 
 			// check if an user with the same username or password already exists
-			$user = new User_model();
-			$check = (boolean) $user->exists($post['username'], $post['mail'], $id);
-
+			$mod = new User_model();
+			$check = (boolean) $mod->exists($post['username'], $post['mail'], $id);
 			if ($check)
 			{
 				$msg = AdmUtils_helper::set_msg(false, '', $this->dict->get_word('_USER_ALREADY_EXISTS', 'msg'));
@@ -549,18 +335,18 @@ window.addEvent("domready", function()
 				if ($id)
 				{
 					// update
-					$result = $user->update($id, $post);
+					$result = $mod->update($id, $post);
 
 					// update user privileges on areas
 					$perm->set_aprivs($id, $_post['domain']);
 
 					// redirect
-					$where = '/detail/'.$id;
+					$where = '/user/'.$id;
 				}
 				else
 				{
 					// insert
-					$result = $user->insert($post);
+					$result = $mod->insert($post);
 
 					// redirect
 					$where = '';
@@ -580,10 +366,9 @@ window.addEvent("domready", function()
 				// set what update
 				if ($result[1])
 				{
-					$msg->update[] = array(
-						'element' => 'tdown',
-						'url' => BASE_URL.'users'.$where,
-						'title' => null
+					$msg->update = array(
+						'element' => 'page',
+						'url' => BASE_URL.'users'.$where
 					);
 				}
 			}
@@ -607,165 +392,23 @@ window.addEvent("domready", function()
 		$mod = new Permission_model();
 
 		// user data
-		$u = $mod->get_by_id($id_user, 'users', 'id_group, username');
-
-		// user permission
-		$what = $mod->get_uprivs($id_user, $id_area);
-
-		// permission level
-		$l = $mod->get_levels();
+		$user = $mod->get_by_id($id_user, 'users', 'id_group, username');
 
 		// build the form
-		$fields = array();
-		$fields[] = array(
-			'label' => null,
-			'type' => 'hidden',
-			'value' => $id_user,
-			'name' => 'id'
-		);
-		$fields[] = array(
-			'label' => null,
-			'type' => 'hidden',
-			'value' => $u->id_group,
-			'name' => 'id_group'
-		);
-		$fields[] = array(
-			'label' => null,
-			'type' => 'hidden',
-			'value' => $id_area,
-			'name' => 'id_area'
-		);
-		$fields[] = array(
-			'label' => null,
-			'type' => 'hidden',
-			'value' => $table,
-			'name' => 'table'
-		);
+		$form_fields = new X4Form_core('user/user_privs');
+        $form_fields->id_area = $id_area;
+		$form_fields->id_user = $id_user;
+        $form_fields->table = $table;
+		$form_fields->user = $user;
+        // permission level
+        $form_fields->levels = $mod->get_levels();
+        // url for external script
+        $form_fields->js_url = $this->site->site->domain.'/admin/users/set_for_all';
+        // user permission
+		$form_fields->what = $mod->get_uprivs($id_user, $id_area);
 
-		// tables without items
-		$nodetail = array('areas', 'sites');
-
-		// tables for administrators
-		$onlyadmin = array('themes', 'templates', 'menus', 'xgroups', 'users', 'languages', 'sites', 'privs');
-
-		// tables if advanced editing
-		$exclude = (ADVANCED_EDITING)
-			? array('contents', 'logs')
-			: array('blocks', 'sections', 'logs');
-
-		$fields[] = array(
-			'label' => null,
-			'type' => 'html',
-			'value' => '<div class="band inner-pad clearfix">'
-		);
-
-		foreach ($what as $t)
-		{
-			if ($table == 0)
-			{
-				// only abstract permissions
-				if (substr($t->privtype, 0, 1) == '_')
-				{
-					$fields[] = array(
-						'label' => null,
-						'type' => 'html',
-						'value' => '<div class="one-half xs-one-whole">'
-					);
-
-					$fields[] = array(
-						'label' => constant(strtoupper($t->privtype)),
-						'type' => 'select',
-						'value' => $t->level,
-						'name' => $t->privtype,
-						'options' => array($l, 'id', 'name', 0),
-						'extra' => 'class="large"'
-					);
-
-					$fields[] = array(
-						'label' => null,
-						'type' => 'html',
-						'value' => '</div>'
-					);
-				}
-			}
-			else
-			{
-				// only real permissions on tables
-				if (substr($t->privtype, 0, 1) != '_' && !in_array($t->privtype, $exclude))
-				{
-					// relative to admin area or not only for administrators
-					if ($id_area == 1 || !in_array($t->privtype, $onlyadmin))
-					{
-						$fields[] = array(
-							'label' => null,
-							'type' => 'html',
-							'value' => '<div class="one-half xs-one-whole">'
-						);
-
-						// if in tables with items
-						if (!in_array($t->privtype, $nodetail))
-						{
-							$fields[] = array(
-								'label' => constant(strtoupper($t->privtype)),
-								'type' => 'select',
-								'value' => $t->level,
-								'name' => $t->privtype,
-								'options' => array($l, 'id', 'name', 0),
-								'suggestion' => '',
-								'extra' => 'class="large"'
-							);
-
-                            // you can edit detail only on real tables
-                            $detail_link = (substr($t->privtype, 0, 3) != 'x4_')
-                                ? '<a class="btop" href="'.BASE_URL.'users/permissions/'.$id_user.'/'.$id_area.'/'.$t->privtype.'" title="'._EDIT_DETAIL_PRIV.'">'._EDIT_DETAIL_PRIV.'</a>'
-                                : '';
-
-                            // only with real tables
-                            $fields[] = array(
-                                'label' => null,
-                                'type' => 'html',
-                                'value' => '</div>
-                                    <div class="one-half xs-one-whole double-pad-top">
-                                        '.$detail_link.'
-                                    </div>
-                                    <div class="clear"></div>'
-                            );
-						}
-						else
-						{
-							$fields[] = array(
-								'label' => constant(strtoupper($t->privtype)),
-								'type' => 'select',
-								'value' => $t->level,
-								'name' => $t->privtype,
-								'options' => array($l, 'id', 'name', 0),
-								'extra' => 'class="large"'
-							);
-
-							$fields[] = array(
-								'label' => null,
-								'type' => 'html',
-								'value' => '</div><div class="clear"></div>'
-							);
-						}
-					}
-				}
-			}
-
-			// old value memo
-			$fields[] = array(
-				'label' => null,
-				'type' => 'hidden',
-				'value' => $t->level,
-				'name' => 'old_'.$t->privtype
-			);
-		}
-
-		$fields[] = array(
-			'label' => null,
-			'type' => 'html',
-			'value' => '</div>'
-		);
+        // get the fields array
+		$fields = $form_fields->render();
 
 		// if submitted
 		if (X4Route_core::$post)
@@ -782,24 +425,17 @@ window.addEvent("domready", function()
 			die;
 		}
 
-		// contents
-		$view = new X4View_core('editor');
-		$view->title = ($id_area)
-			? _EDIT_PRIV.': '.$u->username
+        $view = new X4View_core('modal');
+        $view->title = ($id_area)
+			? _EDIT_PRIV.': '.$user->username
 			: _EDIT_PRIV.': '._GLOBAL_PRIVS;
 
-		// form builder
-		$view->form = '<div id="scrolled">'.X4Form_helper::doform('editpriv', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
-			'onclick="setForm(\'editpriv\');"').'</div>';
+		// contents
+		$view->content = new X4View_core('editor');
 
-		$view->js = '
-<script>
-window.addEvent("domready", function()
-{
-	buttonize("simple-modal", "btop", "modal");
-	var myScroll = new Scrollable($("scrolled"));
-});
-</script>';
+		// form builder
+		$view->content->form = X4Form_helper::doform('editpriv', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
+            '@click="submitForm(\'editpriv\')"');
 
 		$view->render(TRUE);
 	}
@@ -865,10 +501,9 @@ window.addEvent("domready", function()
 			// set what update
 			if ($result[1])
 			{
-				$msg->update[] = array(
-					'element' => 'tdown',
-					'url' => BASE_URL.'users/detail/'.$_post['id'],
-					'title' => null
+				$msg->update = array(
+					'element' => 'page',
+					'url' => BASE_URL.'users/detail/'.$_post['id']
 				);
 			}
 		}
@@ -889,8 +524,6 @@ window.addEvent("domready", function()
 		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'users', $id_user, 3);
 		if (is_null($msg))
 		{
-			$qs = X4Route_core::get_query_string();
-
 			// do action
 			$mod = new Permission_model();
 			$result = $mod->refactory($id_user, true);
@@ -902,10 +535,9 @@ window.addEvent("domready", function()
 			// set update
 			if ($result[1])
 			{
-				$msg->update[] = array(
-					'element' => $qs['div'],
-					'url' => urldecode($qs['url']),
-					'title' => null
+				$msg->update = array(
+					'element' => 'page',
+					'url' => $_SERVER['HTTP_REFERER']
 				);
 			}
 		}
@@ -926,8 +558,6 @@ window.addEvent("domready", function()
 		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'users', $id_user, 3);
 		if (is_null($msg))
 		{
-			$qs = X4Route_core::get_query_string();
-
 			// do action
 			$mod = new Permission_model();
 			$result = $mod->refactory($id_user);
@@ -939,10 +569,9 @@ window.addEvent("domready", function()
 			// set update
 			if ($result[1])
 			{
-				$msg->update[] = array(
-					'element' => $qs['div'],
-					'url' => urldecode($qs['url']),
-					'title' => null
+				$msg->update = array(
+					'element' => 'page',
+					'url' => $_SERVER['HTTP_REFERER']
 				);
 			}
 		}
@@ -967,109 +596,18 @@ window.addEvent("domready", function()
 		// get area name
 		$area = $mod->get_by_id($id_area, 'areas', 'name');
 
-		// get user privileges on the table
-		$what = $mod->get_detail($id_user, $id_area, $table);
+		// build the form
+		$form_fields = new X4Form_core('user/user_permissions');
+        $form_fields->id_area = $id_area;
+		$form_fields->id_user = $id_user;
+        $form_fields->table = $table;
+        // permission level
+        $form_fields->levels = $mod->get_levels();
+        // get user privileges on the table
+		$form_fields->what = $mod->get_detail($id_user, $id_area, $table);
 
-		// permission levels
-		$l = $mod->get_levels();
-
-		$fields = array();
-		$fields[] = array(
-			'label' => null,
-			'type' => 'hidden',
-			'value' => $id_user,
-			'name' => 'id_user'
-		);
-		$fields[] = array(
-			'label' => null,
-			'type' => 'hidden',
-			'value' => $id_area,
-			'name' => 'id_area'
-		);
-		$fields[] = array(
-			'label' => null,
-			'type' => 'hidden',
-			'value' => $table,
-			'name' => 'what'
-		);
-
-		$c = 0;
-		// if table is not empty
-		if ($what)
-		{
-            $fields[] = array(
-				'label' => null,
-				'type' => 'html',
-				'value' => '<div class="band inner-pad clearfix">'
-			);
-			$fields[] = array(
-				'label' => null,
-				'type' => 'html',
-				'value' => '<div class="one-whole xs-one-whole">'
-			);
-
-			$fields[] = array(
-				'label' => 'Imposta tutti',
-				'type' => 'select',
-				'value' => '',
-				'name' => 'resetter',
-				'options' => array($l, 'id', 'name', 0),
-				'suggestion' => 'imposta tutti allo stesso valore',
-				'extra' => 'class="large"'
-			);
-
-			$fields[] = array(
-				'label' => null,
-				'type' => 'html',
-				'value' => '</div>'
-			);
-
-			// each record
-			foreach ($what as $i)
-			{
-				$fields[] = array(
-					'label' => null,
-					'type' => 'html',
-					'value' => '<div class="one-half xs-one-whole">'
-				);
-
-				$value = is_null($i->level) ? 0 : $i->level;
-				$fields[] = array(
-					'label' => null,
-					'type' => 'hidden',
-					'value' => $i->id,
-					'name' => 'id_'.$c
-					);
-				$fields[] = array(
-					'label' => null,
-					'type' => 'hidden',
-					'value' => $value,
-					'name' => 'old_value_'.$c
-					);
-				$fields[] = array(
-					'label' => $i->name,
-					'type' => 'select',
-					'value' => $value,
-					'name' => 'value_'.$c,
-					'options' => array($l, 'id', 'name', 0),
-					'suggestion' => (strlen($i->description) > 100) ? '' : strip_tags($i->description),
-					'extra' => 'class="large resettable"'
-				);
-
-				$fields[] = array(
-					'label' => null,
-					'type' => 'html',
-					'value' => '</div>'
-				);
-				$c++;
-			}
-
-			$fields[] = array(
-				'label' => null,
-				'type' => 'html',
-				'value' => '</div>'
-			);
-		}
+        // get the fields array
+		$fields = $form_fields->render();
 
 		// if submitted
 		if (X4Route_core::$post)
@@ -1086,30 +624,40 @@ window.addEvent("domready", function()
 			die;
 		}
 
+        $view = new X4View_core('modal');
+        $view->title = _EDIT_PRIV.': '.$area->name._TRAIT_.ucfirst($table);
 		// content
-		$view = new X4View_core('editor');
-		$view->title = _EDIT_PRIV.': '.$area->name._TRAIT_.ucfirst($table);
-
+		$view->content = new X4View_core('editor');
 		// form builder
-		$view->form = '<div id="scrolled">'.X4Form_helper::doform('detpriv', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
-			'onclick="setForm(\'detpriv\');"').'</div>';
 
-		$view->js = '
-<script>
-window.addEvent("domready", function()
-{
-	var myScroll = new Scrollable($("scrolled"));
+        $extra_btn = [
+            'title' => _GO_BACK,
+            'element' => 'modal',
+            'url' => BASE_URL.'users/perm/'.$id_user.'/'.$id_area.'/1'
+        ];
 
-    $("resetter").addEvent("change", function(e){
-        var v = this.get("value");
-		$$("select.resettable").each(function(el) {
-            el.set("value", v);
-        });
-	});
-});
-</script>';
+		$view->content->form = X4Form_helper::doform('detpriv', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons', $extra_btn), 'post', '',
+            '@click="submitForm(\'detpriv\')"');
 
 		$view->render(TRUE);
+	}
+
+    /**
+	 * Script for set for all
+	 *
+	 * @return  string
+	 */
+	public function set_for_all()
+	{
+        header('Content-Type: text/javascript');
+        header("Content-Disposition: attachment; filename=set_for_all.js");
+		echo '// extra check on configurator item for set_for_all
+function setForAll(val) {
+    var items = document.getElementsByClassName("resettable");
+    for (var i = 0; i < items.length; i++) {
+        items[i].value = val;
+    }
+}';
 	}
 
 	/**
@@ -1159,10 +707,9 @@ window.addEvent("domready", function()
 			// set what update
 			if ($result[1])
 			{
-				$msg->update[] = array(
+				$msg->update = array(
 					'element' => 'modal',
-					'url' => BASE_URL.'users/perm/'.$_post['id_user'].'/'.$_post['id_area'].'/1',
-					'title' => null
+					'url' => BASE_URL.'users/perm/'.$_post['id_user'].'/'.$_post['id_area'].'/1'
 				);
 			}
 		}

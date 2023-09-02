@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
 
@@ -49,7 +49,7 @@ class Msg_controller extends X4Cms_controller
 	/**
 	 * Display system messages
 	 *
-	 * @param   string	$what Dictionary what
+	 * @param   string	$what Dictionary section
 	 * @param   string	$personal_msg Alternative message
 	 * @return  void
 	 */

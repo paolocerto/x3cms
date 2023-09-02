@@ -4,21 +4,17 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
 
 // Container for two cols
-echo '<div class="band clearfix double-inner-pad">
-		<div id="leftbox" class="four-fifth md-three-fourth sm-two-third xs-one-whole">
-			'.$content.'
+echo '<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+		<div class="md:col-span-2 lg:col-span-3">
+			'.$left.'
 		</div>
-		<div id="rightbox" class="one-fifth md-one-fourth sm-one-third xs-one-whole">
+		<div>
 			'.$right.'
 		</div>
 	</div>';
 
-if (isset($js))
-{
-	echo $js;
-}

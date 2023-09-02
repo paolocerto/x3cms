@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
 
@@ -49,36 +49,33 @@ class Areas_controller extends X3ui_controller
 
 		// get page
 		$page = $this->get_page('areas');
-		$navbar = array($this->site->get_bredcrumb($page));
 
 		// contents
-		$view = new X4View_core('areas/areas');
-		$view->page = $page;
-		$view->navbar = $navbar;
+		$view = new X4View_core('page');
+        $view->breadcrumb = array($this->site->get_bredcrumb($page));
+		$view->actions = $this->actions();
+
+		$view->content = new X4View_core('areas/areas');
+		$view->content->page = $page;
+
 		$mod = new Area_model();
 		list($id_area, $areas) = $mod->get_my_areas();
-		$view->areas = $areas;
+		$view->content->areas = $areas;
 
 		$view->render(TRUE);
 	}
 
 	/**
-	 * Areas filter
+	 * Areas actions
 	 *
+     * @access	private
 	 * @return  void
 	 */
-	public function filter()
+	private function actions()
 	{
-		// load the dictionary
-		$this->dict->get_wordarray(array('areas'));
-
-		echo '<a class="btf" href="'.BASE_URL.'areas/edit/-1" title="'._NEW_AREA.'"><i class="fas fa-plus fa-lg"></i></a>
-<script>
-window.addEvent("domready", function()
-{
-	buttonize("filters", "btf", "modal");
-});
-</script>';
+		return '<a class="link" href="javascript:void(0)" @click="popup(\''.BASE_URL.'areas/edit\')" title="'._NEW_AREA.'">
+            <i class="fa-solid fa-lg fa-circle-plus"></i>
+        </a>';
 	}
 
 	/**
@@ -100,8 +97,6 @@ window.addEvent("domready", function()
 		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'areas', $id, $val);
 		if (is_null($msg))
 		{
-			$qs = X4Route_core::get_query_string();
-
 			// do action
 			$mod = new Area_model();
 			$result = $mod->update($id, array($what => $value));
@@ -113,10 +108,9 @@ window.addEvent("domready", function()
 			// set update
 			if ($result[1])
 			{
-				$msg->update[] = array(
-					'element' => $qs['div'],
-					'url' => urldecode($qs['url']),
-					'title' => null
+				$msg->update = array(
+					'element' => 'page',
+					'url' => $_SERVER['HTTP_REFERER']
 				);
 			}
 		}
@@ -134,14 +128,6 @@ window.addEvent("domready", function()
 		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'areas', 'themes'));
 
-		// handle id
-		$chk = false;
-		if ($id < 0)
-		{
-			$id = 0;
-			$chk = true;
-		}
-
 		// get area object
 		$mod = new Area_model();
 		$item = ($id)
@@ -149,10 +135,10 @@ window.addEvent("domready", function()
 			: new Area_obj();
 
 		// build the form
-		$form_fields = new X4Form_core('area_edit');
+		$form_fields = new X4Form_core('area/area_edit');
 		$form_fields->id = $id;
 		$form_fields->item = $item;
-        	$form_fields->mod = $mod;
+        $form_fields->mod = $mod;
 
 		// get the fields array
 		$fields = $form_fields->render();
@@ -172,27 +158,18 @@ window.addEvent("domready", function()
 			die;
 		}
 
-		// contents
-		$view = new X4View_core('editor');
-
-		$view->title = ($id)
+        $view = new X4View_core('modal');
+        $view->title = ($id)
 			? _EDIT_AREA
 			: _ADD_AREA;
 
+		// contents
+		$view->content = new X4View_core('editor');
 		// form builder
-		$view->form = X4Form_helper::doform('editor', BASE_URL.'areas/edit/'.$id, $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
-			'onclick="setForm(\'editor\');"');
+		$view->content->form = X4Form_helper::doform('editor', BASE_URL.'areas/edit/'.$id, $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
+			'@click="submitForm(\'editor\')"');
 
-		$view->js = '';
-
-		if ($id > 0 || $chk)
-		{
-			$view->render(TRUE);
-		}
-		else
-		{
-			return $view->render();
-		}
+		$view->render(TRUE);
 	}
 
 	/**
@@ -236,7 +213,6 @@ window.addEvent("domready", function()
 			{
 				// Redirect checker
 				$redirect = false;
-
 				// enable logs
 				if (LOGS && DEVEL)
 				{
@@ -266,7 +242,7 @@ window.addEvent("domready", function()
 						// aprivs permissions
 						$domain = X4Array_helper::obj2array($perm->get_aprivs($_SESSION['xuid']), null, 'id_area');
 						$domain[] = $id_area;
-						$res = $perm->set_aprivs($_SESSION['xuid'], $domain);
+						$perm->set_aprivs($_SESSION['xuid'], $domain);
 						// uprivs premissions
 						$perm->set_uprivs($_SESSION['xuid'], $id_area, 'areas', 4);
 					}
@@ -296,7 +272,7 @@ window.addEvent("domready", function()
 						$section->reset($_post['id']);
 					}
 
-                    			// clear cache
+                    // clear cache
 					APC && apcu_clear_cache();
 				}
 
@@ -308,18 +284,16 @@ window.addEvent("domready", function()
 				{
 					if ($redirect)
 					{
-						$msg->update[] = array(
-							'element' => 'topic',
-							'url' => BASE_URL.'home/redirect/admin',
-							'title' => null
+						$msg->update = array(
+							'element' => 'page',
+							'url' => BASE_URL.'home/start'
 						);
 					}
 					else
 					{
-						$msg->update[] = array(
-							'element' => 'topic',
+						$msg->update = array(
+							'element' => 'page',
 							'url' => BASE_URL.'areas',
-							'title' => null
 						);
 					}
 				}
@@ -339,74 +313,18 @@ window.addEvent("domready", function()
 		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'areas', 'themes'));
 
+        // get the current data,
+        // areas data relating to SEO are stored in 'alang'
+        $mod = new Language_model();
+        $items = $mod->get_seo_data($id_area);
+
 		// build the form
-		$fields = array();
-		$fields[] = array(
-			'label' => null,
-			'type' => 'hidden',
-			'value' => $id_area,
-			'name' => 'id_area'
-		);
+		$form_fields = new X4Form_core('area/area_seo');
+		$form_fields->id_area = $id_area;
+		$form_fields->items = $items;
 
-		$fields[] = array(
-			'label' => null,
-			'type' => 'html',
-			'value' => '<div id="accordion">'
-		);
-
-		// get the current data,
-		// areas data relating to SEO are stored in 'alang'
-		$lang = new Language_model();
-		$m = $lang->get_seo_data($id_area);
-
-		$c = 0;
-		// for each enabled language
-		foreach ($m as $i)
-		{
-			$fields[] = array(
-				'label' => null,
-				'type' => 'hidden',
-				'value' => $i->id,
-				'name' => 'id_'.$c
-			);
-			$fields[] = array(
-				'label' => null,
-				'type' => 'html',
-				'value' => '<h4 class="context">'.ucfirst($i->language).'</h4><div class="section">'
-			);
-			$fields[] = array(
-				'label' => _NAME,
-				'type' => 'text',
-				'value' => $i->title,
-				'name' => 'title_'.$c,
-				'rule' => 'required',
-				'extra' => 'class="large"'
-			);
-			$fields[] = array(
-				'label' => _DESCRIPTION,
-				'type' => 'textarea',
-				'value' => $i->description,
-				'name' => 'description_'.$c
-			);
-			$fields[] = array(
-				'label' => _KEYS,
-				'type' => 'textarea',
-				'value' => $i->keywords,
-				'name' => 'keywords_'.$c
-			);
-			$fields[] = array(
-				'label' => null,
-				'type' => 'html',
-				'value' => '</div>'
-			);
-			$c++;
-		}
-
-		$fields[] = array(
-			'label' => null,
-			'type' => 'html',
-			'value' => '</div>'
-		);
+        // get the fields array
+		$fields = $form_fields->render();
 
 		// if submitted
 		if (X4Route_core::$post)
@@ -424,22 +342,16 @@ window.addEvent("domready", function()
 		}
 
 		// contents
-		$view = new X4View_core('editor');
+		$view = new X4View_core('modal');
 		$view->title = _SEO_DATA;
 
+        // contents
+		$view->content = new X4View_core('editor');
 		// form builder
-		$view->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
-			'onclick="setForm(\'editor\');"');
+		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
+            '@click="submitForm(\'editor\')"');
 
-		$view->js = '
-<script>
-window.addEvent("domready", function()
-{
-	saccordion("accordion", "#accordion h4", "#accordion .section");
-});
-</script>';
-
-		$view->render(TRUE);
+    	$view->render(TRUE);
 	}
 
 	/**
@@ -485,10 +397,9 @@ window.addEvent("domready", function()
 			// set what update
 			if ($result[1])
 			{
-				$msg->update[] = array(
-					'element' => 'topic',
-					'url' => BASE_URL.'areas/index/1',
-					'title' => null
+				$msg->update = array(
+					'element' => 'page',
+					'url' => BASE_URL.'areas',
 				);
 			}
 		}
@@ -508,7 +419,7 @@ window.addEvent("domready", function()
 
 		// get object
 		$area = new Area_model();
-		$obj = $area->get_by_id($id, 'areas', 'name');
+		$item = $area->get_by_id($id, 'areas', 'name');
 
 		// build the form
 		$fields = array();
@@ -522,18 +433,19 @@ window.addEvent("domready", function()
 		// if submitted
 		if (X4Route_core::$post)
 		{
-			$this->deleting($id, $obj->name);
+			$this->deleting($id, $item->name);
 			die;
 		}
 
-		// contents
-		$view = new X4View_core('delete');
-		$view->title = _DELETE_AREA;
-		$view->item = $obj->name;
+		$view = new X4View_core('modal');
+        $view->title = _DELETE_AREA;
+        // contents
+        $view->content = new X4View_core('delete');
+		$view->content->item = $item->name;
 
 		// form builder
-		$view->form = X4Form_helper::doform('delete', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
-			'onclick="setForm(\'delete\');"');
+		$view->content->form = X4Form_helper::doform('delete', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
+            '@click="submitForm(\'delete\')"');
 		$view->render(TRUE);
 	}
 
@@ -567,10 +479,9 @@ window.addEvent("domready", function()
 				$perm->deleting_by_what('areas', $id);
 
 				// set what update
-				$msg->update[] = array(
-					'element' => 'topic',
-					'url' => BASE_URL.'areas/index/1',
-					'title' => null
+				$msg->update = array(
+					'element' => 'page',
+					'url' => BASE_URL.'areas',
 				);
 			}
 		}
@@ -589,12 +500,15 @@ window.addEvent("domready", function()
 		// load the dictionary
 		$this->dict->get_wordarray(array('areas'));
 
+        $view = new X4View_core('modal');
+        $view->title = _AREA_LANG_MAP;
+
 		// content
-		$view = new X4View_core('areas/map');
+		$view->content = new X4View_core('areas/map');
 		$mod = new Page_model($id_area, $lang);
-		$view->area = $mod->get_by_id($id_area, 'areas');
-		$view->lang = $lang;
-		$view->map = $this->site->get_map($mod->get_page('home'), false, false);
+		$view->content->area = $mod->get_by_id($id_area, 'areas');
+		$view->content->lang = $lang;
+		$view->content->map = $this->site->get_map($mod->get_page('home'), false, false);
 
 		$view->render(TRUE);
 	}

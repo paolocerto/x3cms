@@ -1,0 +1,19 @@
+body {background:#ffffff;font-family:Helvetica,Arial,Verdana,sans-serif;font-size:12px;line-height:13pt;color:#444444;}
+table {margin:0 auto;background:#ffffff;font-size:11px;}
+
+th {background:#bbbbbb;color:#ffffff;font-weight:bold;text-align:center;}
+td.aright {text-align:right;}
+td.acenter {text-align:center;}
+
+h1 {font-size:18px;line-height:19pt;color:#444;}
+h2 {font-size:16px;line-height:17pt;}
+h3 {margin-top:0;}
+a {color:#e60;}
+a img {border:none;}
+
+div.extra {border:3px solid #bbbbbb;margin-top:10px;padding:10px;}
+
+#head h1 a {color:#333333;}
+#head h1 a span {color:#e60;font-size:1.2em;}
+#topic {border-top:3px solid #bbbbbb;padding:10px 0;}
+#foot {border-top:3px solid #bbbbbb;text-align:center;margin:15px 0;}

@@ -98,10 +98,13 @@ CREATE TABLE IF NOT EXISTS `articles` (
   `id_area` int(11) NOT NULL,
   `lang` char(2) NOT NULL,
   `code_context` smallint(6) NOT NULL,
+  `name` varchar(255) NOT NULL,
   `id_page` int(11) NOT NULL,
+  `id_editor` int(11) NOT NULL,
+  `date_in` int(11) NOT NULL,
+  `date_out` int(11) NOT NULL,
   `xkeys` text NOT NULL,
   `category` varchar(255) NOT NULL,
-  `name` varchar(255) NOT NULL,
   `tags` text NOT NULL,
   `content` text NOT NULL,
   `ftext` text NOT NULL,
@@ -110,9 +113,8 @@ CREATE TABLE IF NOT EXISTS `articles` (
   `author` varchar(255) NOT NULL,
   `module` varchar(255) NOT NULL,
   `param` varchar(255) NOT NULL,
-  `date_in` int(11) NOT NULL,
-  `date_out` int(11) NOT NULL,
-  `id_editor` int(11) NOT NULL,
+
+
   `show_author` tinyint(1) NOT NULL,
   `show_date` tinyint(1) NOT NULL,
   `show_tags` tinyint(1) NOT NULL,
@@ -305,6 +307,12 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'admin', 'global', '_CANCEL', 'Annulla', 0, 1),
 (NOW(),	'it', 'admin', 'global', '_GENERATE', 'Genera',	0, 1),
 (NOW(),	'it', 'admin', 'global', '_SETTINGS', 'Impostazioni',	0, 1),
+(NOW(), 'it', 'admin', 'global', '_PLUGINS', 'Moduli', 0, 1),
+(NOW(), 'it', 'admin', 'global', '_ALL_PLUGINS', 'Tutti i moduli', 0, 1),
+(NOW(), 'it', 'admin', 'global', '_HIDDEN', 'Elemento nascosto', 0, 1),
+(NOW(), 'it', 'admin', 'global', '_VISIBLE', 'Elemento visibile', 0, 1),
+(NOW(), 'it', 'admin', 'global', '_ENTER_TO_FILTER', 'premi invio per filtrare', 0, 1),
+
 
 (NOW(), 'it', 'admin', 'home', '_HOME_PAGE', 'Home page', 0, 1),
 (NOW(), 'it', 'admin', 'home', '_PUBLIC_SIDE', 'Sito pubblico', 0, 1),
@@ -502,13 +510,16 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'admin', 'form', '_SELECT_COLOR', 'Scegli un colore', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_TO_CHANGE', 'Da modificare', 0, 1),
 
+(NOW(), 'it', 'admin', 'sites', '_SETTINGS_MANAGER', 'Gestione impostazioni', 0, 1),
+(NOW(), 'it', 'admin', 'sites', '_SETTINGS_MANAGER_MSG', 'Qui potete configurare la struttura e il comportamento del vostro X3CMS', 0, 1),
 (NOW(), 'it', 'admin', 'sites', '_SITE_MANAGER', 'Gestione sito', 0, 1),
 (NOW(), 'it', 'admin', 'sites', '_ONLINE', 'On Line', 0, 1),
 (NOW(), 'it', 'admin', 'sites', '_OFFLINE', 'Off Line', 0, 1),
 (NOW(), 'it', 'admin', 'sites', '_KEYCODE', 'Codice licenza', 0, 1),
 (NOW(), 'it', 'admin', 'sites', '_DOMAIN', 'Dominio', 0, 1),
 (NOW(), 'it', 'admin', 'sites', '_SITE_CONFIG', 'Configurazione sito', 0, 1),
-(NOW(), 'it', 'admin', 'sites', '_EDIT_SITE', 'Modifica parametri sito', 0, 1),
+(NOW(), 'it', 'admin', 'sites', '_ADD_SITE', 'Aggiungi un nuovo sito', 0, 1),
+(NOW(), 'it', 'admin', 'sites', '_EDIT_SITE', 'Modifica sito', 0, 1),
 (NOW(), 'it', 'admin', 'sites', '_CLEAR_CACHE', 'Svuota la cache', 0, 1),
 (NOW(), 'it', 'admin', 'sites', '_VERSION', 'versione', 0, 1),
 
@@ -556,8 +567,9 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'admin', 'lang', '_AREA', 'Area', 0, 1),
 (NOW(), 'it', 'admin', 'lang', '_WORDS', 'Espressioni', 0, 1),
 (NOW(), 'it', 'admin', 'lang', '_TRANSLATION', 'Traduzioni', 0, 1),
+(NOW(), 'it', 'admin', 'lang', '_SWITCH_LANGUAGE', 'Cambia lingua', 0, 1),
 
-
+(NOW(), 'it', 'admin', 'languages', '_LANGUAGES_MANAGER', 'Gestione lingue', 0, 1),
 (NOW(), 'it', 'admin', 'languages', '_ADD_LANG', 'Aggiungi una lingua', 0, 1),
 (NOW(), 'it', 'admin', 'languages', '_EDIT_LANG', 'Modifica lingua', 0, 1),
 (NOW(), 'it', 'admin', 'languages', '_DELETE_LANG', 'Elimina lingua', 0, 1),
@@ -581,7 +593,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'admin', 'pages', '_MENU', 'Men&ugrave;', 0, 1),
 (NOW(), 'it', 'admin', 'pages', '_SUBMENU', 'Sottomen&ugrave;', 0, 1),
 (NOW(), 'it', 'admin', 'pages', '_SUBPAGES', 'sottopagine', 0, 1),
-(NOW(), 'it', 'admin', 'pages', '_MENU_AND_ORDER', 'Potete aggiungere, togliere e ordinare le pagine nei men&ugrave; trascinandole', 0, 1),
+(NOW(), 'it', 'admin', 'pages', '_MENU_AND_ORDER', 'Posizione della pagina', 0, 1),
 (NOW(), 'it', 'admin', 'pages', '_SEO_TOOLS', 'Seo Tools', 0, 1),
 (NOW(), 'it', 'admin', 'pages', '_HISTORY', 'Storico', 0, 1),
 (NOW(), 'it', 'admin', 'pages', '_NO_SUBPAGES', 'Questa pagina non ha sottopagine', 0, 1),
@@ -613,16 +625,16 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'admin', 'articles', '_KEY_ORDER', 'Ordinati per chiave', 0, 1),
 (NOW(), 'it', 'admin', 'articles', '_CONTEXT_ORDER', 'Ordinati per contesto', 0, 1),
 (NOW(), 'it', 'admin', 'articles', '_CATEGORY_ORDER', 'Ordinati per categoria', 0, 1),
-(NOW(), 'it', 'admin', 'articles', '_SWITCH_CONTEXT', 'Cambia contesto', 0, 1),
 (NOW(), 'it', 'admin', 'articles', '_AUTHOR_ORDER', 'Ordinati per autore', 0, 1),
-(NOW(), 'it', 'admin', 'articles', '_BY_PAGE', 'Cerca per pagina', 0, 1),
-(NOW(), 'it', 'admin', 'articles', '_SWITCH_AUTHOR', 'Cambia autore', 0, 1),
-(NOW(), 'it', 'admin', 'articles', '_SWITCH_CATEGORY', 'Cambia categoria', 0, 1),
-(NOW(), 'it', 'admin', 'articles', '_SWITCH_KEY', 'Cambia chiave', 0, 1),
+(NOW(), 'it', 'admin', 'articles', '_PAGE', 'Pagina', 0, 1),
+(NOW(), 'it', 'admin', 'articles', '_AUTHOR', 'Autore', 0, 1),
+(NOW(), 'it', 'admin', 'articles', '_CATEGORY', 'Categoria', 0, 1),
+(NOW(), 'it', 'admin', 'articles', '_CONTEXT', 'Contesto', 0, 1),
+(NOW(), 'it', 'admin', 'articles', '_KEY', 'Chiave', 0, 1),
 (NOW(), 'it', 'admin', 'articles', '_VIEW_ARTICLES', 'Vedi gli articoli', 0, 1),
 (NOW(), 'it', 'admin', 'articles', '_START_DATE', 'Data inizio', 0, 1),
 (NOW(), 'it', 'admin', 'articles', '_END_DATE', 'Data fine', 0, 1),
-(NOW(), 'it', 'admin', 'articles', '_NO_END_MSG', 'Lasciare vuoto per pubblicazione senza termine temporale', 0, 1),
+(NOW(), 'it', 'admin', 'articles', '_NO_END_MSG', 'Vuoto per non fissare termine', 0, 1),
 (NOW(), 'it', 'admin', 'articles', '_CONTENTS', 'Contenuti', 0, 1),
 (NOW(), 'it', 'admin', 'articles', '_SCRIPT', 'Script', 0, 1),
 (NOW(), 'it', 'admin', 'articles', '_SCRIPT_MSG', 'tutti gli script inclusi nei contenuti sono rimossi al fine di evitare inclusioni non desiderate. Eventuali script, compresi di tag di apertura e chiusura, vanno inseriti qui', 0, 1),
@@ -657,37 +669,48 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'admin', 'categories', '_NEW_CATEGORY', 'Nuovo categoria', 0, 1),
 (NOW(), 'it', 'admin', 'categories', '_EDIT_CATEGORY', 'Modifica categoria', 0, 1),
 (NOW(), 'it', 'admin', 'categories', '_DELETE_CATEGORY', 'Elimina categoria', 0, 1),
+(NOW(), 'it', 'admin', 'categories', '_ALL_TAGS', 'Tutti i tag', 0, 1),
 (NOW(), 'it', 'admin', 'categories', '_NO_CATEGORY_TAG', 'Tag vuoto', 0, 1),
 
 
 (NOW(), 'it', 'admin', 'contexts', '_CONTEXT_LIST', 'Elenco contesti', 0, 1),
+(NOW(), 'it', 'admin', 'contexts', '_CONTEXT_MSG', 'Contesti permettono di raggruppare articoli per gestirli e visualizzarli in modo coerente', 0, 1),
 (NOW(), 'it', 'admin', 'contexts', '_CONTEXTS', 'Contesti', 0, 1),
 (NOW(), 'it', 'admin', 'contexts', '_ADD_CONTEXT', 'Aggiungi un nuovo contesto', 0, 1),
 (NOW(), 'it', 'admin', 'contexts', '_NEW_CONTEXT', 'Nuovo contesto', 0, 1),
 (NOW(), 'it', 'admin', 'contexts', '_EDIT_CONTEXT', 'Modifica contesto', 0, 1),
 (NOW(), 'it', 'admin', 'contexts', '_DELETE_CONTEXT', 'Elimina contesto', 0, 1),
+(NOW(), 'it', 'admin', 'contexts', '_DEFAULT_CONTEXTS_MSG', 'Contesti di default non possono essere modificati', 0, 1),
+
 
 
 (NOW(), 'it', 'admin', 'sections', '_SECTIONS', 'Sezioni', 0, 1),
+(NOW(), 'it', 'admin', 'sections', '_SECTIONS_SORT_MSG', 'Solo le sezioni sotto la linea arancione sono ordinabili', 0, 1),
 (NOW(), 'it', 'admin', 'sections', '_SECTION', 'Sezione', 0, 1),
 (NOW(), 'it', 'admin', 'sections', '_SECTION_NEW', 'Nuova sezione', 0, 1),
 (NOW(), 'it', 'admin', 'sections', '_SECTION_EDIT', 'Modifica sezione', 0, 1),
 (NOW(), 'it', 'admin', 'sections', '_SECTION_EDIT_MSG', '<p>NOTA: una sezione bloccata non può essere modificata; la configurazione delle colonne si aggiorna solo dopo il salvataggio.</p>', 0, 1),
 (NOW(), 'it', 'admin', 'sections', '_SECTION_DELETE', 'Elimina sezione', 0, 1),
 (NOW(), 'it', 'admin', 'sections', '_SECTION_SETTINGS', 'Configurazione', 0, 1),
+(NOW(), 'it', 'admin', 'sections', '_SECTION_SIZES_AND_COLORS', 'Sezione colori e dimensioni', 0, 1),
+(NOW(), 'it', 'admin', 'sections', '_SECTION_COLUMNS_STYLE', 'Colonne colori e stili', 0, 1),
+
 (NOW(), 'it', 'admin', 'sections', '_SECTION_BACKGROUND', 'Colore sfondo', 0, 1),
 (NOW(), 'it', 'admin', 'sections', '_SECTION_IMG_H', 'Immagine sfondo orizzontale', 0, 1),
 (NOW(), 'it', 'admin', 'sections', '_SECTION_IMG_V', 'Immagine sfondo verticale', 0, 1),
 (NOW(), 'it', 'admin', 'sections', '_SECTION_FOREGROUND', 'Colore testo', 0, 1),
-(NOW(), 'it', 'admin', 'sections', '_SECTION_COLUMNS', 'Massimo numero di colonne', 0, 1),
+(NOW(), 'it', 'admin', 'sections', '_SECTION_COLUMNS', 'Numero di colonne', 0, 1),
 (NOW(), 'it', 'admin', 'sections', '_SECTION_COL_SIZES', 'Suddivisione colonne', 0, 1),
 (NOW(), 'it', 'admin', 'sections', '_SECTION_COL_SIZES_MSG', 'Per avere 2 colonne 2/3+1/3 inserire 3 per colonne e 2+1 in suddivisione colonne', 0, 1),
+(NOW(), 'it', 'admin', 'sections', '_SECTION_STATUS', 'Stato sezione', 0, 1),
 (NOW(), 'it', 'admin', 'sections', '_SECTION_UNLOCKED', 'Sezione sbloccata: parametri personalizzabili', 0, 1),
 (NOW(), 'it', 'admin', 'sections', '_SECTION_LOCKED', 'Sezione bloccata: il tema gestirà tutti i parametri', 0, 1),
-(NOW(), 'it', 'admin', 'sections', '_SECTION_WIDTH', 'Larghezza sezione: percentuale dello schermo', 0, 1),
+(NOW(), 'it', 'admin', 'sections', '_SECTION_WIDTH', 'Larghezza sezione', 0, 1),
+(NOW(), 'it', 'admin', 'sections', '_SECTION_FULL_WIDTH', 'larghezza piena', 0, 1),
+(NOW(), 'it', 'admin', 'sections', '_SECTION_FIXED_WIDTH', 'larghezza fissa da impostazioni del tema', 0, 1),
 (NOW(), 'it', 'admin', 'sections', '_SECTION_HEIGHT', 'Altezza: libera o fullscreen', 0, 1),
-(NOW(), 'it', 'admin', 'sections', '_SECTION_CLASS', 'CSS da assegnare alla sezione', 0, 1),
-(NOW(), 'it', 'admin', 'sections', '_SECTION_CLASS_MSG', 'inserire classi CSS previste dal tema', 0, 1),
+(NOW(), 'it', 'admin', 'sections', '_SECTION_CLASS', 'una o più classi CSS per la sezione', 0, 1),
+(NOW(), 'it', 'admin', 'sections', '_SECTION_CLASS_MSG', 'inserire classi CSS del tema', 0, 1),
 
 
 (NOW(), 'it', 'admin', 'sections', '_COMPOSE_EDITOR', 'Compositore pagina', 0, 1),
@@ -730,14 +753,14 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'admin', 'dictionary', '_SHOW_WORDS', 'Visualizza espressioni con questa chiave', 0, 1),
 (NOW(), 'it', 'admin', 'dictionary', '_WORD', 'Espressione', 0, 1),
 (NOW(), 'it', 'admin', 'dictionary', '_IMPORT_INTO', 'Importa in', 0, 1),
-(NOW(), 'it', 'admin', 'dictionary', '_IMPORT_INTO_MSG', '<p>Se le lingue di origine e di destinazione sono diverse X3 CMS cercherà di tradurre le espressioni con Google Translator.<br />Le voci non tradotte saranno marcate con un *</p>', 0, 1),
 (NOW(), 'it', 'admin', 'dictionary', '_IMPORT_KEYS', 'Importa chiavi', 0, 1),
 (NOW(), 'it', 'admin', 'dictionary', '_SECTION', 'Sezione', 0, 1),
 (NOW(), 'it', 'admin', 'dictionary', '_SECTIONS_LIST', 'Elenco sezioni', 0, 1),
 (NOW(), 'it', 'admin', 'dictionary', '_WORDS_LIST', 'Elenco espressioni', 0, 1),
 (NOW(), 'it', 'admin', 'dictionary', '_DICTIONARY_SEARCH_MSG', 'Cerca per chiave in tutte le lingue', 0, 1),
 (NOW(), 'it', 'admin', 'dictionary', '_DICTIONARY_SEARCH_RESULT', 'Risultato della ricerca', 0, 1),
-(NOW(), 'it', 'admin', 'dictionary', '_DICTIONARY_DELETE_DUPLICATES', 'Rimuovi duplicati', 0, 1),
+(NOW(), 'it', 'admin', 'dictionary', '_DICTIONARY_DELETE_DUPLICATES', 'Elimina chiavi duplicate', 0, 1),
+(NOW(), 'it', 'admin', 'dictionary', '_DICTIONARY_DELETE_DUPLICATES_MSG', 'tutte le chiavi duplicate all\'interno di ogni sezione', 0, 1),
 
 (NOW(), 'it', 'admin', 'users', '_GROUP', 'Gruppo', 0, 1),
 (NOW(), 'it', 'admin', 'users', '_USERS_LIST', 'Elenco utenti', 0, 1),
@@ -761,6 +784,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'admin', 'users', '_DOMAIN', 'Aree di pertinenza', 0, 1),
 (NOW(), 'it', 'admin', 'users', '_EDIT_PRIV', 'Modifica i permessi dell\'utente', 0, 1),
 (NOW(), 'it', 'admin', 'users', '_EDIT_DETAIL_PRIV', 'Modifica i permessi nel dettaglio', 0, 1),
+(NOW(), 'it', 'admin', 'users', '_ALL_DETAIL_PRIV', 'Imposta lo stesso per tutti', 0, 1),
 (NOW(), 'it', 'admin', 'users', '_GLOBAL_PRIVS', 'Permessi globali', 0, 1),
 (NOW(), 'it', 'admin', 'users', '_RESET_PRIVS', 'Resetta i permessi', 0, 1),
 (NOW(), 'it', 'admin', 'users', '_RESET_PRIVS_MSG', 'Elimina tutte le personalizzazioni e sincronizza con i permessi del gruppo', 0, 1),
@@ -785,8 +809,6 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'admin', 'modules', '_PARAM', 'Parametro plugin', 0, 1),
 (NOW(), 'it', 'admin', 'modules', '_MODULE_INSTRUCTIONS', 'Istruzioni per l\'uso del modulo', 0, 1),
 (NOW(), 'it', 'admin', 'modules', '_INSTRUCTIONS', 'Istruzioni', 0, 1),
-(NOW(), 'it', 'admin', 'modules', '_HIDDEN', 'Modulo nascosto', 0, 1),
-(NOW(), 'it', 'admin', 'modules', '_VISIBLE', 'Modulo visibile', 0, 1),
 (NOW(), 'it', 'admin', 'modules', '_PLUGGABLE', 'Modulo inseribile', 0, 1),
 
 (NOW(), 'it', 'admin', 'groups', '_ADD_GROUP', 'Aggiungi un gruppo', 0, 1),
@@ -837,6 +859,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'admin', 'groups', 'TEMPLATES', 'Gestione template', 0, 1),
 (NOW(), 'it', 'admin', 'groups', 'THEMES', 'Gestione temi', 0, 1),
 (NOW(), 'it', 'admin', 'groups', 'USERS', 'Gestione utenti', 0, 1),
+(NOW(), 'it', 'admin', 'groups', 'WIDGETS', 'Gestione widgets', 0, 1),
 
 
 (NOW(), 'it', 'admin', 'themes', '_THEME_LIST', 'Elenco temi', 0, 1),
@@ -917,7 +940,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'admin', 'global', '_NO_ITEMS', 'No items found', 0, 1),
 (NOW(), 'en', 'admin', 'global', '_LAST_UPGRADE', 'Last refresh', 0, 1),
 (NOW(), 'en', 'admin', 'global', '_CLOSE', 'Close', 0, 1),
-(NOW(), 'en', 'admin', 'global', '_PERMISSIONS', 'Permission', 0, 1),
+(NOW(), 'en', 'admin', 'global', '_PERMISSIONS', 'Permissions', 0, 1),
 (NOW(), 'en', 'admin', 'global', '_CONFIG', 'Configure', 0, 1),
 (NOW(), 'en', 'admin', 'global', '_INSTALL', 'Install', 0, 1),
 (NOW(), 'en', 'admin', 'global', '_UNINSTALL', 'uninstall', 0, 1),
@@ -937,6 +960,11 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'admin', 'global', '_CANCEL', 'Cancel', 0, 1),
 (NOW(), 'en', 'admin', 'global', '_GENERATE', 'Generate', 0, 1),
 (NOW(), 'en', 'admin', 'global', '_SETTINGS', 'Settings', 0, 1),
+(NOW(), 'en', 'admin', 'global', '_PLUGINS', 'Plugins', 0, 1),
+(NOW(), 'en', 'admin', 'global', '_ALL_PLUGINS', 'All plugins', 0, 1),
+(NOW(), 'en', 'admin', 'global', '_HIDDEN', 'Hidden element', 0, 1),
+(NOW(), 'en', 'admin', 'global', '_VISIBLE', 'Visible element', 0, 1),
+(NOW(), 'en', 'admin', 'global', '_ENTER_TO_FILTER', 'hit enter to filter', 0, 1),
 
 (NOW(), 'en', 'admin', 'home', '_HOME_PAGE', 'Home page', 0, 1),
 (NOW(), 'en', 'admin', 'home', '_PUBLIC_SIDE', 'Public side', 0, 1),
@@ -1132,13 +1160,16 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'admin', 'form', '_SELECT_COLOR', 'Pick a color', 0, 1),
 (NOW(), 'en', 'admin', 'form', '_TO_CHANGE', 'To changes', 0, 1),
 
+(NOW(), 'en', 'admin', 'sites', '_SETTINGS_MANAGER', 'Settings manager', 0, 1),
+(NOW(), 'en', 'admin', 'sites', '_SETTINGS_MANAGER_MSG', 'Here you can configure the structure and the behaviour of your X3CMS', 0, 1),
 (NOW(), 'en', 'admin', 'sites', '_SITE_MANAGER', 'Site manager', 0, 1),
 (NOW(), 'en', 'admin', 'sites', '_ONLINE', 'On Line', 0, 1),
 (NOW(), 'en', 'admin', 'sites', '_OFFLINE', 'Off Line', 0, 1),
 (NOW(), 'en', 'admin', 'sites', '_KEYCODE', 'License code', 0, 1),
 (NOW(), 'en', 'admin', 'sites', '_DOMAIN', 'Domain', 0, 1),
 (NOW(), 'en', 'admin', 'sites', '_SITE_CONFIG', 'Site config', 0, 1),
-(NOW(), 'en', 'admin', 'sites', '_EDIT_SITE', 'Edit site parameters', 0, 1),
+(NOW(), 'en', 'admin', 'sites', '_ADD_SITE', 'Add a new site', 0, 1),
+(NOW(), 'en', 'admin', 'sites', '_EDIT_SITE', 'Edit site', 0, 1),
 (NOW(), 'en', 'admin', 'sites', '_CLEAR_CACHE', 'Clear your cache', 0, 1),
 (NOW(), 'en', 'admin', 'sites', '_VERSION', 'version', 0, 1),
 
@@ -1185,8 +1216,9 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'admin', 'lang', '_AREA', 'Area', 0, 1),
 (NOW(), 'en', 'admin', 'lang', '_WORDS', 'Words', 0, 1),
 (NOW(), 'en', 'admin', 'lang', '_TRANSLATION', 'Translations', 0, 1),
+(NOW(), 'en', 'admin', 'lang', '_SWITCH_LANGUAGE', 'Switch language', 0, 1),
 
-
+(NOW(), 'en', 'admin', 'languages', '_LANGUAGES_MANAGER', 'Languages manager', 0, 1),
 (NOW(), 'en', 'admin', 'languages', '_ADD_LANG', 'Add a language', 0, 1),
 (NOW(), 'en', 'admin', 'languages', '_EDIT_LANG', 'Edit language', 0, 1),
 (NOW(), 'en', 'admin', 'languages', '_DELETE_LANG', 'Delete language', 0, 1),
@@ -1210,7 +1242,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'admin', 'pages', '_MENU', 'Menu', 0, 1),
 (NOW(), 'en', 'admin', 'pages', '_SUBMENU', 'Submenu', 0, 1),
 (NOW(), 'en', 'admin', 'pages', '_SUBPAGES', 'subpages', 0, 1),
-(NOW(), 'en', 'admin', 'pages', '_MENU_AND_ORDER', 'You can add page to menu, remove from menu and sort the pages in the menu by dragging', 0, 1),
+(NOW(), 'en', 'admin', 'pages', '_MENU_AND_ORDER', 'Page position', 0, 1),
 (NOW(), 'en', 'admin', 'pages', '_SEO_TOOLS', 'SEO Tools', 0, 1),
 (NOW(), 'en', 'admin', 'pages', '_HISTORY', 'History', 0, 1),
 (NOW(), 'en', 'admin', 'pages', '_NO_SUBPAGES', 'This page don\'t has subpages', 0, 1),
@@ -1242,16 +1274,16 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'admin', 'articles', '_KEY_ORDER', 'Ordered by key', 0, 1),
 (NOW(), 'en', 'admin', 'articles', '_CONTEXT_ORDER', 'Ordered by context', 0, 1),
 (NOW(), 'en', 'admin', 'articles', '_CATEGORY_ORDER', 'Ordered by category', 0, 1),
-(NOW(), 'en', 'admin', 'articles', '_SWITCH_CONTEXT', 'Switch context', 0, 1),
 (NOW(), 'en', 'admin', 'articles', '_AUTHOR_ORDER', 'Ordered by author', 0, 1),
-(NOW(), 'en', 'admin', 'articles', '_BY_PAGE', 'Search by page', 0, 1),
-(NOW(), 'en', 'admin', 'articles', '_SWITCH_AUTHOR', 'Switch author', 0, 1),
-(NOW(), 'en', 'admin', 'articles', '_SWITCH_CATEGORY', 'Switch category', 0, 1),
-(NOW(), 'en', 'admin', 'articles', '_SWITCH_KEY', 'Switch key', 0, 1),
+(NOW(), 'en', 'admin', 'articles', '_PAGE', 'Page', 0, 1),
+(NOW(), 'en', 'admin', 'articles', '_AUTHOR', 'Author', 0, 1),
+(NOW(), 'en', 'admin', 'articles', '_CATEGORY', 'Category', 0, 1),
+(NOW(), 'en', 'admin', 'articles', '_CONTEXT', 'Context', 0, 1),
+(NOW(), 'en', 'admin', 'articles', '_KEY', 'Key', 0, 1),
 (NOW(), 'en', 'admin', 'articles', '_VIEW_ARTICLES', 'View articles', 0, 1),
 (NOW(), 'en', 'admin', 'articles', '_START_DATE', 'Start date', 0, 1),
 (NOW(), 'en', 'admin', 'articles', '_END_DATE', 'End date', 0, 1),
-(NOW(), 'en', 'admin', 'articles', '_NO_END_MSG', 'Leave blank for publishing without end', 0, 1),
+(NOW(), 'en', 'admin', 'articles', '_NO_END_MSG', 'Blank for no end', 0, 1),
 (NOW(), 'en', 'admin', 'articles', '_CONTENTS', 'Contents', 0, 1),
 (NOW(), 'en', 'admin', 'articles', '_SCRIPT', 'Script', 0, 1),
 (NOW(), 'en', 'admin', 'articles', '_SCRIPT_MSG', 'all the scripts included in the contents will be removed in order to avoid unwanted inclusions. Any scripts, including the opening and closing tags, must be inserted here', 0, 1),
@@ -1287,37 +1319,46 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'admin', 'categories', '_NEW_CATEGORY', 'New category', 0, 1),
 (NOW(), 'en', 'admin', 'categories', '_EDIT_CATEGORY', 'Edit category', 0, 1),
 (NOW(), 'en', 'admin', 'categories', '_DELETE_CATEGORY', 'Delete category', 0, 1),
+(NOW(), 'en', 'admin', 'categories', '_ALL_TAGS', 'All tags', 0, 1),
 (NOW(), 'en', 'admin', 'categories', '_NO_CATEGORY_TAG', 'No tag', 0, 1),
 
 
 (NOW(), 'en', 'admin', 'contexts', '_CONTEXT_LIST', 'Context list', 0, 1),
+(NOW(), 'en', 'admin', 'contexts', '_CONTEXT_MSG', 'With contexts you can group articles to simplify the management and the organization of your contents', 0, 1),
 (NOW(), 'en', 'admin', 'contexts', '_CONTEXTS', 'Contexts', 0, 1),
 (NOW(), 'en', 'admin', 'contexts', '_ADD_CONTEXT', 'Add a new context', 0, 1),
 (NOW(), 'en', 'admin', 'contexts', '_NEW_CONTEXT', 'New context', 0, 1),
 (NOW(), 'en', 'admin', 'contexts', '_EDIT_CONTEXT', 'Edit context', 0, 1),
 (NOW(), 'en', 'admin', 'contexts', '_DELETE_CONTEXT', 'Delete context', 0, 1),
+(NOW(), 'en', 'admin', 'contexts', '_DEFAULT_CONTEXTS_MSG', 'Default contexts are not modifiable', 0, 1),
 
 
 (NOW(), 'en', 'admin', 'sections', '_SECTIONS', 'Sections', 0, 1),
+(NOW(), 'en', 'admin', 'sections', '_SECTIONS_SORT_MSG', 'Only sections below the orange line are sortable', 0, 1),
 (NOW(), 'en', 'admin', 'sections', '_SECTION', 'Section', 0, 1),
 (NOW(), 'en', 'admin', 'sections', '_SECTION_NEW', 'New section', 0, 1),
 (NOW(), 'en', 'admin', 'sections', '_SECTION_EDIT', 'Edit section', 0, 1),
 (NOW(), 'en', 'admin', 'sections', '_SECTION_EDIT_MSG', 'NOTE: if a section is locked wont update; columns settings will update after saving', 0, 1),
 (NOW(), 'en', 'admin', 'sections', '_SECTION_DELETE', 'Delete section', 0, 1),
 (NOW(), 'en', 'admin', 'sections', '_SECTION_SETTINGS', 'Configuration', 0, 1),
+(NOW(), 'en', 'admin', 'sections', '_SECTION_SIZES_AND_COLORS', 'Section sizes and colors', 0, 1),
+(NOW(), 'en', 'admin', 'sections', '_SECTION_COLUMNS_STYLE', 'Columns colors and styles', 0, 1),
 (NOW(), 'en', 'admin', 'sections', '_SECTION_BACKGROUND', 'Background color', 0, 1),
 (NOW(), 'en', 'admin', 'sections', '_SECTION_IMG_H', 'Backgrond image horizontal', 0, 1),
 (NOW(), 'en', 'admin', 'sections', '_SECTION_IMG_V', 'Background image vertical', 0, 1),
 (NOW(), 'en', 'admin', 'sections', '_SECTION_FOREGROUND', 'Foreground color', 0, 1),
-(NOW(), 'en', 'admin', 'sections', '_SECTION_COLUMNS', 'Max number of columns', 0, 1),
+(NOW(), 'en', 'admin', 'sections', '_SECTION_COLUMNS', 'Number of columns', 0, 1),
 (NOW(), 'en', 'admin', 'sections', '_SECTION_COL_SIZES', 'Column subdivision', 0, 1),
 (NOW(), 'en', 'admin', 'sections', '_SECTION_COL_SIZES_MSG', 'TO get 2 columns 2/3+1/3 set 3 columns and 2+1 as subdivision', 0, 1),
+(NOW(), 'en', 'admin', 'sections', '_SECTION_STATUS', 'Section status', 0, 1),
 (NOW(), 'en', 'admin', 'sections', '_SECTION_UNLOCKED', 'Unlocked section: you can set parameters', 0, 1),
 (NOW(), 'en', 'admin', 'sections', '_SECTION_LOCKED', 'Locked section: the theme will handle all parameter of this section', 0, 1),
-(NOW(), 'en', 'admin', 'sections', '_SECTION_WIDTH', 'Section width: a number that is the with percentage', 0, 1),
+(NOW(), 'en', 'admin', 'sections', '_SECTION_WIDTH', 'Section width', 0, 1),
+(NOW(), 'en', 'admin', 'sections', '_SECTION_FULL_WIDTH', 'full width', 0, 1),
+(NOW(), 'en', 'admin', 'sections', '_SECTION_FIXED_WIDTH', 'fixed width from theme settings', 0, 1),
 (NOW(), 'en', 'admin', 'sections', '_SECTION_HEIGHT', 'Height: free or fullscreen', 0, 1),
-(NOW(), 'en', 'admin', 'sections', '_SECTION_CLASS', 'CSS classes to set for section', 0, 1),
-(NOW(), 'en', 'admin', 'sections', '_SECTION_CLASS_MSG', 'insert CSS classes provided by the theme', 0, 1),
+(NOW(), 'en', 'admin', 'sections', '_SECTION_CLASS', 'CSS classe for section', 0, 1),
+(NOW(), 'en', 'admin', 'sections', '_SECTION_CLASS_MSG', 'insert one or more CSS classes by the theme', 0, 1),
 
 (NOW(), 'en', 'admin', 'sections', '_COMPOSE_EDITOR', 'Page composer', 0, 1),
 (NOW(), 'en', 'admin', 'sections', '_ARTICLES_LIST', 'Available articles', 0, 1),
@@ -1358,14 +1399,14 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'admin', 'dictionary', '_SHOW_WORDS', 'Show words', 0, 1),
 (NOW(), 'en', 'admin', 'dictionary', '_WORD', 'Word', 0, 1),
 (NOW(), 'en', 'admin', 'dictionary', '_IMPORT_INTO', 'Import in', 0, 1),
-(NOW(), 'en', 'admin', 'dictionary', '_IMPORT_INTO_MSG', '<p>If the source and target languages are different X3 CMS will try to translate expressions with Google Translator.<br />The untranslated entries will be marked with a *</p>', 0, 1),
 (NOW(), 'en', 'admin', 'dictionary', '_IMPORT_KEYS', 'Import keys', 0, 1),
 (NOW(), 'en', 'admin', 'dictionary', '_SECTION', 'Section', 0, 1),
 (NOW(), 'en', 'admin', 'dictionary', '_SECTIONS_LIST', 'Sections list', 0, 1),
 (NOW(), 'en', 'admin', 'dictionary', '_WORDS_LIST', 'Words list', 0, 1),
 (NOW(), 'en', 'admin', 'dictionary', '_DICTIONARY_SEARCH_MSG', 'Search by key in any language', 0, 1),
 (NOW(), 'en', 'admin', 'dictionary', '_DICTIONARY_SEARCH_RESULT', 'Results of the search', 0, 1),
-(NOW(), 'en', 'admin', 'dictionary', '_DICTIONARY_DELETE_DUPLICATES', 'Remove duplicates', 0, 1),
+(NOW(), 'en', 'admin', 'dictionary', '_DICTIONARY_DELETE_DUPLICATES', 'Delete duplicates', 0, 1),
+(NOW(), 'en', 'admin', 'dictionary', '_DICTIONARY_DELETE_DUPLICATES_MSG', 'all duplicates inside each section', 0, 1),
 
 (NOW(), 'en', 'admin', 'users', '_GROUP', 'Group', 0, 1),
 (NOW(), 'en', 'admin', 'users', '_USERS_LIST', 'Users list', 0, 1),
@@ -1383,12 +1424,13 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'admin', 'users', '_PASSWORD_RULE', 'At least 6 alphanumeric plus symbols chars', 0, 1),
 (NOW(), 'en', 'admin', 'users', '_USER_DETAIL', 'User detail', 0, 1),
 (NOW(), 'en', 'admin', 'users', '_MAIL_USER', 'Send an email to user', 0, 1),
-(NOW(), 'en', 'admin', 'users', '_PASSWORD_CHANGE_MSG', 'Leave blank for no change', 0, 1),
+(NOW(), 'en', 'admin', 'users', '_PASSWORD_CHANGE_MSG', 'Leave blank so as not to change', 0, 1),
 (NOW(), 'en', 'admin', 'users', '_HIDE_USER', 'Hidden user', 0, 1),
 (NOW(), 'en', 'admin', 'users', '_SHOW_USER', 'Visible user', 0, 1),
 (NOW(), 'en', 'admin', 'users', '_DOMAIN', 'Enabled areas', 0, 1),
 (NOW(), 'en', 'admin', 'users', '_EDIT_PRIV', 'Edit permissions', 0, 1),
 (NOW(), 'en', 'admin', 'users', '_EDIT_DETAIL_PRIV', 'Edit detailed permissions', 0, 1),
+(NOW(), 'en', 'admin', 'users', '_ALL_DETAIL_PRIV', 'Set the same for all', 0, 1),
 (NOW(), 'en', 'admin', 'users', '_GLOBAL_PRIVS', 'Global permissions', 0, 1),
 (NOW(), 'en', 'admin', 'users', '_RESET_PRIVS', 'Reset permissions', 0, 1),
 (NOW(), 'en', 'admin', 'users', '_RESET_PRIVS_MSG', 'Delete all settings and sync privs with group privs', 0, 1),
@@ -1413,8 +1455,6 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'admin', 'modules', '_PARAM', 'Parameter plugin', 0, 1),
 (NOW(), 'en', 'admin', 'modules', '_MODULE_INSTRUCTIONS', 'Plugin instructions', 0, 1),
 (NOW(), 'en', 'admin', 'modules', '_INSTRUCTIONS', 'Istructions', 0, 1),
-(NOW(), 'en', 'admin', 'modules', '_HIDDEN', 'Hidden plugin', 0, 1),
-(NOW(), 'en', 'admin', 'modules', '_VISIBLE', 'Visible plugin', 0, 1),
 (NOW(), 'en', 'admin', 'modules', '_PLUGGABLE', 'Pluggable plugin', 0, 1),
 
 (NOW(), 'en', 'admin', 'groups', '_ADD_GROUP', 'Add a group', 0, 1),
@@ -1466,6 +1506,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'admin', 'groups', 'TEMPLATES', 'Template management', 0, 1),
 (NOW(), 'en', 'admin', 'groups', 'THEMES', 'Themes management', 0, 1),
 (NOW(), 'en', 'admin', 'groups', 'USERS', 'Users management', 0, 1),
+(NOW(), 'en', 'admin', 'groups', 'WIDGETS', 'Widgets management', 0, 1),
 
 
 (NOW(), 'en', 'admin', 'themes', '_THEME_LIST', 'Themes list', 0, 1),
@@ -1754,7 +1795,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'public', 'form', '_INVALID_MAIL', 'invalid email address.', 0, 1),
 (NOW(), 'en', 'public', 'form', '_INVALID_URL', 'invalid URL.', 0, 1),
 (NOW(), 'en', 'public', 'form', '_INARRAY', 'depends on a value not selected.', 0, 1),
-(NOW(), 'en', 'public', 'form', '_NOTINARRAY', 'the selected value "XXXVALUEXXX" can\'t be in "XXXRELATEDXXX"', 0, 1).
+(NOW(), 'en', 'public', 'form', '_NOTINARRAY', 'the selected value "XXXVALUEXXX" can\'t be in "XXXRELATEDXXX"', 0, 1),
 (NOW(), 'en', 'public', 'form', '_DEPENDS', 'depends on an empty field "XXXRELATEDXXX".', 0, 1),
 (NOW(), 'en', 'public', 'form', '_CONTAINS', 'must contain at least XXXVALUEXXX times the string "XXXRELATEDXXX".', 0, 1),
 (NOW(), 'en', 'public', 'form', '_IFEMPTY', 'is mandatory if "XXXRELATEDXXX" is empty.', 0, 1),
@@ -2163,7 +2204,7 @@ CREATE TABLE IF NOT EXISTS `files` (
   `xtype` tinyint(1) NOT NULL,
   `category` varchar(128) NOT NULL,
   `subcategory` varchar(128) NOT NULL,
-  `name` varchar(255) NOT NULL,
+  `filename` varchar(255) NOT NULL,
   `alt` varchar(255) NOT NULL,
   `xlock` tinyint(1) NOT NULL,
   `xon` tinyint(1) NOT NULL,
@@ -2198,7 +2239,7 @@ INSERT INTO `gprivs` (`updated`, `id_group`, `what`, `level`, `xon`) VALUES
 (NOW(), 1, 'contexts', 4, 1),
 (NOW(), 1, 'dictionary', 4, 1),
 (NOW(), 1, 'files', 4, 1),
-(NOW(), 1, 'groups', 4, 1),
+(NOW(), 1, 'xgroups', 4, 1),
 (NOW(), 1, 'languages', 4, 1),
 (NOW(), 1, 'logs', 4, 1),
 (NOW(), 1, 'menus', 4, 1),
@@ -2210,6 +2251,7 @@ INSERT INTO `gprivs` (`updated`, `id_group`, `what`, `level`, `xon`) VALUES
 (NOW(), 1, 'templates', 4, 1),
 (NOW(), 1, 'themes', 4, 1),
 (NOW(), 1, 'users', 4, 1),
+(NOW(), 1, 'widgets', 4, 1),
 
 (NOW(), 1, '_area_creation', 4, 1),
 (NOW(), 1, '_article_creation', 4, 1),
@@ -2302,7 +2344,8 @@ INSERT INTO `levels` (`id`, `name`, `description`, `xon`) VALUES
 (1, 'Reader', 'only read', 1),
 (2, 'Writer', 'read and write', 1),
 (3, 'Manager', 'read, write and enable/disable', 1),
-(4, 'Administrator', 'read, write, enable/disable, lock/unlock and delete', 1);
+(4, 'Administrator', 'read, write, enable/disable, lock/unlock and delete', 1),
+(5, 'God', 'everything and more', 1);
 
 -- --------------------------------------------------------
 
@@ -2381,10 +2424,9 @@ CREATE TABLE IF NOT EXISTS `menus` (
 
 INSERT INTO `menus` (`updated`, `id_theme`, `name`, `description`, `xlock`, `xon`) VALUES
 (NOW(), 1, 'admin_user', 'User menu', 1, 1),
-(NOW(), 1, 'admin_global', 'Global menu', 1, 1),
+(NOW(), 1, 'admin_global', 'Global menu', 1, 0),
 (NOW(), 1, 'sidebar', 'Left menu', 0, 1),
-(NOW(), 2, 'menu_top', 'Top menu', 0, 1),
-(NOW(), 2, 'menu_left', 'Left menu', 0, 1);
+(NOW(), 2, 'menu_top', 'Top menu', 0, 1);
 
 -- --------------------------------------------------------
 
@@ -2503,90 +2545,84 @@ INSERT INTO `pages` (`updated`, `lang`, `id_area`, `tpl`, `css`, `xfrom`, `xid`,
 -- admin pages it
 
 INSERT INTO `pages` (`updated`, `lang`, `id_area`, `tpl`, `css`, `xfrom`, `xid`, `url`, `name`, `title`, `description`, `xkeys`, `id_menu`, `xpos`, `deep`, `ordinal`, `hidden`, `xlock`, `xon`) VALUES
-(NOW(), 'it', 1, 'base', 'x3ui', 'home', 'base', 'home', 'Home', 'Home', 'Home page', 'Home page', 0, 0, 0, 'A', 0, 1, 1),
-(NOW(), 'it', 1, 'base', 'x3ui', 'home', 'base', 'msg', 'Comunicazione', 'Comunicazione', 'Messaggio all''utente', '', 0, 1, 1, 'A0000001', 0, 1, 1),
-(NOW(), 'it', 1, 'base', 'x3ui', 'home', 'base', 'search', 'Risultati della ricerca', 'Risultati della ricerca', 'Risultati della ricerca', '', 0, 2, 1, 'A0000002', 0, 1, 1),
-(NOW(), 'it', 1, 'login', 'x3ui', 'home', 'base', 'login', 'Login', 'Login utente', 'Login utente', '', 0, 3, 1, 'A0000003', 0, 1, 1),
-(NOW(), 'it', 1, 'login', 'x3ui', 'home', 'base', 'login/recovery', 'Recupero password', 'Recupero password', 'Recupero password', '', 0, 4, 1, 'A0000004', 0, 1, 1),
+(NOW(),	'it',	1,	'base',	'x3ui',	'home',	'base',	'home',	'Home',	'Home',	'Home page',	'Home page',	'',	0,	'',	0,	0,	0,	'A',	0,	0,	1,	1),
+(NOW(),	'it',	1,	'base',	'x3ui',	'home',	'base',	'msg',	'Comunicazione',	'Comunicazione',	'Messaggio all\'utente',	'',	'',	0,	'',	0,	1,	1,	'A0000001',	0,	0,	1,	1),
+(NOW(),	'it',	1,	'base',	'x3ui',	'home',	'base',	'search',	'Risultati della ricerca',	'Risultati della ricerca',	'Risultati della ricerca',	'',	'',	0,	'',	0,	2,	1,	'A0000002',	0,	0,	1,	1),
+(NOW(),	'it',	1,	'login',	'x3ui',	'home',	'base',	'login',	'Login',	'Login utente',	'Login utente',	'',	'',	0,	'',	0,	3,	1,	'A0000003',	0,	0,	1,	1),
+(NOW(),	'it',	1,	'login',	'x3ui',	'home',	'base',	'login/recovery',	'Recupero password',	'Recupero password',	'Recupero password',	'',	'',	0,	'',	0,	4,	1,	'A0000004',	0,	0,	1,	1),
 
-(NOW(), 'it', 1, 'base', 'x3ui', 'home', 'widgets', 'widgets', 'Widget', 'Gestione widget', 'Gestione widget', '', 1, 1, 1, 'A0011001', 0, 1, 1),
-(NOW(), 'it', 1, 'base', 'x3ui', 'home', 'help', 'help', 'Guida in linea', 'Guida in linea', 'Guida in linea', '', 1, 2, 1, 'A0011002', 0, 1, 1),
-(NOW(), 'it', 1, 'base', 'x3ui', 'home', 'base', 'profile', 'Profilo', 'Profilo utente', 'Profilo utente', '', 1, 3, 1, 'A0011003', 0, 1, 1),
-(NOW(), 'it', 1, 'base', 'x3ui', 'home', 'base', 'info', 'info', 'Info', 'Informazioni sul CMS X3', '', 1, 4, 1, 'A0011004', 0, 1, 1),
-(NOW(), 'it', 1, 'base', 'x3ui', 'home', 'base', 'login/logout', 'Esci', 'Esci', 'Chiudi sessione', '', 1, 5, 1, 'A0011005', 0, 1, 1),
+(NOW(),	'it',	1,	'base',	'x3ui',	'home',	'widgets',	'widgets',	'Widget',	'Gestione widget',	'Gestione widget',	'',	'',	0,	'',	1,	1,	1,	'A0011001',	0,	0,	1,	1),
+(NOW(),	'it',	1,	'base',	'x3ui',	'home',	'help',	'help',	'Guida in linea',	'Guida in linea',	'Guida in linea',	'',	'',	0,	'',	1,	2,	1,	'A0011002',	0,	0,	1,	1),
+(NOW(),	'it',	1,	'base',	'x3ui',	'home',	'base',	'profile',	'Profilo',	'Profilo utente',	'Profilo utente',	'',	'',	0,	'',	1,	3,	1,	'A0011003',	0,	0,	1,	1),
+(NOW(),	'it',	1,	'base',	'x3ui',	'home',	'base',	'info',	'info',	'Info',	'Informazioni sul CMS X3',	'',	'',	0,	'',	1,	4,	1,	'A0011004',	0,	0,	1,	1),
+(NOW(),	'it',	1,	'base',	'x3ui',	'home',	'base',	'login/logout',	'Esci',	'Esci',	'Chiudi sessione',	'',	'',	0,	'',	1,	5,	1,	'A0011005',	0,	0,	1,	1),
 
-(NOW(), 'it', 1, 'base', 'x3ui', 'home', 'pages', 'areas', 'Aree', 'Gestione aree', 'Gestione aree', '', 2, 1, 1, 'A0021001', 0, 1, 1),
-(NOW(), 'it', 1, 'base', 'x3ui', 'areas', 'pages', 'pages', 'Pagine', 'Gestione pagine', 'Gestione pagine', '', 2, 1, 2, 'A00210011001', 0, 0, 1),
-(NOW(), 'it', 1, 'base', 'x3ui', 'pages', 'pages', 'sections', 'Sezioni', 'Gestione sezioni', 'Gestione sezioni', '', 2, 1, 3, 'A002100110011001', 0, 0, 1),
-(NOW(), 'it', 1, 'base', 'x3ui', 'pages', 'pages', 'areas/map', 'Mappa area', 'Mappa area', 'Mappa area', '', 0, 1, 3, 'A002100110010001', 0, 1, 1),
-(NOW(), 'it', 1, 'base', 'x3ui', 'pages', 'pages', 'sections/compose', 'Disposizione articoli', 'Disposizione articoli', 'Disposizione articoli', '', 0, 2, 3, 'A002100110010002', 0, 1, 1),
+(NOW(),	'it',	1,	'base',	'x3ui',	'home',	'sites',	'sites',	'Impostazioni',	'Gestione impostazioni',	'Gestione impostazioni',	'',	'',	0,	'',	3,	1,	1,	'A0031001',	0,	1,	1,	1),
+(NOW(),	'it',	1,	'base',	'x3ui',	'sites',	'sites',	'sites/index',	'Sito',	'Gestione sito',	'Gestione sito',	'',	'',	0,	'',	3,	1,	2,	'A00310011001',	0,	0,	1,	1),
+(NOW(),	'it',	1,	'base',	'x3ui',	'sites',	'pages',	'areas',	'Aree',	'Gestione aree',	'Gestione aree',	'',	'',	0,	'',	3,	2,	2,	'A00310011002',	0,	0,	1,	1),
+(NOW(),	'it',	1,	'base',	'x3ui',	'sites',	'languages',	'languages',	'Lingue',	'Gestione lingue',	'Gestione lingue',	'',	'',	0,	'',	3,	3,	2,	'A00310011003',	0,	0,	1,	1),
+(NOW(),	'it',	1,	'base',	'x3ui',	'languages',	'languages',	'dictionary/keys',	'Gestione chiavi',	'Gestione chiavi',	'Gestione chiavi',	'',	'',	0,	'',	0,	1,	3,	'A003100110030001',	0,	0,	1,	1),
+(NOW(),	'it',	1,	'base',	'x3ui',	'dictionary/keys',	'languages',	'dictionary/words',	'Gestione espressioni',	'Gestione espressioni',	'Gestione espressioni',	'',	'',	0,	'',	0,	1,	3,	'A0031001100300010001',	0,	0,	1,	1),
+(NOW(),	'it',	1,	'base',	'x3ui',	'sites',	'users',	'users',	'Utenti',	'Gestione utenti',	'Gestione utenti',	'',	'',	0,	'',	3,	4,	2,	'A00310011004',	0,	0,	1,	1),
+(NOW(),	'it',	1,	'base',	'x3ui',	'users',	'users',	'users/detail',	'Dettaglio utente',	'Dettaglio utente',	'Dettaglio utente',	'',	'',	0,	'',	0,	1,	3,	'A003100110040001',	0,	0,	1,	1),
+(NOW(),	'it',	1,	'base',	'x3ui',	'users',	'users/detail',	'users/permissions',	'Permessi utente',	'Permessi utente',	'Permessi utente',	'',	'',	0,	'',	0,	1,	4,	'A003100110040001',	0,	0,	1,	1),
+(NOW(),	'it',	1,	'base',	'x3ui',	'sites',	'pages',	'themes',	'Temi',	'Gestione temi',	'Gestione temi',	'',	'',	0,	'',	3,	5,	2,	'A00310011005',	0,	0,	1,	1),
+(NOW(),	'it',	1,	'base',	'x3ui',	'themes',	'pages',	'templates/index',	'Template',	'Gestione template',	'Gestione template',	'',	'',	0,	'',	0,	1,	3,	'A003100110050001',	0,	0,	1,	1),
+(NOW(),	'it',	1,	'base',	'x3ui',	'themes',	'pages',	'menus/index',	'Men&ugrave;',	'Gestione men&ugrave;',	'Gestione men&ugrave;',	'',	'',	0,	'',	0,	2,	3,	'A003100110050002',	0,	0,	1,	1),
+(NOW(),	'it',	1,	'base',	'x3ui',	'sites',	'pages',	'contexts',	'Contesti articoli',	'Contesti articoli',	'Contesti articoli',	'',	'',	0,	'',	3,	6,	2,	'A00310011006',	0,	0,	1,	1),
+(NOW(),	'it',	1,	'base',	'x3ui',	'sites',	'pages',	'categories',	'Categorie articoli',	'Categorie articoli',	'Categorie articoli',	'',	'',	0,	'',	3,	7,	2,	'A00310011007',	0,	0,	1,	1),
 
-(NOW(), 'it', 1, 'base', 'x3ui', 'home', 'pages', 'articles', 'Articoli', 'Gestione articoli', 'Gestione articoli', '', 2, 2, 1, 'A0021002', 0, 1, 1),
-(NOW(), 'it', 1, 'base', 'x3ui', 'articles', 'pages', 'articles/history', 'Storico articolo', 'Storico articolo', 'Storico articolo', '', 0, 1, 2, 'A00210020001', 0, 1, 1),
-(NOW(), 'it', 1, 'base', 'x3ui', 'articles', 'pages', 'articles/edit', 'Editor articolo', 'Editor articolo', 'Editor articolo', '', 0, 2, 2, 'A00210020002', 0, 1, 1),
-(NOW(), 'it', 1, 'base', 'x3ui', 'articles', 'pages', 'categories', 'Categorie articoli', 'Categorie articoli', 'Categorie articoli', '', 2, 2, 2, 'A00210021002', 0, 1, 1),
-(NOW(), 'it', 1, 'base', 'x3ui', 'articles', 'pages', 'contexts', 'Contesti articoli', 'Contesti articoli', 'Contesti articoli', '', 2, 3, 2, 'A00210021003', 0, 1, 1),
-
-(NOW(), 'it', 1, 'base', 'x3ui', 'home', 'files', 'files', 'Files', 'Gestione files', 'Gestione files', '', 2, 3, 1, 'A0021003', 0, 1, 1),
-(NOW(), 'it', 1, 'base', 'x3ui', 'files', 'files', 'files/editor', 'Editor file', 'Editor file', 'Editor file', '', 0, 3, 2, 'A00210030001', 0, 1, 1),
-(NOW(), 'it', 1, 'base', 'x3ui', 'home', 'modules', 'modules', 'Moduli', 'Gestione moduli', 'Gestione moduli', '', 2, 4, 1, 'A0021004', 0, 1, 1),
-
-(NOW(), 'it', 1, 'base', 'x3ui', 'home', 'sites', 'sites', 'Sito', 'Gestione sito', 'Gestione sito', '', 3, 1, 1, 'A0031001', 0, 1, 1),
-(NOW(), 'it', 1, 'base', 'x3ui', 'home', 'languages', 'languages', 'Lingue', 'Gestione lingue', 'Gestione lingue', '', 3, 2, 1, 'A0031002', 0, 1, 1),
-(NOW(), 'it', 1, 'base', 'x3ui', 'languages', 'languages', 'dictionary/keys', 'Gestione chiavi', 'Gestione chiavi', 'Gestione chiavi', '', 0, 1, 2, 'A00310020001', 0, 1, 1),
-(NOW(), 'it', 1, 'base', 'x3ui', 'dictionary/keys', 'languages', 'dictionary/words', 'Gestione espressioni', 'Gestione espressioni', 'Gestione espressioni', '', 0, 1, 3, 'A003100210010001', 0, 1, 1),
-
-(NOW(), 'it', 1, 'base', 'x3ui', 'home', 'pages', 'themes', 'Temi', 'Gestione temi', 'Gestione temi', '', 3, 3, 1, 'A0031003', 0, 1, 1),
-(NOW(), 'it', 1, 'base', 'x3ui', 'themes', 'pages', 'templates/index', 'Template', 'Gestione template', 'Gestione template', '', 0, 1, 2, 'A00310030001', 0, 1, 1),
-(NOW(), 'it', 1, 'base', 'x3ui', 'themes', 'pages', 'menus/index', 'Men&ugrave;', 'Gestione men&ugrave;', 'Gestione men&ugrave;', '', 0, 2, 2, 'A00310030002', 0, 1, 1),
-
-(NOW(), 'it', 1, 'base', 'x3ui', 'home', 'users', 'users', 'Utenti', 'Gestione utenti', 'Gestione utenti', '', 3, 4, 1, 'A0031004', 0, 1, 1),
-(NOW(), 'it', 1, 'base', 'x3ui', 'users', 'users', 'users/detail', 'Dettaglio utente', 'Dettaglio utente', 'Dettaglio utente', '', 0, 1, 2, 'A00310040001', 0, 1, 1),
-(NOW(), 'it', 1, 'base', 'x3ui', 'users', 'users/detail', 'users/permissions', 'Permessi utente', 'Permessi utente', 'Permessi utente', '', 0, 1, 3, 'A003100400010001', 0, 1, 1);
+(NOW(),	'it',	1,	'base',	'x3ui',	'home',	'pages',	'pages',	'Pagine',	'Gestione pagine',	'Gestione pagine',	'',	'',	0,	'',	3,	2,	1,	'A0031002',	0,	0,	0,	1),
+(NOW(),	'it',	1,	'base',	'x3ui',	'pages',	'pages',	'areas/map',	'Mappa area',	'Mappa area',	'Mappa area',	'',	'',	0,	'',	0,	1,	1,	'A00310020000001',	0,	0,	1,	1),
+(NOW(),	'it',	1,	'base',	'x3ui',	'pages',	'pages',	'sections/compose',	'Disposizione articoli',	'Disposizione articoli',	'Disposizione articoli',	'',	'',	0,	'',	0,	2,	1,	'A00310020000002',	0,	0,	1,	1),
+(NOW(),	'it',	1,	'base',	'x3ui',	'pages',	'pages',	'sections',	'Sezioni',	'Gestione sezioni',	'Gestione sezioni',	'',	'',	0,	'',	2,	1,	1,	'A00310020021001',	0,	0,	0,	1),
+(NOW(),	'it',	1,	'base',	'x3ui',	'home',	'pages',	'articles',	'Articoli',	'Gestione articoli',	'Gestione articoli',	'',	'',	0,	'',	3,	3,	1,	'A0031003',	0,	0,	1,	1),
+(NOW(),	'it',	1,	'base',	'x3ui',	'articles',	'pages',	'articles/history',	'Storico articolo',	'Storico articolo',	'Storico articolo',	'',	'',	0,	'',	0,	1,	2,	'A00310030001',	0,	0,	1,	1),
+(NOW(),	'it',	1,	'base',	'x3ui',	'articles',	'pages',	'articles/edit',	'Editor articolo',	'Editor articolo',	'Editor articolo',	'',	'',	0,	'',	0,	2,	2,	'A00310030002',	0,	0,	1,	1),
+(NOW(),	'it',	1,	'base',	'x3ui',	'home',	'files',	'files',	'Files',	'Gestione files',	'Gestione files',	'',	'',	0,	'',	3,	4,	1,	'A0031004',	0,	0,	1,	1),
+(NOW(),	'it',	1,	'base',	'x3ui',	'files',	'files',	'files/editor',	'Editor file',	'Editor file',	'Editor file',	'',	'',	0,	'',	0,	3,	2,	'A00310040003',	0,	0,	1,	1),
+(NOW(),	'it',	1,	'base',	'x3ui',	'home',	'modules',	'modules',	'Moduli',	'Gestione moduli',	'Gestione moduli',	'',	'',	0,	'',	3,	5,	1,	'A0031005',	0,	0,	1,	1);
 
 
 -- admin pages en
 
 INSERT INTO `pages` (`updated`, `lang`, `id_area`, `tpl`, `css`, `xfrom`, `xid`, `url`, `name`, `title`, `description`, `xkeys`, `id_menu`, `xpos`, `deep`, `ordinal`, `hidden`, `xlock`, `xon`) VALUES
-(NOW(), 'en', 1, 'base', 'x3ui', 'home', 'base', 'home', 'Home', 'Home', 'Home page', '', 0, 0, 0, 'A', 0, 1, 1),
-(NOW(), 'en', 1, 'base', 'x3ui', 'home', 'base', 'msg', 'Message', 'Message', 'Message', '', 0, 1, 1, 'A0000001', 0, 1, 1),
-(NOW(), 'en', 1, 'base', 'x3ui', 'home', 'base', 'search', 'Search result', 'Search result', 'Search result', '', 0, 2, 1, 'A0000002', 0, 1, 1),
-(NOW(), 'en', 1, 'login', 'x3ui', 'home', 'base', 'login', 'Login', 'User login', 'User login', '', 0, 3, 1, 'A0000003', 0, 1, 1),
-(NOW(), 'en', 1, 'login', 'x3ui', 'home', 'base', 'login/recovery', 'Recovery password', 'Recovery password', 'Recovery password', '', 0, 4, 1, 'A0000004', 0, 1, 1),
+(NOW(),	'en',	1,	'base',	'x3ui',	'home',	'base',	'home',	'Home',	'Home',	'Home page',	'',	'',	0,	'',	0,	0,	0,	'A',	0,	0,	1,	1),
+(NOW(),	'en',	1,	'base',	'x3ui',	'home',	'base',	'msg',	'Message',	'Message',	'Message',	'',	'',	0,	'',	0,	1,	1,	'A0000001',	0,	0,	1,	1),
+(NOW(),	'en',	1,	'base',	'x3ui',	'home',	'base',	'search',	'Search result',	'Search result',	'Search result',	'',	'',	0,	'',	0,	2,	1,	'A0000002',	0,	0,	1,	1),
+(NOW(),	'en',	1,	'login',	'x3ui',	'home',	'base',	'login',	'Login',	'User login',	'User login',	'',	'',	0,	'',	0,	3,	1,	'A0000003',	0,	0,	1,	1),
+(NOW(),	'en',	1,	'login',	'x3ui',	'home',	'base',	'login/recovery',	'Recovery password',	'Recovery password',	'Recovery password',	'',	'',	0,	'',	0,	4,	1,	'A0000004',	0,	0,	1,	1),
 
-(NOW(), 'en', 1, 'base', 'x3ui', 'home', 'widgets', 'widgets', 'Widgets', 'Widgets manager', 'Widgets manager', '', 1, 1, 1, 'A0011001', 0, 1, 1),
-(NOW(), 'en', 1, 'base', 'x3ui', 'home', 'help', 'help', 'Help', 'Help on line', 'Help on line', '', 1, 2, 1, 'A0011002', 0, 1, 1),
-(NOW(), 'en', 1, 'base', 'x3ui', 'home', 'base', 'profile', 'Profile', 'User profile', 'User profile', '', 1, 3, 1, 'A0011003', 0, 1, 1),
-(NOW(), 'en', 1, 'base', 'x3ui', 'home', 'base', 'info', 'info', 'Info', 'Info about X3 CMS', '', 1, 4, 1, 'A0011004', 0, 1, 1),
-(NOW(), 'en', 1, 'base', 'x3ui', 'home', 'base', 'login/logout', 'Logout', 'Logout', 'Logout', '', 1, 5, 1, 'A0011005', 0, 1, 1),
+(NOW(),	'en',	1,	'base',	'x3ui',	'home',	'widgets',	'widgets',	'Widgets',	'Widgets manager',	'Widgets manager',	'',	'',	0,	'',	1,	1,	1,	'A0011001',	0,	0,	1,	1),
+(NOW(),	'en',	1,	'base',	'x3ui',	'home',	'help',	'help',	'Help',	'Help on line',	'Help on line',	'',	'',	0,	'',	1,	2,	1,	'A0011002',	0,	0,	1,	1),
+(NOW(),	'en',	1,	'base',	'x3ui',	'home',	'base',	'profile',	'Profile',	'User profile',	'User profile',	'',	'',	0,	'',	1,	3,	1,	'A0011003',	0,	0,	1,	1),
+(NOW(),	'en',	1,	'base',	'x3ui',	'home',	'base',	'info',	'info',	'Info',	'Info about X3 CMS',	'',	'',	0,	'',	1,	4,	1,	'A0011004',	0,	0,	1,	1),
+(NOW(),	'en',	1,	'base',	'x3ui',	'home',	'base',	'login/logout',	'Logout',	'Logout',	'Logout',	'',	'',	0,	'',	1,	5,	1,	'A0011005',	0,	0,	1,	1),
+(NOW(),	'en',	1,	'base',	'x3ui',	'home',	'settings',	'sites',	'Settings',	'Settings',	'Settings',	'',	'',	0,	'',	3,	1,	1,	'A0031001',	0,	1,	1,	1),
+(NOW(),	'en',	1,	'base',	'x3ui',	'sites',	'sites',	'sites/index',	'Site',	'Site manager',	'Site manager',	'',	'',	0,	'',	3,	1,	2,	'A00310011001',	0,	0,	1,	1),
+(NOW(),	'en',	1,	'base',	'x3ui',	'sites',	'pages',	'areas',	'Areas',	'Areas manager',	'Areas manager',	'',	'',	0,	'',	3,	2,	2,	'A00310011002',	0,	0,	1,	1),
+(NOW(),	'en',	1,	'base',	'x3ui',	'sites',	'languages',	'languages',	'Languages',	'Languages manager',	'Languages manager',	'',	'',	0,	'',	3,	3,	2,	'A00310011003',	0,	0,	1,	1),
+(NOW(),	'en',	1,	'base',	'x3ui',	'languages',	'languages',	'dictionary/keys',	'Keys',	'Keys manager',	'Keys manager',	'',	'',	0,	'',	0,	1,	3,	'A003100110030001',	0,	0,	1,	1),
+(NOW(),	'en',	1,	'base',	'x3ui',	'dictionary/keys',	'languages',	'dictionary/words',	'Words manager',	'Words manager',	'Words manager',	'',	'',	0,	'',	0,	1,	3,	'A0031001100300010001',	0,	0,	1,	1),
+(NOW(),	'en',	1,	'base',	'x3ui',	'sites',	'users',	'users',	'Users',	'Users manager',	'Users manager',	'',	'',	0,	'',	3,	4,	2,	'A00310011004',	0,	0,	1,	1),
+(NOW(),	'en',	1,	'base',	'x3ui',	'users',	'users',	'users/detail',	'User detail',	'User detail',	'User detail',	'',	'',	0,	'',	0,	1,	3,	'A003100110040001',	0,	0,	1,	1),
+(NOW(),	'en',	1,	'base',	'x3ui',	'users',	'users/detail',	'users/permissions',	'User permissions',	'User User permissions',	'User permissions',	'',	'',	0,	'',	0,	1,	4,	'A003100110040001',	0,	0,	1,	1),
+(NOW(),	'en',	1,	'base',	'x3ui',	'sites',	'pages',	'themes',	'Themes',	'Themes manager',	'Themes manager',	'',	'',	0,	'',	3,	5,	2,	'A00310011005',	0,	0,	1,	1),
+(NOW(),	'en',	1,	'base',	'x3ui',	'themes',	'pages',	'templates/index',	'Templates',	'Templates manager',	'Templates manager',	'',	'',	0,	'',	0,	1,	3,	'A003100110050001',	0,	0,	1,	1),
+(NOW(),	'en',	1,	'base',	'x3ui',	'themes',	'pages',	'menus/index',	'Menus',	'Menus manager',	'Menus manager',	'',	'',	0,	'',	0,	2,	3,	'A003100110050002',	0,	0,	1,	1),
+(NOW(),	'en',	1,	'base',	'x3ui',	'sites',	'pages',	'contexts',	'Contexts',	'Context of articles',	'Context of articles',	'',	'',	0,	'',	3,	6,	2,	'A00310011006',	0,	0,	1,	1),
+(NOW(),	'en',	1,	'base',	'x3ui',	'sites',	'pages',	'categories',	'Categories',	'Categories of articles',	'Categories of articles',	'',	'',	0,	'',	3,	7,	2,	'A00310011007',	0,	0,	1,	1),
 
-(NOW(), 'en', 1, 'base', 'x3ui', 'home', 'pages', 'areas', 'Areas', 'Areas manager', 'Areas manager', '', 2, 1, 1, 'A0021001', 0, 1, 1),
-(NOW(), 'en', 1, 'base', 'x3ui', 'areas', 'pages', 'pages', 'Pages', 'Pages manager', 'Pages manager', '', 2, 1, 2, 'A00210011001', 0, 0, 1),
-(NOW(), 'en', 1, 'base', 'x3ui', 'pages', 'pages', 'sections', 'Sections', 'Sections manager', 'Sections manager', '', 2, 1, 3, 'A002100110011001', 0, 0, 1),
-(NOW(), 'en', 1, 'base', 'x3ui', 'pages', 'pages', 'areas/map', 'Area map', 'Area map', 'Area map', '', 0, 1, 3, 'A002100110010001', 0, 1, 1),
-(NOW(), 'en', 1, 'base', 'x3ui', 'pages', 'pages', 'sections/compose', 'Articles disposition', 'Articles disposition', 'Articles disposition', '', 0, 2, 3, 'A002100110010002', 0, 1, 1),
-
-(NOW(), 'en', 1, 'base', 'x3ui', 'home', 'pages', 'articles', 'Articles', 'Articles manager', 'Articles manager', '', 2, 2, 1, 'A0021002', 0, 1, 1),
-(NOW(), 'en', 1, 'base', 'x3ui', 'articles', 'pages', 'articles/history', 'Article history', 'Article history', 'Article history', '', 0, 1, 2, 'A00210020001', 0, 1, 1),
-(NOW(), 'en', 1, 'base', 'x3ui', 'articles', 'pages', 'articles/edit', 'Article editor', 'Article editor', 'Article editor', '', 0, 2, 2, 'A00210020002', 0, 1, 1),
-(NOW(), 'en', 1, 'base', 'x3ui', 'articles', 'pages', 'categories', 'Categories', 'Categories of articles', 'Categories of articles', '', 2, 2, 2, 'A00210021002', 0, 1, 1),
-(NOW(), 'en', 1, 'base', 'x3ui', 'articles', 'pages', 'contexts', 'Contexts', 'Context of articles', 'Context of articles', '', 2, 3, 2, 'A00210021003', 0, 1, 1),
-
-(NOW(), 'en', 1, 'base', 'x3ui', 'home', 'files', 'files', 'Files', 'Files manager', 'Files manager', '', 2, 3, 1, 'A0021003', 0, 1, 1),
-(NOW(), 'en', 1, 'base', 'x3ui', 'files', 'files', 'files/editor', 'File editor', 'File editor', 'File editor', '', 0, 3, 2, 'A00210030001', 0, 1, 1),
-(NOW(), 'en', 1, 'base', 'x3ui', 'home', 'modules', 'modules', 'Plugins', 'Plugins manager', 'Plugins manager', '', 2, 4, 1, 'A0021004', 0, 1, 1),
-
-(NOW(), 'en', 1, 'base', 'x3ui', 'home', 'sites', 'sites', 'Site', 'Site manager', 'Site manager', '', 3, 1, 1, 'A0031001', 0, 1, 1),
-(NOW(), 'en', 1, 'base', 'x3ui', 'home', 'languages', 'languages', 'Languages', 'Languages manager', 'Languages manager', '', 3, 2, 1, 'A0031002', 0, 1, 1),
-(NOW(), 'en', 1, 'base', 'x3ui', 'languages', 'languages', 'dictionary/keys', 'Keys', 'Keys manager', 'Keys manager', '', 0, 1, 2, 'A00310020001', 0, 1, 1),
-(NOW(), 'en', 1, 'base', 'x3ui', 'dictionary/keys', 'languages', 'dictionary/words', 'Words manager', 'Words manager', 'Words manager', '', 0, 1, 3, 'A003100210010001', 0, 1, 1),
-(NOW(), 'en', 1, 'base', 'x3ui', 'home', 'pages', 'themes', 'Themes', 'Themes manager', 'Themes manager', '', 3, 3, 1, 'A0031003', 0, 1, 1),
-(NOW(), 'en', 1, 'base', 'x3ui', 'themes', 'pages', 'templates/index', 'Templates', 'Templates manager', 'Templates manager', '', 0, 1, 2, 'A00310030001', 0, 1, 1),
-(NOW(), 'en', 1, 'base', 'x3ui', 'themes', 'pages', 'menus/index', 'Menus', 'Menus manager', 'Menus manager', '', 0, 2, 2, 'A00310030002', 0, 1, 1),
-(NOW(), 'en', 1, 'base', 'x3ui', 'home', 'users', 'users', 'Users', 'Users manager', 'Users manager', '', 3, 4, 1, 'A0031004', 0, 1, 1),
-(NOW(), 'en', 1, 'base', 'x3ui', 'users', 'users', 'users/detail', 'User detail', 'User detail', 'User detail', '', 0, 1, 2, 'A00310040001', 0, 1, 1),
-(NOW(), 'en', 1, 'base', 'x3ui', 'users', 'users/detail', 'users/permissions', 'User permissions', 'User User permissions', 'User permissions', '', 0, 1, 3, 'A003100400010001', 0, 1, 1);
-
+(NOW(),	'en',	1,	'base',	'x3ui',	'home',	'pages',	'pages',	'Pages',	'Pages manager',	'Pages manager',	'',	'',	0,	'',	3,	2,	1,	'A0031002',	0,	0,	0,	1),
+(NOW(),	'en',	1,	'base',	'x3ui',	'pages',	'pages',	'areas/map',	'Area map',	'Area map',	'Area map',	'',	'',	0,	'',	0,	1,	3,	'A00310020001',	0,	0,	1,	1),
+(NOW(),	'en',	1,	'base',	'x3ui',	'pages',	'pages',	'sections/compose',	'Articles disposition',	'Articles disposition',	'Articles disposition',	'',	'',	0,	'',	0,	2,	3,	'A00310020002',	0,	0,	1,	1),
+(NOW(),	'en',	1,	'base',	'x3ui',	'pages',	'pages',	'sections',	'Sections',	'Sections manager',	'Sections manager',	'',	'',	0,	'',	2,	1,	3,	'A00310021001',	0,	0,	0,	1),
+(NOW(),	'en',	1,	'base',	'x3ui',	'home',	'pages',	'articles',	'Articles',	'Articles manager',	'Articles manager',	'',	'',	0,	'',	3,	3,	1,	'A0031003',	0,	0,	1,	1),
+(NOW(),	'en',	1,	'base',	'x3ui',	'articles',	'pages',	'articles/history',	'Article history',	'Article history',	'Article history',	'',	'',	0,	'',	0,	1,	2,	'A00310030001',	0,	0,	1,	1),
+(NOW(),	'en',	1,	'base',	'x3ui',	'articles',	'pages',	'articles/edit',	'Article editor',	'Article editor',	'Article editor',	'',	'',	0,	'',	0,	2,	2,	'A00310030002',	0,	0,	1,	1),
+(NOW(),	'en',	1,	'base',	'x3ui',	'home',	'files',	'files',	'Files',	'Files manager',	'Files manager',	'',	'',	0,	'',	3,	4,	1,	'A0031004',	0,	0,	1,	1),
+(NOW(),	'en',	1,	'base',	'x3ui',	'files',	'files',	'files/editor',	'File editor',	'File editor',	'File editor',	'',	'',	0,	'',	0,	3,	2,	'A00310040003',	0,	0,	1,	1),
+(NOW(),	'en',	1,	'base',	'x3ui',	'home',	'modules',	'modules',	'Plugins',	'Plugins manager',	'Plugins manager',	'',	'',	0,	'',	3,	5,	1,	'A0031005',	0,	0,	1,	1);
 
 -- --------------------------------------------------------
 
@@ -2630,8 +2666,8 @@ INSERT INTO `param` (`updated`, `id_area`, `xrif`, `name`, `description`, `xtype
 (NOW(), 0, 'site', 'pp', 'Items per page', 'INTEGER', '20', 1, 0, 1),
 (NOW(), 0, 'site', 'max_doc', 'Max uploading documents size in KB', 'INTEGER', '1024', 1, 0, 1),
 (NOW(), 0, 'site', 'max_img', 'Max uploading images size in KB', 'INTEGER', '1024', 1, 0, 1),
-(NOW(), 0, 'site', 'max_w', 'Max uploading image width in px', 'INTEGER', '400', 1, 0, 1),
-(NOW(), 0, 'site', 'max_h', 'Max uploading image height in px', 'INTEGER', '400', 1, 0, 1),
+(NOW(), 0, 'site', 'max_w', 'Max uploading image width in px', 'INTEGER', '1920', 1, 0, 1),
+(NOW(), 0, 'site', 'max_h', 'Max uploading image height in px', 'INTEGER', '1080', 1, 0, 1),
 (NOW(), 0, 'site', 'mail', 'Default web site email', 'EMAIL', 'ZZZAMAIL', 1, 0, 1);
 
 
@@ -2711,7 +2747,8 @@ INSERT INTO `privtypes` (`updated`, `xrif`, `name`, `description`, `xon`) VALUES
 (NOW(), 1, 'sites', 'SITES', 1),
 (NOW(), 1, 'templates', 'TEMPLATES', 1),
 (NOW(), 1, 'themes', 'THEMES', 1),
-(NOW(), 1, 'users', 'USERS', 1);
+(NOW(), 1, 'users', 'USERS', 1),
+(NOW(), 1, 'widgets', 'WIDGETS', 1);
 
 -- --------------------------------------------------------
 
@@ -2724,7 +2761,7 @@ CREATE TABLE IF NOT EXISTS `sections` (
   `updated` datetime NOT NULL,
   `id_area` int(11) NOT NULL,
   `id_page` int(11) NOT NULL,
-  `domain` varchar(255) NOT NULL,
+  `name` varchar(255) NOT NULL,
   `progressive` smallint(2) NOT NULL,
   `settings` text NOT NULL,
   `articles` text NOT NULL,
@@ -2767,7 +2804,7 @@ CREATE TABLE IF NOT EXISTS `sites` (
 --
 
 INSERT INTO `sites` (`updated`, `xcode`, `domain`, `version`, `xon`) VALUES
-(NOW(), '', 'ZZZDOMAIN', '0.9.0 STABLE', 1);
+(NOW(), '', 'ZZZDOMAIN', '0.9.99 STABLE', 1);
 
 -- --------------------------------------------------------
 
@@ -2795,11 +2832,8 @@ CREATE TABLE IF NOT EXISTS `templates` (
 --
 
 INSERT INTO `templates` (`id`, `updated`, `name`, `css`, `js`, `id_theme`, `description`, `settings`, `sections`, `xlock`, `xon`) VALUES
-(1, NOW(), 'base', 'x3ui', 'x3ui', 1, 'Default Admin template', '{"s1":{"locked":1,"bgcolor":"default","fgcolor":"default","columns":1,"width":"100"},"sn":{"locked":0,"bgcolor":"#ffffff","fgcolor":"#444444","columns":4,"width":"100"}}', 1, 0, 1),
-(2, NOW(), 'base', 'base', 'jqready', 2, 'Default template (two columns)', '{"s1":{"locked":1,"bgcolor":"default","fgcolor":"default","columns":3,"width":"100","class1":"","class2":""},"s2":{"locked":1,"bgcolor":"default","fgcolor":"default","columns":1,"width":"33","class1":"","class2":""},"s3":{"locked":0,"bgcolor":"#ffffff","fgcolor":"#444444","columns":4,"width":"100","class1":"","class2":""},"sn":{"locked":0,"bgcolor":"#ffffff","fgcolor":"#444444","columns":4,"width":"100","class1":"","class2":""}}',3, 0, 1),
-(3, NOW(), 'one', 'base', 'jqready', 2, 'One column template (one column)', '{"s1":{"locked":1,"bgcolor":"default","fgcolor":"default","columns":3,"width":"100","class1":"","class2":""},"s2":{"locked":0,"bgcolor":"#ffffff","fgcolor":"#444444","columns":4,"width":"100","class1":"","class2":""},"sn":{"locked":0,"bgcolor":"#ffffff","fgcolor":"#444444","columns":4,"width":"100","class1":"","class2":""}}', 2, 0, 1),
-(4, NOW(), 'offline', 'offline', 'jqready', 2, 'Offline template', '{"s1":{"locked":1,"bgcolor":"default","fgcolor":"default","columns":1,"width":"100","class1":"","class2":""},"sn":{"locked":0,"bgcolor":"#ffffff","fgcolor":"#444444","columns":4,"width":"100","class1":"","class2":""}}', 1, 0, 1);
-
+(1, NOW(), 'base', 'x3ui', 'x3ui', 1, 'Default Admin template', '{"s1":{"bgcolor":"default","fgcolor":"default","columns":1,"width":"100"},"sn":{"bgcolor":"#ffffff","fgcolor":"#444444","columns":4,"width":"100"}}', 1, 0, 1),
+(2, NOW(), 'base', 'base', 'script', 2, 'Default page template', '{"s1":{"bgcolor":"default","fgcolor":"default","columns":1,"width":"fullwidth","class1":"","class2":""},"sn":{"bgcolor":"#ffffff","fgcolor":"#444444","columns":4,"width":"fullwidth","class1":"","class2":""}}',3, 0, 1);
 -- --------------------------------------------------------
 
 --

@@ -11,18 +11,15 @@
 // default theme installer
 
 $theme = 'default';
-$version = '1.4';
+$version = '3';
 
 // theme
 $sql = "INSERT INTO themes (updated, name, description, version, xon) VALUES (NOW(), '$theme', 'Default theme', '$version', 0)";
 
 // templates
 $templates = array();
-$templates[] = "INSERT INTO templates (updated, name, css, id_theme, description, sections, xon) VALUES (NOW(), 'base', 'base', XXX, 'Base page template (two columns)', 3, 1)";
-$templates[] = "INSERT INTO templates (updated, name, css, id_theme, description, sections, xon) VALUES (NOW(), 'one', 'base', XXX, 'One column template (one columns)', 2, 1)";
-$templates[] = "INSERT INTO templates (updated, name, css, id_theme, description, sections, xon) VALUES (NOW(), 'offline', 'offline', XXX, 'Offline template', 2, 1)";
+$templates[] = "INSERT INTO templates (updated, name, js, css, id_theme, description, settings, sections, xon) VALUES (NOW(), 'base', 'script', 'base', XXX, 'Base page template', '{\"s1\":{\"locked\":1,\"bgcolor\":\"default\",\"fgcolor\":\"default\",\"columns\":1,\"width\":\"fullwidth\",\"class1\":\"\",\"class2\":\"\"},\"sn\":{\"locked\":0,\"bgcolor\":\"#ffffff\",\"fgcolor\":\"#444444\",\"columns\":4,\"width\":\"100\",\"class1\":\"\",\"class2\":\"\"}}', 1, 1)";
 
 // menus
 $menus = array();
 $menus[] = "INSERT INTO menus (updated, id_theme, name, description, xon) VALUES (NOW(), XXX, 'menu_top', 'Top menu', 1)";
-$menus[] = "INSERT INTO menus (updated, id_theme, name, description, xon) VALUES (NOW(), XXX, 'menu_left', 'Left menu', 1)";

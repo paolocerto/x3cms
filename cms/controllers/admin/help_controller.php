@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
 
@@ -40,17 +40,18 @@ class Help_controller extends X3ui_controller
 		// get page
 		$page = $this->get_page('help');
 
-		$view = new X4View_core('tabber');
-               $view->tabber_name = 'tabber';
-		$view->title = _HELP;
-		$view->on = 'local';
-		$view->tabs = array(
-			'local' => array(_HELP_ON_SITE, BASE_URL.'help/local'),
-			'online' => array(_HELP_ON_LINE, BASE_URL.'help/online/'.$page->lang)
-		);
+        $view = new X4View_core('page');
+        $view->breadcrumb = array($this->site->get_bredcrumb($page));
+		$view->actions = '';
 
-		$view->down = $this->local(false);
-		$view->tabber_container = 'tdown';
+		$view->content = new X4View_core('tabber');
+
+		$view->content->title = _HELP;
+
+		$view->content->tabs = array(
+			_HELP_ON_SITE => ['url', BASE_URL.'help/local'],
+			_HELP_ON_LINE => ['url', BASE_URL.'help/online/'.$page->lang]
+		);
 
 		$view->render(TRUE);
 	}
@@ -99,27 +100,21 @@ class Help_controller extends X3ui_controller
 		// content
 		$view = new X4View_core('container_two');
 
-		// right
-		$view->right = new X4View_core('left');
-
-		// left
-		$view->content = new X4View_core('left');
-
 		// get left content
 		$lcontent = @file_get_contents('http://www.x3cms.net/'.$lang.'/help/home/'.$this->remotize());
 
-		// get right remote contents
+		// get right data: the index of the help on line
 		$rcontent = @file_get_contents('http://www.x3cms.net/'.$lang.'/help/index/'.$this->remotize());
 
 		// return contents or error message
-		$view->right->left = (empty($rcontent))
+		$view->right = (empty($rcontent))
 			? '<p>'._UNABLE_TO_CONNECT.'</p>'
 			: '<div id="index">'.$rcontent.'</div>';
 
 		$src = array('src="/cms');
 		$rpl = array('src="http://www.x3cms.net/cms');
 
-		$view->left = (empty($lcontent))
+		$view->content = (empty($lcontent))
 			? '<p>'._UNABLE_TO_CONNECT.'</p>'
 			: '<div id="help">'.str_replace($src, $rpl, $lcontent).'</div>';
 

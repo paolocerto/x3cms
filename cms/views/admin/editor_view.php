@@ -4,26 +4,14 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
 
-// load tinyMCE
-if (isset($tinymce)) 
-{
-	echo $tinymce;
-}
-
+echo '<script defer src="'.THEME_URL.'js/basic.js"></script>';
 if (isset($js))
 {
-	echo '<script src="'.THEME_URL.'js/basic.js"></script>';
 	echo $js;
-}
-
-// close button
-if (!isset($close))
-{
-	echo '<div id="close-modal" title="'._CLOSE.'"><i class="fas fa-times fa-lg"></i></div>';
 }
 
 // show super title
@@ -40,13 +28,13 @@ if (isset($title))
 
 if (isset($loader))
 {
-    echo '<div id="formloader" class="hidden"><i class="fas fa-sync fa-spin fa-5x orange" aria-hidden="true"></i></div>';
+    echo '<div id="formloader" class="hidden"><i class="fas fa-sync fa-spin fa-5x on" aria-hidden="true"></i></div>';
 }
 
 // show optional message
 if (isset($msg))
 {
-	echo $msg;
+	echo '<div class="bg-white text-gray-700 md:px-8 px-4" style="border:1px solid white">'.$msg.'</div>';
 }
 
 if (isset($msg_error))
@@ -57,9 +45,13 @@ if (isset($msg_error))
 else
 {
 	// here we put the error message with AJAX
-	echo (isset($close))
-		? '<div id="msg"></div>'
-		: '<div class="msg-container"></div>';
+	echo '<div class="m-0" x-html="error_msg"></div>';
 }
 
 echo $form;
+
+// load tinyMCE
+if (isset($tinymce))
+{
+   // echo $tinymce;
+}

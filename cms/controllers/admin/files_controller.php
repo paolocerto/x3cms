@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
 
@@ -41,51 +41,51 @@ class Files_controller extends X3ui_controller
 	 * Show files (table view)
 	 *
 	 * @param   integer $id_area Area ID
-	 * @param   string  $category category
-	 * @param   string  $subcategory subcategory
-	 * @param   integer	$type type index
 	 * @param   integer	$pp pagination index
 	 * @return  void
 	 */
-	public function index(int $id_area = 2, string $category = '-', string $subcategory = '-', int $xtype = -1, int $pp = 0, string $str = '')
+	public function index(int $id_area = 2, int $pp = 0)
 	{
 		// load dictionary
 		$this->dict->get_wordarray(array('files'));
 
+        // get query string from filter
+        $qs = X4Route_core::get_query_string();
+
 		$amod = new Area_model();
 	    list($id_area, $areas) = $amod->get_my_areas($id_area);
 
+        // handle filters
+        $qs['xstr'] = $qs['xstr'] ?? '';
+        $qs['xxtype'] = $qs['xxtype'] ?? -1;
+        $qs['xctg'] = $qs['xctg'] ?? '';
+        $qs['xsctg'] = $qs['xsctg'] ?? '';
+
 		// get page
 		$page = $this->get_page('files');
-		$navbar = array($this->site->get_bredcrumb($page));
 
-		$category = urldecode($category);
-		$subcategory = urldecode($subcategory);
+        $view = new X4View_core('page');
+        $view->breadcrumb = array($this->site->get_bredcrumb($page));
+		$view->actions = $this->actions($id_area, $qs);
 
 		// contents
-		$view = new X4View_core('files/file_list');
-		$view->page = $page;
-		$view->navbar = $navbar;
-		$view->id_area = $id_area;
-		$view->xtype = $xtype;
-		$view->category = $category;
-		$view->subcategory = $subcategory;
-		$view->str = $str;
+		$view->content = new X4View_core('files/file_list');
+		$view->content->id_area = $id_area;
+        $view->content->qs = $qs;
 
 		$mod = new File_model();
-		$view->items = X4Pagination_helper::paginate($mod->get_files($id_area, $category, $subcategory, $xtype, $str), $pp);
+		$view->content->items = X4Pagination_helper::paginate($mod->get_files($id_area, $qs), $pp);
 
-		$view->file_path = $mod->file_path;
+		$view->content->file_path = $mod->file_path;
 
 		// area switcher
-		$view->areas = $areas;
+		$view->content->areas = $areas;
 		// type switcher
-		$view->types = $mod->get_types();
-
+		$view->content->types = $mod->get_types();
 		// files category switcher
-		$view->categories = $mod->get_cat($id_area);
+		$view->content->categories = $mod->get_cat($id_area);
 		// files subcategory switcher
-		$view->subcategories = $mod->get_subcat($id_area, $category);
+		$view->content->subcategories = $mod->get_subcat($id_area, $qs['xctg']);
 
 		$view->render(TRUE);
 	}
@@ -115,81 +115,35 @@ class Files_controller extends X3ui_controller
 	 * Files filter
 	 *
 	 * @param   integer $id_area Area ID
-	 * @param   string $category Files category
-	 * @param   string $subcategory Files subcategory
-	 * @param   string $str Search string
+	 * @param   array   $qs
 	 * @return  void
 	 */
-	public function filter(int $id_area, string $category = '', string $subcategory = '', string $str = '')
+	public function actions(int $id_area, array $qs)
 	{
-		if ($id_area)
-		{
-			// load the dictionary
-			$this->dict->get_wordarray(array('files'));
-
-			if (X4Route_core::$post)
-			{
-				// set message
-				$msg = AdmUtils_helper::set_msg(array(0,1));
-				$msg->update[] = array(
-						'element' => 'topic',
-						'url' => BASE_URL.'files/index/'.$id_area.'/'.$category.'/'.$subcategory.'/-1/0/'.urlencode(trim($_POST['search'])),
-						'title' => null
-					);
-				$this->response($msg);
-			}
-			else
-			{
-				// build the URL
-				$tokens = array();
-				if (!empty($category))
-					$tokens[] = $category;
-				if (!empty($subcategory))
-					$tokens[] = $subcategory;
-				$url = (empty($tokens))
-					? ''
-					: '/'.implode('/', $tokens);
-
-				echo '<button type="button" name="bulk" id="bulk" class="button" onclick="setForm(\'bulk_action\');">'._DELETE_BULK.'</button>
-				<input type="checkbox" class="bulker vmiddle" name="bulk_selector" id="bulk_selector"  title="'._SELECT_ALL.'" />
-				<form id="searchfile" name="searchfile" action="'.BASE_URL.'files/filter/'.$id_area.$url.'" method="post" onsubmit="return false;">
-				<input type="text" name="search" id="search" value="'.urldecode($str).'" />
-				<button type="button" name="searcher" class="button" onclick="setForm(\'searchfile\');">'._FIND.'</button>
-				</form>
-				<a class="btf" href="'.BASE_URL.'files/add/'.$id_area.$url.'" title="'._NEW_FILE.'"><i class="fas fa-plus fa-lg"></i></a>
-
-		<script>
-		window.addEvent("domready", function()
-		{
-			buttonize("filters", "btf", "modal");
-			bulkize("bulk_selector", "bulkable", "bulk");
-		});
-		</script>';
-			}
-		}
-		else
-		{
-			echo '';
-		}
+        return '<a class="link" @click="popup(\''.BASE_URL.'files/upload/'.$id_area.'?'.http_build_query($qs).'\')" title="'._NEW_FILE.'">
+            <i class="fa-solid fa-lg fa-circle-plus"></i>
+        </a>';
 	}
 
 	/**
-	 * Article bulk action
+	 * File bulk action
 	 *
 	 * @param   integer $id_area Area ID
-	 * @param   string $category Files category
-	 * @param   string $subcategory Files subcategory
-	 * @param   string $xtype Type of file
 	 * @return  void
 	 */
-	public function bulk(int $id_area, string $category, string $subcategory, string $xtype = '')
+	public function bulk(int $id_area)
 	{
 		$msg = null;
-		if (X4Route_core::$post && isset($_POST['bulk']) && is_array($_POST['bulk']) && !empty($_POST['bulk']))
+        $_post = X4Route_core::$input;
+		if (!empty($_post) && isset($_post['bulk']) && is_array($_post['bulk']) && !empty($_post['bulk']))
 		{
+            $qs = X4Route_core::get_query_string();
+
             $mod = new File_model();
             $perm = new Permission_model();
-            foreach ($_POST['bulk'] as $i)
+
+            // NOTE: we here have only bulk_action = delete
+            foreach ($_post['bulk'] as $i)
             {
                 $msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'files', $i, 4);
                 if (is_null($msg))
@@ -209,10 +163,9 @@ class Files_controller extends X3ui_controller
             // set update
             if ($result[1])
             {
-                $msg->update[] = array(
-                    'element' => 'topic',
-                    'url' => BASE_URL.'files/index/'.$id_area.'/'.$category.'/'.$subcategory.'/'.$xtype,
-                    'title' => null
+                $msg->update = array(
+                    'element' => 'page',
+                    'url' => BASE_URL.'files/index/'.$id_area.'?'.http_build_query($qs)
                 );
             }
 		}
@@ -237,8 +190,6 @@ class Files_controller extends X3ui_controller
 		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'files', $id, $val);
 		if (is_null($msg))
 		{
-			$qs = X4Route_core::get_query_string();
-
 			// do action
 			$files = new File_model();
 			$result = $files->update($id, array($what => $value));
@@ -250,10 +201,9 @@ class Files_controller extends X3ui_controller
 			// set update
 			if ($result[1])
             {
-				$msg->update[] = array(
-					'element' => $qs['div'],
-					'url' => urldecode($qs['url']),
-					'title' => null
+				$msg->update = array(
+					'element' => 'page',
+					'url' => $_SERVER['HTTP_REFERER']
 				);
             }
 		}
@@ -264,93 +214,39 @@ class Files_controller extends X3ui_controller
 	 * New files form
 	 *
 	 * @param   integer	$id_area Area ID
-	 * @param   string  $category Category name
-	 * @param   string  $subcategory Subcategory name
 	 * @return  void
 	 */
-	public function add(int $id_area = 0, string $category = '', string $subcategory = '')
+	public function upload(int $id_area)
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'files'));
+        // get query string from filter
+        $qs = X4Route_core::get_query_string();
 
-		// build the form
-		$fields = array();
 		$mod = new File_model();
 
-		$fields[] = array(
-			'label' => null,
-			'type' => 'html',
-			'value' => '<div class="band inner-pad clearfix"><div class="one-half xs-one-whole">'
-		);
+        // build the form
+        $form_fields = new X4Form_core('file/file_upload');
+        $form_fields->id_area = $id_area;
+		$form_fields->areas = $mod->get_areas();
+        $form_fields->ctg = $qs['xctg'];
+        $form_fields->sctg = $qs['xsctg'];
 
-		$fields[] = array(
-			'label' => _AREA,
-			'type' => 'select',
-			'value' => $id_area,
-			'name' => 'id_area',
-			'options' => array($mod->get_areas(), 'id', 'title'),
-			'multiple' => 4,
-			'extra' => 'class="large"'
-		);
-
-		$fields[] = array(
-			'label' => null,
-			'type' => 'html',
-			'value' => '</div><div class="one-half xs-one-whole">'
-		);
-
-		$fields[] = array(
-			'label' => null,
-			'type' => 'hidden',
-			'value' => 'files',
-			'name' => 'link',
-		);
-		$fields[] = array(
-			'label' => _CATEGORY,
-			'type' => 'text',
-			'value' => ($category == '-') ? '' : $category,
-			'name' => 'category',
-			'extra' => 'class="large"',
-			'rule' => 'required'
-		);
-
-		$fields[] = array(
-			'label' => _SUBCATEGORY,
-			'type' => 'text',
-			'value' => ($subcategory == '-') ? '' : $subcategory,
-			'name' => 'subcategory',
-			'extra' => 'class="large"',
-			'rule' => 'required'
-		);
-
-		$fields[] = array(
-			'label' => null,
-			'type' => 'html',
-			'value' => '</div></div>'
-		);
-
-		$fields[] = array(
-			'label' => _FILE,
-			'type' => 'file',
-			'value' => '',
-			'name' => 'xname',
-			'rule' => 'required',
-			'multiple' => 5,
-			'extra' => 'class="large"'
-		);
+		// get the fields array
+		$fields = $form_fields->render();
 
 		// to handle file's label
 		$file_array = array(
-			'xname' => _FILE
+			'filename' => _FILE
 		);
 
 		// if submitted
 		if (X4Route_core::$post)
 		{
-			$e = X4Validation_helper::form($fields, 'upload');
+			$e = X4Validation_helper::form($fields, 'editor');
 			if ($e)
 			{
-				$this->adding($_POST, $file_array);
+				$this->uploading($_POST, $file_array);
 			}
 			else
 			{
@@ -358,17 +254,15 @@ class Files_controller extends X3ui_controller
 			}
 			die;
 		}
-
+        $view = new X4View_core('modal');
+        $view->title = _UPLOAD_FILE;
+        $view->wide = 'md:inset-x-6 lg:w-3/4 xl:w-2/3';
 		// content
-		$view = new X4View_core('files/upload_file');
-
-		$view->id_area = $id_area;
-		$view->category = $category;
-		$view->subcategory = $subcategory;
+		$view->content = new X4View_core('editor');
 
 		// form builder
-		$view->form = X4Form_helper::doform('upload', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', 'enctype="multipart/form-data"',
-			'onclick="setUploadForm(\'upload\', \'xname\');"');
+		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _UPLOAD_FILE, 'buttons'), 'post', 'enctype="multipart/form-data"',
+            '@click="submitForm(\'editor\')" x-bind:disabled="files[\'filename\'] != null && !files[\'filename\'].length"');
 
 		$view->render(TRUE);
 	}
@@ -381,7 +275,7 @@ class Files_controller extends X3ui_controller
 	 * @param   array 	$file_array Files labels array
 	 * @return  void
 	 */
-	private function adding(array $_post, array $file_array)
+	private function uploading(array $_post, array $file_array)
 	{
 		$msg = null;
 		// check permission
@@ -389,7 +283,7 @@ class Files_controller extends X3ui_controller
 		if (is_null($msg))
 		{
             $mod = new File_model();
-            $filename = X4Files_helper::upload('xname', $mod->file_path);
+            $filename = X4Files_helper::upload('filename', $mod->file_path);
 
 			// check for errors
 			if ($filename[1])
@@ -397,6 +291,19 @@ class Files_controller extends X3ui_controller
 				$post = array();
 				$files = $filename[0];
 				$n = sizeof($files);
+
+                // handle file desriptions
+                $alt = [];
+                for ($i = 0; $i < $n; $i++)
+                {
+                    if (isset($_post['namef_'.$i]))
+                    {
+                        //$tmpname = X4Utils_helper::slugify(strtolower($_post['namef_'.$i]));
+                        $alt[$i] = empty($_post['altf_'.$i])
+                            ? $_post['namef_'.$i]
+                            : strip_tags($_post['altf_'.$i]);
+                    }
+                }
 
 				// handle _post for each area
 				for($i = 0; $i < $n; $i++)
@@ -412,7 +319,7 @@ class Files_controller extends X3ui_controller
 							'category' => X4Utils_helper::slugify($_post['category']),
 							'subcategory' => X4Utils_helper::slugify($_post['subcategory']),
 							'name' => $files[$i],
-							'alt' => $_POST['dida_'.($i+1)],
+							'alt' => $alt[$i],
 							'xon' => 1
 						);
 					}
@@ -427,10 +334,15 @@ class Files_controller extends X3ui_controller
 				// set what update
 				if ($result[1])
 				{
-					$msg->update[] = array(
-						'element' => 'topic',
-						'url' => BASE_URL.'files/index/'.$post[0]['id_area'].'/'.urlencode($post[0]['category']).'/'.urlencode($post[0]['subcategory']),
-						'title' => null
+                    $qs = [
+                        'xxtype' => -1,
+                        'xctg' => $post[0]['category'],
+                        'xsctg' => $post[0]['subcategory']
+                    ];
+
+					$msg->update = array(
+						'element' => 'page',
+						'url' => BASE_URL.'files/index/'.$post[0]['id_area'].'?'.http_build_query($qs)
 					);
 				}
 			}
@@ -498,119 +410,14 @@ class Files_controller extends X3ui_controller
 		$mod = new File_model();
 		$file = $mod->get_by_id($id);
 
-		// builde the form
-		$fields = array();
-		$fields[] = array(
-			'label' => null,
-			'type' => 'hidden',
-			'value' => $id,
-			'name' => 'id'
-		);
-		$fields[] = array(
-			'label' => null,
-			'type' => 'hidden',
-			'value' => $file->id_area,
-			'name' => 'id_area'
-		);
-		$fields[] = array(
-			'label' => null,
-			'type' => 'hidden',
-			'value' => $file->xtype,
-			'name' => 'xtype'
-		);
+        // build the form
+        $form_fields = new X4Form_core('file/file_edit');
 
-		$area = $mod->get_by_id($file->id_area, 'areas');
-		switch ($file->xtype)
-		{
-			case 0:
-				// image
-				$folder = X4Files_helper::get_type_by_name($file->name, true);
-				$action = (file_exists(APATH.'files/'.SPREFIX.'/filemanager/img/'.$file->name))
-					? '<div class="band inner-pad clearfix"><div class="one-half xs-one-whole">
-							<img class="thumb" src="'.FPATH.$folder.'/'.$file->name.'?t='.time().'" alt="'.$file->alt.'" />
-						</div><div class="one-half xs-one-whole">
-							<a class="btb" href="'.BASE_URL.'files/editor/'.$file->id.'" title="'._IMAGE_EDIT.'"><i class="fas fa-file-image fa-lg"></i> '._IMAGE_EDIT.'</a>
-						</div></div>'
-					: '';
-				break;
-			case 2:
-				// video
-				$action = (file_exists(APATH.'files/'.SPREFIX.'/filemanager/media/'.$file->name))
-					? '<div class="band inner-pad clearfix"><div class="one-whole">
-							<a class="btb" href="'.BASE_URL.'files/editor/'.$file->id.'" title="'._VIDEO_EDIT.'"><i class="fas fa-file-video fa-lg"></i> '._VIDEO_EDIT.'</a>
-						</div></div>'
-					: '';
-				break;
-			case 3:
-				// template
-				$action = (file_exists(APATH.'files/'.SPREFIX.'/filemanager/template/'.$file->name))
-					? '<div class="band inner-pad clearfix"><div class="one-whole">
-						<a class="btb" href="'.BASE_URL.'files/editor/'.$file->id.'" title="'._TEMPLATE_EDIT.'"><i class="fas fa-file-code fa-lg"></i> '._TEMPLATE_EDIT.'</a>
-					</div></div>'
-					: '';
-				break;
-			default:
-				// generic files
-				$ext = pathinfo(APATH.'files/'.SPREFIX.'/filemanager/files/'.$file->name, PATHINFO_EXTENSION);
-				if ($ext == 'txt' || $ext == 'csv')
-				{
-					$action = '<p><a class="btb" href="'.BASE_URL.'files/editor/'.$file->id.'" title="'._TEXT_EDIT.'"><i class="fas fa-file-alt fa-lg"></i> '._TEXT_EDIT.'</a></p>';
-				}
-				else
-				{
-					$action = '';
-				}
-				break;
-		}
+        $form_fields->area = $mod->get_by_id($file->id_area, 'areas');;
+        $form_fields->file = $file;
 
-		$fields[] = array(
-			'label' => null,
-			'type' => 'html',
-			'value' => '<p><b>'.$area->title.'</b>: '.$file->name.'</p>'.$action
-		);
-
-		$fields[] = array(
-			'label' => null,
-			'type' => 'html',
-			'value' => '<div class="band inner-pad clearfix"><div class="one-half xs-one-whole">'
-		);
-
-		$fields[] = array(
-			'label' => _CATEGORY,
-			'type' => 'text',
-			'value' => $file->category,
-			'name' => 'category',
-			'extra' => 'class="large"',
-			'rule' => 'required'
-		);
-
-		$fields[] = array(
-			'label' => null,
-			'type' => 'html',
-			'value' => '</div><div class="one-half xs-one-whole">'
-		);
-
-		$fields[] = array(
-			'label' => _SUBCATEGORY,
-			'type' => 'text',
-			'value' => $file->subcategory,
-			'name' => 'subcategory',
-			'extra' => 'class="large"',
-			'rule' => 'required'
-		);
-
-		$fields[] = array(
-			'label' => null,
-			'type' => 'html',
-			'value' => '</div></div>'
-		);
-
-		$fields[] = array(
-			'label' => _COMMENT,
-			'type' => 'textarea',
-			'value' => $file->alt,
-			'name' => 'alt'
-		);
+        // get the fields array
+        $fields = $form_fields->render();
 
 		// if submitted
 		if (X4Route_core::$post)
@@ -626,25 +433,15 @@ class Files_controller extends X3ui_controller
 			}
 			die;
 		}
-
+        $view = new X4View_core('modal');
+        $view->title = _EDIT_FILE;
+        $view->wide = 'md:inset-x-6 lg:w-3/4 xl:w-2/3';
 		// contents
-		$view = new X4View_core('editor');
-		$view->title = _EDIT_FILE;
+		$view->content = new X4View_core('editor');
 
 		// form builder
-		$view->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
-			'onclick="setForm(\'editor\');"');
-
-		if (!empty($action))
-		{
-			$view->js = '
-<script>
-window.addEvent("domready", function()
-{
-	buttonize("simple-modal", "btb", "topic");
-});
-</script>';
-		}
+		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
+            '@click="submitForm(\'editor\')"');
 
 		$view->render(TRUE);
 	}
@@ -680,11 +477,16 @@ window.addEvent("domready", function()
 			// set what update
 			if ($result[1])
 			{
-				$msg->update[] = array(
-					'element' => 'topic',
-					'url' => BASE_URL.'files/index/'.$_post['id_area'].'/'.$post['category'].'/'.$post['subcategory'],
-					'title' => null
-				);
+                $qs = [
+                    'xxtype' => -1,
+                    'xctg' => $post['category'],
+                    'xsctg' => $post['subcategory']
+                ];
+
+                $msg->update = array(
+                    'element' => 'page',
+                    'url' => BASE_URL.'files/index/'.$_post['id_area'].'?'.http_build_query($qs)
+                );
 			}
 		}
 		$this->response($msg);
@@ -703,50 +505,33 @@ window.addEvent("domready", function()
 
 		// get object
 		$mod = new File_model();
-		$obj = $mod->get_by_id($id);
+		$item = $mod->get_by_id($id);
 
 		// build the form
 		$fields = array();
 		$fields[] = array(
 			'label' => null,
 			'type' => 'hidden',
-			'value' => $obj->id_area,
-			'name' => 'id_area'
-		);
-		$fields[] = array(
-			'label' => null,
-			'type' => 'hidden',
-			'value' => $obj->xtype,
-			'name' => 'xtype'
-		);
-		$fields[] = array(
-			'label' => null,
-			'type' => 'hidden',
-			'value' => $obj->category,
-			'name' => 'category'
-		);
-		$fields[] = array(
-			'label' => null,
-			'type' => 'hidden',
-			'value' => $obj->subcategory,
-			'name' => 'subcategory'
+			'value' => $id,
+			'name' => 'id'
 		);
 
 		// if submitted
 		if (X4Route_core::$post)
 		{
-			$this->deleting($id, $_POST);
+			$this->deleting($item);
 			die;
 		}
-
+        $view = new X4View_core('modal');
+        $view->title = _DELETE_FILE;
 		// contents
-		$view = new X4View_core('delete');
-		$view->title = _DELETE_FILE;
-		$view->item = $obj->name;
+		$view->content = new X4View_core('delete');
+
+		$view->content->item = $item->name;
 
 		// form builder
-		$view->form = X4Form_helper::doform('delete', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
-			'onclick="setForm(\'delete\');"');
+		$view->content->form = X4Form_helper::doform('delete', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
+            '@click="submitForm(\'delete\')"');
 		$view->render(TRUE);
 	}
 
@@ -754,21 +539,19 @@ window.addEvent("domready", function()
 	 * Delete file
 	 *
 	 * @access	private
-	 * @param   integer	$id File ID
-	 * @param   array 	$_post _POST array
+	 * @param   stdClass $item
 	 * @return  void
 	 */
-	private function deleting(int $id, array $_post)
+	private function deleting(stdClass $item)
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'files', $id, 4);
-
+		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'files', $item->id, 4);
 		if (is_null($msg))
 		{
 			// action
 			$mod = new File_model();
-			$result = $mod->delete_file($id);
+			$result = $mod->delete_file($item->id);
 
 			// set message
 			$msg = AdmUtils_helper::set_msg($result);
@@ -777,13 +560,18 @@ window.addEvent("domready", function()
 			{
 				// clear useless permissions
 				$perm = new Permission_model();
-				$perm->deleting_by_what('files', $id);
+				$perm->deleting_by_what('files', $item->id);
+
+                $qs = [
+                    'xxtype' => -1,
+                    'xctg' => $item->category,
+                    'xsctg' => $item->subcategory
+                ];
 
 				// set what update
-				$msg->update[] = array(
+				$msg->update = array(
 					'element' => 'topic',
-					'url' => BASE_URL.'files/index/'.$_post['id_area'].'/'.$_post['category'].'/'.$_post['subcategory'],
-					'title' => null
+					'url' => BASE_URL.'files/index/'.$item->id_area.'?'.http_build_query($qs)
 				);
 			}
 		}
@@ -819,17 +607,17 @@ window.addEvent("domready", function()
 
 		// get page
 		$page = $this->get_page('files/editor');
-		$navbar = array($this->site->get_bredcrumb($page));
+
+        $view = new X4View_core('page');
+        $view->breadcrumb = array($this->site->get_bredcrumb($page));
+		$view->actions = '';
 
 		// content
-		$view = new X4View_core('container_two');
+		$view->content = new X4View_core('container_two');
+        // left
+		$view->content->left = new X4View_core('files/file_editor');
 		// right
-		$view->right = new X4View_core('editor');
-		$view->right->close = false;
-
-		// left
-		$view->content = new X4View_core('files/file_editor');
-		$view->content->page = $page;
+		$view->content->right = new X4View_core('editor');
 
 		$mod = new File_model();
 		$file = $mod->get_by_id($id_file);
@@ -837,10 +625,9 @@ window.addEvent("domready", function()
 		if ($file)
 		{
 			// if the file exists
-			$view->content->navbar = $navbar;
-			$view->content->id_area = $file->id_area;
-			$view->content->file = $file;
-			$view->content->file_path = $mod->file_path;
+			$view->content->left->id_area = $file->id_area;
+			$view->content->left->file = $file;
+			$view->content->left->file_path = $mod->file_path;
 
 			// switch to set where display the form
 			$form = 'right';
@@ -850,151 +637,27 @@ window.addEvent("domready", function()
 			$submit = _SUBMIT;
 
 			// build the form
-			$fields = array();
-
 			// switch by type
 			switch($file->xtype)
 			{
 			case 0:
 				// images
 
-				// image size
+                // image size
 				$size = (file_exists($mod->file_path.'img/'.$file->name))
-					? getimagesize($mod->file_path.'img/'.$file->name)
-					: '';
+                    ? getimagesize($mod->file_path.'img/'.$file->name)
+                    : '';
 
-				$view->content->width = $size[0];
-				$view->content->height = $size[1];
+                $view->content->left->width = $size[0];
+                $view->content->left->height = $size[1];
 
-				// editor form
-				$fields[] = array(
-					'label' => null,
-					'type' => 'html',
-					'value' => '<h3> Zoom 1:<span id="zoom_label">1</span></h3>'
-				);
+                $form_fields = new X4Form_core('file/file_editor_image');
 
-				$fields[] = array(
-					'label' => null,
-					'type' => 'hidden',
-					'value' => $id_file,
-					'name' => 'id'
-				);
-
-				$fields[] = array(
-					'label' => null,
-					'type' => 'hidden',
-					'value' => 1,
-					'name' => 'zoom'
-				);
-
-				$fields[] = array(
-					'label' => null,
-					'type' => 'html',
-					'value' => '<div class="band inner-pad clearfix"><div class="one-half xs-one-whole">'
-				);
-
-				$fields[] = array(
-					'label' => _IMAGE_XCOORD,
-					'type' => 'text',
-					'value' => 0,
-					'name' => 'xcoord',
-					'rule' => 'numeric',
-					'extra' => 'class="aright large"'
-				);
-
-				$fields[] = array(
-					'label' => null,
-					'type' => 'html',
-					'value' => '</div><div class="one-half xs-one-whole">'
-				);
-
-				$fields[] = array(
-					'label' => _IMAGE_YCOORD,
-					'type' => 'text',
-					'value' => 0,
-					'name' => 'ycoord',
-					'rule' => 'numeric',
-					'extra' => 'class="aright large"'
-				);
-
-				$fields[] = array(
-					'label' => null,
-					'type' => 'html',
-					'value' => '</div></div>'
-				);
-
-				$fields[] = array(
-					'label' => null,
-					'type' => 'html',
-					'value' => '<div class="band inner-pad clearfix"><div class="one-half xs-one-whole">'
-				);
-
-				$fields[] = array(
-					'label' => _IMAGE_WIDTH,
-					'type' => 'text',
-					'value' => $size[0],
-					'name' => 'width',
-					'rule' => 'numeric',
-					'extra' => 'class="aright large"'
-				);
-
-				$fields[] = array(
-					'label' => null,
-					'type' => 'html',
-					'value' => '</div><div class="one-half xs-one-whole">'
-				);
-
-				$fields[] = array(
-					'label' => _IMAGE_HEIGHT,
-					'type' => 'text',
-					'value' => $size[1],
-					'name' => 'height',
-					'rule' => 'numeric',
-					'extra' => 'class="aright large"'
-				);
-
-				$fields[] = array(
-					'label' => null,
-					'type' => 'html',
-					'value' => '</div></div>'
-				);
-
-				$fields[] = array(
-					'label' => _IMAGE_LOCK_RATIO,
-					'type' => 'checkbox',
-					'value' => 1,
-					'name' => 'ratio'
-				);
-
-				$fields[] = array(
-					'label' => _IMAGE_ROTATE,
-					'type' => 'slider',
-					'value' => 0,
-					'name' => 'slider'
-				);
-
-				$fields[] = array(
-					'label' => null,
-					'type' => 'text',
-					'value' => 0,
-					'name' => 'rotate',
-					'extra' => 'readonly class="large acenter noborder"'
-				);
-
-				$fields[] = array(
-					'label' => null,
-					'type' => 'html',
-					'value' => '<div class="acenter" style="overflow:hidden;"><img id="imagethumb" src="'.FPATH.'img/'.$file->name.'?t='.time().'" style="max-width:250px" /></div>'
-				);
-
-				$fields[] = array(
-					'label' => _IMAGE_AS_NEW,
-					'type' => 'checkbox',
-					'value' => 1,
-					'name' => 'asnew',
-					'checked' => 1
-				);
-
+                $form_fields->id_file = $id_file;
+                $form_fields->file = $file;
+                $form_fields->size = $size;
+                // get the fields array
+                $fields = $form_fields->render();
 				break;
 			case 1:
 				// generic file
@@ -1251,9 +914,10 @@ window.addEvent("domready", function()
 
 			if ($form == 'right')
 			{
-				$view->right->title = $file->name;
-				$view->right->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array($reset, $submit, 'buttons'), 'post',  '',
-				'onclick="setForm(\'editor\')";', 'onclick="reset_editor()"');
+				//$view->content->right->title = $file->name;
+				$view->content->right->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array($reset, $submit, 'buttons'), 'post',  '',
+                    '@click="submitForm(\'editor\')"');
+                //'onclick="setForm(\'editor\')";', 'onclick="reset_editor()"');
 			}
 			else
 			{

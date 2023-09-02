@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X4WEBAPP
  */
 
@@ -33,7 +33,7 @@ class X4Plugin_model extends X4Model_core
 	 * @param integer	hidden status
 	 * @return array	array of objects
 	 */
-	public function get_modules($id_area, $hidden = 2)
+	public function get_modules(int $id_area, int $hidden = 2)
 	{
 		$where = ($hidden < 2)
 			? ' AND hidden = '.intval($hidden)
@@ -55,7 +55,7 @@ class X4Plugin_model extends X4Model_core
 	 * @param integer	area ID
 	 * @return array	array of parameter objects
 	 */
-	public function get_param($plugin_name, $id_area)
+	public function get_param(string $plugin_name, int $id_area)
 	{
 		return $this->db->query('SELECT DISTINCT pa.*, IF(p.id IS NULL, u.level, p.level) AS level
 			FROM param pa
@@ -72,10 +72,12 @@ class X4Plugin_model extends X4Model_core
 	 * @param array		array of associative array (id parameter => value)
 	 * @return array	(0, boolean update result)
 	 */
-	public function update_param($array)
+	public function update_param(array $array)
 	{
 		if (empty($array))
+        {
 			return array(0, 1);
+        }
 		else
 		{
 			$sql = array();
@@ -113,7 +115,7 @@ class X4Plugin_model extends X4Model_core
 	 * @param integer	area ID
 	 * @return array	array of plugin objects
 	 */
-	public function get_installed($id_area)
+	public function get_installed(int $id_area)
 	{
 		return $this->db->query('SELECT DISTINCT m.*, up.level, IF(p.id IS NULL, up.level, p.level) AS adminlevel
 		FROM modules m
@@ -135,18 +137,18 @@ class X4Plugin_model extends X4Model_core
 	 * @param integer	area ID
 	 * @return array	array of plugin paths
 	 */
-	public function get_installable($id_area)
+	public function get_installable(int $id_area)
 	{
 		// uploaded plugins
 		$plugins = glob(PATH.'plugins/*', GLOB_ONLYDIR);
 		// installed
 		$installed = $this->get_installed($id_area);
-		$ed = array();
+		$a = array();
 		foreach ($installed as $i)
 		{
-			$ed[] = PATH.'plugins/'.$i->name;
+			$a[] = PATH.'plugins/'.$i->name;
 		}
-		return array_diff($plugins, $ed);
+		return array_diff($plugins, $a);
 	}
 
 	/**
@@ -154,17 +156,19 @@ class X4Plugin_model extends X4Model_core
 	 *
 	 * @param array		array of strings, names of requirements
 	 * @param integer	area ID
-	 * @param boolean	if true check if needed else check if required
+	 * @param int   	if true check if needed else check if required
 	 * @return array	array of error strings
 	 */
-	private function check_required($array, $id_area, $value)
+	private function check_required(array $array, int $id_area, int $value)
 	{
 		$error = array();
 		$msg = ($value) ? '_plugin_needed_by' : '_required_plugin';
 		foreach ($array as $i)
 		{
 			if ($this->exists($i, $id_area) == $value)
+            {
 				$error[] = array('error' => array($msg), 'label' => $i);
+            }
 		}
 		return $error;
 	}
@@ -176,7 +180,7 @@ class X4Plugin_model extends X4Model_core
 	 * @param string	plugin name (is the same name of the folder)
 	 * @return mixed	integer if all runs fine, else an array of error strings
 	 */
-	public function install($id_area, $name)
+	public function install(int $id_area, string $name)
 	{
 		$error = array();
 		if (!$this->exists($name, $id_area))
@@ -223,14 +227,6 @@ class X4Plugin_model extends X4Model_core
 
 					if ($result[1])
 					{
-						// initialize Mongo DB autoincrement index
-						if (isset($sql2))
-						{
-							$model = $sql2['model'];
-							$mod = new $model();
-							$res = $mod->insert($sql2['index'], 'indexes');
-						}
-
 						// return an integer if installation run fine
 						return $result[0];
 					}
@@ -259,7 +255,7 @@ class X4Plugin_model extends X4Model_core
 	 * @param string	plugin compatibility
 	 * @return boolean	compatibility value
 	 */
-	private function compatibility($version)
+	private function compatibility(string $version)
 	{
 		$c = true;
 		// cms version (the same for all sites)
@@ -272,12 +268,16 @@ class X4Plugin_model extends X4Model_core
 
 		// release number
 		if ($sv[0] > $cv[0])
+        {
 			$c = false;
+        }
 		elseif ($sv[0] == $cv[0])
 		{
 			$b = array_flip($a);
 			if ($b[strtoupper($sv[1])] > $b[strtoupper($cv[1])])
+            {
 				$c = false;
+            }
 		}
 		return $c;
 	}
@@ -291,7 +291,7 @@ class X4Plugin_model extends X4Model_core
 	 * @param integer	plugin ID
 	 * @return mixed	integer if all runs fine, else an array of error strings
 	 */
-	public function uninstall($id)
+	public function uninstall(int $id)
 	{
 		$error = array();
 		$plugin = $this->get_by_id($id);
@@ -312,36 +312,17 @@ class X4Plugin_model extends X4Model_core
 				require_once(PATH.'plugins/'.$plugin->name.'/global_uninstall.php');
 				$error = $this->check_required($required, $plugin->id_area, 1);
 			}
-		}
+        }
 
 		if (empty($error))
 		{
 			$result = $this->db->multi_exec($sql);
-
-			if ($result[1])
-			{
-				// initialize Mongo DB autoincrement index
-				if (isset($sql2))
-				{
-					$model = $sql2['model'];
-					$mod = new $model();
-					if (isset($sql2['data']))
-					{
-						// delete item from area
-						$mod->multiple_delete($sql2['collection'], $sql2['data']);
-					}
-					else
-					{
-						// drop the collection
-						$res = $mod->drop($sql2['collection']);
-					}
-				}
-			}
-
 			return $result[1];
 		}
 		else
+        {
 			return $error;
+        }
 	}
 
 	/**
@@ -353,7 +334,7 @@ class X4Plugin_model extends X4Model_core
 	 * @param integer	check the status
 	 * @return integer	number of installed plugins
 	 */
-	public function exists($plugin_name, $id_area, $global = false, $status = 2)
+	public function exists(string $plugin_name, int $id_area, bool $global = false, int $status = 2)
 	{
 		// condition
 		$where = ($global)
@@ -362,8 +343,9 @@ class X4Plugin_model extends X4Model_core
 
 		// status
 		if ($status < 2)
+        {
 			$where .= ' AND xon = '.intval($status);
-
+        }
 		return $this->db->query_var('SELECT COUNT(id) FROM modules WHERE name = '.$this->db->escape($plugin_name).' '.$where);
 	}
 
@@ -374,7 +356,7 @@ class X4Plugin_model extends X4Model_core
 	 * @param integer	area ID
 	 * @return integer	number of installed plugins
 	 */
-	public function usable($plugin_name, $id_area)
+	public function usable(string $plugin_name, int $id_area)
 	{
 		return $this->db->query_var('SELECT xon FROM modules WHERE name = '.$this->db->escape($plugin_name).' AND id_area = '.intval($id_area));
 	}
@@ -385,7 +367,7 @@ class X4Plugin_model extends X4Model_core
 	 * @param integer	area ID
 	 * @return array	array of objects
 	 */
-	public function get_searchable($id_area)
+	public function get_searchable(int $id_area)
 	{
 		return $this->db->query('SELECT name
 			FROM modules
@@ -399,9 +381,10 @@ class X4Plugin_model extends X4Model_core
 	 * Check plugin redirects
 	 *
 	 * @param array		array of models
+     * @param string    $url
 	 * @return mixed
 	 */
-	public function check_redirect($array, $url)
+	public function check_redirect(array $array, string $url)
 	{
 	    $redirect = null;
 		foreach ($array as $i)
@@ -425,7 +408,7 @@ class X4Plugin_model extends X4Model_core
 	 * @param string	parameter value, accepts * wildcard
 	 * @return string	page URL
 	 */
-	public function get_page_to($id_area, $lang, $modname, $param = '')
+	public function get_page_to(int $id_area, string $lang, string $modname, string $param = '')
 	{
 		// check APC
 		$c = (APC)

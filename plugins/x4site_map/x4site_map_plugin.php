@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
 
@@ -38,8 +38,33 @@ class X4site_map_plugin extends X4Plugin_core implements X3plugin
 	 */
 	public function get_module(stdClass $page, array $args, string $param = '')
 	{
-		$map = $this->site->get_map($page, true);
-		$out = '<div id="sitemap">';
+		// if param can be exploded
+		$p = explode('|', $param);
+
+		switch($p[0])
+		{
+            case 'area_map':
+                // show the site map
+                return $this->area_map($page, $args);
+                break;
+            default:
+                return '';
+                break;
+		}
+	}
+
+	/**
+	 * Area map
+	 *
+	 *
+	 * @param object	$page object
+	 * @param array		$args array of args
+	 * @return array
+	 */
+	public function area_map(stdClass $page, array $args)
+	{
+        $map = $this->site->get_map($page, true);
+		$out = '<div id="sitemap" class="mt-6">';
 
 		$len = 0;
 		$openul = $openli = 0;
@@ -50,7 +75,7 @@ class X4site_map_plugin extends X4Plugin_core implements X3plugin
 			if ($ilen > $len)
 			{
 				// change subpages
-				$out .= '<ul>';
+				$out .= '<ul class="ml-6">';
 				$openul++;
 			}
 			elseif ($ilen < $len)
@@ -82,7 +107,9 @@ class X4site_map_plugin extends X4Plugin_core implements X3plugin
 
 			// menus
 			if ($ilen == 2 && $i->id_menu)
+            {
 				$class = 'class="map"';
+            }
 
 			$len = $ilen;
 			$url = ($i->url == 'home')
@@ -90,7 +117,9 @@ class X4site_map_plugin extends X4Plugin_core implements X3plugin
 				: $i->url;
 
 			$description = stripslashes($i->description);
-			$out .= '<li '.$class.'><a href="'.BASE_URL.$url.'" title="'.$description.'">'.stripslashes($i->name).'</a>'._TRAIT_.$description;
+			$out .= ($i->fake)
+                ? '<li '.$class.'>'.stripslashes($i->name)._TRAIT_.$description
+                : '<li '.$class.'><a href="'.BASE_URL.$url.'" title="'.$description.'">'.stripslashes($i->name).'</a>'._TRAIT_.$description;
 			$openli++;
 		}
 

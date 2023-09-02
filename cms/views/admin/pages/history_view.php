@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
 ?>
@@ -55,7 +55,7 @@ foreach ($contents as $i)
 	$actions = $delete = $date_in = $date_out = '';
 
 	// check permission
-	if (($i->level > 2 && $i->xlock == 0) || $i->level == 4) {
+	if (($i->level > 2 && $i->xlock == 0) || $i->level >= 3) {
 		$actions .= '<a href="'.BASE_URL.'contents/set/xon/'.$i->id.'/'.(($i->xon+1)%2).'" title="'._STATUS.' '.$status.'"><img src="'.THEME_URL.'img/'.$on_status.'.png" alt="'.$status.'" /></a>';
 
 		// admin user

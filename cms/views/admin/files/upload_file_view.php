@@ -4,51 +4,22 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
- 
-echo '<div id="close-modal" title="'._CLOSE.'"><i class="fas fa-times fa-lg"></i></div>';
 
-echo '<h2>'._UPLOAD_FILE.'</h2>
-	<p class="small">'.ucfirst(_FILE_SIZES).' '.MAX_W.'x'.MAX_H.' px - '.ceil(MAX_IMG/1024).' MB / '.ceil(MAX_DOC/1024).' MB</p>';
-	
-// show message
-if (isset($msg))
+echo '<p class="small">'.ucfirst(_FILE_SIZES).' '.MAX_W.'x'.MAX_H.' px - '.ceil(MAX_IMG/1024).' MB / '.ceil(MAX_DOC/1024).' MB</p>';
+
+
+if (isset($msg_error))
 {
-	echo $msg;
+	// here we output the error message
+    echo $msg_error;
 }
-
-echo '<div id="msg-container"></div>';
+else
+{
+	// here we put the error message with AJAX
+	echo '<div class="m-0" x-html="error_msg"></div>';
+}
 
 echo $form;
-
-	// build the URL
-	$tokens = array();
-	if (!empty($category))
-	{
-		$tokens[] = $category;
-	}
-	
-	if (!empty($subcategory))
-	{
-		$tokens[] = $subcategory;
-	}
-	
-	$url = (empty($tokens))
-		? ''
-		: '/'.implode('/', $tokens);
-			
-?>
-<script src="<?php echo THEME_URL ?>js/basic.js"></script>
-<script>
-window.addEvent("domready", function()
-{
-	X3.droppize("upload", "xname", "<?php echo _DROP_MSG ?>");
-	X3.single_upload("upload", "xname");
-});
-
-function setUploadForm(id_form, input_name) {
-	X3.uploadize(id_form, input_name, "topic", "<?php echo BASE_URL.'files/index/'.$id_area.$url ?>");
-}
-</script>

@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
 
@@ -41,73 +41,102 @@ class Sites_controller extends X3ui_controller
 	 */
 	public function _default()
 	{
-		$this->show();
+		$this->settings();
 	}
 
 	/**
-	 * Show site
+	 * Show settings
 	 *
-	 * @param   integer  $tab Enable disable tabber view
 	 * @return  void
 	 */
-	public function show(int $tab = 0)
+	public function settings()
 	{
 		// load dictionary
 		$this->dict->get_wordarray(array('sites'));
 
 		// get page
 		$page = $this->get_page('sites');
-		$navbar = array($this->site->get_bredcrumb($page));
 
-        $mod = new Site_model();
+		$view = new X4View_core('page');
+        $view->breadcrumb = array($this->site->get_bredcrumb($page));
+		$view->actions = '';
 
-		if ($tab)
-		{
-			$view = new X4View_core('tabber');
-            $view->tabber_name = 'tabber';
-			$view->title = _SITE_MANAGER;
-			$menu = $this->site->get_menus($page->id_area);
+        $view->content = new X4View_core('sites/settings');
+        $view->content->items = $this->site->get_subpages($page->id_area, 'sites');
 
-			$view->tabs = $menu['sidebar'];
-			$view->tkeys = array('name', 'url', 'url', $page->url);
-			$view->tabber_container = 'tdown';
-
-			$view->down = new X4View_core('sites/sites');
-            $view->down->items = $mod->get_items($_SESSION['xuid']);
-			$view->down->navbar = $navbar;
-			$view->down->page = $page;
-		}
-		else
-		{
-			$view = new X4View_core('sites/sites');
-            $view->items = $mod->get_items($_SESSION['xuid']);
-			$view->navbar = $navbar;
-			$view->page = $page;
-		}
 		$view->render(TRUE);
 	}
 
 	/**
 	 * Sites filter
 	 *
+     * @access	private
 	 * @return  void
 	 */
-	public function filter()
+	private function actions()
 	{
-		if ($_SESSION['xuid'] == 1)
+		return ($_SESSION['level'] == 5)
+            ? '<a class="link" @click="popup(\''.BASE_URL.'sites/edit\')" title="'._ADD_SITE.'"><i class="fa-solid fa-lg fa-circle-plus"></i></a>'
+            : '';
+	}
+
+    /**
+	 * Show sites
+	 *
+	 * @return  void
+	 */
+	public function index()
+	{
+		// load dictionary
+		$this->dict->get_wordarray(array('sites'));
+
+		// get page
+		$page = $this->get_page('sites/index');
+
+		$view = new X4View_core('page');
+        $view->breadcrumb = array($this->site->get_bredcrumb($page));
+		$view->actions = $this->actions();
+
+        $view->content = new X4View_core('sites/sites');
+
+        $mod = new Site_model();
+        $view->content->items = $mod->get_items($_SESSION['xuid']);
+
+		$view->render(TRUE);
+	}
+
+    /**
+	 * Change param status
+	 *
+	 * @param   string	$what field to change
+	 * @param   integer $value value to set (0 = off, 1 = on)
+	 * @return  void
+	 */
+	public function set(string $what, int  $value = 0)
+	{
+		$msg = null;
+		// check permissions
+		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'sites', $this->site->site->id, 4);
+		if (is_null($msg))
 		{
-		    echo '<a class="btf" href="'.BASE_URL.'sites/edit" title="Add a new site"><i class="fas fa-plus fa-lg"></i></a>
-<script>
-window.addEvent("domready", function()
-{
-    buttonize("filters", "btf", "modal");
-});
-</script>';
+			// do action
+			$plugin = new X4Plugin_model();
+			$result = $plugin->update_param_by_name(1, 'site', $what, $value);
+
+			// set message
+			$this->dict->get_words();
+			$msg = AdmUtils_helper::set_msg($result);
+
+			// set update
+			if ($result[1])
+			{
+				$msg->update = array(
+					'element' => 'redirect',
+					'url' => $_SERVER['HTTP_REFERER']
+				);
+			}
 		}
-		else
-		{
-			echo '';
-		}
+		$this->response($msg);
 	}
 
 	/**
@@ -126,8 +155,6 @@ window.addEvent("domready", function()
 		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'sites', $id, 4);
 		if (is_null($msg))
 		{
-			$qs = X4Route_core::get_query_string();
-
 			// do action
 			$result = $this->site->update($id, array('xon' => $value));
 			// clear cache
@@ -139,10 +166,9 @@ window.addEvent("domready", function()
 			// set update
 			if ($result[1])
             {
-				$msg->update[] = array(
-					'element' => $qs['div'],
-					'url' => urldecode($qs['url']),
-					'title' => null
+				$msg->update = array(
+					'element' => 'page',
+					'url' => $_SERVER['HTTP_REFERER']
 				);
             }
 		}
@@ -164,19 +190,18 @@ window.addEvent("domready", function()
 
 		// get params
 		$params = $mod->get_params($id);
-
+        // not initialized?
 		if (empty($params))
 		{
 		    $params = $mod->init_params($id);
 		}
-
-		$site = $mod->get_by_id($id);;
+		$site = $mod->get_by_id($id);
 
 		// build the form
-		$form_fields = new X4Form_core('site_edit', '', array('fields' => array()));
+		$form_fields = new X4Form_core('site/site_config');
 		$form_fields->id = $id;
 		$form_fields->site = $site;
-        	$form_fields->params = $params;
+        $form_fields->params = $params;
 
 		// get the fields array
 		$fields = $form_fields->render();
@@ -184,7 +209,7 @@ window.addEvent("domready", function()
 		// if submitted
 		if (X4Route_core::$post)
 		{
-			$e = X4Validation_helper::form($fields, 'configure');
+			$e = X4Validation_helper::form($fields, 'editor');
 			if ($e)
 			{
 				$this->configure($_POST);
@@ -196,21 +221,14 @@ window.addEvent("domready", function()
 			die;
 		}
 
-		// contents
-		$view = new X4View_core('editor');
+        $view = new X4View_core('modal');
 		$view->title = _SITE_CONFIG.': '.$site->domain;
 
+        // contents
+        $view->content = new X4View_core('editor');
 		// form builder
-		$view->form = '<div id="scrolled">'.X4Form_helper::doform('configure', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
-			'onclick="setForm(\'configure\');"').'</div>';
-
-		$view->js = '
-<script>
-window.addEvent("domready", function()
-{
-	var myScroll = new Scrollable($("scrolled"));
-});
-</script>';
+		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
+            '@click="submitForm(\'editor\')"');
 
 		$view->render(TRUE);
 	}
@@ -227,10 +245,9 @@ window.addEvent("domready", function()
 		$msg = null;
 		// check permission
 		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'sites', $_post['id'], 3);
-
 		if (is_null($msg))
 		{
-            		$mod = new Site_model();
+            $mod = new Site_model();
 
 			// get parameters before update
 			$params = $mod->get_params($_post['id']);
@@ -272,9 +289,8 @@ window.addEvent("domready", function()
 			if ($result[1])
 			{
 				$msg->update[] = array(
-					'element' => 'topic',
-					'url' => BASE_URL.'sites/show/1',
-					'title' => null
+					'element' => 'whole',
+					'url' => BASE_URL.'sites/index'
 				);
 			}
 		}
@@ -292,41 +308,19 @@ window.addEvent("domready", function()
 		// load dictionary
 		$this->dict->get_wordarray(array('form', 'sites'));
 
+        $mod = new Site_model();
+
 		// get object
 		$site = ($id)
-		    ? $this->site->get_by_id($id)
+		    ? $mod->get_by_id($id)
 		    : new Obj_site();
 
-		// build the form
-		$fields = array();
-		$fields[] = array(
-			'label' => null,
-			'type' => 'hidden',
-			'value' => $id,
-			'name' => 'id'
-		);
-		$fields[] = array(
-			'label' => _X3CMS.' '._VERSION,
-			'type' => 'text',
-			'value' => $site->version,
-			'name' => 'version',
-			'extra' => 'class="large" disabled="disabled"'
-		);
-		$fields[] = array(
-			'label' => _KEYCODE,
-			'type' => 'text',
-			'value' => $site->xcode,
-			'name' => 'xcode',
-			'extra' => 'class="large"'
-		);
-		$fields[] = array(
-			'label' => _DOMAIN,
-			'type' => 'text',
-			'value' => $site->domain,
-			'name' => 'domain',
-			'rule' => 'required|url',
-			'extra' => 'class="large"'
-		);
+        $form_fields = new X4Form_core('site/site_edit');
+        $form_fields->id = $id;
+        $form_fields->site = $site;
+
+        // get the fields array
+		$fields = $form_fields->render();
 
 		// if submitted
 		if (X4Route_core::$post)
@@ -343,13 +337,15 @@ window.addEvent("domready", function()
 			die;
 		}
 
-		// contents
-		$view = new X4View_core('editor');
+		$view = new X4View_core('modal');
 		$view->title = _EDIT_SITE;
 
+        // contents
+        $view->content = new X4View_core('editor');
+
 		// form builder
-		$view->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
-			'onclick="setForm(\'editor\');"');
+		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
+            '@click="submitForm(\'editor\')"');
 		$view->render(TRUE);
 	}
 
@@ -364,7 +360,6 @@ window.addEvent("domready", function()
 	{
 		$msg = null;
 		// check permission
-
 		$msg = $_post['id']
 		    ? AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'sites', $_post['id'], 4)
 		    : null;
@@ -388,9 +383,8 @@ window.addEvent("domready", function()
 			if ($result[1])
 			{
 				$msg->update[] = array(
-					'element' => 'topic',
-					'url' => BASE_URL.'sites/show/1',
-					'title' => null
+					'element' => 'whole',
+					'url' => BASE_URL.'sites/index'
 				);
 			}
 		}

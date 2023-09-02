@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
 
@@ -28,25 +28,6 @@ class Groups_controller extends X3ui_controller
 	}
 
 	/**
-	 * Groups filter
-	 *
-	 * @return  void
-	 */
-	public function filter()
-	{
-		// load the dictionary
-		$this->dict->get_wordarray(array('groups'));
-
-		echo '<a class="btf" href="'.BASE_URL.'groups/edit" title="'._NEW_GROUP.'"><i class="fas fa-plus fa-lg"></i></a>
-<script>
-window.addEvent("domready", function()
-{
-	buttonize("filters", "btf", "modal");
-});
-</script>';
-	}
-
-	/**
 	 * Change status
 	 *
 	 * @param   string  $what field to change
@@ -64,8 +45,6 @@ window.addEvent("domready", function()
 		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'xgroups', $id, $val);
 		if (is_null($msg))
 		{
-			$qs = X4Route_core::get_query_string();
-
 			// do action
 			$group = new Group_model();
 			$result = $group->update($id, array($what => $value));
@@ -77,10 +56,9 @@ window.addEvent("domready", function()
 			// set update
 			if ($result[1])
             {
-				$msg->update[] = array(
-					'element' => $qs['div'],
-					'url' => urldecode($qs['url']),
-					'title' => null
+				$msg->update = array(
+					'element' => 'page',
+					'url' => $_SERVER['HTTP_REFERER']
 				);
             }
 		}
@@ -99,65 +77,19 @@ window.addEvent("domready", function()
 		$this->dict->get_wordarray(array('form', 'groups'));
 
 		// get object
-		$group = new Group_model();
-		$g = ($id)
-			? $group->get_by_id($id)
+		$mod = new Group_model();
+		$item = ($id)
+			? $mod->get_by_id($id)
 			: new Group_obj();
 
-		// build the form
-		$fields = array();
-		$fields[] = array(
-			'label' => null,
-			'type' => 'hidden',
-			'value' => $id,
-			'name' => 'id'
-		);
+        // build the form
+		$form_fields = new X4Form_core('group/group_edit');
+		$form_fields->id = $id;
+		$form_fields->item = $item;
+        $form_fields->mod = new Area_model();
 
-		$amod = new Area_model();
-		if ($id)
-        {
-			// update a group
-			$area = $amod->get_by_id($g->id_area, 'areas', 'title');
-			$fields[] = array(
-				'label' => null,
-				'type' => 'html',
-				'value' => '<h4>'._AREA.': '.$area->title.'</h4>'
-			);
-			$fields[] = array(
-				'label' => null,
-				'type' => 'hidden',
-				'value' => $g->id_area,
-				'name' => 'id_area'
-			);
-		}
-		else
-        {
-            $fields[] = array(
-                'label' => _AREA,
-                'type' => 'select',
-                'value' => '',
-                'options' => array($amod->get_areas(), 'id', 'title'),
-                'name' =>'id_area',
-                'extra' => 'class="large"'
-            );
-        }
-
-		$fields[] = array(
-			'label' => _NAME,
-			'type' => 'text',
-			'value' => $g->name,
-			'name' => 'name',
-			'rule' => 'required',
-			'extra' => 'class="large"'
-		);
-		$fields[] = array(
-			'label' => _DESCRIPTION,
-			'type' => 'textarea',
-			'value' => $g->description,
-			'name' => 'description',
-			'rule' => 'required',
-			'extra' => 'class="large"'
-		);
+		// get the fields array
+		$fields = $form_fields->render();
 
 		// if submitted
 		if (X4Route_core::$post)
@@ -174,15 +106,16 @@ window.addEvent("domready", function()
 			die;
 		}
 
-		// contents
-		$view = new X4View_core('editor');
-		$view->title = ($id)
+        $view = new X4View_core('modal');
+        $view->title = ($id)
 			? _EDIT_GROUP
 			: _ADD_GROUP;
 
+		// contents
+		$view->content = new X4View_core('editor');
 		// form builder
-		$view->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
-			'onclick="setForm(\'editor\');"');
+		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
+            '@click="submitForm(\'editor\')"');
 		$view->render(TRUE);
 	}
 
@@ -211,10 +144,10 @@ window.addEvent("domready", function()
 			);
 
 			// update or insert
-			$group = new Group_model();
+			$mod = new Group_model();
 			$result = ($_post['id'])
-                ? $group->update($_post['id'], $post)
-                : $group->insert($post);
+                ? $mod->update($_post['id'], $post)
+                : $mod->insert($post);
 
 			// set message
 			$msg = AdmUtils_helper::set_msg($result);
@@ -222,10 +155,9 @@ window.addEvent("domready", function()
 			// set what update
 			if ($result[1])
 			{
-				$msg->update[] = array(
-					'element' => 'tdown',
-					'url' => BASE_URL.'users',
-					'title' => null
+				$msg->update = array(
+					'element' => 'page',
+					'url' => BASE_URL.'users'
 				);
 			}
 		}
@@ -245,83 +177,29 @@ window.addEvent("domready", function()
 
 		// get objects (group permissions)
 		$mod = new Permission_model();
-		$gp = X4Array_helper::obj2array($mod->get_gprivs($id_group), 'what', 'level');
+		$gprivs = X4Array_helper::obj2array($mod->get_gprivs($id_group), 'what', 'level');
 
 		// get area data
-		$g = $mod->get_by_id($id_group, 'xgroups', 'id_area');
-		$a = $mod->get_by_id($g->id_area, 'areas', 'private');
+		$group_id_area = $mod->get_var($id_group, 'xgroups', 'id_area');
+		$private = $mod->get_var($group_id_area, 'areas', 'private');
 
 		// build the form
-		$fields = array();
-		$fields[] = array(
-			'label' => null,
-			'type' => 'hidden',
-			'value' => $id_group,
-			'name' => 'id'
-		);
-		$fields[] = array(
-			'label' => null,
-			'type' => 'hidden',
-			'value' => $a->private,
-			'name' => 'xrif'
-		);
+		$form_fields = new X4Form_core('group/group_privs');
+		$form_fields->id_group = $id_group;
+		$form_fields->gprivs = $gprivs;
+        $form_fields->private = $private;
+        // available permission levels
+        $form_fields->levels = $mod->get_levels();
+        // registered group permissions
+        $form_fields->types = $mod->get_privtypes($private);
 
-		// available permission levels
-		$l = $mod->get_levels();
-
-		$fields[] = array(
-			'label' => null,
-			'type' => 'html',
-			'value' => '<div class="band inner-pad clearfix">'
-		);
-
-		// registered group permissions
-		$types = $mod->get_privtypes($a->private);
-		foreach ($types as $i)
-		{
-			$fields[] = array(
-				'label' => null,
-				'type' => 'html',
-				'value' => '<div class="one-half xs-one-whole">'
-			);
-
-			// actual permission level
-			$value = (isset($gp[$i->name]))
-				? $gp[$i->name]
-				: 0;
-
-			$fields[] = array(
-				'label' => constant($i->description),
-				'type' => 'select',
-				'value' => $value,
-				'name' => $i->name,
-				'options' => array($l, 'id', 'name', 0),
-				'extra' => 'class="large"'
-			);
-			$fields[] = array(
-				'label' => null,
-				'type' => 'hidden',
-				'value' => $value,
-				'name' => 'old_'.$i->name
-			);
-
-			$fields[] = array(
-				'label' => null,
-				'type' => 'html',
-				'value' => '</div>'
-			);
-		}
-
-		$fields[] = array(
-			'label' => null,
-			'type' => 'html',
-			'value' => '</div>'
-		);
+		// get the fields array
+		$fields = $form_fields->render();
 
 		// if submitted
 		if (X4Route_core::$post)
 		{
-			$e = X4Validation_helper::form($fields, 'gprivs');
+			$e = X4Validation_helper::form($fields, 'editor');
 			if ($e)
 			{
 				$this->permitting($_POST);
@@ -332,23 +210,15 @@ window.addEvent("domready", function()
 			}
 			die;
 		}
+        $view = new X4View_core('modal');
+        $view->title = _GROUP_PERMISSION;
+        $view->wide = ' xl:w-2/3';
 
 		// contents
-		$view = new X4View_core('editor');
-		$view->title = _GROUP_PERMISSION;
-
+		$view->content = new X4View_core('editor');
 		// form builder
-		$view->form = '<div id="scrolled">'.X4Form_helper::doform('gprivs', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
-			'onclick="setForm(\'gprivs\');"').'</div>';
-
-		$view->js = '
-<script>
-window.addEvent("domready", function()
-{
-	var myScroll = new Scrollable($("scrolled"));
-});
-</script>';
-
+		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
+            '@click="submitForm(\'editor\')"');
 		$view->render(TRUE);
 	}
 
@@ -405,10 +275,9 @@ window.addEvent("domready", function()
 			// set what update
 			if ($result[1])
 			{
-				$msg->update[] = array(
-					'element' => 'tdown',
-					'url' => BASE_URL.'users',
-					'title' => null
+				$msg->update = array(
+					'element' => 'page',
+					'url' => BASE_URL.'users'
 				);
 			}
 		}
@@ -438,22 +307,23 @@ window.addEvent("domready", function()
 		// if submitted
 		if (X4Route_core::$post)
 		{
-			$this->deleting($_POST);
+			$this->deleting($id);
 			die;
 		}
 
-		// get object
+        // get object
 		$group = new Group_model();
-		$obj = $group->get_by_id($id, 'xgroups', 'name');
+		$item = $group->get_by_id($id, 'xgroups', 'name');
+
+        $view = new X4View_core('modal');
+        $view->title = _DELETE_GROUP;
 
 		// contents
-		$view = new X4View_core('delete');
-		$view->title = _DELETE_GROUP;
-		$view->item = $obj->name;
-
+		$view->content = new X4View_core('delete');
+		$view->content->item = $item->name;
 		// form builder
-		$view->form = X4Form_helper::doform('delete', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
-			'onclick="setForm(\'delete\');"');
+		$view->content->form = X4Form_helper::doform('delete', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
+            '@click="submitForm(\'delete\')"');
 		$view->render(TRUE);
 	}
 
@@ -461,20 +331,20 @@ window.addEvent("domready", function()
 	 * Delete Group
 	 *
 	 * @access	private
-	 * @param   array 	$_post _POST array
+	 * @param   integer $id
 	 * @return  void
 	 */
-	private function deleting(array $_post)
+	private function deleting(int $id)
 	{
 		$msg = null;
 		// check permissions
-		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'xgroups', $_post['id'], 4);
+		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'xgroups', $id, 4);
 
 		if (is_null($msg))
 		{
 			// action
 			$group = new Group_model();
-			$result = $group->delete($_post['id']);
+			$result = $group->delete($id);
 
 			// set message
 			$msg = AdmUtils_helper::set_msg($result);
@@ -483,13 +353,12 @@ window.addEvent("domready", function()
 			if ($result[1])
 			{
 				$perm = new Permission_model();
-				$perm->deleting_by_what('xgroups', $_post['id']);
+				$perm->deleting_by_what('xgroups', $id);
 
 				// set what update
-				$msg->update[] = array(
-					'element' => 'topic',
-					'url' => BASE_URL.'users',
-					'title' => null
+				$msg->update = array(
+					'element' => 'page',
+					'url' => BASE_URL.'users'
 				);
 			}
 		}

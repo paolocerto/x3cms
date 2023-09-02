@@ -4,16 +4,21 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
 
-echo '<div id="close-modal" title="'._CLOSE.'"><i class="fas fa-times fa-lg"></i></div>';
-echo '<h2>'.$title.'</h2><p>';
+// uninstall view
 
-if (!empty($msg))
+echo '<div class="bg-white text-gray-700 px-4 md:px-8 pb-8"><p>';
+
+if (isset($msg) && !empty($msg))
 {
 	echo $msg.'<br />';
 }
 
-echo _ARE_YOU_SURE_UNINSTALL.' <strong>"'.$item,'"</strong>?</p>'.$form;
+echo _ARE_YOU_SURE_UNINSTALL.' <strong>"'.$item,'"</strong>?</p>';
+
+echo '</div>';
+
+echo $form;

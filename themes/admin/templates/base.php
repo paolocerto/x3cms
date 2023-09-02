@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
 
@@ -27,19 +27,6 @@ if (!empty($sections[1]))
 		if (!empty($i->module))
 		{
 			echo stripslashes(X4Theme_helper::module($this->site, $page, $args, $i->module, $i->param));
-		}
-
-		// javascript for admin side
-		if ($page->id_area == 1 && $navbar != '')
-		{
-		    // update breadcrumb
-		    echo '
-<script>
-window.addEvent("domready", function() {
-    $("page-title").set("html", "'.addslashes(X4Theme_helper::navbar($navbar, ' . ', false)).'");
-    buttonize("page-title", null, "topic");
-});
-</script>';
 		}
 	}
 }

@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X4WEBAPP
  */
 
@@ -77,7 +77,7 @@ class X4Dict_model extends X4Model_core
 
 		if (empty($keys))
 		{
-			$keys = $this->db->query('SELECT xkey, xval FROM dictionary WHERE area = \''.$this->area.'\' AND lang = \''.$this->lang.'\' AND what = '.$this->db->escape($what).' AND xon = 1');
+           $keys = $this->db->query('SELECT xkey, xval FROM dictionary WHERE area = \''.$this->area.'\' AND lang = \''.$this->lang.'\' AND what = '.$this->db->escape($what).' AND xon = 1');
 
 			APC && apcu_store(SITE.'dict'.$this->area.$this->lang.$what, $keys);
 		}
@@ -139,6 +139,7 @@ class X4Dict_model extends X4Model_core
         {
 			$m = _MSG_ERROR;
         }
+
 		return new Obj_msg($title, $m, $options);
 	}
 
@@ -223,6 +224,12 @@ class Obj_msg
 
 		$msg = str_replace('XXX', $msg, $options['envelope']);
 		$msg = str_replace('XXX', $msg, $options['container']);
+
+        // envelope
+        if (substr($msg, 0, 1) != '<')
+        {
+            $msg = '<p>'.$msg.'</p>';
+        }
 
 		$this->content = $title.$msg;
 	}

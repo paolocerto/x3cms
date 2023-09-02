@@ -4,54 +4,53 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
 
 ?>
+<h1><?php echo _SITE_MANAGER ?></h1>
 
-<table class="zebra">
+<table>
+<thead>
 	<tr class="first">
-		<th><?php echo _DOMAIN ?></th>
-		<th style="width:8em"><?php echo _ACTIONS ?></th>
-		<th style="width:4em"></th>
+		<th class="text-left pl-4"><?php echo _DOMAIN ?></th>
+		<th style="width:9em"><?php echo _ACTIONS ?></th>
 	</tr>
+</thead>
+<tbody>
 <?php
 foreach ($items as $i)
 {
-    $edit = $offline = '';
+    $actions = '';
     if ($_SESSION['level'] > 2)
     {
-        // site status
-        if ($i->xon)
-        {
-            $status = _ONLINE;
-            $on_status = 'orange';
-        }
-        else
-        {
-            $status = _OFFLINE;
-            $on_status = 'gray';
-        }
+        $statuses = AdmUtils_helper::statuses($i, ['xon']);
 
-        $edit = '<a class="bta" href="'.BASE_URL.'sites/config/'.$i->id.'" title="'._CONFIG.'"><i class="fas fa-cogs fa-lg"></i></a>';
+        $actions .= AdmUtils_helper::link('settings', 'sites/config/'.$i->id);
 
         // if caching
         if (CACHE)
         {
-            $edit .= '<a class="btl" href="'.BASE_URL.'sites/clear_cache" title="'._CLEAR_CACHE.'"><i class="fas fa-eraser fa-lg"></i></a>';
+            $actions .= '<a class="link" @click="setter(\''.BASE_URL.'sites/clear_cache\')" title="'._CLEAR_CACHE.'">
+                <i class="fa-solid fa-lg fa-eraser"></i>
+            </a>';
         }
         if (APC)
         {
-            $edit .= ' <a class="btl" href="'.BASE_URL.'sites/clear_apc" title="'._CLEAR_CACHE.' APC"><i class="fas fa-eraser fa-lg"></i></a>';
+            $actions .= ' <a class="link" @click="setter(\''.BASE_URL.'sites/clear_apc\')" title="'._CLEAR_CACHE.' APC">
+                <i class="fa-solid fa-lg fa-eraser"></i>
+            </a>';
         }
-        $offline = '<a class="btl" href="'.BASE_URL.'sites/offline/'.$i->id.'/'.(($i->xon+1)%2).'" title="'._STATUS.' '.$status.'"><i class="fas fa-globe '.$on_status.' fa-lg"></a>';
+        $actions .= '<a class="link" @click="setter(\''.BASE_URL.'sites/offline/'.$i->id.'/'.(($i->xon+1)%2).'\')" title="'._STATUS.' '.$statuses['xon']['label'].'">
+            <i class="fa-solid fa-lg fa-globe '.$statuses['xon']['class'].'"></i>
+        </a>';
     }
 
     // admin user
-    if ($_SESSION['level'] == 4)
+    if ($_SESSION['level'] >= 4)
     {
-        $edit = '<a class="bta" href="'.BASE_URL.'sites/edit/'.$i->id.'" title="'._EDIT.'"><i class="fas fa-pencil-alt fa-lg"></i></a> '.$edit;
+        $actions = AdmUtils_helper::link('edit', 'sites/edit/'.$i->id).$actions;
     }
 
     // bold wau site
@@ -61,21 +60,9 @@ foreach ($items as $i)
 
     echo '<tr>
             <td>'.$domain.'</td>
-            <td>'.$edit.'</td>
-            <td class="aright">'.$offline.'</td>
+            <td class="space-x-2 text-right">'.$actions.'</td>
         </tr>';
 }
 ?>
-
+    </tbody>
 </table>
-<script src="<?php echo THEME_URL ?>js/basic.js"></script>
-<script>
-window.addEvent('domready', function()
-{
-	X3.content('filters','sites/filter', '<?php echo X4Theme_helper::navbar($navbar, ' . ', false) ?>');
-	buttonize('topic', 'bta', 'modal');
-	actionize('topic',  'btl', 'tdown', escape('sites/show'));
-	zebraTable('zebra');
-});
-</script>
-

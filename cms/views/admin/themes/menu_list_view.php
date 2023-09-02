@@ -4,71 +4,51 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
-?>
-<h2><?php echo $theme._TRAIT_._MENU_LIST ?></h2>
-<table class="zebra">
-	<tr class="first">
-		<th><?php echo _MENUS ?></th>
-		<th style="width:6em"><?php echo _ACTIONS ?></th>
-		<th style="width:6em;"></th>
-	</tr>
-<?php
+
+// menu list view
+
+echo '<h1 class="mt-6">'.$theme._TRAIT_._MENU_LIST.'</h1>';
+
+echo '<table>
+	<thead>
+        <tr>
+            <th class="w-40">'._MENUS.'</th>
+            <th></th>
+            <th class="w-40">'._ACTIONS.'</th>
+        </tr>
+    </thead>
+    <tbody>';
+
 foreach ($menus as $i)
 {
-	if ($i->xon)
-	{
-		$status = _ON;
-		$on_status = 'orange';
-	}
-	else
-	{
-		$status = _OFF;
-		$on_status = 'gray';
-	}
-
-	if ($i->xlock)
-	{
-		$lock = _LOCKED;
-		$lock_status = 'lock';
-	}
-	else
-	{
-		$lock = _UNLOCKED;
-		$lock_status = 'unlock-alt';
-	}
-	$actions = $delete = '';
+    $statuses = AdmUtils_helper::statuses($i);
+	$actions = '';
 
 	// check permission
-	if (($i->level > 2 && $i->xlock == 0) || $i->level == 4)
+	if (($i->level > 2 && $i->xlock == 0) || $i->level >= 3)
 	{
-		$actions = '<a class="bta" href="'.BASE_URL.'menus/edit/'.$i->id_theme.'/'.$i->id.'" title="'._EDIT.'"><i class="fas fa-pencil-alt fa-lg"></i></a>
-			<a class="btl" href="'.BASE_URL.'menus/set/xon/'.$i->id.'/'.(($i->xon+1)%2).'" title="'._STATUS.' '.$status.'"><i class="far fa-lightbulb fa-lg '.$on_status.'"></i>';
+        $actions = AdmUtils_helper::link('edit', 'menus/edit/'.$i->id_theme.'/'.$i->id);
+
+        $actions .= AdmUtils_helper::link('xon', 'menus/set/xon/'.$i->id.'/'.(($i->xon+1)%2), $statuses);
 
 		// admin user
-		if ($i->level == 4)
-			$delete ='<a class="btl" href="'.BASE_URL.'menus/set/xlock/'.$i->id.'/'.(($i->xlock+1)%2).'" title="'._STATUS.' '.$lock.'"><i class="fas fa-'.$lock_status.' fa-lg"></i></a>
-				<a class="bta" href="'.BASE_URL.'menus/delete/'.$i->id.'" title="'._DELETE.'"><i class="fas fa-trash fa-lg red"></i></a>';
+		if ($i->level >= 4)
+        {
+            $actions .= AdmUtils_helper::link('xlock', 'menus/set/xlock/'.$i->id.'/'.(($i->xlock+1)%2), $statuses);
+
+            $actions .= AdmUtils_helper::link('delete', 'menus/delete/'.$i->id);
+        }
 	}
 
 	echo '<tr>
-			<td><strong>'.$i->name.'</strong> <span class="xs-hidden">'._TRAIT_.$i->description.'</span></td>
-			<td>'.$actions.'</td>
-			<td class="aright">'.$delete.'</td>
-			</tr>';
+			<td><strong>'.$i->name.'</strong></td>
+            <td><span class="hidden md:inline-block">'.$i->description.'</span></td>
+			<td class="space-x-2 text-right">'.$actions.'</td>
+		</tr>';
 }
-?>
-</table>
-<script src="<?php echo THEME_URL ?>js/basic.js"></script>
-<script>
-window.addEvent('domready', function()
-{
-	X3.content('filters','menus/filter/<?php echo $id_theme ?>', null);
-	buttonize('topic', 'btm', 'tdown');
-	buttonize('topic', 'bta', 'modal');
-	actionize('topic',  'btl', 'tdown', escape('menus/index/<?php echo $id_theme.'/'.$theme ?>'));
-	zebraTable('zebra');
-});
-</script>
+
+echo '</tbody>
+</table>';

@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X4WEBAPP
  */
 
@@ -57,6 +57,7 @@ final class X4mysql_driver extends X3db_driver
 					X4Core_core::$db[$this->name]['db_pass'],
 					array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES '".X4Core_core::$db[$this->name]['charset']."'"));
 				$this->link->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                //$this->link->setAttribute(PDO::ATTR_AUTOCOMMIT, false);
 
                 // add connection to driver instances
                 self::instance($this->name);
@@ -309,28 +310,44 @@ final class X4mysql_driver extends X3db_driver
 
 		// No link? Connect!
 		$this->link || $this->connect();
-
+        $this->link->beginTransaction();
 		try
 		{
 			$res = 0;
-			$this->link->beginTransaction();
 			foreach ($sql as $q)
 			{
 				$this->latest_query = $q;
 				self::$queries++;
-				$res += $this->link->exec($q);
+                $tmp = $this->link->exec($q);
+				if ($tmp !== false)
+                {
+                    $res += $tmp;
+                }
+                elseif (DEBUG)
+                {
+                    print_r($this->link->errorInfo());
+                    die;
+                }
 			}
 			// to avoid errors with query without ID, like create table or truncate table
-            $last_id = (substr($q, 0, 15) == 'TRUNCATE TABLE ')
+            $last_id = (strpos($q, 'ATE TABLE ') === false)
                 ? 1
                 : (int) $this->link->lastInsertId();
-			$this->link->commit();
+            // commit
+            // some queries could 
+            if ($this->link->inTransaction())
+            {
+                $this->link->commit();
+            }
 			$result = array($last_id, $res);
 		}
 		catch (PDOException $e)
 		{
-			$this->link->rollback();
-			if (DEBUG)
+            if ($this->link->inTransaction())
+            {
+                $this->link->rollback();
+            }
+            if (DEBUG)
 			{
 				$this->print_error($this->latest_query, $e->getMessage());
 				die;

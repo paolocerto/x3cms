@@ -4,93 +4,86 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
+
+// article history
+$bulk_url = 'articles/bulk/'.$id_area.'/'.$lang.'/'.$bid;
 ?>
 
-<h1><?php echo _ARTICLE_HISTORY.': '.$art->name ?></h1>
-<form name="bulk_action" id="bulk_action" onsubmit="return false;" method="post" action="<?php echo BASE_URL.'articles/bulk/'.$id_area.'/'.$lang.'/'.$bid ?>">
+<h1 class="mt-6"><?php echo _ARTICLE_HISTORY.': '.$art->name ?></h1>
+<div x-data="bulkable()" x-init='setup("<?php echo $bulk_url ?>")' >
 
-<input type="hidden" name="action" value="delete" />
-<table class="zebra">
-	<tr class="first">
-		<th><?php echo _PREVIEW ?></th>
-		<th style="width:14em;"><?php echo _ACTIONS ?></th>
-		<th style="width:7em;"></th>
-		<th style="width:4em;"><input type="checkbox" class="bulker" name="bulk_selector" id="bulk_selector" /></th>
-	</tr>
+    <div x-show="bulk.length > 0" class="buttons">
+        <input type="hidden" id="bulk_action" x-model="xaction" value="delete" />
+        <button type="button" @click="execute()" class="link"><?php echo _DELETE_BULK ?></button>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th><?php echo _PREVIEW ?></th>
+                <th></th>
+                <th class="w-40"><?php echo _ACTIONS ?></th>
+                <th class="w-8 text-center"><input type="checkbox" @click="toggle()" /></th>
+            </tr>
+        </thead>
+        <tbody>
+
 <?php
 foreach ($history as $i)
 {
-	if ($i->xon)
-	{
-		$status = _ON;
-		$on_status = 'orange';
-	}
-	else {
-		$status = _OFF;
-		$on_status = 'gray';
-	}
-
-	if ($i->xlock)
-	{
-		$lock = _LOCKED;
-		$lock_status = 'lock';
-	}
-	else
-	{
-		$lock = _UNLOCKED;
-		$lock_status = 'unlock-alt';
-	}
+    $statuses = AdmUtils_helper::statuses($i);
 
 	// define the end of the visibility window
 	$out = ($i->date_out)
 		? date('Y-m-d', $i->date_out)
 		: _UNDEFINED;
 
-	$actions = $delete = $date_in = $date_out = '';
-	// if user have write permission and object is unlocked or user is an administrator
-	if (($i->level > 2 && $i->xlock == 0) || $i->level == 4)
-	{
-		$actions .= '<a class="btl" href="'.BASE_URL.'articles/set/xon/'.$i->id.'/'.(($i->xon+1)%2).'" title="'._STATUS.' '.$status.'"><i class="far fa-lightbulb fa-lg '.$on_status.'"></i></a>';
+    $date_in = date('Y-m-d', $i->date_in);
+	$date_out = date('Y-m-d', $i->date_out);
 
-		// administrator
-		if ($i->level == 4)
-		{
-			$delete = '<a class="btl" href="'.BASE_URL.'articles/set/xlock/'.$i->id.'/'.(($i->xlock+1)%2).'" title="'._STATUS.' '.$lock.'"><i class="fas fa-'.$lock_status.' fa-lg"></i></a>
-				<a class="bta" href="'.BASE_URL.'articles/delete_version/'.$i->id.'" title="'._DELETE.'"><i class="fas fa-trash fa-lg red"></i></a>';
-		}
-		$date_in = '<a class="bta" href="'.BASE_URL.'articles/setdate/'.$i->id.'" title="'._EDIT_DATE.'">'.date('Y-m-d', $i->date_in).'</a>';
-		$date_out = '<a class="bta" href="'.BASE_URL.'articles/setdate/'.$i->id.'" title="'._EDIT_DATE.'">'.$out.'</a>';
-	}
-	else
-	{
-		$date_in = date('Y-m-d', $i->date_in);
-		$date_out = date('Y-m-d', $i->date_out);
-	}
+    $actions = '';
+    if ($i->level > 1)
+    {
+        // edit in full page
+        $actions = '<a class="link" @click="pager(\''.BASE_URL.'articles/edit/'.$i->id_area.'/'.$i->lang.'/'.$i->code_context.'/'.$i->bid.'\')" title="'._EDIT.'">
+            <i class="fa-solid fa-lg fa-pen-to-square"></i>
+        </a>';
+
+        // if user have write permission and object is unlocked or user is an administrator
+        if (($i->level > 2 && $i->xlock == 0) || $i->level >= 3)
+        {
+            $actions .= AdmUtils_helper::link('xon', 'articles/set_by_bid/xon/'.$i->id.'/'.(($i->xon+1)%2), $statuses);
+
+            // administrator
+            if ($i->level >= 4)
+            {
+                $actions .= AdmUtils_helper::link('xlock', 'articles/set_by_bid/xlock/'.$i->id.'/'.(($i->xlock+1)%2), $statuses);
+
+                $actions .= AdmUtils_helper::link('delete','articles/delete_version/'.$i->id);
+            }
+            $date_in = '<a class="link" @click="popup(\''.BASE_URL.'articles/setdate/'.$i->id.'\')" title="'._EDIT_DATE.'">'.date('Y-m-d', $i->date_in).'</a>';
+            $date_out = '<a class="link" @click="popup(\''.BASE_URL.'articles/setdate/'.$i->id.'\')" title="'._EDIT_DATE.'">'.$out.'</a>';
+        }
+    }
 
 	echo '<tr>
-			<td class="small line-height1"><h3>'._LAST_UPGRADE.': '.$i->updated.'</h3>'.stripslashes($i->content).'<h3>'._MODULE.': '.$i->module.'/'.$i->param.'</h3></td>
+			<td class="text-sm">
+                <p class="font-bold mt-4">'._LAST_UPGRADE.': '.$i->updated.'</p>
+                '.stripslashes($i->content).'
+                <p class="font-bold mb-4">'._MODULE.': '.$i->module.'/'.$i->param.'</p>
+            </td>
 			<td>
 				'._START_DATE.' '.$date_in.'<br />
 				'._END_DATE.' '.$date_out.'
 			</td>
-			<td class="aright">'.$actions.$delete.'</td>
-			<td class="acenter"><input type="checkbox" class="bulkable vmiddle" name="bulk[]" value="'.$i->id.'" /></td>
-			</tr>';
+			<td class="space-x-2 text-right">'.$actions.'</td>
+			<td class="text-center"><input type="checkbox" class="bulkable" x-model="bulk" value="'.$i->id.'" /></td>
+		</tr>';
 }
 ?>
+    </tbody>
 </table>
-</form>
-<script src="<?php echo THEME_URL ?>js/basic.js"></script>
-<script>
-window.addEvent('domready', function()
-{
-	X3.content('filters','articles/filter/<?php echo $id_area.'/'.$lang ?>/bulk', '<?php echo X4Theme_helper::navbar($navbar, ' . ', false) ?>');
-	buttonize('topic', 'btm', 'topic');
-	buttonize('topic', 'bta', 'modal');
-	actionize('topic',  'btl', 'topic', escape('articles/history/<?php echo $id_area.'/'.$lang.'/'.$bid ?>/0'));
-	zebraTable('zebra');
-});
-</script>
+</div>

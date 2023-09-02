@@ -4,68 +4,46 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
 ?>
-<h1><?php echo _WIDGETS_MANAGER ?></h1>
+<h1 class="mt-6"><?php echo _WIDGETS_MANAGER ?></h1>
 <?php
 if ($items)
 {
-	echo '<form id="sort_updater" name="sort_updater" action="'.BASE_URL.'widgets/ordering" method="post">
-	<table class="zerom">
-	<tr class="first">
-		<th>'._WIDGETS_ITEMS.'</th>
-		<th style="width:6em;">'._ACTIONS.'</th>
-		<th style="width:4em;"></th>
-	</tr></table>
-	<ul id="sortable" class="nomargin zebra">';
+	echo '<table class="mb-0">
+        <thead>
+	        <tr>
+                <th>'._WIDGETS_ITEMS.'</th>
+                <th class="w-20">'._ACTIONS.'</th>
+            </tr>
+        </thead>
+    </table>
+	<div x-data="xsortable()" x-init="setup(\'sortable\', \'widgets/ordering\')">
+        <div id="sortable">';
 
 	$order = array();
 	$n = sizeof($items);
 	foreach ($items as $i)
 	{
-		if ($i->xon)
-		{
-			$status = _ON;
-			$on_status = 'orange';
-		}
-		else
-		{
-			$status = _OFF;
-			$on_status = 'gray';
-		}
+		$statuses = AdmUtils_helper::statuses($i);
 
-		$actions = ' <a class="btl" href="'.BASE_URL.'widgets/set/xon/'.$i->id.'/'.(($i->xon+1)%2).'" title="'._STATUS.' '.$status.'"><i class="far fa-lightbulb fa-lg '.$on_status.'"></i></a> ';
-		$delete = ' <a class="bta" href="'.BASE_URL.'widgets/delete/'.$i->id.'" title="'._DELETE.'"><i class="fas fa-trash fa-lg red"></i></a>';
+        $actions = AdmUtils_helper::link('xon', 'widgets/set/xon/'.$i->id.'/'.intval(!$i->xon), $statuses);
+        $actions .= AdmUtils_helper::link('delete', 'widgets/delete/'.$i->id);
 
-		echo '<li id="'.$i->id.'">
-				<table><tr>
-				<td style="width:80%">'.$i->area._TRAIT_.$i->description.'</td>
-				<td style="width:10%">'.$actions.'</td>
-				<td class="aright" style="width:10%">'.$delete.'</td>
-				</tr></table></li>';
+		echo '<div class="sort-item" id="'.$i->id.'"><table class="my-0"><tr>
+                <td>'.$i->area._TRAIT_.$i->description.'</td>
+                <td class="w-20 space-x-2 text-right">'.$actions.'</td>
+            </tr>
+        </table></div>';
+
 		$order[] = $i->id;
 	}
 
-	$o = implode(',', $order);
-
-	echo '</ul>
-		<input type="hidden" name="sort_order" id="sort_order" value="'.$o.'" />
-		</form>';
+    echo '</div></div>';
 }
 else
-	echo '<p>'._NO_ITEMS.'</p>';
-?>
-<script src="<?php echo THEME_URL ?>js/basic.js"></script>
-<script>
-window.addEvent('domready', function()
 {
-	X3.content('filters','widgets/filter', null);
-	buttonize('topic', 'btt', 'topic');
-	buttonize('topic', 'bta', 'modal');
-	actionize('topic',  'btl', 'topic', escape('widgets'));
-	zebraUl('zebra');
-	sortize('sort_updater', 'sortable', 'sort_order');
-});
-</script>
+	echo '<p class="mt-4">'._NO_ITEMS.'</p>';
+}

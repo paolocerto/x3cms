@@ -4,14 +4,14 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
 ?>
 <h3><?php echo $title ?></h3>
-<p><?php 
+<p><?php
 
-if (isset($msg)) 
+if (isset($msg))
 	echo $msg;
 
 ?>

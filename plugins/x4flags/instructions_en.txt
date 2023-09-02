@@ -1,0 +1,19 @@
+X4FLAGS
+
+REQUIREMENTS: TailwindCSS and Alpine.js
+---
+WHAT IT DOES: show a language switcher
+---
+HOW IT WORKS: you must put it into a template as we done in base template of the default theme
+---
+CONFIGURATION:
+parameter FLAGS to set flags or language name
+parameter SHORT_TEXT set language_code as link instead language name
+---
+HTML: none
+---
+CSS RULES: it uses TailwindCSS and rules for #navbar .menu_item
+---
+REQUIRED FILES
+flags (png format) in files/files folder must named as language_code.png (e.g. it.png)
+Flags already in the system are 16x16 px and come from https://www.countryflags.com/

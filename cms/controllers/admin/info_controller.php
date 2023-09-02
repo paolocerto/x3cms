@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
 
@@ -34,7 +34,25 @@ class Info_controller extends X3ui_controller
 	 */
 	public function _default()
 	{
-		$this->detail('default', 1);
+		// load dictionaries
+		$this->dict->get_wordarray(array('info'));
+
+		// get page
+		$page = $this->get_page('info');
+
+        $view = new X4View_core('page');
+        $view->breadcrumb = array($this->site->get_bredcrumb($page));
+		$view->actions = '';
+
+        $view->content = new X4View_core('tabber');
+        $view->content->title = _SITE_INFO;
+        $view->content->tabs = array(
+            'Default' => ['view', 'sites/info'],
+            'Apache' => ['view', 'sites/apache'],
+            'Mysql' => ['view', 'sites/mysql'],
+            'Php' => ['view', 'sites/php'],
+        );
+		$view->render(TRUE);
 	}
 
     /**
@@ -47,63 +65,6 @@ class Info_controller extends X3ui_controller
 		return (function_exists('gethostname'))
             ? gethostname()
             : 'Unknown';
-	}
-
-    /**
-	 * Info detail
-	 *
-     * @param   string  $case
-     * @param   string  $tab
-	 * @return  void
-	 */
-	public function detail(string $case = 'default', int $tab = 0)
-	{
-		// load dictionaries
-		$this->dict->get_wordarray(array('info'));
-
-		// get page
-		$page = $this->get_page('info');
-		$mod = new Category_model();
-
-		if ($tab)
-		{
-			$view = new X4View_core('tabber');
-            $view->tabber_name = 'tabber';
-			$view->title = _SITE_INFO;
-
-			$hn = $this->chk_gethostname();
-
-			$view->tabs = array('default' => array(_INFO_SERVER.' '.$hn, 'info/detail/default'),
-					'apache' => array(apache_get_version(), 'info/detail/apache'),
-					'mysql' => array('MySQL '.$mod->get_attribute('SERVER_VERSION'), 'info/detail/mysql'),
-					'php' => array('PHP '.phpversion(), 'info/detail/php'),
-				);
-			$view->on = $case;
-			$view->tabber_container = 'tdown';
-
-			$view->down = new X4View_core('sites/info');
-			$view->down->page = $page;
-			$view->down->case = $case;
-
-			if ($case == 'mysql')
-			{
-				$view->down->sinfo = $mod->get_attribute('SERVER_INFO');
-			}
-		}
-		else
-		{
-			$view = new X4View_core('container');
-
-			$view = new X4View_core('sites/info');
-			$view->page = $page;
-			$view->case = $case;
-
-			if ($case == 'mysql')
-			{
-				$view->sinfo = $mod->get_attribute('SERVER_INFO');
-			}
-		}
-		$view->render(TRUE);
 	}
 
 	/**

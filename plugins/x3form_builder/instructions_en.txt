@@ -1,0 +1,14 @@
+X3FORM_BUILDER
+
+REQUIREMENTS: none
+---
+WHAT IT DOES: manage forms
+---
+HOW IT WORKS: 
+- admin side: you can create and manage forms
+- public side: you must put the module into the page you want and set as parameter the form name
+---
+CONFIGURATION: none
+---
+CSS RULES
+like other form in the site

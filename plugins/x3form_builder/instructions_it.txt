@@ -1,0 +1,16 @@
+X3FORM_BUILDER
+
+REQUISITI: nessuno
+---
+COSA FA: Gestione dei form
+---
+COME FUNZIONA: 
+- lato admin permette di creare form di ogni complessità e gestire i moduli inviati
+- lato public basta inserire il modulo nella pagina desiderata, con parametro uguale al nome del form
+
+Il modulo prevede un widget per la Dashboard che visualizza il numero di nuovi moduli (successivi al penultimo login) e il numero di moduli in attesa di controllo.
+---
+CONFIGURAZIONE: nessuna
+---
+IMPOSTAZIONI PER IL FOGLIO DI STILE CSS
+quella prevista per i form del sito

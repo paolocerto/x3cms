@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
 
@@ -42,34 +42,30 @@ class Menus_controller extends X3ui_controller
 		// get page
 		$page = $this->get_page('menus/index');
 
-		// content
-		$view = new X4View_core('themes/menu_list');
-		$view->page = $page;
-		$view->id_theme = $id_theme;
-		$view->theme = $theme_name;
+        $view = new X4View_core('page');
+        $view->breadcrumb = array($this->site->get_bredcrumb($page));
+		$view->actions = $this->actions($id_theme);
 
-		$menu = new Menu_model();
-		$view->menus = $menu->get_menus_by_theme($id_theme);
+		// content
+		$view->content = new X4View_core('themes/menu_list');
+		$view->content->id_theme = $id_theme;
+		$view->content->theme = $theme_name;
+
+		$mod = new Menu_model();
+		$view->content->menus = $mod->get_menus_by_theme($id_theme);
 		$view->render(TRUE);
 	}
 
 	/**
-	 * Menus filter
+	 * Menus actions
 	 *
 	 * @return  void
 	 */
-	public function filter(int $id_theme)
+	private function actions(int $id_theme)
 	{
-		// load the dictionary
-		$this->dict->get_wordarray(array('menus'));
-
-		echo '<a class="btf" href="'.BASE_URL.'menus/edit/'.$id_theme.'" title="'._NEW_MENU.'"><i class="fas fa-plus fa-lg"></i></a>
-<script>
-window.addEvent("domready", function()
-{
-	buttonize("filters", "btf", "modal");
-});
-</script>';
+		return '<a class="link" @click="popup(\''.BASE_URL.'menus/edit/'.$id_theme.'\')" title="'._NEW_MENU.'">
+                <i class="fa-solid fa-lg fa-circle-plus"></i>
+            </a>';
 	}
 
 	/**
@@ -90,8 +86,6 @@ window.addEvent("domready", function()
 		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'menus', $id, $val);
 		if (is_null($msg))
 		{
-			$qs = X4Route_core::get_query_string();
-
 			// do action
 			$menus = new Menu_model();
 			$result = $menus->update($id, array($what => $value));
@@ -101,11 +95,12 @@ window.addEvent("domready", function()
 
 			// set update
 			if ($result[1])
-				$msg->update[] = array(
-					'element' => $qs['div'],
-					'url' => urldecode($qs['url']),
-					'title' => null
+            {
+				$msg->update = array(
+					'element' => 'page',
+					'url' => $_SERVER['HTTP_REFERER']
 				);
+            }
 		}
 		$this->response($msg);
 	}
@@ -123,40 +118,18 @@ window.addEvent("domready", function()
 		$this->dict->get_wordarray(array('form', 'menus'));
 
 		// get object
-		$menu = new Menu_model();
-		$m = ($id)
-			? $menu->get_by_id($id)
+		$mod = new Menu_model();
+		$item = ($id)
+			? $mod->get_by_id($id)
 			: new Menu_obj($id_theme);
 
 		// build the form
-		$fields = array();
-		$fields[] = array(
-			'label' => null,
-			'type' => 'hidden',
-			'value' => $id,
-			'name' => 'id'
-		);
-		$fields[] = array(
-			'label' => null,
-			'type' => 'hidden',
-			'value' => $m->id_theme,
-			'name' => 'id_theme'
-		);
-		$fields[] = array(
-			'label' => _NAME,
-			'type' => 'text',
-			'value' => $m->name,
-			'name' => 'name',
-			'rule' => 'required',
-			'extra' => 'class="large"'
-		);
-		$fields[] = array(
-			'label' => _DESCRIPTION,
-			'type' => 'textarea',
-			'value' => $m->description,
-			'name' => 'description',
-			'extra' => 'class="large"'
-		);
+		$form_fields = new X4Form_core('menu/menu_edit');
+		$form_fields->id = $id;
+		$form_fields->item = $item;
+
+		// get the fields array
+		$fields = $form_fields->render();
 
 		// if submitted
 		if (X4Route_core::$post)
@@ -173,15 +146,17 @@ window.addEvent("domready", function()
 			die;
 		}
 
-		// contents
-		$view = new X4View_core('editor');
-		$view->title = ($id)
+        $view = new X4View_core('modal');
+        $view->title = ($id)
 			? _EDIT_MENU
 			: _ADD_MENU;
 
+		// contents
+		$view->content = new X4View_core('editor');
+
 		// form builder
-		$view->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
-			'onclick="setForm(\'editor\');"');
+		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
+            '@click="submitForm(\'editor\')"');
 		$view->render(TRUE);
 	}
 
@@ -222,10 +197,9 @@ window.addEvent("domready", function()
 			if ($result[1])
 			{
 				$theme = $mod->get_var($post['id_theme'], 'themes', 'name');
-				$msg->update[] = array(
-					'element' => 'tdown',
-					'url' => BASE_URL.'menus/index/'.$post['id_theme'].'/'.$theme,
-					'title' => null
+				$msg->update = array(
+					'element' => 'page',
+					'url' => BASE_URL.'menus/index/'.$post['id_theme'].'/'.$theme
 				);
 			}
 		}
@@ -244,8 +218,8 @@ window.addEvent("domready", function()
 		$this->dict->get_wordarray(array('form', 'menus'));
 
 		// get object
-		$menu = new Menu_model();
-		$obj = $menu->get_by_id($id, 'menus', 'name, id_theme');
+		$mod = new Menu_model();
+		$item = $mod->get_by_id($id, 'menus', 'id, name, id_theme');
 
 		// build the form
 		$fields = array();
@@ -255,28 +229,25 @@ window.addEvent("domready", function()
 			'value' => $id,
 			'name' => 'id'
 		);
-		$fields[] = array(
-			'label' => null,
-			'type' => 'hidden',
-			'value' => $obj->id_theme,
-			'name' => 'id_theme'
-		);
 
 		// if submitted
 		if (X4Route_core::$post)
 		{
-			$this->deleting($_POST);
+			$this->deleting($item);
 			die;
 		}
 
+        $view = new X4View_core('modal');
+        $view->title = _DELETE_MENU;
+
 		// contents
-		$view = new X4View_core('delete');
-		$view->title = _DELETE_MENU;
-		$view->item = $obj->name;
+		$view->content = new X4View_core('delete');
+
+		$view->content->item = $item->name;
 
 		// form builder
-		$view->form = X4Form_helper::doform('delete', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
-			'onclick="setForm(\'delete\');"');
+		$view->content->form = X4Form_helper::doform('delete', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
+            '@click="submitForm(\'delete\')"');
 		$view->render(TRUE);
 	}
 
@@ -284,20 +255,19 @@ window.addEvent("domready", function()
 	 * Delete Menu
 	 *
 	 * @access	private
-	 * @param   array 	$_post _POST array
+	 * @param   object  $item
 	 * @return  void
 	 */
-	private function deleting(array $_post)
+	private function deleting(stdClass $item)
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'menus', $_post['id'], 4);
-
+		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'menus', $item->id, 4);
 		if (is_null($msg))
 		{
 			// action
 			$mod = new Menu_model();
-			$result = $mod->delete($_post['id']);
+			$result = $mod->delete($item->id);
 
 			// set message
 			$msg = AdmUtils_helper::set_msg($result);
@@ -306,14 +276,13 @@ window.addEvent("domready", function()
 			if ($result[1])
             {
 				$perm = new Permission_model();
-				$perm->deleting_by_what('menus', $_post['id']);
+				$perm->deleting_by_what('menus', $item->id);
 
 				// set what update
-				$theme = $mod->get_var($_post['id_theme'], 'themes', 'name');
-				$msg->update[] = array(
-					'element' => 'tdown',
-					'url' => BASE_URL.'menus/index/'.$_post['id_theme'].'/'.$theme,
-					'title' => null
+				$theme = $mod->get_var($item->id_theme, 'themes', 'name');
+				$msg->update = array(
+					'element' => 'page',
+					'url' => BASE_URL.'menus/index/'.$item->id_theme.'/'.$theme
 				);
 			}
 		}
@@ -322,7 +291,6 @@ window.addEvent("domready", function()
 
 	/**
 	 * Refresh menu order
-	 * Called via Ajax
 	 *
 	 * @param   integer $id Page ID
 	 * @param   string	$holder Menu ID

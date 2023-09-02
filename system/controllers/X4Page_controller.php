@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X4WEBAPP
  */
 
@@ -89,12 +89,6 @@ class X4Page_controller extends X4Cms_controller
 	 */
 	public function captcha($bg0 = 255, $bg1 = 255, $bg2 = 255)
 	{
-		$b0 = 255;
-		if ($bg0 == '_default')
-		{
-			$bg0 = $b0;
-		}
-
 		X4Form_helper::captcha(5, 'whitrabt.ttf', array($bg0, $bg1, $bg2));
 	}
 

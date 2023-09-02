@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
 
@@ -42,28 +42,21 @@ class Templates_controller extends X3ui_controller
 		// get page
 		$page = $this->get_page('templates/index');
 
+        $view = new X4View_core('page');
+        $view->breadcrumb = array($this->site->get_bredcrumb($page));
+		$view->actions = '';
+
 		// content
-		$view = new X4View_core('themes/template_list');
-		$view->page = $page;
-		$view->id_theme = $id_theme;
-		$view->theme = $theme_name;
+		$view->content = new X4View_core('themes/template_list');
+		$view->content->id_theme = $id_theme;
+		$view->content->theme = $theme_name;
 
 		$mod = new Template_model();
 		// installed templates
-		$view->tpl_in = $mod->get_tpl_installed($id_theme);
+		$view->content->tpl_in = $mod->get_tpl_installed($id_theme);
 		// installable templates
-		$view->tpl_out = $mod->get_tpl_installable($id_theme, $theme_name);
+		$view->content->tpl_out = $mod->get_tpl_installable($id_theme, $theme_name);
 		$view->render(TRUE);
-	}
-
-	/**
-	 * Templates filter
-	 *
-	 * @return  void
-	 */
-	public function filter()
-	{
-		echo '';
 	}
 
 	/**
@@ -84,8 +77,6 @@ class Templates_controller extends X3ui_controller
 		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'templates', $id, $val);
 		if (is_null($msg))
 		{
-			$qs = X4Route_core::get_query_string();
-
 			// do action
 			$mod = new Template_model();
 			$result = $mod->update($id, array($what => $value));
@@ -97,10 +88,9 @@ class Templates_controller extends X3ui_controller
 			// set update
 			if ($result[1])
             {
-				$msg->update[] = array(
-					'element' => $qs['div'],
-					'url' => urldecode($qs['url']),
-					'title' => null
+				$msg->update = array(
+					'element' => 'page',
+					'url' => $_SERVER['HTTP_REFERER']
 				);
             }
 		}
@@ -119,67 +109,30 @@ class Templates_controller extends X3ui_controller
 		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'templates', 'sections'));
 
+        $view = new X4View_core('modal');
+        $view->title = _INSTALL_TEMPLATE;
+
 		// content
-		$view = new X4View_core('editor');
-		$view->title = _INSTALL_TEMPLATE;
+		$view->content = new X4View_core('editor');
 
 		// check the template name
 		if (strstr(urldecode($template_name), ' ') != '')
         {
-			$view->form = '<h2>'._WARNING.'</h2><p>'._INVALID_TEMPLATE.BR.'<strong>>>&nbsp;'.urldecode($template_name).'&nbsp;<<</strong><br />&nbsp;</p>';
+			$view->content->form = '<h2>'._WARNING.'</h2><p>'._INVALID_TEMPLATE.BR.'<strong>>>&nbsp;'.urldecode($template_name).'&nbsp;<<</strong><br />&nbsp;</p>';
         }
 		else
 		{
 			// get theme object
 			$mod = new Theme_model();
-			$theme = $mod->get_by_id($id_theme);
 
 			// build the form
-			$fields = array();
-			$fields[] = array(
-				'label' => null,
-				'type' => 'hidden',
-				'value' => $id_theme,
-				'name' => 'id_theme'
-			);
-			$fields[] = array(
-				'label' => null,
-				'type' => 'hidden',
-				'value' => $template_name,
-				'name' => 'name',
-				'extra' => 'class="large"'
-			);
-			$fields[] = array(
-				'label' => null,
-				'type' => 'html',
-				'value' => '<h4>'._TEMPLATE.': '.$template_name.'</h4>',
-			);
-			$fields[] = array(
-				'label' => _DESCRIPTION,
-				'type' => 'textarea',
-				'value' => '',
-				'name' => 'description',
-				'extra' => 'class="large"'
-			);
+            $form_fields = new X4Form_core('template/template_install');
+            $form_fields->id_theme = $id_theme;
+            $form_fields->template_name = $template_name;
+            $form_fields->theme = $mod->get_by_id($id_theme);
 
-			// load available CSS style sheets
-			$fields[] = array(
-				'label' => _CSS,
-				'type' => 'select',
-				'value' => 'base',
-				'options' => array($this->get_css($theme->name), 'value', 'option'),
-				'name' => 'css',
-				'extra' => 'class="large"'
-			);
-
-			$fields[] = array(
-				'label' => _SECTIONS,
-				'type' => 'text',
-				'value' => 1,
-				'name' => 'sections',
-				'rule' => 'required|numeric',
-				'extra' => 'class="aright large"'
-			);
+            // get the fields array
+		    $fields = $form_fields->render();
 
 			// if submitted
 			if (X4Route_core::$post)
@@ -197,8 +150,8 @@ class Templates_controller extends X3ui_controller
 			}
 
 			// form builder
-			$view->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
-				'onclick="setForm(\'editor\');"');
+			$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
+                '@click="submitForm(\'editor\')"');
 		}
 		$view->render(TRUE);
 	}
@@ -236,19 +189,10 @@ class Templates_controller extends X3ui_controller
 			// add permission on new template
 			if ($result[1])
 			{
-				$perm = new Permission_model();
-				$array[] = array(
-						'action' => 'insert',
-						'id_what' => $result[0],
-						'id_user' => $_SESSION['xuid'],
-						'level' => 4);
-				$perm->pexec('templates', $array, 1);
-
 				$theme = $mod->get_var($post['id_theme'], 'themes', 'name');
-				$msg->update[] = array(
-					'element' => 'tdown',
-					'url' => BASE_URL.'templates/index/'.$post['id_theme'].'/'.$theme,
-					'title' => null
+				$msg->update = array(
+					'element' => 'page',
+					'url' => BASE_URL.'templates/index/'.$post['id_theme'].'/'.$theme
 				);
 			}
 		}
@@ -288,7 +232,7 @@ class Templates_controller extends X3ui_controller
 
 		// get object
 		$mod = new Template_model();
-		$obj = $mod->get_by_id($id, 'templates', 'name, id_theme');
+		$item = $mod->get_by_id($id, 'templates', 'id, name, id_theme');
 
 		// build the form
 		$fields = array();
@@ -298,29 +242,24 @@ class Templates_controller extends X3ui_controller
 			'value' => $id,
 			'name' => 'id'
 		);
-		$fields[] = array(
-			'label' => null,
-			'type' => 'hidden',
-			'value' => $obj->id_theme,
-			'name' => 'id_theme'
-		);
 
 		// if submitted
 		if (X4Route_core::$post)
 		{
-			$this->uninstalling($_POST);
+			$this->uninstalling($item);
 			die;
 		}
 
+        $view = new X4View_core('modal');
+        $view->title = _UNINSTALL_TEMPLATE;
+
 		// contents
-		$view = new X4View_core('uninstall');
-		$view->title = _UNINSTALL_TEMPLATE;
-		$view->msg = '';
-		$view->item = $obj->name;
+		$view->content = new X4View_core('uninstall');
+		$view->content->item = $item->name;
 
 		// form builder
-		$view->form = X4Form_helper::doform('uninstall', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
-			'onclick="setForm(\'uninstall\');"');
+		$view->content->form = X4Form_helper::doform('uninstall', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
+            '@click="submitForm(\'uninstall\')"');
 		$view->render(TRUE);
 	}
 
@@ -328,20 +267,20 @@ class Templates_controller extends X3ui_controller
 	 * Uninstalling template
 	 *
 	 * @access	private
-	 * @param   array 	$_post _POST array
+	 * @param   object  $item
 	 * @return  void
 	 */
-	private function uninstalling(array $_post)
+	private function uninstalling(stdClass $item)
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'templates', $_post['id'], 4);
+		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'templates', $item->id, 4);
 
 		if (is_null($msg))
 		{
 			// do action
 			$mod = new Template_model();
-			$result = $mod->uninstall($_post['id']);
+			$result = $mod->uninstall($item->id);
 
 			if (is_array($result)) {
 				// set error
@@ -356,13 +295,12 @@ class Templates_controller extends X3ui_controller
 				{
 					// clear useless permissions
 					$perm = new Permission_model();
-					$perm->deleting_by_what('templates', $_post['id']);
+					$perm->deleting_by_what('templates', $item->id);
 
-					$theme = $mod->get_var($_post['id_theme'], 'themes', 'name');
-					$msg->update[] = array(
-						'element' => 'tdown',
-						'url' => BASE_URL.'templates/index/'.$_post['id_theme'].'/'.$theme,
-						'title' => null
+					$theme = $mod->get_var($item->id_theme, 'themes', 'name');
+					$msg->update = array(
+						'element' => 'page',
+						'url' => BASE_URL.'templates/index/'.$_post['id_theme'].'/'.$theme
 					);
 				}
 			}
@@ -393,28 +331,13 @@ class Templates_controller extends X3ui_controller
             : PATH.'themes/'.$theme.'/css/'.$item->css.'.css';
 
 		// build the form
-		$fields = array();
-		$fields[] = array(
-			'label' => null,
-			'type' => 'hidden',
-			'value' => $id,
-			'name' => 'id'
-		);
-		$fields[] = array(
-			'label' => null,
-			'type' => 'hidden',
-			'value' => $item->id_theme,
-			'name' => 'id_theme'
-		);
-		$fields[] = array(
-			'label' => _FILE,
-			'type' => 'textarea',
-			'value' => htmlentities($this->replace(1, file_get_contents($file))),
-			'name' => 'code',
-			'extra' => 'class="editfile"',
-			'rule' => 'required',
-			'extra' => 'class="large"'
-		);
+		$form_fields = new X4Form_core('template/template_edit');
+		$form_fields->id = $id;
+		$form_fields->item = $item;
+        $form_fields->code = htmlentities($this->replace(1, file_get_contents($file)));
+
+		// get the fields array
+		$fields = $form_fields->render();
 
 		// if submitted
 		if (X4Route_core::$post)
@@ -431,21 +354,16 @@ class Templates_controller extends X3ui_controller
 			die;
 		}
 
+        $view = new X4View_core('modal');
+        $view->title = _EDIT.' '.$item->name;
+        $view->wide = ' xl:w-2/3';
+
 		// contents
-		$view = new X4View_core('editor');
-		$view->title = _EDIT.' '.$item->name;
+		$view->content = new X4View_core('editor');
 
 		// form builder
-		$view->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
-			'onclick="setForm(\'editor\');"');
-
-		$view->js = '
-<script>
-window.addEvent("domready", function()
-{
-	$("code").addClass("code");
-});
-</script>';
+		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
+        '@click="submitForm(\'editor\')"');
 
 		$view->render(TRUE);
 	}
@@ -523,10 +441,9 @@ window.addEvent("domready", function()
 			{
                 $mod = new Theme_model();
 				$theme = $mod->get_var($_post['id_theme'], 'themes', 'name');
-				$msg->update[] = array(
-					'element' => 'tdown',
-					'url' => BASE_URL.'templates/index/'.$_post['id_theme'].'/'.$theme,
-					'title' => null
+				$msg->update = array(
+					'element' => 'page',
+					'url' => BASE_URL.'templates/index/'.$_post['id_theme'].'/'.$theme
 				);
 			}
 		}

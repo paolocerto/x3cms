@@ -4,107 +4,119 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
 
-// area switcher
-echo '<div class="aright sbox"><ul class="inline-list">';
+// file list view
+
+echo '<div class="switcher">';
+
+ // area switcher
+echo '<div class="text-sm flex justify-end py-1 space-x-4 border-b border-gray-200">';
 foreach ($areas as $i)
 {
-	$on = ($i->id == $id_area) ? 'class="on"' : '';
-	echo '<li><a '.$on.' href="'.BASE_URL.'files/index/'.$i->id.'/'.urlencode($category).'/'.urlencode($subcategory).'" title="'._SWITCH_AREA.'">'.ucfirst($i->name).'</a></li>';
+    $on = ($i->id == $id_area) ? 'class="link"' : 'class="dark"';
+    echo '<a '.$on.' @click="pager(\''.BASE_URL.'files/index/'.$i->id.'\')" title="'._SWITCH_AREA.'">'.ucfirst($i->name).'</a>';
 }
-echo '</ul></div>';
+echo '</div></div>';
 
-// type switcher
-echo '<div class="aright sbox"><ul class="inline-list">';
-foreach ($types as $i)
-{
-    $on = ($i->value == $xtype) ? 'class="on"' : '';
-    echo '<li><a '.$on.' href="'.BASE_URL.'files/index/'.$id_area.'/'.urlencode($category).'/'.urlencode($subcategory).'/'.$i->value.'" title="'._SWITCH_TYPE.'">'.ucfirst($i->option).'</a></li>';
-}
-echo '</ul></div>';
+// filter selector
+echo '<form name="xfilter" id="xfilter" action="'.BASE_URL.'files/index/'.$id_area.'" method="GET" onsubmit="return false">
+
+	<div class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-4">';
+
+echo '<div>
+    <label for="xxtype">'._SWITCH_TYPE.'</label>
+    <select id="xxtype" name="xxtype" class="w-full" @change="filter()">
+        '.X4Form_helper::get_options($types, 'value', 'option', $qs['xxtype']).'
+    </select>
+</div>';
 
 // category switcher
 if (!empty($categories))
 {
-	echo '<div class="aright sbox"><ul class="inline-list">';
+    echo '<div>
+        <label for="xctg">'._SWITCH_CATEGORY.'</label>
+        <select id="xctg" name="xctg" class="w-full" @change="filter()">
+            '.X4Form_helper::get_options($categories, 'ctg', 'ctg', $qs['xctg'], ['', ucfirst(_UNCATEGORIZED)]).'
+        </select>
+    </div>';
 
-	$on = (empty($category)) ? 'class="on"' : '';
-	echo '<li><a '.$on.' href="'.BASE_URL.'files/index/'.$id_area.'" title="'._SWITCH_CATEGORY.'">'.ucfirst(_UNCATEGORIZED).'</a></li>';
-	foreach ($categories as $i)
+    // subcategory switcher
+	if (!empty($subcategories))
 	{
-		$on = ($i->ctg == $category) ? 'class="on"' : '';
-		echo '<li><a '.$on.' href="'.BASE_URL.'files/index/'.$id_area.'/'.$i->ctg.'" title="'._SWITCH_CATEGORY.'">'.ucfirst($i->ctg).'</a></li>';
-	}
-	echo '</ul></div>';
-
-	if (!empty($category))
-	{
-		echo '<div class="aright sbox"><ul class="inline-list">';
-		foreach ($subcategories as $i)
-		{
-			$on = ($i->sctg == $subcategory) ? 'class="on"' : '';
-			echo '<li><a '.$on.' href="'.BASE_URL.'files/index/'.$id_area.'/'.$category.'/'.$i->sctg.'" title="'._SWITCH_SUBCATEGORY.'">'.ucfirst($i->sctg).'</a></li>';
-		}
-		echo '</ul></div>';
+        echo '<div>
+            <label for="xsctg">'._SWITCH_SUBCATEGORY.'</label>
+            <select id="xsctg" name="xsctg" class="w-full" @change="filter()">
+                '.X4Form_helper::get_options($subcategories, 'sctg', 'sctg', $qs['xsctg'], ['', ucfirst(_UNCATEGORIZED)]).'
+            </select>
+        </div>';
 	}
 }
+
+echo '<div>
+        <label for="xstr">Search by text</label>
+        <input
+            type="text"
+            id="xstr"
+            name="xstr"
+            class="w-full uppercase"
+            value="'.$qs['xstr'].'"
+            autocomplete="off"
+            placeholder="'._ENTER_TO_FILTER.'"
+            @keyup="if ($event.key === \'Enter\') { filter(); }" />
+	</div>';
+
+echo '</div>
+    </form>';
+
+$bulk_url = 'files/bulk/'.$id_area.'?'.http_build_query($qs);
 ?>
-<h1><?php echo _FILE_LIST ?></h1>
-<form name="bulk_action" id="bulk_action" onsubmit="return false;" method="post" action="<?php echo BASE_URL.'files/bulk/'.$id_area.'/'.urlencode($category).'/'.($subcategory).'/'.$xtype ?>">
-<input type="hidden" name="action" value="delete" />
+<h1 class="mt-6"><?php echo _FILE_LIST ?></h1>
+<div x-data="bulkable()" x-init='setup("<?php echo $bulk_url ?>")' >
+
+<div x-show="bulk.length > 0" class="buttons">
+    <input type="hidden" id="bulk_action" x-model="xaction" value="delete" />
+    <button type="button" @click="execute()" class="link"><?php echo _DELETE_BULK ?></button>
+</div>
+
 <?php
 if (!empty($items[0]))
 {
-	echo '<div class="band clearfix">';
+	echo '<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">';
 
 	$what = array('img', 'files', 'media', 'template');
 	foreach ($items[0] as $i)
 	{
-		if ($i->xon)
-		{
-			$status = _ON;
-			$on_status = 'orange';
-		}
-		else
-		{
-			$status = _OFF;
-			$on_status = 'gray';
-		}
-
-		if ($i->xlock)
-		{
-			$lock = _LOCKED;
-			$lock_status = 'lock';
-		}
-		else
-		{
-			$lock = _UNLOCKED;
-			$lock_status = 'unlock-alt';
-		}
-		$actions = $delete = '';
+		$statuses = AdmUtils_helper::statuses($i);
+		$actions = '';
+        // for filter
+        $tmp = $qs;
 
 		// check permission
-		if (($i->level > 1 && $i->xlock == 0) || $i->level == 4)
+		if (($i->level > 1 && $i->xlock == 0) || $i->level >= 3)
 		{
-				$actions = '<a class="bta" href="'.BASE_URL.'files/edit/'.$i->id.'" title="'._EDIT.'"><i class="fas fa-pencil-alt fa-lg"></i></a>';
+            $actions = AdmUtils_helper::link('edit', 'files/edit/'.$i->id);
 
-				// manager or admin user
-				if ($i->level > 2)
-				{
-					$actions .= ' <a class="btl" href="'.BASE_URL.'files/set/xon/'.$i->id.'/'.(($i->xon+1)%2).'" title="'._STATUS.' '.$status.'"><i class="far fa-lightbulb fa-lg '.$on_status.'"></i></a>';
-				}
-				// filter
-				$actions .= ' <a class="btm" href="'.BASE_URL.'files/index/'.$id_area.'/'.$i->category.'/'.$i->subcategory.'" title="'._FILE_FILTER.'"><i class="fas fa-filter fa-lg"></i></a>';
+            // manager or admin user
+            if ($i->level > 2)
+            {
+                $actions .= AdmUtils_helper::link('xon', 'files/set/xon/'.$i->id.'/'.(($i->xon+1)%2), $statuses);
+            }
+            // filter
+            $tmp['xctg'] = $i->category;
+            $tmp['xsctg'] = $i->subcategory;
+            $actions .= ' <a class="link" @click="pager(\''.BASE_URL.'files/index/'.$id_area.'?'.http_build_query($tmp).'\')" title="'._FILE_FILTER.'">
+                <i class="fa-solid fa-filter fa-lg"></i>
+            </a>';
 
-				// admin user
-				if ($i->level == 4)
-				{
-					$delete = '<a class="btl" href="'.BASE_URL.'files/set/xlock/'.$i->id.'/'.(($i->xlock+1)%2).'" title="'._STATUS.' '.$lock.'"><i class="fas fa-'.$lock_status.' fa-lg"></i></a>
-					<a class="bta" href="'.BASE_URL.'files/delete/'.$i->id.'" title="'._DELETE.'"><i class="fas fa-trash fa-lg red"></i></a>';
-				}
+            // admin user
+            if ($i->level >= 4)
+            {
+                $actions .= AdmUtils_helper::link('xlock', 'files/set/xlock/'.$i->id.'/'.(($i->xlock+1)%2), $statuses);
+                $actions .= AdmUtils_helper::link('delete','files/delete/'.$i->id);
+            }
 		}
 
 		// file info
@@ -121,11 +133,11 @@ if (!empty($items[0]))
 			// image thumbs
 			if (file_exists(APATH.'files/'.SPREFIX.'/thumbs/img/'.$i->name))
 			{
-				$thumb = '<img src="'.APATH.'files/'.SPREFIX.'/thumbs/img/'.$i->name.$now.'" alt="'.$i->alt.'" />';
+				$thumb = '<img class="thumb" src="'.APATH.'files/'.SPREFIX.'/thumbs/img/'.$i->name.$now.'" alt="'.$i->alt.'" />';
 			}
 			else
 			{
-				$thumb = '<img src="'.FPATH.'img/'.$i->name.$now.'" alt="'.$i->alt.'" />';
+				$thumb = '<img class="thumb" src="'.FPATH.'img/'.$i->name.$now.'" alt="'.$i->alt.'" />';
 			}
 
 			// image size
@@ -140,45 +152,27 @@ if (!empty($items[0]))
 			? '('.floor($kb/1024).' KB)'
 			: '';
 
-		echo '<div class="one-fifth md-one-fourth sm-one-third xs-one-whole clearfix pad-right pad-bottom">
-				<div class="widget dtable">
-					<div class="dtable-cell">
-						<div class="wbox filebox">
-							<a href="'.FPATH.$what[$i->xtype].'/'.$i->name.'" title="'.$i->alt.'">'.$i->name.'</a><br />
-							<span class="small">'.$size.$filesize.'</span><br />
-							<div class="acenter pad-top">'.$thumb.'</div>
-						</div>
-					</div>
-					<div class="dtable-cell sidebar">'.$actions.$delete.'<input type="checkbox" class="bulkable" name="bulk[]" value="'.$i->id.'" /></div>
-				</div>
-			</div>';
+		echo '<div class="bg2 rounded flex items-stretch">
+                <div class="flex-auto text-sm p-4 overflow-x-hidden">
+                    <a href="'.FPATH.$what[$i->xtype].'/'.$i->name.'" title="'.$i->alt.'">'.$i->name.'</a><br />
+                    <span class="text-xs">'.$size.$filesize.'</span><br />
+                    <div class="acenter pad-top">'.$thumb.'</div>
+                    <p>caption: '.$i->alt.'</p>
+                </div>
+                <div class="flex-none w-14 bg px-3 pt-3 text-center rounded-r leading-8">
+                    '.$actions.'
+                    <input type="checkbox" class="bulkable" x-model="bulk" value="'.$i->id.'" />
+                </div>
+            </div>';
 	}
 
-	echo '</div></form>';
-
+	echo '</div>
+    </div>';
 
 	// pagination
-	echo '<div id="file_pager" class="pager">'.X4Pagination_helper::pager(BASE_URL.'files/index/'.$id_area.'/'.urlencode($category).'/'.urlencode($subcategory).'/'.$xtype.'/', $items[1], 5, false, '', 'btp').'</div>';
+	echo '<div id="file_pager" class="pager">'.X4Pagination_helper::tw_admin_pager(BASE_URL.'files/index/'.$id_area.'/', $items[1], 5, false, '?'.http_build_query($qs), '').'</div>';
 }
 else
 {
 	echo '<p>'._NO_ITEMS.'</p>';
 }
-
-// filter url
-$url = [$id_area, urlencode($category), urlencode($subcategory), urlencode($str)];
-$url = array_filter($url);
-?>
-<script src="<?php echo THEME_URL ?>js/basic.js"></script>
-<script>
-window.addEvent('domready', function()
-{
-	X3.content('filters','files/filter/<?php echo implode('/', $url) ?>', '<?php echo X4Theme_helper::navbar($navbar, ' . ', false) ?>');
-	buttonize('file_pager', 'btp', 'topic');
-	buttonize('topic', 'btm', 'topic');
-	buttonize('topic', 'bta', 'modal');
-	actionize('topic',  'btl', 'topic', escape('files/index/<?php echo $id_area.'/'.urlencode($category).'/'.urlencode($subcategory).'/'.$xtype ?>'));
-	linking('ul.inline-list a');
-	blanking();
-});
-</script>

@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
 
@@ -59,55 +59,46 @@ class Categories_controller extends X3ui_controller
 
 		// get page
 		$page = $this->get_page('categories');
-		$navbar = array($this->site->get_bredcrumb($page), array('articles' => 'index/'.$id_area.'/'.$lang));
+
+        $view = new X4View_core('page');
+        $view->breadcrumb = array($this->site->get_bredcrumb($page));
+		$view->actions = $this->actions($id_area, $lang, $tag);
 
 		$mod = new Category_model();
-
 		$tags = $mod->get_tags($id_area, $lang);
-		// if empty get the first available
-		$tag = (empty($tag) && !empty($tags))
-		    ? $tags[0]->tag
-		    : $tag;
 
-        	// contents
-		$view = new X4View_core('articles/category_list');
-		$view->page = $page;
-		$view->navbar = $navbar;
-		$view->items = $mod->get_categories($id_area, $lang, $tag);
+        // contents
+		$view->content = new X4View_core('categories/category_list');
+		$view->content->items = $mod->get_categories($id_area, $lang, $tag);
 
 		// tag switcher
-		$view->tag = $tag;
-		$view->tags = $tags;
+		$view->content->tag = $tag;
+		$view->content->tags = $tags;
 
 		// area switcher
-		$view->id_area = $id_area;
-		$view->areas = $areas;
+		$view->content->id_area = $id_area;
+		$view->content->areas = $areas;
 
 		// language switcher
-		$view->lang = $lang;
-		$lang = new Language_model();
-		$view->langs = $lang->get_languages();
-
+		$view->content->lang = $lang;
+        if (MULTILANGUAGE)
+        {
+            $lang = new Language_model();
+            $view->content->langs = $lang->get_languages();
+        }
 		$view->render(TRUE);
 	}
 
 	/**
-	 * Categories filter
+	 * Categories actions
 	 *
 	 * @return  void
 	 */
-	public function filter(int $id_area, string $lang, string $tag = '')
+	private function actions(int $id_area, string $lang, string $tag = '')
 	{
-		// load the dictionary
-		$this->dict->get_wordarray(array('categories'));
-
-		echo '<a class="btf" href="'.BASE_URL.'categories/edit/'.$id_area.'/'.$lang.'/'.$tag.'/-1" title="'._NEW_CATEGORY.'"><i class="fas fa-plus fa-lg"></i></a>
-<script>
-window.addEvent("domready", function()
-{
-	buttonize("filters", "btf", "modal");
-});
-</script>';
+		return '<a class="link" @click="popup(\''.BASE_URL.'categories/edit/'.$id_area.'/'.$lang.'/'.$tag.'\')" title="'._NEW_CATEGORY.'">
+            <i class="fa-solid fa-lg fa-circle-plus"></i>
+        </a>';
 	}
 
 	/**
@@ -128,8 +119,6 @@ window.addEvent("domready", function()
 		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'categories', $id, $val);
 		if (is_null($msg))
 		{
-			$qs = X4Route_core::get_query_string();
-
 			// do action
 			$mod = new Category_model();
 			$result = $mod->update($id, array($what => $value));
@@ -140,19 +129,22 @@ window.addEvent("domready", function()
 
 			// set update
 			if ($result[1])
-			$msg->update[] = array(
-				'element' => $qs['div'],
-				'url' => urldecode($qs['url']),
-				'title' => null
-			);
+            {
+                $msg->update = array(
+                    'element' => 'page',
+					'url' => $_SERVER['HTTP_REFERER']
+                );
+            }
 		}
 		$this->response($msg);
 	}
 
 	/**
-	 * New / Edit category form (use Ajax)
+	 * New / Edit category form
 	 *
 	 * @param   integer	$id_area Area ID
+     * @param   string 	$lang Language code
+     * @param   string 	$tag
 	 * @param   integer	$id Category ID
 	 * @return  void
 	 */
@@ -161,90 +153,24 @@ window.addEvent("domready", function()
 		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'categories'));
 
-		// handle id
-		$chk = false;
-		if ($id < 0)
-		{
-			$id = 0;
-			$chk = true;
-		}
-
 		// get object
 		$mod = new Category_model();
-		$m = ($id)
+		$item = ($id)
 			? $mod->get_by_id($id)
 			: new Category_obj($id_area, $lang, $tag);
 
-		// build the form
-		$fields = array();
-		$fields[] = array(
-			'label' => null,
-			'type' => 'hidden',
-			'value' => $id,
-			'name' => 'id'
-		);
 
-		if (MULTIAREA)
-		{
-            $amod = new Area_model();
-            $fields[] = array(
-                'label' => _AREA,
-                'type' => 'select',
-                'value' => $m->id_area,
-                'options' => array($amod->get_areas(), 'id', 'name'),
-                'name' => 'id_area',
-                'extra' => 'class="large"'
-            );
-        }
-        else
-        {
-            $fields[] = array(
-                'label' => null,
-                'type' => 'hidden',
-                'value' => $m->id_area,
-                'name' => 'id_area'
-            );
-        }
+        $form_fields = new X4Form_core('category/category_edit');
+		$form_fields->item = $item;
 
-		if (MULTILANGUAGE)
-			{
-		    $lmod = new Language_model();
-		    $fields[] = array(
-		        'label' => _LANGUAGE,
-		        'type' => 'select',
-		        'value' => $m->lang,
-		        'options' => array($lmod->get_languages(), 'code', 'language'),
-		        'name' => 'lang',
-		        'extra' => 'class="large"'
-		    );
-		}
-		else
-		{
-		    $fields[] = array(
-		        'label' => null,
-		        'type' => 'hidden',
-		        'value' => $m->lang,
-		        'name' => 'lang'
-		    );
-		}
-	
-		$fields[] = array(
-			'label' => _TITLE,
-			'type' => 'text',
-			'value' => $m->title,
-			'name' => 'title',
-			'rule' => 'required',
-			'extra' => 'class="large"'
-		);
+        $mod = new Area_model();
+        $form_fields->areas = $mod->get_areas();
 
-		$fields[] = array(
-			'label' => _CATEGORY_TAG,
-			'type' => 'text',
-			'value' => $m->tag,
-			'name' => 'tag',
-			'extra' => 'class="large"',
-			'suggestion' => _CATEGORY_TAG_MSG
-		);
+        $mod = new Language_model();
+        $form_fields->languages = $mod->get_languages();
+
+		// get the fields array
+		$fields = $form_fields->render();
 
 		// if submitted
 		if (X4Route_core::$post)
@@ -260,27 +186,19 @@ window.addEvent("domready", function()
 			}
 			die;
 		}
-
-		// content
-		$view = new X4View_core('editor');
-		$view->title = ($id)
+        $view = new X4View_core('modal');
+        $view->title = ($id)
 			? _EDIT_CATEGORY
 			: _ADD_CATEGORY;
 
+		// content
+		$view->content = new X4View_core('editor');
+
 		// form builder
-		$view->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
-			'onclick="setForm(\'editor\');"');
+		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
+            '@click="submitForm(\'editor\')"');
 
-		$view->js = '';
-
-		if ($id > 0 || $chk)
-		{
-			$view->render(TRUE);
-		}
-		else
-		{
-			return $view->render();
-		}
+		$view->render(TRUE);
 	}
 
 	/**
@@ -323,7 +241,7 @@ window.addEvent("domready", function()
 				// update or insert
 				$result = ($id)
 					? $mod->update($_post['id'], $post)
-                    			: $mod->insert($post);
+                    : $mod->insert($post);
 
 				// set message
 				$msg = AdmUtils_helper::set_msg($result);
@@ -331,10 +249,9 @@ window.addEvent("domready", function()
 				// set what update
 				if ($result[1])
 				{
-					$msg->update[] = array(
-						'element' => 'topic',
-						'url' => BASE_URL.'categories/index/'.$post['id_area'].'/'.$post['lang'].'/'.$post['tag'],
-						'title' => null
+					$msg->update = array(
+						'element' => 'page',
+						'url' => BASE_URL.'categories/index/'.$post['id_area'].'/'.$post['lang'].'/'.$post['tag']
 					);
 				}
 			}
@@ -355,7 +272,7 @@ window.addEvent("domready", function()
 
 		// get object
 		$mod = new Category_model();
-		$obj = $mod->get_by_id($id, 'categories', 'id_area, lang, tag, title');
+		$item = $mod->get_by_id($id, 'categories', 'id, id_area, lang, tag, title');
 
 		// build the form
 		$fields = array();
@@ -369,18 +286,18 @@ window.addEvent("domready", function()
 		// if submitted
 		if (X4Route_core::$post)
 		{
-			$this->deleting($id, $obj);
+			$this->deleting($item);
 			die;
 		}
-
+        $view = new X4View_core('modal');
+        $view->title = _DELETE_CATEGORY;
 		// contents
-		$view = new X4View_core('delete');
-		$view->title = _DELETE_CATEGORY;
-		$view->item = $obj->title;
+		$view->content = new X4View_core('delete');
+		$view->content->item = $item->title;
 
 		// form builder
-		$view->form = X4Form_helper::doform('delete', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
-			'onclick="setForm(\'delete\');"');
+		$view->content->form = X4Form_helper::doform('delete', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
+            '@click="submitForm(\'delete\')"');
 
 		$view->render(TRUE);
 	}
@@ -389,35 +306,34 @@ window.addEvent("domready", function()
 	 * Delete category
 	 *
 	 * @access	private
-	 * @param   integer	$id Category ID
-	 * @param   stdClass	$obj Category Obj
+	 * @param   stdClass	$item Category Obj
 	 * @return  void
 	 */
-	private function deleting(int $id, stdClass $obj)
+	private function deleting(stdClass $item)
 	{
 		$msg = null;
 		// check permissions
-		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'categories', $id, 4);
+		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'categories', $item->id, 4);
 
 		if (is_null($msg))
 		{
 			// do action
 			$mod = new Category_model();
-			$result = $mod->delete($id);
+			$result = $mod->delete($item->id);
 
 			// set message
 			$msg = AdmUtils_helper::set_msg($result);
 
 			// clear useless permissions
-			if ($result[1]) {
+			if ($result[1])
+            {
 				$perm = new Permission_model();
-				$perm->deleting_by_what('categories', $id);
+				$perm->deleting_by_what('categories', $item->id);
 
 				// set what update
-				$msg->update[] = array(
-					'element' => 'topic',
-					'url' => BASE_URL.'categories/index/'.$obj->id_area.'/'.$obj->lang.'/'.$obj->tag,
-					'title' => null
+				$msg->update = array(
+					'element' => 'page',
+					'url' => BASE_URL.'categories/index/'.$item->id_area.'/'.$item->lang.'/'.$item->tag
 				);
 			}
 		}

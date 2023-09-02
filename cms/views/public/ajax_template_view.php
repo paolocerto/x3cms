@@ -4,12 +4,12 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
 
 // close button
-if (isset($container)) 
+if (isset($container))
 	echo '<div class="aright sbox"><a class="xsmall" href="#" onclick="close_pop(\''.$container.'\');"  title="'._CLOSE.'">'._CLOSE.'</a></div>';
 
 echo $content;

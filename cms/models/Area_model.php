@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
 
@@ -337,15 +337,20 @@ class Area_model extends X4Model_core
 class Area_obj
 {
 	// object vars
-	public $name;
-	public $title;
-	public $description;
-	public $lang;
-	public $code;
+	public $name = '';
+	public $title = '';
+	public $description = '';
+	public $lang = '';
+	public $code = '';
 	public $old_id_theme = 0;
 	public $id_theme = 0;
 	public $private = 0;
-	public $folder;
+	public $folder = '';
+
+    public function __construct(string $folder = '')
+	{
+		$this->folder = $folder;
+	}
 }
 
 /**

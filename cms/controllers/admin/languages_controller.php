@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
 
@@ -40,31 +40,29 @@ class Languages_controller extends X3ui_controller
 		// get page
 		$page = $this->get_page('languages');
 
-		$view = new X4View_core('languages/language_list');
-		$view->page = $page;
+		$view = new X4View_core('page');
+        $view->breadcrumb = array($this->site->get_bredcrumb($page));
+		$view->actions = $this->actions();
+
+        $view->content = new X4View_core('languages/language_list');
+        $view->content->page = $page;
 
 		$lang = new Language_model();
-		$view->langs = $lang->get_languages();
+		$view->content->langs = $lang->get_languages();
 		$view->render(TRUE);
 	}
 
 	/**
-	 * Languages filter
+	 * Actions
 	 *
+     * @access	private
 	 * @return  void
 	 */
-	public function filter()
+	private function actions()
 	{
-		// load the dictionary
-		$this->dict->get_wordarray(array('languages'));
-
-		echo '<a class="btf" href="'.BASE_URL.'languages/edit/-1" title="'._NEW_LANG.'"><i class="fas fa-plus fa-lg"></i></a>
-<script>
-window.addEvent("domready", function()
-{
-	buttonize("filters", "btf", "modal");
-});
-</script>';
+		return '<a class="link" @click="popup(\''.BASE_URL.'languages/edit\')" title="'._NEW_LANG.'">
+            <i class="fa-solid fa-lg fa-circle-plus"></i>
+        </a>';
 	}
 
 	/**
@@ -82,11 +80,10 @@ window.addEvent("domready", function()
 		$val = ($what == 'xlock')
 			? 4
 			: 3;
+
 		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'languages', $id, $val);
 		if (is_null($msg))
 		{
-			$qs = X4Route_core::get_query_string();
-
 			// do action
 			$lang = new Language_model();
 			$result = $lang->update($id, array($what => $value));
@@ -98,10 +95,9 @@ window.addEvent("domready", function()
 			// set update
 			if ($result[1])
             {
-				$msg->update[] = array(
-					'element' => $qs['div'],
-					'url' => urldecode($qs['url']),
-					'title' => null
+				$msg->update = array(
+					'element' => 'page',
+					'url' => $_SERVER['HTTP_REFERER']
 				);
             }
 		}
@@ -119,72 +115,19 @@ window.addEvent("domready", function()
 		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'languages'));
 
-		// handle id
-		$chk = false;
-		if ($id < 0)
-		{
-			$id = 0;
-			$chk = true;
-		}
-
 		// get object
-		$lang = new Language_model();
-		$o = ($id)
-			? $lang->get_by_id($id)
+		$mod = new Language_model();
+		$item = ($id)
+			? $mod->get_by_id($id)
 			: new Lang_obj();
 
 		// build the form
-		$fields = array();
-		$fields[] = array(
-			'label' => null,
-			'type' => 'hidden',
-			'value' => $id,
-			'name' => 'id'
-		);
+		$form_fields = new X4Form_core('language/language_edit');
+		$form_fields->id = $id;
+		$form_fields->item = $item;
 
-		$fields[] = array(
-			'label' => null,
-			'type' => 'html',
-			'value' => '<div class="band inner-pad clearfix"><div class="one-half xs-one-whole">'
-		);
-
-		$fields[] = array(
-			'label' => _CODE,
-			'type' => 'text',
-			'value' => $o->code,
-			'name' => 'code',
-			'rule' => 'required|minlength§2|maxlength§2',
-			'extra' => 'class="large"',
-		);
-
-		$fields[] = array(
-			'label' => null,
-			'type' => 'html',
-			'value' => '</div><div class="one-half xs-one-whole">'
-		);
-
-		$fields[] = array(
-			'label' => _LANGUAGE,
-			'type' => 'text',
-			'value' => $o->language,
-			'name' => 'language',
-			'rule' => 'required',
-			'extra' => 'class="large"',
-		);
-
-		$fields[] = array(
-			'label' => null,
-			'type' => 'html',
-			'value' => '</div></div>'
-		);
-
-		$fields[] = array(
-			'label' => _RTL_LANGUAGE,
-			'type' => 'checkbox',
-			'value' => $o->rtl,
-			'name' => 'rtl',
-			'checked' => $o->rtl
-		);
+		// get the fields array
+		$fields = $form_fields->render();
 
 		// if submitted
 		if (X4Route_core::$post)
@@ -201,24 +144,17 @@ window.addEvent("domready", function()
 			die;
 		}
 
-		// contents
-		$view = new X4View_core('editor');
-		$view->title = ($id)
-			? _EDIT_LANG
+        $view = new X4View_core('modal');
+        $view->title = ($id)
+        	? _EDIT_LANG
 			: _ADD_LANG;
 
+        // contents
+		$view->content = new X4View_core('editor');
 		// form builder
-		$view->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
-			'onclick="setForm(\'editor\');"');
-
-		if ($id > 0 || $chk)
-		{
-			$view->render(TRUE);
-		}
-		else
-		{
-			return $view->render();
-		}
+		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
+            '@click="submitForm(\'editor\')"');
+		$view->render(TRUE);
 	}
 
 	/**
@@ -267,10 +203,9 @@ window.addEvent("domready", function()
 				// set what update
 				if ($result[1])
 				{
-					$msg->update[] = array(
-						'element' => 'tdown',
-						'url' => BASE_URL.'languages',
-						'title' => null
+					$msg->update = array(
+						'element' => 'page',
+						'url' => BASE_URL.'languages'
 					);
 				}
 			}
@@ -307,16 +242,18 @@ window.addEvent("domready", function()
 
 		// get object
 		$mod = new Language_model();
-		$obj = $mod->get_by_id($id, 'languages', 'language');
+		$item = $mod->get_by_id($id, 'languages', 'language');
+
+        $view = new X4View_core('modal');
+        $view->title = _DELETE_LANG;
 
 		// contents
-		$view = new X4View_core('delete');
-		$view->title = _DELETE_LANG;
-		$view->item = $obj->language;
+		$view->content = new X4View_core('delete');
+		$view->content->item = $item->language;
 
 		// form builder
-		$view->form = X4Form_helper::doform('delete', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
-			'onclick="setForm(\'delete\');"');
+		$view->content->form = X4Form_helper::doform('delete', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
+            '@click="submitForm(\'delete\')"');
 		$view->render(TRUE);
 	}
 
@@ -349,14 +286,102 @@ window.addEvent("domready", function()
 				$perm->deleting_by_what('languages', $_post['id']);
 
 				// set what update
-				$msg->update[] = array(
-					'element' => 'tdown',
-					'url' => BASE_URL.'languages',
-					'title' => null
+				$msg->update = array(
+					'element' => 'page',
+					'url' => BASE_URL.'languages'
 				);
 			}
 		}
 		$this->response($msg);
+	}
+
+    /**
+	 * Change admin language
+	 *
+	 * @return  void
+	 */
+	public function selector()
+	{
+		// load dictionaries
+		$this->dict->get_wordarray(array('form', 'lang'));
+
+		// getavailable languages
+		$mod = new Language_model();
+        $languages = $mod->get_alanguages(1);
+
+        // build the form
+		$fields = array();
+
+        $fields[] = array(
+            'label' => null,
+            'type' => 'html',
+            'value' => '<div class="bg-white text-gray-700 md:px-8 md:pb-8 px-4 pb-4" style="border:1px solid white">'
+        );
+
+		$fields[] = array(
+			'label' => ucfirst(_LANGUAGE),
+			'type' => 'radio',
+			'value' => X4Route_core::$lang,
+            'options' => array($languages, 'code', 'language'),
+			'name' => 'code',
+            'checked' => X4Route_core::$lang
+		);
+
+        $fields[] = array(
+            'label' => null,
+            'type' => 'html',
+            'value' => '</div>'
+        );
+
+		// if submitted
+		if (X4Route_core::$post)
+		{
+			$e = X4Validation_helper::form($fields, 'editor');
+			if ($e)
+			{
+				$this->selecting($_POST);
+			}
+			else
+			{
+				$this->notice($fields);
+			}
+			die;
+		}
+
+        $view = new X4View_core('modal');
+        $view->wide = 'md:w-1/5';
+        $view->title = _SWITCH_LANGUAGE;
+
+        // contents
+		$view->content = new X4View_core('editor');
+		// form builder
+		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
+            '@click="submitForm(\'editor\')"');
+		$view->render(TRUE);
+	}
+
+    /**
+	 * Selecting
+	 *
+	 * @access	private
+	 * @param   array 	$_post _POST array
+	 * @return  void
+	 */
+	private function selecting(array $_post)
+	{
+		$old_lang = X4Route_core::$lang;
+        $new_lang = $_post['code'];
+
+        $res = [0, 1];
+         // set message
+        $msg = AdmUtils_helper::set_msg($res);
+
+        // set what update
+        $msg->update = array(
+            'element' => 'redirect',
+            'url' => ROOT.$new_lang.'/admin/home/dashboard'
+            );
+        $this->response($msg);
 	}
 
 	/**

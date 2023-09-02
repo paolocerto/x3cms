@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
 
@@ -41,26 +41,20 @@ class Themes_controller extends X3ui_controller
 		$page = $this->get_page('themes');
 
 		// content
-		$view = new X4View_core('themes/theme_list');
-		$view->page = $page;
+		$view = new X4View_core('page');
+        $view->breadcrumb = array($this->site->get_bredcrumb($page));
+        $view->actions = '';
 
-		$theme = new Theme_model();
+        $view->content = new X4View_core('themes/theme_list');
+        $view->content->page = $page;
+
+		$mod = new Theme_model();
 		// installed themes
-		$view->theme_in= $theme->get_installed();
+		$view->content->theme_in= $mod->get_installed();
 		// installable themes
-		$view->theme_out = $theme->get_installable();
+		$view->content->theme_out = $mod->get_installable();
 
 		$view->render(TRUE);
-	}
-
-	/**
-	 * Themes filter
-	 *
-	 * @return  void
-	 */
-	public function filter()
-	{
-		echo '';
 	}
 
 	/**
@@ -81,8 +75,6 @@ class Themes_controller extends X3ui_controller
 		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'themes', $id, $val);
 		if (is_null($msg))
 		{
-			$qs = X4Route_core::get_query_string();
-
 			// do action
 			$mod = new Theme_model();
 			$result = $mod->update($id, array($what => $value));
@@ -93,10 +85,9 @@ class Themes_controller extends X3ui_controller
 			// set update
 			if ($result[1])
             {
-				$msg->update[] = array(
-					'element' => $qs['div'],
-					'url' => urldecode($qs['url']),
-					'title' => null
+				$msg->update = array(
+					'element' => 'page',
+					'url' => $_SERVER['HTTP_REFERER']
 				);
             }
 		}
@@ -116,8 +107,6 @@ class Themes_controller extends X3ui_controller
 		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], '_theme_install', 0, 4);
 		if (is_null($msg))
 		{
-			//$qs = X4Route_core::get_query_string();
-
 			// perform the install
 			$theme = new Theme_model();
 			$result = $theme->install($theme_name);
@@ -134,22 +123,10 @@ class Themes_controller extends X3ui_controller
 				// set message
 				$this->dict->get_words();
 				$msg = AdmUtils_helper::set_msg(true);
-				// add permission on new theme
-				if ($result)
-				{
-					$perm = new Permission_model();
-					$array[] = array(
-							'action' => 'insert',
-							'id_what' => $result,
-							'id_user' => $_SESSION['xuid'],
-							'level' => 4);
-					$perm->pexec('themes', $array, 1);
-				}
 
-				$msg->update[] = array(
-					'element' => 'tdown',
-					'url' => BASE_URL.'themes',
-					'title' => null
+				$msg->update = array(
+					'element' => 'page',
+					'url' => BASE_URL.'themes'
 				);
 			}
 		}
@@ -169,7 +146,7 @@ class Themes_controller extends X3ui_controller
 
 		// get object
 		$theme = new Theme_model();
-		$obj = $theme->get_by_id($id, 'themes', 'name');
+		$item = $theme->get_by_id($id, 'themes', 'id, name');
 
 		// build the form
 		$fields = array();
@@ -179,29 +156,25 @@ class Themes_controller extends X3ui_controller
 			'value' => $id,
 			'name' => 'id'
 		);
-		$fields[] = array(
-			'label' => null,
-			'type' => 'hidden',
-			'value' => $obj->name,
-			'name' => 'name'
-		);
 
 		// if submitted
 		if (X4Route_core::$post)
 		{
-			$this->uninstalling($_POST);
+			$this->uninstalling($item);
 			die;
 		}
 
+        $view = new X4View_core('modal');
+        $view->title = _UNINSTALL_THEME;
+
 		// contents
-		$view = new X4View_core('uninstall');
-		$view->title = _UNINSTALL_THEME;
-		$view->msg = '';
-		$view->item = $obj->name;
+		$view->content = new X4View_core('uninstall');
+
+		$view->content->item = $item->name;
 
 		// form builder
-		$view->form = X4Form_helper::doform('uninstall', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
-			'onclick="setForm(\'uninstall\');"');
+		$view->content->form = X4Form_helper::doform('uninstall', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
+            '@click="submitForm(\'delete\')"');
 		$view->render(TRUE);
 	}
 
@@ -209,20 +182,20 @@ class Themes_controller extends X3ui_controller
 	 * Perform the uninstall
 	 *
 	 * @access	private
-	 * @param   array 	$_post _POST array
+	 * @param   object  $item
 	 * @return  void
 	 */
-	private function uninstalling(array $_post)
+	private function uninstalling(stdClass $item)
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'themes', $_post['id'], 4);
+		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'themes', $item->id, 4);
 
 		if (is_null($msg))
 		{
 			// do action
 			$mod = new Theme_model();
-			$result = $mod->uninstall($_post['id'], $_post['name']);
+			$result = $mod->uninstall($item->id, $item->name);
 
 			// check the result
 			if (is_array($result))
@@ -241,12 +214,12 @@ class Themes_controller extends X3ui_controller
                 {
                     // clear useless permissions
 				    $perm = new Permission_model();
-					$perm->deleting_by_what('themes', $_post['id']);
+					$perm->deleting_by_what('themes', $item->id);
                 }
-				$msg->update[] = array(
-					'element' => 'tdown',
-					'url' => BASE_URL.'themes',
-					'title' => null
+
+				$msg->update = array(
+					'element' => 'page',
+					'url' => BASE_URL.'themes'
 				);
 			}
 		}
@@ -267,8 +240,6 @@ class Themes_controller extends X3ui_controller
 		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'themes', $id_theme, 4);
 		if (is_null($msg))
 		{
-			$qs = X4Route_core::get_query_string();
-
 			// do action
 			$res = 1;
 
@@ -322,10 +293,9 @@ class Themes_controller extends X3ui_controller
 			// set update
 			if ($result[1])
             {
-				$msg->update[] = array(
-					'element' => $qs['div'],
-					'url' => urldecode($qs['url']),
-					'title' => null
+				$msg->update = array(
+					'element' => 'page',
+					'url' => BASE_URL.'themes'
 				);
             }
 		}

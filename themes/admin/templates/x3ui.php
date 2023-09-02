@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
 
@@ -20,22 +20,28 @@ if (isset($page)) {
 	$xkeys = stripslashes($page->xkeys);
 	$css = $page->css;
 }
-
 ?>
 <!DOCTYPE html>
 <html lang="<?php echo X4Route_core::$lang ?>">
 <head>
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
 
-<title><?php echo $title.$this->site->site->title ?></title>
-<meta name="description" content="<?php echo $description ?>">
-<meta name="keywords" content="<?php echo $this->site->site->keywords.','.$xkeys ?>">
-<meta name="robots" content="all">
+    <title><?php echo $title.$this->site->site->title ?></title>
+    <meta name="description" content="<?php echo $description ?>">
+    <meta name="keywords" content="<?php echo $this->site->site->keywords.','.$xkeys ?>">
+    <meta name="robots" content="all">
 
-<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
-<link rel="shortcut icon" href="<?php echo THEME_URL ?>favicon.ico" type="image/x-icon" />
-<link rel="stylesheet" href="<?php echo THEME_URL ?>css/fontawesome-all.min.css">
-<link rel="stylesheet" href="<?php echo THEME_URL ?>css/normalize.css">
+    <link rel="apple-touch-icon" sizes="180x180" href="<?php echo ROOT ?>apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="<?php echo ROOT ?>favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="<?php echo ROOT ?>favicon-16x16.png">
+    <link rel="manifest" href="<?php echo ROOT ?>site.webmanifest">
+
+    <link rel="stylesheet" href="<?php echo THEME_URL ?>css/fontawesome-all.min.css">
+    <link rel="stylesheet" href="<?php echo THEME_URL ?>css/dragula.min.css">
 
 <?php
 echo (!DEVEL && file_exists(PATH.'themes/'.$this->site->area->theme.'/css/'.$css.'.min.css'))
@@ -47,151 +53,132 @@ if (RTL)
 	echo '<link title="normal" rel="stylesheet" href="'.THEME_URL.'/css/rtl.css" media="all" />';
 }
 ?>
+    <script src="https://kit.fontawesome.com/2e7ce67797.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script defer src="<?php echo THEME_URL ?>js/tinymce/tinymce.min.js"></script>
+    <script defer src="<?php echo THEME_URL ?>js/dragula.min.js"></script>
+    <script defer src="<?php echo THEME_URL ?>js/alpine.min.js"></script>
+    <script defer src="<?php echo ROOT ?>files/js/jscolor.js"></script>
+
+    <script>
+    var domain = "<?php echo $this->site->site->domain ?>",
+        root = "<?php echo BASE_URL ?>",
+        theme = "<?php echo $this->site->area->theme ?>",
+        area_id = <?php echo $page->id_area ?>,
+        lang = "<?php echo X4Route_core::$lang.'-'.strtoupper(X4Route_core::$lang) ?>",
+        completed = "<?php echo _MSG_OK ?>";
+        warning = "<?php echo _WARNING ?>",
+        error = "<?php echo _MSG_ERROR ?>";
+        start_page = "<?php echo $start_page ?>",
+        xmaps = [];
+    </script>
+
+<?php
+echo (!DEVEL && file_exists(PATH.'themes/'.$this->site->area->theme.'/js/x3ui.min.js'))
+	? '<script src="'.THEME_URL.'js/x3ui.min.js"></script>'
+	: '<script src="'.THEME_URL.'js/x3ui.js?v=1"></script>'
+?>
+
+    <link rel="stylesheet" href="<?php echo ROOT ?>files/js/croppie.css">
+    <script src="<?php echo ROOT ?>files/js/croppie.js"></script>
+
 </head>
-<body>
-<div class="band bdarkgray clearfix">
-	<div id="logo" class="one-fifth md-one-fourth sm-one-third xs-one-whole">
-		<a class="no_link" href="<?php echo BASE_URL ?>" title="<?php echo _HOME_PAGE ?>">
-			<img src="<?php echo THEME_URL ?>img/x3cms_black.png" alt="X3 CMS logo" />
-		</a>
-	</div>
-	<div id="menu" class="three-fifth md-one-half sm-two-third xs-one-whole"></div>
-	<div id="public" class="one-fifth md-one-fourth sm-one-third sm-hidden aright xsmall pad-right half-pad-top lightgray">
-		<?php echo _PUBLIC_SIDE ?>: <a href="<?php echo $this->site->site->domain ?>" title="<?php echo _PUBLIC_SIDE ?>"><?php echo $this->site->site->domain ?></a><br />
-		<?php echo _LOGGED_AS ?>: <b><?php echo $_SESSION['username'] ?></b>
-	</div>
-</div>
-<div class="band bwhite dtable">
-	<aside id="sidebar">
-		<i id="spinner" class="fas fa-circle-notch"></i>
-		<div>
-			<a class="no_link" href="<?php echo BASE_URL ?>" title="<?php echo _HOME_PAGE ?>"><i class="fas fa-home fa-lg"></i></a>
-<?php
-// sidebar menu
-$sbm = array(
-	'sites' => '<a href="'.BASE_URL.'sites/show/1" title="'._SETTINGS.'"><i class="fas fa-cog fa-lg"></i></a>'
-);
+<body class="w-full h-screen">
 
-if (!empty($menus['sidebar']))
-{
-	foreach ($menus['sidebar'] as $i)
-	{
-		if (isset($sbm[$i->url]))
-		{
-			echo $sbm[$i->url];
-		}
-	}
-}
+    <div id="working" x-data="spinner_box()" class="py-3">
+        <i
+            class="fa-solid fa-lg fa-slash text-gray-600"
+            :class="{'fa-spin text-amber-500': working}"
+            x-on:working.window="run($event.detail)"
+            x-cloak
+        ></i>
+    </div>
 
-// user menu
-$um = array(
-	'widgets' 	=> '<a href="'.BASE_URL.'widgets" title="'._WIDGETS.'"><i class="fas fa-paperclip fa-lg"></i></a>',
-	'help' 		=> '<a href="'.BASE_URL.'help" title="'._HELP_ON_LINE.'"><i class="fas fa-question fa-lg"></i></a>',
-	'profile' 	=> '<a href="'.BASE_URL.'profile" title="'.ucfirst($_SESSION['username']).' '._PROFILE.'"><i class="fas fa-user fa-lg"></i></a>'
-);
+    <header id="head" class="flex bg-gray-700 px-3 py-2">
+        <div class="flex-none w-18">
+            <a href="<?php echo BASE_URL ?>" title="Home page">
+                <img src="<?php echo THEME_URL ?>img/x3cms_light_small.png" class="max-h-8 inline-block align-bottom " alt="X3 CMS"/> <span class="text-gray-100">&nbsp;CMS</span>
+            </a>
+        </div>
 
-if ($_SESSION['xuid'] === 1)
-{
-    $um['info'] = '<a href="'.BASE_URL.'info" title="'._ABOUT.'"><i class="fas fa-info fa-lg"></i></a>';
-}
-
-if (!empty($menus['admin_user']))
-{
-	foreach ($menus['admin_user'] as $i)
-	{
-		if (isset($um[$i->url]))
-		{
-			echo $um[$i->url];
-		}
-	}
-}
-?>
-		<a class="no_link" href="<?php echo BASE_URL ?>login/logout" title="<?php echo _LOGOUT ?>"><i class="fas fa-power-off fa-lg"></i></a>
-		...
-<?php
-// languages
-if ($langs)
-{
-	foreach ($langs as $i)
-	{
-		echo '<a class="no_link small" href="'.ROOT.$i->code.'/admin/" title="'.$i->language.'">'.$i->code.'</a>';
-	}
-}
-
-if ($_SESSION['xuid'] == 1 && (DEVEL || DEBUG))
-{
-	echo '...'.BR.BR;
-	if (DEVEL) echo '<a class="orange" href="'.BASE_URL.'sites/config/1" title="'._DEVEL_MODE.'"><i class="fas fa-code fa-lg"></i></a>';
-	if (DEBUG) echo '<a class="orange" href="'.BASE_URL.'sites/config/1" title="'._DEBUG_MODE.'"><i class="fas fa-wrench fa-lg"></i></a>';
-}
-?>
-		</div>
-	</aside>
-
-	<aside id="workarea">
-		<div id="toolbar" class="band small">
-			<div id="page-title" class="two-fifth pad-left xs-hidden hide-x">Home</div>
-			<div id="filters" class="three-fifth xs-one-whole aright pad-right"></div>
-		</div>
+        <div class="flex-auto text-right text-gray-100 text-xs pr-4">
+            <?php echo _PUBLIC_SIDE ?>: <a class="link" href="<?php echo $this->site->site->domain ?>" title="<?php echo _PUBLIC_SIDE ?>"><?php echo $this->site->site->domain ?></a><br />
+            <?php echo _LOGGED_AS ?>: <b><?php echo $_SESSION['username'] ?></b>
+        </div>
+    </header>
 <?php
 if (!$this->site->site->xon)
 {
-    echo '<p class="acenter padded no-gap" style="background:#a00;color:#fff;"><b>'._MAINTENANCE_MODE.'</b></p>';
+    // maintenance alert
+    echo '<div x-data="{
+        bannerVisible: false,
+        bannerVisibleAfter: 500,
+    }"
+    x-show="bannerVisible"
+    x-transition:enter="transition ease-out duration-500"
+    x-transition:enter-start="-translate-y-10"
+    x-transition:enter-end="translate-y-0"
+    x-transition:leave="transition ease-in duration-300"
+    x-transition:leave-start="translate-y-0"
+    x-transition:leave-end="-translate-y-10"
+    x-init="
+        setTimeout(()=>{ bannerVisible = true }, bannerVisibleAfter);
+    "
+    class="h-auto duration-300 ease-out w-full failed text-right px-4 py-2 text-sm" x-cloak>'._MAINTENANCE_MODE.'</div>';
 }
 ?>
-		<div id="topic" class="double-pad-left double-pad-right" role="main"></div>
-	</aside>
-</div>
-<footer id="foot" class="xsmall lightgray double-padded acenter">
-	<p><a href="https://www.x3cms.net" title="X3 CMS">X3 CMS</a> powered by <a href="https://www.cblu.net" title="Cblu.net - Web solutions">Cblu.net</a></p>
+    <main id="main" class="flex flex-row items-stretch bg-gray-300 text-gray-600">
 <?php
-//echo X4Bench_core::info('<p class="xs-hidden xsmall">X4WebApp v. {x4wa_version} &copy; Cblu.net - execution time: {execution_time} - memory usage: {memory_usage} - queries: {queries} - included files: {included_files}</p>');
+// sidebar
+$view = new X4View_core('sidebar');
+$view->lang = X4Route_core::$lang;
+$view->menus = $menus;
+echo $view->render(false);
 ?>
+        <div id="page"
+            class="flex-auto"
+            x-data="page_box()"
+            x-init="pager(start_page)"
+            x-on:pager.window="pager($event.detail)"
+            x-on:setter.window="setter($event.detail)"
+            x-html="content"
+            x-cloak
+        >
+            <div>
+                <div class="px-4 py-3 text-sm">
+                    &nbsp;
+                </div>
 
-</footer>
+                <div
+                    id="topic"
+                    class="px-4 md:px-8 py-3 md:py-5 bg-white rounded-l"
+                >
+                    &nbsp;
+                </div>
+        </div>
+    </main>
+    <footer class="text-center py-4 text-gray-200 text-xs z-10">
+        <p><a href="https://www.x3cms.net" title="X3 CMS">X3 CMS</a> powered by <a href="https://www.cblu.net" title="Cblu.net - Web solutions">Cblu.net</a></p>
+    </footer>
 
-<div id="modal"></div>
+    <div
+        role="dialog"
+        tabindex="-1"
+        class="block fixed top-0 left-0 h-full w-full bg-gray-900 bg-opacity-20 backdrop-blur z-50 xmodal overflow-y-auto overflow-x-hidden outline-none"
+        x-data="xmodal()"
+        x-show="modal"
 
-<script defer src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-<script defer src="<?php echo THEME_URL ?>js/fontawesome-all.min.js"></script>
-<script defer src="<?php echo ROOT ?>files/js/mootools/MooTools-Core-1.6.0-compat-compressed.js" charset="UTF-8"></script>
-<script defer src="<?php echo ROOT ?>files/js/mootools/MooTools-More-1.6.0-compat-compressed.js" charset="UTF-8"></script>
-<script defer src="<?php echo ROOT ?>files/js/mootools/MooDropMenu.js" charset="UTF-8"></script>
-<script defer src="<?php echo ROOT ?>files/js/mootools/simple-modal.js" charset="UTF-8"></script>
-<script>
-var domain = "<?php echo $this->site->site->domain ?>",
-	root = "<?php echo BASE_URL ?>",
-	theme = "",
-	lang = "<?php echo X4Route_core::$lang.'-'.strtoupper(X4Route_core::$lang) ?>",
-	warning = "<?php echo _WARNING ?>",
-	start_page = "<?php echo $start_page ?>",
-	start_title = "<?php echo $start_title ?>",
-    xmaps = [];
-</script>
-<script defer src="<?php echo ROOT ?>files/js/mootools/datepicker.js" charset="UTF-8"></script>
-<?php
-if (X4Route_core::$lang != 'en')
-{
-	// you need a datepicker_locale
-	echo '<script defer src="'.ROOT.'files/js/mootools/datepicker_locales/Locale.'.X4Route_core::$lang.'-'.strtoupper(X4Route_core::$lang).'.DatePicker.js" charset="UTF-8"></script>';
-}
-?>
-<script defer src="<?php echo ROOT ?>files/js/mootools/Lasso.js"></script>
-<script defer src="<?php echo ROOT ?>files/js/mootools/Lasso.Crop.js"></script>
-<?php
-echo (!DEVEL && file_exists(PATH.'themes/'.$this->site->area->theme.'/js/x3ui.min.js'))
-	? '<script defer src="'.THEME_URL.'js/x3ui.min.js"></script>'
-	: '<script defer src="'.THEME_URL.'js/x3ui.js?v=1"></script>'
-?>
-<script defer src="<?php echo ROOT ?>files/js/tinymce/tinymce.min.js"></script>
-<script defer src="<?php echo ROOT ?>files/js/mootools/color-picker.js"></script>
-<script defer src="<?php echo ROOT ?>files/js/mootools/Request.File.js" ></script>
-<script defer src="<?php echo ROOT ?>files/js/mootools/Form.MultipleFileInput.js" ></script>
-<script defer src="<?php echo ROOT ?>files/js/mootools/Form.Upload.js" ></script>
-<script defer src="<?php echo ROOT ?>files/js/mootools/Autocompleter.js"></script>
-<script defer src="<?php echo ROOT ?>files/js/mootools/Autocompleter.Request.js"></script>
-<script defer src="<?php echo ROOT ?>files/js/mootools/Observer.js"></script>
-<script defer src="<?php echo ROOT ?>files/js/mootools/Scrollable.js"></script>
-<script defer src="<?php echo ROOT ?>files/js/jscolor.js"></script>
+        x-on:popup.window="popup($event.detail)"
+        x-on:completed.window="completed($event.detail)"
+        x-on:failed.window="failed($event.detail)"
+        x-cloak
+        x-transition:enter.duration.600ms
+        x-transition:leave.duration.200ms
+    >
+        <div x-html="html_modal" class="max-h-[calc(100%-1rem)]"></div>
+    </div>
+
+
 </body>
 </html>

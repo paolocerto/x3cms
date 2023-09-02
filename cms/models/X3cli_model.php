@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
 
@@ -24,7 +24,7 @@ class X3cli_model extends X4Model_core
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
  ';
@@ -267,7 +267,7 @@ function redirect() {
 
 	/**
 	 * Index method
-	 * If you plan to use the data handled in this pag in only one area set the $id_area default value as you need ((e.g. 2 == public area)
+	 * If you plan to use the data handled in this page in only one area set the $id_area default value as you need ((e.g. 2 == public area)
 	 *
 	 * @param   integer	$id_area  Area ID
 	 * @param   string	$lang     Language code

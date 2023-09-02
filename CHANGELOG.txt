@@ -3,6 +3,33 @@ X3CMS CHANGELOG.txt
 
 ---
 
+september 2023
+
+0.9.99
+    - a new logo
+    - improved UX of the admin side
+    - replaced Mootools with Alpine.js in the admin side
+    - added TailwindCSS on the admin side
+    - reorganized admin interface
+    - rewritten Admin theme with TailwindCSS and Alpine.js
+    - rewritten the default theme with TailwindCSS and Alpine.js
+    - improved Advanced editing with powerful sections
+    - added X3Theme_helper to simplify page construction and grant more freedom
+    - added validation rules
+    - upgraded TinyMCE
+    - added filters feauture to admin views
+    - added bulk actions to admin views
+    - added X3Form_builder to plugins
+    - moved to GPL-3.0 license
+    - replaced Apc with Apcu
+    - removed unused libraries
+    - added vendor folder to use Composer to add libraries
+    - added form extension to move complex forms out of controllers
+    - added configuration script to handle construction of structured data (e.g. see form builder)
+    - improved insertion of plugins in articles
+    - improved and simplified permissions handling
+
+
 october 2015
 
 0.5.3
@@ -18,7 +45,7 @@ october 2015
     - upgraded Tiny MCE
     - upgraded Mootools
     - Upgraded Jquery
-   
+
 
 november 2014
 
@@ -32,7 +59,7 @@ november 2014
 	- fixed XSS vulnerability in search controllers
 	- fixed a CSRF vulnerability when expose the admin side to demo users
 	- added auto translation with Google Translator when import dictionaries from a language to another
-	
+
 
 october 2014
 
@@ -46,7 +73,7 @@ october 2014
 	- fixed a bug in X4Utils helper
 	- added few CSS rules for form styling
 	- fixed bug in file list creation for TinyMCE
-	
+
 
 october 2014
 
@@ -66,9 +93,9 @@ october 2014
 	- fixed two bugs in groups_controller
 	- added scroller in permission detail form
 	- added method last_query in X4Model_core
-	- added chck and parmissions change in refresh_js method
+	- added check and permissions change in refresh_js method
 	- small change in html and added classes to improve style options
-	- added option "inline" to set inline even on only one filed in the form
+	- added option "inline" to set inline even on only one field in the form
 	- added HTML5 tags in extended_valid_elements
 	- Removed missing library in the list of credits
 	- added picker range date in datepicker.js
@@ -132,7 +159,7 @@ october 2014
 	- added an flv_player and swfobject.js script to handle swf files
 	- added edit file option for images, videos, templates and txt and csv files
 	- refactory of X4Files_helper
-	
+
 
 june 2014
 
@@ -251,8 +278,8 @@ june 2014
 	- fixed bugs in install plugins, improved install and added a new check for area compatibility
 	- improved sanitize data
 	- added zip mimetype support and small changes to handling secret files
-	
-		
+
+
 november 2011
 
 0.4.3.1
@@ -410,7 +437,7 @@ february 2011
 	- moved out Validation from Form helper
 	- added method get_page and _call to X4CMS controller to simplify all children class
 	- added post class var in x4route
-	- improved caching 
+	- improved caching
 	- fixed a bugs in default theme
 	- added folder DOCS for X3 CMS Docs generated with PHP Documentor
 	- added table widgets and related translations
@@ -508,9 +535,9 @@ september 2010
 	- modified file section in doform method
 	- modified query in get_related method
 	- added a class for file sections in forms
-	
----	
-	
+
+---
+
 july 2010
 
 0.4.0.3
@@ -652,9 +679,9 @@ march 2010
 	- set utf8 as DEFAULT charset for some tables and fixed wrong area for some records in dictionary table
 
 ---
-	
+
 february 2010
-	
+
 0.4 release candidate 2
 	- fixed a bug in the installer
 	- simplified behavior before installation
@@ -690,7 +717,7 @@ february 2010
 	- modified get_templates method to change the order of templates
 	- added get_categories_by_key method to X4Site_model
 	- added get_article_by_key_and_ctg method
-	
+
 ---
 
 february 2010
@@ -767,13 +794,13 @@ february 2010
 	- fixed bug on multi section compose
 	- set X4Page as subclass of X4Cms
 	- fixed bug when set default area language
-	- fixed bug in change theme	
-	
+	- fixed bug in change theme
+
 ---
 
 november 2009
-	
-0.4 beta 3 
+
+0.4 beta 3
 	- added User_obj class
 	- added some administration page
 	- cleaned domready.js
@@ -858,12 +885,12 @@ november 2009
 	- updated translation about menu order
 	- fixed bug duplicate css rule
 	- modified sitemap construction, now sitemap hide subpages of disabled pages
-	
+
 ---
 
 october 2009
-	
-0.4 beta 2 
+
+0.4 beta 2
 	- X4DB: replaced database driver with PDO (tested only on Mysql).
 	- Completed multi-area management with default folders: you can create private or public areas as you want.
 	- Fixed bug into the Admin theme installer.
@@ -909,11 +936,11 @@ october 2009
 	- added breadcrumb in search results page
 	- fixed bug in pagination
 	- fixed bug on permitted actions
-	
+
 ---
 
 august 2009
-	
-0.4 beta 1 
+
+0.4 beta 1
 	this version is completely different from previous release.
 

@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
 
@@ -17,7 +17,7 @@ if (isset($tinymce))
 echo '<div class="block">';
 
 // title
-if (isset($title)) 
+if (isset($title))
 {
 	echo '<h2>'.$title.'</h2>';
 }
@@ -29,7 +29,7 @@ if (isset($_SESSION['msg']) && !empty($_SESSION['msg']))
 	unset($_SESSION['msg']);
 }
 
-if (isset($msg)) 
+if (isset($msg))
 {
 	echo '<p>'.$msg.'</p>';
 }

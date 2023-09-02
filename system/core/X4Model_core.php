@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		https://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X4WEBAPP
  */
 
@@ -402,6 +402,26 @@ abstract class X4Model_core
 		}
 	}
 
+    /**
+	 * Get a var from a table
+	 * to prevent the loading of different models to make base calls and to optimize queries you can set table and fields
+	 *
+	 * @final
+	 * @return  string
+	 */
+	final public function get_version()
+	{
+		if ($this->db->sql)
+		{
+            // Relational DB
+			return $this->db->query_var('SELECT version()');
+		}
+		else
+		{
+			// Mongo DB
+            // TODO
+        }
+	}
 	/**
 	 * Insert a row in a table
 	 * to prevent the loading of different models to make base calls you can set table
