@@ -4,14 +4,14 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		http://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/agpl.htm
  * @package		X3CMS
  */
- 
+
 /**
  * Controller for Ajax calls
  * An empty controller ready for AJAX
- * 
+ *
  * @package X3CMS
  */
 class Ajax_controller extends X4Cms_controller
@@ -25,6 +25,4 @@ class Ajax_controller extends X4Cms_controller
 	{
 		parent::__construct();
 	}
-	
-
 }

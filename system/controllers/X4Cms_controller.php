@@ -4,27 +4,27 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		http://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/agpl.htm
  * @package		X4WEBAPP
  */
- 
+
 /**
  * X4Cms specialized controller
  *
  * @package		X3CMS
  */
-class X4Cms_controller extends X4Controller_core 
+class X4Cms_controller extends X4Controller_core
 {
 	/**
 	 * @var dictionary model
 	 */
 	protected $dict;
-	
+
 	/**
 	 * @var site model
 	 */
 	protected $site;
-	
+
 	/**
 	 * Constructor
 	 * Set site and dict, define BASE_URL, THEME_URL and X4WebApp version
@@ -36,39 +36,42 @@ class X4Cms_controller extends X4Controller_core
 		parent::__construct();
 		$this->site = new X4Site_model();
 		$this->dict = new X4Dict_model(X4Route_core::$area, X4Route_core::$lang);
-		
+
 		// set the lang if required
 		$lang = (MULTILANGUAGE)
 		    ? X4Route_core::$lang.'/'
 		    : '';
-		
-		// define BASE_URL
-		if (X4Route_core::$area != 'public') 
+
+		// to avoid double define
+		if (!defined('BASE_URL'))
 		{
-			define('BASE_URL', ROOT.$lang.X4Route_core::$area.'/');
+			// define BASE_URL
+			if (X4Route_core::$area != 'public')
+			{
+				define('BASE_URL', ROOT.$lang.X4Route_core::$area.'/');
+			}
+			else
+			{
+				define('BASE_URL', ROOT.$lang);
+			}
+
+			define('RTL', $this->site->site->rtl);
+			define('THEME_URL', ROOT.'themes/'.$this->site->area->theme.'/');
+			define('X4VERSION', 0.5);
+			define('X3VERSION', $this->site->site->version);
 		}
-		else
-		{
-			define('BASE_URL', ROOT.$lang);
-		}
-		
-		define('RTL', $this->site->site->rtl);
-		define('THEME_URL', ROOT.'themes/'.$this->site->area->theme.'/');
-		define('X4VERSION', 0.5);
-		define('X3VERSION', $this->site->site->version);
 	}
-	
+
 	/**
 	 * Get the page information by url
 	 *
 	 * @param	string	$url url/controller name
 	 * @return	object	page object
 	 */
-	public function get_page($url)
+	public function get_page(string $url)
 	{
 		$page = $this->site->get_page(str_replace('_', '-', $url));
-		
-		if ($page) 
+		if ($page)
 		{
 			// return page object
 			return $page;
@@ -79,14 +82,16 @@ class X4Cms_controller extends X4Controller_core
 			$this->__call('', array());
 		}
 	}
-	
+
 	/**
 	 * Action for undefined method
 	 * redirect to msg
-	 *
-	 * @return void
+     *
+	 * @param   string  method name
+	 * @param   array   arguments
+	 * @return  void
 	 */
-	public function __call($method, $arguments)
+	public function __call(string $method, array $args)
 	{
 		header('Location: '.BASE_URL.'msg/message/_page_not_found');
 		die;
@@ -107,6 +112,6 @@ interface X3plugin_controller
 	 * @param   string  $str search string
 	 * @return  void
 	 */
-	public function mod($id_area = 0, $lang = '', $pp = 0, $str = '');
-	
+	public function mod(int $id_area = 0, string $lang = '', int $pp = 0, string $str = '');
+
 }

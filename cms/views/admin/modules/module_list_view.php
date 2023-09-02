@@ -4,13 +4,13 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		http://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/agpl.htm
  * @package		X3CMS
  */
 
 // area switcher
 echo '<div class="aright sbox"><ul class="inline-list">';
-foreach($areas as $i) 
+foreach ($areas as $i)
 {
 	$on = ($i->id == $id_area) ? 'class="on"' : '';
 	echo '<li><a '.$on.' href="'.BASE_URL.'modules/index/'.$i->id.'/'.$i->name.'" title="'._SWITCH_AREA.'">'.ucfirst($i->name).'</a></li>';
@@ -29,82 +29,82 @@ if ($plugged || $pluggable)
 		<th style="width:12em;"><?php echo _ACTIONS ?></th>
 		<th style="width:8em;"></th>
 	</tr>
-	
+
 <?php
-    if ($plugged) 
+    if ($plugged)
     {
         // installed plugins
         echo '<tr><td colspan="4" class="menu">'._INSTALLED_PLUGINS.'</td></tr>';
-        
-        foreach($plugged as $i)
+
+        foreach ($plugged as $i)
         {
-            if ($i->xon) 
+            if ($i->xon)
             {
                 $status = _ON;
                 $on_status = 'orange';
             }
-            else 
+            else
             {
                 $status = _OFF;
                 $on_status = 'gray';
             }
-            
-            if ($i->xlock) 
+
+            if ($i->xlock)
             {
                 $lock = _LOCKED;
                 $lock_status = 'lock';
             }
-            else 
+            else
             {
                 $lock = _UNLOCKED;
                 $lock_status = 'unlock-alt';
             }
-            
-            if ($i->hidden) 
+
+            if ($i->hidden)
             {
                 $hidden = _HIDDEN;
-                $on_hidden = 'inlink';
+                $on_hidden = 'unlink';
             }
-            else 
+            else
             {
                 $hidden = _VISIBLE;
                 $on_hidden = 'link';
             }
-            
+
             $actions = $uninstall = '';
-            
+
             // admin
-            $admin = ($i->admin && $i->level > 0) 
-                ? '<a class="btm" href="'.BASE_URL.$i->name.'/mod/'.$i->id_area.'" title="'.$i->description.'">'.$i->name.'</a>' 
+            $admin = ($i->admin && $i->level > 0)
+                ? '<a class="btm" href="'.BASE_URL.$i->name.'/mod/'.$i->id_area.'" title="'.$i->title.'">'.$i->name.'</a>'
                 : '<strong>'.$i->name.'</strong>';
-                
+
             // check permission
-            if (($i->level > 2 && $i->xlock == 0) || $i->level == 4) 
+            if (($i->level > 2 && $i->xlock == 0) || $i->level == 4)
             {
                 $actions = '<a class="btl" href="'.BASE_URL.'modules/set/xon/'.$i->id.'/'.(($i->xon+1)%2).'" title="'._STATUS.' '.$status.'"><i class="far fa-lightbulb fa-lg '.$on_status.'"></i></a>';
-                
+
                 // admin user
-                if ($i->level == 4 && $i->adminlevel > 1 && $uninstall)
+                if ($i->level == 4 && $i->adminlevel > 1)
                 {
-                    $uninstall ='<a class="btl" href="'.BASE_URL.'modules/set/xlock/'.$i->id.'/'.(($i->xlock+1)%2).'" title="'._STATUS.' '.$lock.'"><i class="fas fa-'.$lock_status.' fa-lg"></i></a> 
+                    $uninstall = '<a class="btl" href="'.BASE_URL.'modules/set/xlock/'.$i->id.'/'.(($i->xlock+1)%2).'" title="'._STATUS.' '.$lock.'"><i class="fas fa-'.$lock_status.' fa-lg"></i></a>
                         <a class="bta" href="'.BASE_URL.'modules/uninstall/'.$i->id.'" title="'._UNINSTALL.'"><i class="fas fa-upload fa-lg"></i></a>';
                     $actions .= '<a class="btl" href="'.BASE_URL.'modules/set/hidden/'.$i->id.'/'.(($i->hidden+1)%2).'" title="'._STATUS.' '.$hidden.'"><i class="fas fa-'.$on_hidden.' fa-lg"></i></a>';
                 }
-                
+
                 // configurable
-                if ($i->configurable) 
+                if ($i->configurable)
                 {
                     $actions .= ' <a class="bta" href="'.BASE_URL.'modules/config/'.$i->id.'" title="'._CONFIG.'"><i class="fas fa-cogs fa-lg"></i></a>';
                 }
             }
-            
+
             // module instructions
-            $help = (file_exists(PATH.'plugins/'.$i->name.'/instructions_'.X4Route_core::$lang.'.txt')) 
+            $help = (file_exists(PATH.'plugins/'.$i->name.'/instructions_'.X4Route_core::$lang.'.txt'))
                 ? '<a class="bta" href="'.BASE_URL.'modules/help/'.$i->name.'/'.X4Route_core::$lang.'" title="'._INSTRUCTIONS.'"><i class="fas fa-info fa-lg"></i></a>'
                 : '';
-            
+
             echo '<tr>
-                    <td><span class="small xs-hidden">'.$i->version._TRAIT_.'</span> '.$admin.' <span class="small xs-hidden">'._TRAIT_.$i->description.'</span></td>
+                    <td><span class="small xs-hidden">'.$i->version._TRAIT_.'</span> '.$admin.' <span class="small xs-hidden">'._TRAIT_.$i->title.'</span></td>
                     <td>'.$help.'</td>
                     <td>'.$actions.'</td>
                     <td class="aright">'.$uninstall.'</td>
@@ -113,19 +113,19 @@ if ($plugged || $pluggable)
     }
 
     // installable plugin
-    if ($pluggable && $_SESSION['level'] == 4) 
+    if ($pluggable && $_SESSION['level'] == 4)
     {
         echo '<tr><td colspan="4" class="menu">'._INSTALLABLE_PLUGINS.'</td></tr>';
-        foreach($pluggable as $i)
+        foreach ($pluggable as $i)
         {
             $name = str_replace(PATH.'plugins/', '', $i);
             $install = '<a class="btl" href="'.BASE_URL.'modules/install/'.$area->id.'/'.$name.'" title="'._INSTALL.'"><i class="fas fa-download fa-lg"></i></a>';
-            
+
             // module instructions
-            $help = (file_exists(PATH.'plugins/'.$name.'/instructions_'.X4Route_core::$lang.'.txt')) 
+            $help = (file_exists(PATH.'plugins/'.$name.'/instructions_'.X4Route_core::$lang.'.txt'))
                 ? '<a class="bta" href="'.BASE_URL.'modules/help/'.$name.'/'.X4Route_core::$lang.'" title="'._INSTRUCTIONS.'"><i class="fas fa-info fa-lg"></i></a>'
                 : '';
-                
+
             echo '<tr>
                     <td><strong>'.$name.'</strong></td>
                     <td>'.$help.'</td>
@@ -147,7 +147,7 @@ else
 <script>
 window.addEvent('domready', function()
 {
-	X3.content('filters','modules/filter', '<?php echo X4Utils_helper::navbar($navbar, ' . ', false) ?>');
+	X3.content('filters','modules/filter', '<?php echo X4Theme_helper::navbar($navbar, ' . ', false) ?>');
 	buttonize('topic', 'bta', 'modal');
 	buttonize('topic', 'btm', 'topic');
 	actionize('topic',  'btl', 'topic', escape('modules/index/<?php echo $id_area.'/'.$area->name ?>'));

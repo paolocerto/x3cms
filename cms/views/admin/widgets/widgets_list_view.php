@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		http://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/agpl.htm
  * @package		X3CMS
  */
 ?>
@@ -20,25 +20,25 @@ if ($items)
 		<th style="width:4em;"></th>
 	</tr></table>
 	<ul id="sortable" class="nomargin zebra">';
-	
+
 	$order = array();
 	$n = sizeof($items);
-	foreach($items as $i)
+	foreach ($items as $i)
 	{
-		if ($i->xon) 
+		if ($i->xon)
 		{
 			$status = _ON;
 			$on_status = 'orange';
 		}
-		else 
+		else
 		{
 			$status = _OFF;
 			$on_status = 'gray';
 		}
-		
+
 		$actions = ' <a class="btl" href="'.BASE_URL.'widgets/set/xon/'.$i->id.'/'.(($i->xon+1)%2).'" title="'._STATUS.' '.$status.'"><i class="far fa-lightbulb fa-lg '.$on_status.'"></i></a> ';
 		$delete = ' <a class="bta" href="'.BASE_URL.'widgets/delete/'.$i->id.'" title="'._DELETE.'"><i class="fas fa-trash fa-lg red"></i></a>';
-		
+
 		echo '<li id="'.$i->id.'">
 				<table><tr>
 				<td style="width:80%">'.$i->area._TRAIT_.$i->description.'</td>
@@ -47,9 +47,9 @@ if ($items)
 				</tr></table></li>';
 		$order[] = $i->id;
 	}
-	
+
 	$o = implode(',', $order);
-	
+
 	echo '</ul>
 		<input type="hidden" name="sort_order" id="sort_order" value="'.$o.'" />
 		</form>';

@@ -22,9 +22,9 @@
 
 (function(Popcorn) {
 
-	var JQUERY_SCRIPT = 'http://ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js', // Used if jQuery not already present.
-	JPLAYER_SCRIPT = 'http://www.jplayer.org/2.4.0/js/jquery.jplayer.min.js', // Used if jPlayer not already present.
-	JPLAYER_SWFPATH = 'http://www.jplayer.org/2.4.0/js/Jplayer.swf', // Used if not specified in jPlayer options via SRC Object.
+	var JQUERY_SCRIPT = 'https://ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js', // Used if jQuery not already present.
+	JPLAYER_SCRIPT = 'https://www.jplayer.org/2.4.0/js/jquery.jplayer.min.js', // Used if jPlayer not already present.
+	JPLAYER_SWFPATH = 'https://www.jplayer.org/2.4.0/js/Jplayer.swf', // Used if not specified in jPlayer options via SRC Object.
 	SOLUTION = 'html,flash', // The default solution option.
 	DEBUG = false, // Decided to leave the debugging option and console output in for the time being. Overhead is trivial.
 	jQueryDownloading = false, // Flag to stop multiple instances from each pulling in jQuery, thus corrupting it.

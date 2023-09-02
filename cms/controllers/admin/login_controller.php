@@ -4,23 +4,23 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		http://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/agpl.htm
  * @package		X3CMS
  */
- 
+
 /**
  * Login Controller
- * 
+ *
  * @package X3CMS
  */
-class Login_controller extends X4Cms_controller 
+class Login_controller extends X4Cms_controller
 {
 	/*
 	 * List of admitted IP addresses
 	 * If you want to permit the login to a set of IP addresses
 	 */
 	protected $admitted = array(); // array('168.192.0.1', '192.168.0.3');
-	
+
 	/**
 	 * Constructor
 	 *
@@ -29,7 +29,7 @@ class Login_controller extends X4Cms_controller
 	public function __construct()
 	{
 		parent::__construct();
-		
+
 		// check for locked login
 		if (!empty($this->admitted))
 		{
@@ -41,7 +41,7 @@ class Login_controller extends X4Cms_controller
 			}
 		}
 	}
-	
+
 	/**
 	 * Login form
 	 *
@@ -57,39 +57,39 @@ class Login_controller extends X4Cms_controller
 		else
 		{
 			// initialize failure counter
-			if (!isset($_SESSION['failed'])) 
-			{	
+			if (!isset($_SESSION['failed']))
+			{
 				$_SESSION['failed'] = 0;
 			}
-			
+
 			// load dictionary
 			$this->dict->get_wordarray(array('login'));
-			
+
 			// get page
 			$page = $this->get_page('login');
-			
+
 			// contents
-			$view = new X4View_core(X4Utils_helper::set_tpl($page->tpl));
+			$view = new X4View_core(X4Theme_helper::set_tpl($page->tpl));
 			$view->page = $page;
 			$view->menus = array();
 			$view->content = new X4View_core('login');
-			
+
 			// check if user have used remember me
-			if (isset($_COOKIE[COOKIE.'_login'])) 
+			if (isset($_COOKIE[COOKIE.'_login']))
 			{
 				list($usr, $hidden_pwd) = explode('-', $_COOKIE[COOKIE.'_login']);
 				$pwd = '12345678';
 				$chk = true;
 			}
-			else 
+			else
 			{
 				$usr = $pwd = '';
 				$chk = false;
 			}
-			
+
 			// build the form
 			$fields = array();
-			
+
 			// antispam control
 			$fields[] = array(
 				'label' => null,
@@ -99,7 +99,7 @@ class Login_controller extends X4Cms_controller
 			);
 			$fields[] = array(
 				'label' => _USERNAME,
-				'type' => 'text', 
+				'type' => 'text',
 				'value' => $usr,
 				'name' => 'username',
 				'rule' => 'required',
@@ -108,94 +108,95 @@ class Login_controller extends X4Cms_controller
 			);
 			$fields[] = array(
 				'label' => _PASSWORD,
-				'type' => 'password', 
+				'type' => 'password',
 				'value' => $pwd,
 				'name' => 'password',
 				'rule' => 'required|minlength§5',
 				'sanitize' => 'string',
 				'extra' => 'class="large"'
 			);
-			
-			if ($chk) 
+
+			if ($chk)
 			{
 				$fields[] = array(
 					'label' => null,
-					'type' => 'hidden', 
+					'type' => 'hidden',
 					'value' => $hidden_pwd,
 					'name' => 'hpwd'
 				);
 			}
-			
+
 			$fields[] = array(
 				'label' => _REMEMBER_ME,
-				'type' => 'checkbox', 
+				'type' => 'checkbox',
 				'value' => '1',
 				'name' => 'remember_me',
 				'checked' => $chk
 			);
-			
+
 			// if site is on line and user is unknown or fails his login add captcha
-			if ($this->site->site->xon && !$chk && isset($_SESSION['failed'])) 
+			if ($this->site->site->xon && !$chk && isset($_SESSION['failed']))
 			{
 				$fields[] = array(
 					'label' => _CAPTCHA,
-					'type' => 'text', 
+					'type' => 'text',
 					'value' => '',
 					'name' => 'captcha',
 					'rule' => 'required|captcha',
 					'suggestion' => _CAPTCHA_MSG,
 					'extra' => 'class="large" autocomplete="off"'
 				);
-				
+
 				$fields[] = array(
 					'label' => null,
-					'type' => 'html', 
-					'value' => '<div id="cha" class="acenter"><img id="captcha_img" src="'.BASE_URL.'captcha/34/45/50" alt="captcha" /></div>',
+					'type' => 'html',
+					'value' => '<div id="cha" class="acenter">
+                        <img id="captcha_img" src="'.BASE_URL.'captcha/34/45/50" alt="captcha" /></div>',
 				);
 				$fields[] = array(
 					'label' => null,
-					'type' => 'html', 
+					'type' => 'html',
 					'value' => '<p class="small"><a href="'.BASE_URL.'captcha/34/45/50" title="reload" id="reload_captcha">'._RELOAD_CAPTCHA.'</a></p>'
 				);
-				
+
 			}
-			
+
 			// if submitted, check control field
 			if (X4Route_core::$post && array_key_exists(strrev('formlogin'), $_POST))
 			{
 				$e = X4Validation_helper::form($fields, 'formlogin');
-				if ($e && !isset($_POST['antispam'])) 
+				if ($e && !isset($_POST['antispam']))
 				{
 					$this->do_login($_POST);
 					die;
 				}
-				else 
+				else
 				{
 					X4Utils_helper::set_error($fields);
 				}
 			}
-			
+
 			// msg
 			if (isset($_SESSION['msg']) && !empty($_SESSION['msg']))
 			{
 				$view->content->msg = $_SESSION['msg'];
 				unset($_SESSION['msg']);
 			}
-			
+
 			// failure message
-			if ($_SESSION['failed']) 
+			if ($_SESSION['failed'])
 			{
-				$view->content->msg = ($_SESSION['failed'] < 5) 
-					? str_replace('XXX', $_SESSION['failed'], _FAILED_X_TIMES) 
+				$view->content->msg = ($_SESSION['failed'] < 5)
+					? str_replace('XXX', $_SESSION['failed'], _FAILED_X_TIMES)
 					: _FAILED_TOO_TIMES;
 			}
-			
+
 			// form builder
 			$view->content->form = X4Form_helper::doform('formlogin', $_SERVER['REQUEST_URI'], $fields, array(null, _LOGIN, 'buttons'));
 		}
 		$view->render(TRUE);
 	}
-	
+
 	/**
 	 * Perform login
 	 *
@@ -203,10 +204,10 @@ class Login_controller extends X4Cms_controller
 	 * @param   array 	$_post _POST array
 	 * @return  void
 	 */
-	private function do_login($_post)
+	private function do_login(array $_post)
 	{
 		// check failure counter
-		if ($_SESSION['failed'] < 5) 
+		if ($_SESSION['failed'] < 5)
 		{
 			// fields to set in sessions
 			$fields = array(
@@ -214,50 +215,51 @@ class Login_controller extends X4Cms_controller
 				'username' => 'username',
 				'id' => 'xuid',
 				'lang' => 'lang',
+                'id_group' => 'id_group',
 				'last_in' => 'last_in',
 				'level' => 'level'
 			);
-			
+
 			// conditions
 			$conditions = array('id_area' => 1, 'username' => $_post['username']);
-			
+
 			// remember me
 			$conditions['password'] = (isset($_post['hpwd']) && $_post['password'] == '12345678')
 				? $_post['hpwd']
 				: X4Utils_helper::hashing($_post['password']);
-				
+
 			// log in
 			$login = X4Auth_helper::log_in(
-				'users', 
-				$conditions, 
-				$fields, 
+				'users',
+				$conditions,
+				$fields,
 				true,   // last login
 				true    // haskey
 			);
-			
+
 			if ($login)
 			{
 				// post login operations
 				$_SESSION['site'] = SITE;
 				$_SESSION['id_area'] = 1;	// admin AREA ID
-				
+
 				// set cookie for remember me
-				if (isset($_post['remember_me'])) 
+				if (isset($_post['remember_me']))
 				{
 					setcookie(COOKIE.'_login', $conditions['username'].'-'.$conditions['password'], time() + 2592000, '/', $_SERVER['HTTP_HOST']);
 				}
-				
+
 				// refactory permissions
 				$mod = new Permission_model();
 				$mod->refactory($_SESSION['xuid']);
-				
+
 				// log
 				if (LOGS)
 				{
 					$mod = new X4Auth_model('users');
 					$mod->logger($_SESSION['xuid'], 1, 'users', 'log in');
 				}
-				
+
 				// redirect
 				header('Location: '.$this->site->site->domain.'/'.$_SESSION['lang'].'/admin');
 				die;
@@ -266,7 +268,7 @@ class Login_controller extends X4Cms_controller
 			{
 				// increase failure counter
 				$_SESSION['failed']++;
-				
+
 				if (LOGS)
 				{
 					$mod = new X4Auth_model('users');
@@ -274,12 +276,12 @@ class Login_controller extends X4Cms_controller
 				}
 			}
 		}
-		
+
 		// redirect
 		header('Location: '.BASE_URL.'login');
 		die;
 	}
-	
+
 	/**
 	 * Perform logout
 	 *
@@ -287,10 +289,9 @@ class Login_controller extends X4Cms_controller
 	 */
 	public function logout()
 	{
-		X4Auth_helper::log_out();
-		
+		unset($_COOKIE[COOKIE.'_hash']);
 		setcookie(COOKIE.'_hash', '', time() - 3600, '/', $_SERVER['HTTP_HOST']);
-		
+
 		// log
 		if (LOGS)
 		{
@@ -300,12 +301,14 @@ class Login_controller extends X4Cms_controller
 				$mod->logger($_SESSION['xuid'], 1, 'users', 'log out');
 			}
 		}
-		
+
+		X4Auth_helper::log_out();
+
 		// redirect
 		header('Location: '.ROOT);
 		die;
 	}
-	
+
 	/**
 	 * Recovery password
 	 *
@@ -315,16 +318,16 @@ class Login_controller extends X4Cms_controller
 	{
 		// load dictionary
 		$this->dict->get_wordarray(array('login', 'form', 'pwd_recovery'));
-		
+
 		// get page
 		$page = $this->get_page('login/recovery');
-		$view = new X4View_core(X4Utils_helper::set_tpl($page->tpl));
+		$view = new X4View_core(X4Theme_helper::set_tpl($page->tpl));
 		$view->page = $page;
-		
+
 		// get menus
 		$view->menus = array();
 		$view->navbar = array($this->site->get_bredcrumb($page));
-		
+
 		// build the form
 		$fields = array();
 		// antispam control
@@ -336,51 +339,51 @@ class Login_controller extends X4Cms_controller
 		);
 		$fields[] = array(
 			'label' => null,
-			'type' => 'hidden', 
+			'type' => 'hidden',
 			'value' => $page->id_area,
 			'name' => 'id_area'
 		);
 		$fields[] = array(
 			'label' => _MAIL,
-			'type' => 'text', 
+			'type' => 'text',
 			'value' => '',
 			'name' => 'email',
 			'rule' => 'required|mail',
 			'sanitize' => 'string',
 			'extra' => 'class="large"'
 		);
-		
+
 		// if submitted, check control field
 		if (X4Route_core::$post && array_key_exists(strrev('formrecovery'), $_POST))
 		{
 			$e = X4Validation_helper::form($fields, 'formrecovery');
-			
-			if ($e && !isset($_POST['antispam'])) 
+
+			if ($e && !isset($_POST['antispam']))
 			{
 				$this->do_recovery($_POST);
 				die;
 			}
-			else 
+			else
 			{
 				X4Utils_helper::set_error($fields);
 			}
 		}
-		
+
 		// content
 		$view->content = new X4View_core('recovery');
-		
+
 		// msg
 		if (isset($_SESSION['msg']) && !empty($_SESSION['msg']))
 		{
 			$view->content->msg = $_SESSION['msg'];
 			unset($_SESSION['msg']);
 		}
-		
+
 		// form builder
 		$view->content->form = X4Form_helper::doform('formrecovery', $_SERVER['REQUEST_URI'], $fields, array(null, _SEND, 'buttons'));
 		$view->render(TRUE);
 	}
-	
+
 	/**
 	 * Recovery password action
 	 * send an email with a code for reset
@@ -389,46 +392,46 @@ class Login_controller extends X4Cms_controller
 	 * @param   array	$_post POST array
 	 * @return  void
 	 */
-	private function do_recovery($_post)
+	private function do_recovery(array $_post)
 	{
 		// check if users exists
 		$mod = new X4Auth_model('users');
 		$user = $mod->get_user_by_email($_post['id_area'], strtolower($_post['email']));
-		
+
 		if ($user)
 		{
 			if ($user->xon && $user->xlock == 0)
 			{
 				// load dictionary
 				$this->dict->get_wordarray(array('login', 'pwd_recovery'));
-				
-				// create resetting key 
+
+				// create resetting key
 				$md5 = md5($user->last_in.SITE.$user->password);
 				$link = $this->site->site->domain.'/admin/login/reset/'.$user->id.'/'.$md5;
-				
+
 				// send a resetting mail
 				$src = array('XXXLINKXXX', 'XXXDOMAINXXX');
 				$rpl = array($link, $this->site->site->domain);
-				
-				$view = new X4View_core(X4Utils_helper::set_tpl('mail'));
+
+				$view = new X4View_core(X4Theme_helper::set_tpl('mail'));
 				$view->subject = SERVICE.' - '._RECOVERY_SUBJECT;
 				$view->message = str_replace($src, $rpl, _RECOVERY_BODY_CONFIRM);
-				
+
 				// build msg
 				$body = $view->__toString();
 				$msg = mb_convert_encoding($body, 'ISO-8859-1', 'auto');
-						
+
 				// recipients
 				$to = array(array('mail' => $user->mail, 'name' => $user->username));
-				
+
 				$check = X4Mailer_helper::mailto(MAIL, true, $view->subject, $msg, $to, array());
-				
+
 				X4Utils_helper::set_msg($check, _RESET_MSG, _MSG_ERROR);
-				
+
 				header('Location: '.BASE_URL.'login/recovery');
 				die;
 			}
-			
+
 			// log
 			if (LOGS)
 			{
@@ -439,12 +442,12 @@ class Login_controller extends X4Cms_controller
 		{
 			$mod->logger(0, 1, 'users', 'recovery password request from unknown '.$_post['email']);
 		}
-		
+
 		X4Utils_helper::set_msg(false, '', _RECOVERY_PWD_ERROR);
 		header('Location: '.BASE_URL.'login/recovery');
 		die;
 	}
-	
+
 	/**
 	 * Reset password
 	 * send an email with new credentials
@@ -453,44 +456,44 @@ class Login_controller extends X4Cms_controller
 	 * @param   string	$md5 Encrypted verification code
 	 * @return  void
 	 */
-	public function reset($id, $md5)
+	public function reset(int $id, string $md5)
 	{
 		$mod = new X4Auth_model('users');
 		$user = $mod->get_by_id($id, 'users', 'last_in, password, mail, username');
-		if ($user) 
+		if ($user)
 		{
 			// user exists
-			if (md5($user->last_in.SITE.$user->password) == $md5 && (time() - strtotime($user->last_in)) < 604800) 
+			if (md5($user->last_in.SITE.$user->password) == $md5 && (time() - strtotime($user->last_in)) < 604800)
 			{
 				$new_pwd = X4Text_helper::random_string(6);
 				$result = $mod->reset($user->mail, $new_pwd);
-				
+
 				if ($result)
 				{
 					// load dictionary
 					$this->dict->get_wordarray(array('login', 'pwd_recovery'));
-					
+
 					$src = array('XXXUSERNAMEXXX', 'XXXPASSWORDXXX');
 					$rpl = array($user->username, $new_pwd);
-					
-					$view = new X4View_core(X4Utils_helper::set_tpl('mail'));
+
+					$view = new X4View_core(X4Theme_helper::set_tpl('mail'));
 					$view->subject = SERVICE.' - '._RECOVERY_SUBJECT;
 					$view->message = str_replace($src, $rpl, _RECOVERY_BODY_RESET);
-					
+
 					// build msg
 					$body = $view->__toString();
 					$msg = mb_convert_encoding($body, 'ISO-8859-1', 'auto');
-					
+
 					// recipients
 					$to = array(array('mail' => $user->mail, 'name' => $user->username));
-					
+
 					$check = X4Mailer_helper::mailto(MAIL, true, $view->subject, $msg, $to, array());
-					
+
 					X4Utils_helper::set_msg($check, _RECOVERY_PWD_OK, _MSG_ERROR);
 					header('Location: '.BASE_URL.'login/recovery');
 					die;
 				}
-				
+
 				// log
 				if (LOGS)
 				{
@@ -506,10 +509,9 @@ class Login_controller extends X4Cms_controller
 		{
 			$mod->logger($user->id, 1, 'users', 'recovery password attempt from unknown id '.$id);
 		}
-		
+
 		X4Utils_helper::set_msg(false, '', _RECOVERY_PWD_ERROR);
 		header('Location: '.BASE_URL.'login/recovery');
 		die;
 	}
-	
 }

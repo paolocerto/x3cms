@@ -4,10 +4,10 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		http://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/agpl.htm
  * @package		X3CMS
  */
- 
+
 // Bootstrap file
 // Here some configuration and go!
 
@@ -26,8 +26,8 @@ $app_path = 'cms/';
  * Initialize sessions
  */
 ini_set('session.gc_maxlifetime', 3*3600);
-!ini_get('session.auto_start') 
-    ? session_start() 
+!ini_get('session.auto_start')
+    ? session_start()
     : '';
 $SID = session_id();
 
@@ -35,7 +35,7 @@ $SID = session_id();
  * Set a random token
  * Used to verify that the form is executed from the site
  */
-if (!isset($_SESSION['token'])) 
+if (!isset($_SESSION['token']))
 {
 	$_SESSION['token'] = uniqid(rand(),TRUE);
 }
@@ -66,16 +66,16 @@ define('SPATH', PATH.$system_path);
 define('APATH', PATH.$app_path);
 
 /**
- * Define FPATH: the path to files folder
- * Relative path
+ * Define DOM: a code based upon domain name
  */
-define('FPATH', ROOT.$app_path.'files/filemanager/');
+define('_DOMAIN_',  $_SERVER['HTTP_HOST']);   //$_SERVER['SERVER_NAME']);
 
 /**
- * Define PPATH: the path to public folder
- * Relative path
+ * Define FFPATH: the path to file folder
+ * Absolute path
  */
-define('PPATH', PATH.'public/');
+define('FFPATH', PATH.$app_path.'files/');
+
 
 unset($system_app, $app_path, $file, $root, $path);
 
@@ -100,7 +100,7 @@ include(APATH.'config/config.php');
 /**
  * Set Timezone
  */
-if (isset($_SESSION['timezone'])) 
+if (isset($_SESSION['timezone']))
 {
 	date_default_timezone_set($_SESSION['timezone']);
 }

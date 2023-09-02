@@ -31,7 +31,7 @@ while($cycle && $i<$max_cycles)
 {
     $i++;
     if ($path == $base)  $cycle=FALSE;
-    
+
     if (file_exists($path."config.php"))
     {
 	   require_once($path."config.php");
@@ -54,7 +54,7 @@ if (isset($info['extension']) && !(isset($_GET['action']) && $_GET['action']=='d
 {
     die('wrong extension');
 }
-    
+
 if (isset($_GET['action']))
 {
     switch($_GET['action'])
@@ -63,10 +63,10 @@ if (isset($_GET['action']))
             if ($delete_files){
                 unlink($path);
                 if (file_exists($path_thumb)) unlink($path_thumb);
-		    
+
         		$info=pathinfo($path);
         		if ($relative_image_creation){
-        		    foreach($relative_path_from_current_pos as $k=>$path)
+        		    foreach ($relative_path_from_current_pos as $k=>$path)
                     {
                         if ($path!="" && $path[strlen($path)-1]!="/") $path.="/";
 
@@ -76,10 +76,10 @@ if (isset($_GET['action']))
             			}
         		    }
         		}
-        		
+
         		if ($fixed_image_creation)
                 {
-        		    foreach($fixed_path_from_filemanager as $k=>$path)
+        		    foreach ($fixed_path_from_filemanager as $k=>$path)
                     {
             			if ($path!="" && $path[strlen($path)-1] != "/") $path.="/";
 
@@ -101,10 +101,10 @@ if (isset($_GET['action']))
 
         		if (is_dir($path))
                 {
-        		    deleteDir($path);	
+        		    deleteDir($path);
         		    if ($fixed_image_creation)
                     {
-            			foreach($fixed_path_from_filemanager as $k=>$paths){
+            			foreach ($fixed_path_from_filemanager as $k=>$paths){
             			    if ($paths!="" && $paths[strlen($paths)-1] != "/") $paths.="/";
 
             			    $base_dir=$paths.substr_replace($path, '', 0, strlen($current_path));
@@ -124,15 +124,15 @@ if (isset($_GET['action']))
             if ($rename_folders){
                 $name=fix_filename($name,$transliteration,$convert_spaces);
                 $name=str_replace('.','',$name);
-		
+
                 if (!empty($name)){
                     if (!rename_folder($path,$name,$transliteration)) die(lang_Rename_existing_folder);
 
                     rename_folder($path_thumb,$name,$transliteration);
         		    if ($fixed_image_creation){
-            			foreach($fixed_path_from_filemanager as $k=>$paths){
+            			foreach ($fixed_path_from_filemanager as $k=>$paths){
             			    if ($paths!="" && $paths[strlen($paths)-1] != "/") $paths.="/";
-            			    
+
                             $base_dir=$paths.substr_replace($path, '', 0, strlen($current_path));
             			    rename_folder($base_dir,$name,$transliteration);
             			}
@@ -206,7 +206,7 @@ if (isset($_GET['action']))
                     {
                         $info=pathinfo($path);
 
-            			foreach($fixed_path_from_filemanager as $k=>$paths)
+            			foreach ($fixed_path_from_filemanager as $k=>$paths)
                         {
             			    if ($paths!="" && $paths[strlen($paths)-1] != "/") $paths.="/";
 
@@ -230,13 +230,13 @@ if (isset($_GET['action']))
                 if (!empty($name))
                 {
                     if (!duplicate_file($path,$name)) die(lang_Rename_existing_file);
-                    
+
                     duplicate_file($path_thumb,$name);
-        		    
+
                     if ($fixed_image_creation)
                     {
                         $info=pathinfo($path);
-            			foreach($fixed_path_from_filemanager as $k=>$paths)
+            			foreach ($fixed_path_from_filemanager as $k=>$paths)
                         {
             			    if ($paths!="" && $paths[strlen($paths)-1] != "/") $paths.= "/";
 
@@ -256,8 +256,8 @@ if (isset($_GET['action']))
             }
             break;
         case 'paste_clipboard':
-            if ( ! isset($_SESSION['RF']['clipboard_action'], $_SESSION['RF']['clipboard']['path'], $_SESSION['RF']['clipboard']['path_thumb']) 
-                || $_SESSION['RF']['clipboard_action'] == '' 
+            if ( ! isset($_SESSION['RF']['clipboard_action'], $_SESSION['RF']['clipboard']['path'], $_SESSION['RF']['clipboard']['path_thumb'])
+                || $_SESSION['RF']['clipboard_action'] == ''
                 || $_SESSION['RF']['clipboard']['path'] == ''
                 || $_SESSION['RF']['clipboard']['path_thumb'] == '')
             {
@@ -268,7 +268,7 @@ if (isset($_GET['action']))
             $data = $_SESSION['RF']['clipboard'];
             $data['path'] = $current_path.$data['path'];
             $pinfo = pathinfo($data['path']);
-            
+
             // user wants to paste to the same dir. nothing to do here...
             if ($pinfo['dirname'] == rtrim($path, '/')) {
                 die();
@@ -277,7 +277,7 @@ if (isset($_GET['action']))
             // user wants to paste folder to it's own sub folder.. baaaah.
             if (is_dir($data['path']) && strpos($path, $data['path']) !== FALSE){
                 die();
-            } 
+            }
 
             // something terribly gone wrong
             if ($action != 'copy' && $action != 'cut'){
@@ -342,7 +342,7 @@ if (isset($_GET['action']))
             if (is_function_callable('chmod') === FALSE){
                 die(sprintf(lang_Function_Disabled, 'chmod'));
             }
-            
+
             $mode = "0".$mode;
             $mode = octdec($mode);
 
@@ -374,7 +374,7 @@ if (isset($_GET['action']))
             break;
         default:
             die('wrong action');
-    }  
+    }
 }
 
 ?>

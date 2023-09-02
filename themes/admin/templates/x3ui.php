@@ -4,13 +4,13 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		http://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/agpl.htm
  * @package		X3CMS
  */
 
 // X3CMS - admin theme - base view
 header('Content-Type: text/html; charset=utf-8');
-header('X-UA-Compatible: IE=edge,chrome=1');
+header('X-UA-Compatible: IE=edge');
 
 $title = $xkeys = $css = '';
 $description = stripslashes($this->site->site->description);
@@ -19,13 +19,13 @@ if (isset($page)) {
 	$description = (empty($page->description)) ? $description : stripslashes($page->description);
 	$xkeys = stripslashes($page->xkeys);
 	$css = $page->css;
-} 
+}
 
 ?>
 <!DOCTYPE html>
 <html lang="<?php echo X4Route_core::$lang ?>">
 <head>
-<meta charset="utf-8">
+<meta charset="UTF-8">
 
 <title><?php echo $title.$this->site->site->title ?></title>
 <meta name="description" content="<?php echo $description ?>">
@@ -33,22 +33,20 @@ if (isset($page)) {
 <meta name="robots" content="all">
 
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
-<link rel="shortcut icon" href="<?php echo THEME_URL ?>favicon.ico" type="images/x-icon" />
+<link rel="shortcut icon" href="<?php echo THEME_URL ?>favicon.ico" type="image/x-icon" />
 <link rel="stylesheet" href="<?php echo THEME_URL ?>css/fontawesome-all.min.css">
 <link rel="stylesheet" href="<?php echo THEME_URL ?>css/normalize.css">
-<?php
-echo (!DEVEL && file_exists(PATH.'themes/'.$this->site->area->theme.'/css/'.$css.'.min.css'))
-	? '<link rel="stylesheet" href="'.THEME_URL.'css/'.$css.'.min.css">'
-	: '<link rel="stylesheet" href="'.THEME_URL.'css/'.$css.'.css">'
-?>
 
 <?php
-if (RTL) 
+echo (!DEVEL && file_exists(PATH.'themes/'.$this->site->area->theme.'/css/'.$css.'.min.css'))
+	? '<link rel="stylesheet" href="'.THEME_URL.'css/'.$css.'.min.css?v=2">'
+	: '<link rel="stylesheet" href="'.THEME_URL.'css/'.$css.'.css?v=4">';
+
+if (RTL)
 {
 	echo '<link title="normal" rel="stylesheet" href="'.THEME_URL.'/css/rtl.css" media="all" />';
 }
 ?>
-<script src="<?php echo ROOT ?>files/js/modernizr-2.8.2.min.js"></script>
 </head>
 <body>
 <div class="band bdarkgray clearfix">
@@ -76,7 +74,7 @@ $sbm = array(
 
 if (!empty($menus['sidebar']))
 {
-	foreach($menus['sidebar'] as $i)
+	foreach ($menus['sidebar'] as $i)
 	{
 		if (isset($sbm[$i->url]))
 		{
@@ -99,7 +97,7 @@ if ($_SESSION['xuid'] === 1)
 
 if (!empty($menus['admin_user']))
 {
-	foreach($menus['admin_user'] as $i)
+	foreach ($menus['admin_user'] as $i)
 	{
 		if (isset($um[$i->url]))
 		{
@@ -114,7 +112,7 @@ if (!empty($menus['admin_user']))
 // languages
 if ($langs)
 {
-	foreach($langs as $i)
+	foreach ($langs as $i)
 	{
 		echo '<a class="no_link small" href="'.ROOT.$i->code.'/admin/" title="'.$i->language.'">'.$i->code.'</a>';
 	}
@@ -129,7 +127,7 @@ if ($_SESSION['xuid'] == 1 && (DEVEL || DEBUG))
 ?>
 		</div>
 	</aside>
-	
+
 	<aside id="workarea">
 		<div id="toolbar" class="band small">
 			<div id="page-title" class="two-fifth pad-left xs-hidden hide-x">Home</div>
@@ -145,19 +143,21 @@ if (!$this->site->site->xon)
 	</aside>
 </div>
 <footer id="foot" class="xsmall lightgray double-padded acenter">
-	<p><a href="http://www.x3cms.net" title="X3 CMS">X3 CMS</a> powered by <a href="http://www.cblu.net" title="Cblu.net - Web solutions">Cblu.net</a></p>
-<?php			
+	<p><a href="https://www.x3cms.net" title="X3 CMS">X3 CMS</a> powered by <a href="https://www.cblu.net" title="Cblu.net - Web solutions">Cblu.net</a></p>
+<?php
 //echo X4Bench_core::info('<p class="xs-hidden xsmall">X4WebApp v. {x4wa_version} &copy; Cblu.net - execution time: {execution_time} - memory usage: {memory_usage} - queries: {queries} - included files: {included_files}</p>');
 ?>
 
 </footer>
 
 <div id="modal"></div>
-<script src="<?php echo THEME_URL ?>js/fontawesome-all.min.js"></script>
-<script src="<?php echo ROOT ?>files/js/mootools/MooTools-Core-1.6.0-compat-compressed.js" charset="UTF-8"></script>
-<script src="<?php echo ROOT ?>files/js/mootools/MooTools-More-1.6.0-compat-compressed.js" charset="UTF-8"></script>
-<script src="<?php echo ROOT ?>files/js/mootools/MooDropMenu.js" charset="UTF-8"></script>
-<script src="<?php echo ROOT ?>files/js/mootools/simple-modal.js" charset="UTF-8"></script>
+
+<script defer src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script defer src="<?php echo THEME_URL ?>js/fontawesome-all.min.js"></script>
+<script defer src="<?php echo ROOT ?>files/js/mootools/MooTools-Core-1.6.0-compat-compressed.js" charset="UTF-8"></script>
+<script defer src="<?php echo ROOT ?>files/js/mootools/MooTools-More-1.6.0-compat-compressed.js" charset="UTF-8"></script>
+<script defer src="<?php echo ROOT ?>files/js/mootools/MooDropMenu.js" charset="UTF-8"></script>
+<script defer src="<?php echo ROOT ?>files/js/mootools/simple-modal.js" charset="UTF-8"></script>
 <script>
 var domain = "<?php echo $this->site->site->domain ?>",
 	root = "<?php echo BASE_URL ?>",
@@ -165,32 +165,33 @@ var domain = "<?php echo $this->site->site->domain ?>",
 	lang = "<?php echo X4Route_core::$lang.'-'.strtoupper(X4Route_core::$lang) ?>",
 	warning = "<?php echo _WARNING ?>",
 	start_page = "<?php echo $start_page ?>",
-	start_title = "<?php echo $start_title ?>";
+	start_title = "<?php echo $start_title ?>",
+    xmaps = [];
 </script>
-<script src="<?php echo ROOT ?>files/js/mootools/datepicker.js" charset="UTF-8"></script>
+<script defer src="<?php echo ROOT ?>files/js/mootools/datepicker.js" charset="UTF-8"></script>
 <?php
 if (X4Route_core::$lang != 'en')
 {
 	// you need a datepicker_locale
-	echo '<script src="'.ROOT.'files/js/mootools/datepicker_locales/Locale.'.X4Route_core::$lang.'-'.strtoupper(X4Route_core::$lang).'.DatePicker.js" charset="UTF-8"></script>';
+	echo '<script defer src="'.ROOT.'files/js/mootools/datepicker_locales/Locale.'.X4Route_core::$lang.'-'.strtoupper(X4Route_core::$lang).'.DatePicker.js" charset="UTF-8"></script>';
 }
 ?>
-<script src="<?php echo ROOT ?>files/js/mootools/Lasso.js"></script>
-<script src="<?php echo ROOT ?>files/js/mootools/Lasso.Crop.js"></script>
-<script src="<?php echo ROOT ?>files/js/swfobject.js"></script>
+<script defer src="<?php echo ROOT ?>files/js/mootools/Lasso.js"></script>
+<script defer src="<?php echo ROOT ?>files/js/mootools/Lasso.Crop.js"></script>
 <?php
 echo (!DEVEL && file_exists(PATH.'themes/'.$this->site->area->theme.'/js/x3ui.min.js'))
-	? '<script src="'.THEME_URL.'js/x3ui.min.js"></script>'
-	: '<script src="'.THEME_URL.'js/x3ui.js"></script>'
+	? '<script defer src="'.THEME_URL.'js/x3ui.min.js"></script>'
+	: '<script defer src="'.THEME_URL.'js/x3ui.js?v=1"></script>'
 ?>
-<script src="<?php echo ROOT ?>files/js/tinymce/tinymce.min.js"></script>
-<script src="<?php echo ROOT ?>files/js/mootools/color-picker.js"></script>
-<script src="<?php echo ROOT ?>files/js/mootools/Request.File.js" ></script>
-<script src="<?php echo ROOT ?>files/js/mootools/Form.MultipleFileInput.js" ></script>
-<script src="<?php echo ROOT ?>files/js/mootools/Form.Upload.js" ></script>
-<script src="<?php echo ROOT ?>files/js/mootools/Autocompleter.js"></script>
-<script src="<?php echo ROOT ?>files/js/mootools/Autocompleter.Request.js"></script>
-<script src="<?php echo ROOT ?>files/js/mootools/Observer.js"></script>
-<script src="<?php echo ROOT ?>files/js/mootools/Scrollable.js"></script>
+<script defer src="<?php echo ROOT ?>files/js/tinymce/tinymce.min.js"></script>
+<script defer src="<?php echo ROOT ?>files/js/mootools/color-picker.js"></script>
+<script defer src="<?php echo ROOT ?>files/js/mootools/Request.File.js" ></script>
+<script defer src="<?php echo ROOT ?>files/js/mootools/Form.MultipleFileInput.js" ></script>
+<script defer src="<?php echo ROOT ?>files/js/mootools/Form.Upload.js" ></script>
+<script defer src="<?php echo ROOT ?>files/js/mootools/Autocompleter.js"></script>
+<script defer src="<?php echo ROOT ?>files/js/mootools/Autocompleter.Request.js"></script>
+<script defer src="<?php echo ROOT ?>files/js/mootools/Observer.js"></script>
+<script defer src="<?php echo ROOT ?>files/js/mootools/Scrollable.js"></script>
+<script defer src="<?php echo ROOT ?>files/js/jscolor.js"></script>
 </body>
 </html>

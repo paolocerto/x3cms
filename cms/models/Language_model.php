@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		http://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/agpl.htm
  * @package		X3CMS
  */
 
@@ -25,7 +25,7 @@ class Language_model extends X4Model_core
 	{
 		parent::__construct('languages');
 	}
-	
+
 	/**
 	 * Get languages
 	 * Join with privs table
@@ -33,13 +33,13 @@ class Language_model extends X4Model_core
 	 * @param   integer $xon Language status
 	 * @return  array	array of objects
 	 */
-	public function get_languages($xon = 2)
+	public function get_languages(int $xon = 2)
 	{
 		// condition
-		$where = ($xon < 2) 
-			? ' WHERE l.xon = '.$xon 
+		$where = ($xon < 2)
+			? ' WHERE l.xon = '.$xon
 			: '';
-		
+
 		return $this->db->query('SELECT l.*, IF(p.id IS NULL, u.level, p.level) AS level
 				FROM languages l
 				JOIN uprivs u ON u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('languages').'
@@ -48,7 +48,7 @@ class Language_model extends X4Model_core
 				GROUP BY l.id
 				ORDER BY l.language ASC');
 	}
-	
+
 	/**
 	 * Check if a language already exists
 	 *
@@ -56,44 +56,44 @@ class Language_model extends X4Model_core
 	 * @param   integer $id Language ID
 	 * @return  integer	the number of languages found
 	 */
-	public function exists($array, $id = 0) 
+	public function exists(array $array, int $id = 0)
 	{
 		// condition
-		$where = ($id == 0) 
-			? '' 
-			: ' AND id <> '.intval($id);
-			
-		return $this->db->query_var('SELECT COUNT(id) 
-			FROM languages 
+		$where = ($id == 0)
+			? ''
+			: ' AND id <> '.$id;
+
+		return $this->db->query_var('SELECT COUNT(id)
+			FROM languages
 			WHERE (language = '.$this->db->escape($array['language']).' OR code = '.$this->db->escape($array['code']).') '.$where);
 	}
-	
+
 	/**
 	 * Delete language
 	 *
 	 * @param   integer $id Language ID
 	 * @return  integer	the number of languages found
 	 */
-	public function delete_lang($id)
+	public function delete_lang(int $id)
 	{
 		// get object
 		$lang = $this->get_by_id($id);
-		
+
 		// build queries
 		$sql = array();
-		
+
 		// clear privs table
 		$sql[] = 'DELETE p.* FROM privs p JOIN dictionary d ON d.id = p.id_what AND d.lang = '.$this->db->escape($lang->code).' WHERE p.what = \'dictionary\'';
-			
+
 		// clear dictionary table
 		$sql[] = 'DELETE FROM dictionary WHERE lang = '.$this->db->escape($lang->code);
-		
-		// clear language table 
-		$sql[] = 'DELETE FROM languages WHERE id = '.intval($id);
-		
+
+		// clear language table
+		$sql[] = 'DELETE FROM languages WHERE id = '.$id;
+
 		return $this->db->multi_exec($sql);
 	}
-	
+
 	/**
 	 * Get language codes of an area by ID
 	 * Use alang table
@@ -101,19 +101,19 @@ class Language_model extends X4Model_core
 	 * @param   integer $id_area Area ID
 	 * @return  array	Array of strings
 	 */
-	public function get_alang_array($id_area)
+	public function get_alang_array(int $id_area)
 	{
-		$a = $this->db->query('SELECT code FROM alang WHERE id_area = '.intval($id_area).' ORDER BY language ASC');
-		
+		$a = $this->db->query('SELECT code FROM alang WHERE id_area = '.$id_area.' ORDER BY language ASC');
+
 		// populate array
 		$b = array();
-		foreach($a as $i)
+		foreach ($a as $i)
 		{
 			$b[] = $i->code;
 		}
 		return $b;
 	}
-	
+
 	/**
 	 * Get languages by Area ID
 	 * Use alang table
@@ -121,11 +121,11 @@ class Language_model extends X4Model_core
 	 * @param   integer $id_area Area ID
 	 * @return  array	Array of objects
 	 */
-	public function get_alanguages($id_area)
+	public function get_alanguages(int $id_area)
 	{
-		return $this->db->query('SELECT code, language FROM alang WHERE id_area = '.intval($id_area).' ORDER BY language ASC');
+		return $this->db->query('SELECT code, language FROM alang WHERE id_area = '.$id_area.' ORDER BY language ASC');
 	}
-	
+
 	/**
 	 * Set the language associated with an area
 	 * Use alang table
@@ -137,52 +137,55 @@ class Language_model extends X4Model_core
 	 * @param   string 	$predefined predefined Language code
 	 * @return  array
 	 */
-	public function set_alang($id_area, $langs, $predefined)
+	public function set_alang(int $id_area, array $langs, string $predefined)
 	{
 		// get languages setted
-		$setted = $this->db->query('SELECT id, code FROM alang WHERE id_area = '.intval($id_area).' ORDER BY language ASC');
-		
+		$setted = $this->db->query('SELECT id, code FROM alang WHERE id_area = '.$id_area.' ORDER BY language ASC');
+
 		// current situation
 		$set = array();
-		if ($setted) 
+		if ($setted)
 		{
-			foreach($setted as $i) $set[$i->code] = $i->id;
+			foreach ($setted as $i)
+            {
+                $set[$i->code] = $i->id;
+            }
 		}
-		
+
 		// check differences between codes_lang and setted
 		$sql = array();
 		foreach ($langs as $i)
 		{
-			if (!isset($set[$i])) 
+			if (!isset($set[$i]))
 			{
 				// not exists in alang, get language name
 				$a = $this->get_language_by_code($i);
 				// insert query
-				$sql[] = 'INSERT INTO alang (updated, id_area, language, code, rtl, xon) VALUES (NOW(), '.intval($id_area).', '.$this->db->escape($a->language).', '.$this->db->escape($i).', '.intval($a->rtl).', 1)';
+				$sql[] = 'INSERT INTO alang (updated, id_area, language, code, rtl, xon) VALUES (NOW(), '.$id_area.', '.$this->db->escape($a->language).', '.$this->db->escape($i).', '.$a->rtl.', 1)';
 			}
 			unset($set[$i]);
 		}
-		
+
 		// set predefined language
-		$sql[] = 'UPDATE alang SET predefined = 0 WHERE id_area = '.intval($id_area);
-		$sql[] = 'UPDATE alang SET predefined = 1 WHERE id_area = '.intval($id_area).' AND code = '.$this->db->escape($predefined);
-		
+		$sql[] = 'UPDATE alang SET predefined = 0 WHERE id_area = '.$id_area;
+		$sql[] = 'UPDATE alang SET predefined = 1 WHERE id_area = '.$id_area.' AND code = '.$this->db->escape($predefined);
+
 		// delete not confirmed languages
-		foreach($set as $k => $v) $sql[] = 'DELETE FROM alang WHERE id = '.$v;
+		foreach ($set as $k => $v) $sql[] = 'DELETE FROM alang WHERE id = '.$v;
 		$this->db->multi_exec($sql);
 	}
-	
+
 	/**
 	 * Get language by code
 	 *
 	 * @param   string	$code Language code
 	 * @return  object	Language item
 	 */
-	public function get_language_by_code($code)
+	public function get_language_by_code(string $code)
 	{
 		return $this->db->query_row('SELECT language, rtl FROM languages WHERE code = '.$this->db->escape($code));
 	}
-	
+
 	/**
 	 * Get SEO data by Area ID
 	 * Use alang table
@@ -192,17 +195,17 @@ class Language_model extends X4Model_core
 	 * @param   integer	$id_area Area ID
 	 * @return  array	Array of objects
 	 */
-	public function get_seo_data($id_area)
+	public function get_seo_data(int $id_area)
 	{
 		return $this->db->query('SELECT DISTINCT a.*, IF(p.id IS NULL, u.level, p.level) AS level
 				FROM alang a
 				JOIN languages l ON l.code = a.code
-				JOIN uprivs u ON u.id_area = a.id_area AND u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('languages').'
-				LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = l.id AND p.level > 0
-				WHERE a.id_area = '.intval($id_area).'
+				JOIN uprivs u ON u.id_area = a.id_area AND u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('areas').'
+				LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = a.id_area AND p.level > 0
+				WHERE a.id_area = '.$id_area.'
 				ORDER BY a.language ASC');
 	}
-	
+
 	/**
 	 * Update SEO data
 	 * Use alang table
@@ -210,32 +213,33 @@ class Language_model extends X4Model_core
 	 * @param   array	$_post _POST array
 	 * @return  array
 	 */
-	public function update_seo_data($post)
+	public function update_seo_data(array $post)
 	{
 		// build array of queries
 		$sql = array();
-		foreach($post as $id => $i) 
+		foreach ($post as $id => $i)
 		{
 			$update = '';
-			foreach($i as $k => $v) {
+			foreach ($i as $k => $v)
+            {
 				$update .= ', '.addslashes($k).' = '.$this->db->escape($v);
 			}
 			$sql[] = 'UPDATE alang SET updated = NOW() '.$update.' WHERE id = '.intval($id);
 		}
 		return $this->db->multi_exec($sql);
 	}
-	
+
 	/**
 	 * Get RTL value by Language code
 	 *
 	 * @param   string	$lang Language code
 	 * @return  integer
 	 */
-	public function rtl($lang)
+	public function rtl(string $lang)
 	{
-		return $this->db->query_var('SELECT rtl FROM languages WHERE code = '.$this->db->escape($lang)); 
+		return $this->db->query_var('SELECT rtl FROM languages WHERE code = '.$this->db->escape($lang));
 	}
-	
+
 	/**
 	 * Exchange languages in a table and in an area
 	 *
@@ -245,17 +249,17 @@ class Language_model extends X4Model_core
 	 * @param   string	$new_lang
 	 * @return  array
 	 */
-	public function switch_languages($id_area, $table, $old_lang, $new_lang)
+	public function switch_languages(int $id_area, string $table, string $old_lang, string $new_lang)
 	{
 		// build array of queries
 		$sql = array();
-		
+
 		// update items with new_lang with temporary
 		$sql[] = 'UPDATE `'.$table.'` SET lang = \'xx\' WHERE lang = '.$this->db->escape($new_lang);
-		
+
 		// update items with old_lang with new_lang
 		$sql[] = 'UPDATE `'.$table.'` SET lang = '.$this->db->escape($new_lang).' WHERE lang = '.$this->db->escape($old_lang);
-		
+
 		// update items with temporary with old_lang
 		$sql[] = 'UPDATE `'.$table.'` SET lang = '.$this->db->escape($old_lang).' WHERE lang = \'xx\'';
 
@@ -269,7 +273,7 @@ class Language_model extends X4Model_core
  *
  * @package X3CMS
  */
-class Lang_obj 
+class Lang_obj
 {
 	public $language;
 	public $code;

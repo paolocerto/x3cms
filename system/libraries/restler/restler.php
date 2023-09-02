@@ -355,7 +355,7 @@ class Restler
         if (is_null($this->request_format)) {
             $this->request_format = $this->response_format;
         }
-        
+
         if ($this->request_method == 'PUT' || $this->request_method == 'POST') {
             $this->request_data = $this->getRequestData();
         }
@@ -684,11 +684,11 @@ class Restler
             return array();
         }
         $urls = $this->routes[$this->request_method];
-        
+
         if (!$urls) {
             return array();
         }
-        
+
         $found               = FALSE;
         $this->request_data += $_GET;
         $params              = array('request_data' => $this->request_data);
@@ -719,7 +719,7 @@ class Restler
             //echo PHP_EOL."Found $url ";
             //print_r($call);
             $p = $call->defaults;
-            
+
             foreach ($call->arguments as $key => $value) {
                 //echo "$key => $value \n";
                 if (isset($params[$key])) {
@@ -1237,7 +1237,7 @@ class JsonFormat implements iFormat
  * @author     Murray Picton <info@murraypicton.com>
  * @author     R.Arul Kumaran <arul@luracast.com>
  * @copyright  2010 Luracast
- * @license    http://www.gnu.org/licenses/ GNU General Public License
+ * @license    https://www.gnu.org/licenses/ GNU General Public License
  * @link       https://github.com/murraypicton/Doqumentor
  */
 class DocParser
@@ -1390,7 +1390,7 @@ function parse_doc($php_doc_comment)
  * Conveniance function that converts the given object
  * in to associative array, leaves object alone if
  * JsonSerializable interface is detected
- * @param object $object that needs to be converted
+ * @param stdClass $object that needs to be converted
  * @category   Framework
  * @package    restler
  * @subpackage format

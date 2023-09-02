@@ -4,13 +4,13 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		http://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/agpl.htm
  * @package		X3CMS
  */
- 
+
 /**
  * Controller for CLI
- * 
+ *
  * @package X3CMS
  */
 class Create_controller extends X4Cms_controller
@@ -24,7 +24,7 @@ class Create_controller extends X4Cms_controller
 	{
 		parent::__construct();
 	}
-	
+
 	/**
 	 * default method
 	 *
@@ -40,7 +40,7 @@ class Create_controller extends X4Cms_controller
 		    ' - name (name for the object)'.NL.
 		    ' Example: php x3 create controller public "foo bar"'.NL;
 	}
-	
+
 	/**
 	 * Create controller
 	 *
@@ -48,11 +48,11 @@ class Create_controller extends X4Cms_controller
 	 * @param string    $name
 	 * @return void
 	 */
-	public function controller($area, $name)
+	public function controller(string $area, string $name)
 	{
 	    // get the final name
-	    $name = X4Utils_helper::unspace($name, true, true);
-	    
+	    $name = X4Utils_helper::slugify($name, true, true);
+
 	    // check if the object already exists
         if (file_exists(APATH.'controllers/'.$area.'/'.$name.'_controller'.EXT))
         {
@@ -64,7 +64,7 @@ class Create_controller extends X4Cms_controller
 	        // create the controller
 	        $mod = new X3cli_model();
 	        $res = $mod->create_controller($area, $name);
-	        
+
             if ($res)
             {
                 echo NL.'The controller '.$name.' was created successfully!'.NL;
@@ -75,7 +75,7 @@ class Create_controller extends X4Cms_controller
             }
 	    }
 	}
-	
+
 	/**
 	 * Create model
 	 *
@@ -83,11 +83,11 @@ class Create_controller extends X4Cms_controller
 	 * @param string    $name
 	 * @return void
 	 */
-	public function model($area, $name)
+	public function model(string $area, string $name)
 	{
 	    // get the final name
-	    $name = X4Utils_helper::unspace($name, true, true);
-	    
+	    $name = X4Utils_helper::slugify($name, true, true);
+
 	    // check if the object already exists
 	    if (file_exists(APATH.'models/'.$name.'_model'.EXT))
         {
@@ -100,7 +100,7 @@ class Create_controller extends X4Cms_controller
             // create the model
             $mod = new X3cli_model();
 	        $res = $mod->create_model($area, $name);
-	        
+
             if ($res)
             {
                 echo NL.'The model '.$name.' was created successfully!'.NL;
@@ -111,7 +111,7 @@ class Create_controller extends X4Cms_controller
             }
         }
 	}
-	
+
 	/**
 	 * Create view
 	 *
@@ -119,11 +119,11 @@ class Create_controller extends X4Cms_controller
 	 * @param string    $name
 	 * @return void
 	 */
-	public function view($area, $name)
+	public function view(string $area, string $name)
 	{
 	    // get the final name
-	    $name = X4Utils_helper::unspace($name, true, true);
-	    
+	    $name = X4Utils_helper::slugify($name, true, true);
+
 	    // check if the object already exists
         if (file_exists(APATH.'views/'.$area.'/'.$name.'_view'.EXT))
         {
@@ -136,7 +136,7 @@ class Create_controller extends X4Cms_controller
 	        // create the view
 	        $mod = new X3cli_model();
 	        $res = $mod->create_view($area, $name);
-	        
+
             if ($res)
             {
                 echo NL.'The view '.$name.' was created successfully!'.NL;
@@ -147,7 +147,7 @@ class Create_controller extends X4Cms_controller
             }
 	    }
 	}
-	
+
 	/**
 	 * Create a basic dictionary
 	 *
@@ -155,17 +155,17 @@ class Create_controller extends X4Cms_controller
 	 * @param string    $name
 	 * @return void
 	 */
-	public function dictionary($area, $name)
+	public function dictionary(string $area, string $name)
 	{
 	    if ($area == 'admin')
 	    {
             // get the final name
-            $name = X4Utils_helper::unspace($name, true, true);
-            
+            $name = X4Utils_helper::slugify($name, true, true);
+
             // create the dictionary section
             $mod = new X3cli_model();
             $res = $mod->create_dictionary($area, $name);
-                
+
             if (!is_null($res))
             {
                 echo NL.'The dictionary section "'.$name.'" was created successfully!'.NL;
@@ -181,7 +181,7 @@ class Create_controller extends X4Cms_controller
             echo NL.'WARNING: you can create dictionary section only for the "admin" area'.NL;
         }
 	}
-	
+
 	/**
 	 * Create mvc (controller + model + view + dictionary)
 	 *
@@ -189,7 +189,7 @@ class Create_controller extends X4Cms_controller
 	 * @param string    $name
 	 * @return void
 	 */
-	public function mvc($area, $name)
+	public function mvc(string $area, string $name)
 	{
 	    $this->controller($area, $name);
 	    $this->model($area, $name);

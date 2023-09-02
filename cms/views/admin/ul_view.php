@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		http://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/agpl.htm
  * @package		X3CMS
  */
 
@@ -13,14 +13,14 @@
 if ($items)
 {
 	echo '<ul>';
-	foreach($items as $i)
+	foreach ($items as $i)
 	{
 		if ($i->level)
 		{
 			$item = (isset($link))
 				? '<a '.$class.' href="'.$link.'/'.$i->id.'" title="'.$i->$title.'">'.$i->$value.'</a>'
 				: $i->$value;
-				
+
 			echo '<li>'.$item.'</li>';
 		}
 	}

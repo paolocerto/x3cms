@@ -4,16 +4,16 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		http://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/agpl.htm
  * @package		X4WEBAPP
  */
- 
+
 /**
  * Helper for mailing
- * 
+ *
  * @package X4WEBAPP
  */
-class X4Mailer_helper 
+class X4Mailer_helper
 {
 	/**
 	 * Send emails through SwiftMailer
@@ -32,125 +32,144 @@ class X4Mailer_helper
 	 */
 	public static function mailto($from, $html, $subject, $body, $to, $attached = array(), $cc = array(), $bcc = array(), $replyto = array())
 	{
-		X4Core_core::auto_load('swiftmailer_library');
-		
+		//X4Core_core::auto_load('swiftmailer_library');
+        require_once PATH . '/vendor/autoload.php';
 		// Create the Transport
 
 		/*
 		Options are:
-		
+
 		// SMTP server
 		$transport = Swift_SmtpTransport::newInstance('smtp.example.org', 25)
 		  ->setUsername('your username')
 		  ->setPassword('your password')
 		  ;
-		
+
 		// Sendmail
 		$transport = Swift_SendmailTransport::newInstance('/usr/sbin/sendmail -bs');
-		
+
 		// Mail
 		$transport = Swift_MailTransport::newInstance();
 		*/
-		
+
 		// as default uses Mail
-		$transport = Swift_MailTransport::newInstance();
-		
+		//$transport = Swift_MailTransport::newInstance();
+        $transport = new Swift_SendmailTransport('/usr/sbin/sendmail -bs');
+
 		// Create the Mailer using your created Transport
-		$mailer = Swift_Mailer::newInstance($transport);
+		$mailer = new Swift_Mailer($transport);
 
 		$check = true;
-		
+
 		$body = stripslashes($body);
 
 		// Force conversion to utf-8
 		$body = iconv(mb_detect_encoding($body, mb_detect_order(), true), "UTF-8//translit", $body);
-		
+
 		// build mail obj
-		try 
+		try
 		{
 			// create an empty mail
-			$mail = Swift_Message::newInstance();
-			
+			$mail = new Swift_Message();
+
 			// set charset
 			$mail->setCharset('utf-8');
-			
+
 			// Set the From address with an associative array
-			$mail->setFrom(array(MAIL => SERVICE));
-			
+			if (is_array($from))
+			{
+				$mail->setFrom(array($from['mail'] => $from['name']));
+			}
+			else
+			{
+				$mail->setFrom(array($from => SERVICE));
+			}
+
 			// Set the subject
 			$mail->setSubject(self::sanitize($subject));
-			
+
 			// Set the body
-			if ($html) 
-			{	
+			if ($html)
+			{
 				$mail->setBody($body, 'text/html');
 			}
 			else
 			{
 				$mail->setBody($body, 'text/plain');
 			}
-			
+
 			// add attachments
-			if (!empty($attached)) 
+			if (!empty($attached))
 			{
-				foreach($attached as $i)
+                $mod = new Log_model();
+                $mod->logger(1, 1, 'maildebug', 'attach: +++'.json_encode($attached).'+++');
+				foreach ($attached as $i)
 				{
-					$attachment = Swift_Attachment::fromPath($i['file']);
-					
+                    $data = file_get_contents($i['file']);
+
+                    $mod->logger(1, 1, 'maildebug', 'attach: +++'.$i['file'].'+++'.$i['filename'].'+++');
+
 					// set filename if exists
 					if (isset($i['filename']))
 					{
-						$attachment->setFilename($i['filename']);
+                        // NOTE we attach only PDF files
+
+                        $attachment = new Swift_Attachment($data, $i['filename'], 'application/pdf');
 					}
-					
+                    else
+                    {
+                        $attachment = (new Swift_Attachment())->setBody($data);
+                    }
+
 					$mail->attach($attachment);
 				}
 			}
-			
+
 			// add recipients
-			foreach($to as $i) 
+			foreach ($to as $i)
 			{
 				$mail->addTo(self::sanitize(strtolower($i['mail'])), self::sanitize($i['name']));
 			}
-			
+
 			// CC recipients
-			foreach($cc as $i) 
+			foreach ($cc as $i)
 			{
 				$mail->addCc(self::sanitize(strtolower($i['mail'])), self::sanitize($i['name']));
 			}
-			
+
 			// BCC recipients
-			foreach($bcc as $i) 
+			foreach ($bcc as $i)
 			{
 				$mail->addBcc(self::sanitize(strtolower($i['mail'])), self::sanitize($i['name']));
 			}
-			
+
 			if (!empty($replyto))
 			{
 				$mail->setReplyTo($replyto['mail'], $replyto['name']);
 			}
 
 			// if application isn't production STATE
-			$check = (!DEVEL) 
-				? $mailer->send($mail) 
+			$check = (!DEVEL)
+				? $mailer->send($mail)
 				: true;
 		}
-		catch (Exception $e) 
+		catch (Exception $e)
 		{
-			if (DEBUG) 
+            if (DEBUG)
 			{
 				echo $e->getMessage();
 				die;
 			}
 			else
 			{
-				// todo log error message
+			    $mod = new Log_model();
+			    $mod->logger(1, 1, 'maildebug', 'error: +++'.$e->getMessage().'+++');
 			}
 			return DEVEL;
 		}
 		return $check;
 	}
-	
+
 	/**
 	 * Sanitize string
 	 *

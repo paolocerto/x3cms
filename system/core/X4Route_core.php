@@ -4,17 +4,17 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		http://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/agpl.htm
  * @package		X4WEBAPP
  */
 
 /**
  * Router class
  * THIS FILE IS DERIVED FROM KOHANA
- * 
+ *
  * @package X4WEBAPP
  */
-final class X4Route_core 
+final class X4Route_core
 {
 	// this variables hold route data
 	public static $protocol  = 'http';
@@ -28,15 +28,15 @@ final class X4Route_core
 	public static $query_string = '';
 	// POST
 	public static $post = false;
-	
+
 	// URI
 	public static $uri = '';
-	
+
 	/*
 	 * Default configuration
 	 */
 	private static $default = array();
-	
+
 	/*
 	 * Areas for IDs
 	 */
@@ -46,7 +46,7 @@ final class X4Route_core
         'public' => 2,
         'private' => 3
     );
-	
+
 	/*
 	 * Localization options
 	 * Add what you need if is missing
@@ -82,7 +82,7 @@ final class X4Route_core
         'vi' => 'vi_VN',
         'zh' => 'zh_CN'
     );
-	
+
 	/**
 	 * Set the route
 	 *
@@ -91,34 +91,34 @@ final class X4Route_core
 	 * @param   array	default_config (lang, route)
 	 * @return  void
 	 */
-	public static function set_route($request_uri, $default_config = array())
+	public static function set_route(string $request_uri, array $default_config = [])
 	{
 		// set the URI
 		self::$uri = $request_uri;
-	    
+
 		// set default
-		if (empty(self::$default)) 
+		if (empty(self::$default))
 		{
 			self::$default = $default_config;
 		}
-		
+
 		// set proptocol
 		if (isset($_SERVER['HTTPS']))
 		{
 			self::$protocol = 'https';
 		}
-		
+
 		// clean uri string
-		$uri_str = (ROOT != '/') 
+		$uri_str = (ROOT != '/')
 			? trim(str_replace(ROOT, '', $request_uri), '/')
 			: trim($request_uri, '/');
-		
+
 		// set default route
 		if (empty($uri_str))
 		{
 			$uri_str = $default_config['x3default_route'];
 		}
-		
+
 		// handle querystring
 		$us = explode('?', $uri_str);
 		// sanitize
@@ -126,24 +126,24 @@ final class X4Route_core
 		{
 			self::$query_string = $us[1];
 		}
-		
+
 		// check post
 		self::$post = (isset($_POST) && !empty($_POST));
-		
+
 		// uri segments array
 		self::$args = explode('/', $us[0]);
-		
+
 		// check alternative languages
 		if (strlen(self::$args[0]) == 2)
 		{
 			self::$lang = array_shift(self::$args);
 			self::set_locale(self::$lang);
 		}
-		
+
 		// area
-		if (!empty(self::$args)) 
+		if (!empty(self::$args))
 		{
-			if (is_dir(APATH.'controllers/'.self::$args[0])) 
+			if (is_dir(APATH.'controllers/'.self::$args[0]))
 			{
 				// the area has a dedicated folder
 				if (self::$args[0] == 'x3cli')
@@ -173,42 +173,42 @@ final class X4Route_core
 				self::$areas[self::$area] = $default_config[self::$area.'_id'];
 			}
 		}
-		
+
 		// controller
-		if (!empty(self::$args)) 
+		if (!empty(self::$args))
 		{
 			self::$control = array_shift(self::$args);
 		}
-		
+
 		// method
 		if (!empty(self::$args))
 		{
 			self::$method = array_shift(self::$args);
 		}
-		
+
 		// home
-		if (empty(self::$control)) 
+		if (empty(self::$control))
 		{
 			self::$method = self::$control = 'home';
 		}
 	}
-	
+
 	/**
 	 * set the lang
 	 *
 	 * @static
 	 * @param   string	code lang
 	 * @return  void
-	 */ 
+	 */
 	public static function set_lang($code)
 	{
-		if (empty(self::$lang)) 
+		if (empty(self::$lang))
 		{
 		    if (isset(self::$locales[$code]))
 		    {
-                self::$lang = $code;
-                self::set_locale(self::$lang);
-            }
+		        self::$lang = $code;
+		        self::set_locale(self::$lang);
+		    }
             else
             {
                 self::$lang = 'it';
@@ -216,94 +216,86 @@ final class X4Route_core
             }
 		}
 	}
-	
+
 	/**
 	 * set the localization
 	 *
 	 * @static
 	 * @param   string	code lang
 	 * @return  void
-	 */ 
-	public static function set_locale($code)
+	 */
+	public static function set_locale(string $code)
 	{
 	    if (isset(self::$locales[$code]))
 	    {
 	        setlocale(LC_ALL, self::$locales[$code].'.UTF-8');
 	    }
 	}
-	
+
 	/**
 	 * get query string
 	 *
 	 * @static
 	 * @return  array
-	 */ 
+	 */
 	public static function get_query_string()
 	{
-		if (empty(self::$query_string))
-			return array();
-		else
-		{
-			$a = array();
-			$items = explode('&amp;', htmlentities(strip_tags(urldecode(self::$query_string)), ENT_QUOTES | ENT_IGNORE, 'UTF-8', false));
-			
-			foreach($items as $i)
-			{
-				if (!empty($i))
-				{
-					$tok = explode('=', $i);
-					// is a multiselect?
-					$ms = substr($tok[0], 0, -2);
-					if ($tok[0] == $ms.'[]')
-					{
-						// is a multiselect, get an array
-						$a[$ms] = $_GET[$ms];
-					}
-					elseif (isset($tok[1]))
-					{
-						$a[$tok[0]] = trim($tok[1]);
-					}
-				}
-			}
-			return $a;
-		}
+        $a = array();
+        $items = $_GET;
+        // get from URL
+        parse_str(self::$query_string, $uqs);
+        foreach ($items as $k => $v)
+        {
+            if (is_array($v))
+            {
+                // is a multiselect, get an array
+                $a[$k] = $v;
+            }
+            else
+            {
+                $a[$k] = isset($uqs[$k])
+                    ? trim(strip_tags(urldecode($uqs[$k])))
+                    : urldecode($_GET[$k]);
+            }
+        }
+        return $a;
 	}
-	
+
 	/**
 	 * get the route
 	 *
 	 * @static
 	 * @return  string
-	 */ 
+	 */
 	public static function get_route()
 	{
-	    $param = (isset(self::$args[0]) && self::$args[0] == '_default') 
-			? '' 
+	    $param = (isset(self::$args[0]) && self::$args[0] == '_default')
+			? ''
 			: '/'.implode('/', self::$args);
-			
-		$area = (self::$area == 'public') 
-			? '' 
+
+		$area = (self::$area == 'public')
+			? ''
 			: self::$area.'/';
-			
+
 		$lang = (MULTILANGUAGE)
 			? '/'.self::$lang
 			: '';
-			
+
 		return $lang.'/'.$area.self::$control.'/'.self::$method.$param;
 	}
-	
+
 	/**
 	 * redirect to new route
 	 *
 	 * @static
-	 * @param   array	URL Route 
+	 * @param   array	URL Route
 	 * @return  void
-	 */ 
-	public static function redirect($route)
+	 */
+	public static function redirect(array $route)
 	{
 		$old_route = self::get_route();
 		// replace route items
-		foreach($route as $k => $v)
+		foreach ($route as $k => $v)
 		{
 			switch ($k)
 			{
@@ -329,45 +321,49 @@ final class X4Route_core
 		}
 		die;
 	}
-	
+
 	/**
 	 * get the URI
 	 *
 	 * @static
-	 * @param   boolean $query_string 
+	 * @param   boolean $query_string
 	 * @return  string
-	 */ 
-	public static function get_uri($query_string = true)
+	 */
+	public static function get_uri(bool $query_string = true)
 	{
 	    $uri = ($query_string)
 	        ? self::$uri
 	        : str_replace('?'.self::$query_string, '', self::$uri);
-	        
-		return self::$protocol.'://'.$_SERVER['SERVER_NAME'].$uri;
+
+        $port = ($_SERVER['SERVER_PORT'] == 8090)
+            ? ':8090'
+            : '';
+
+		return self::$protocol.'://'.$_SERVER['SERVER_NAME'].$port.$uri;
 	}
-	
+
 	/**
 	 * get controller path
 	 *
 	 * @static
 	 * @return  string
-	 */ 
+	 */
 	public static function controller_path()
 	{
 		$folder = str_replace('-', '_', self::$folder);
 		$control = str_replace('-', '_', self::$control);
-		
-		if (file_exists(APATH.'controllers/'.$folder.'/'.$control.'_controller'.EXT)) 
+
+		if (file_exists(APATH.'controllers/'.$folder.'/'.$control.'_controller'.EXT))
 		{
 			// app controller
 			return APATH.'controllers/'.$folder.'/'.$control.'_controller'.EXT;
 		}
-		elseif (file_exists(PATH.'plugins/'.$control.'/controllers/'.$control.'_controller'.EXT)) 
+		elseif (file_exists(PATH.'plugins/'.$control.'/controllers/'.$control.'_controller'.EXT))
 		{
 			// plugin controller
 			return PATH.'plugins/'.$control.'/controllers/'.$control.'_controller'.EXT;
 		}
-		else 
+		else
 		{
 			// x4page generic controller
 			array_unshift(self::$args, self::$method);
@@ -380,12 +376,16 @@ final class X4Route_core
 	 * get id_area
 	 *
 	 * @static
+     * @param   string $area
 	 * @return  integer
-	 */ 
-	public static function get_id_area()
+	 */
+	public static function get_id_area(string $area = '')
 	{
-	    $mod = new Log_model();
-	    return $mod->find('areas', 'id', array('name' => X4Route_core::$area));
+        $area = $area ?: self::$area;
+
+        return (isset(self::$areas[$area]))
+            ? self::$areas[$area]
+            : self::$default[$area.'_id'];
 	}
 
 }	// End X4Route class

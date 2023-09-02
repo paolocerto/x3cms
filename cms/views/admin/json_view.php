@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		http://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/agpl.htm
  * @package		X3CMS
  */
 
@@ -12,7 +12,7 @@
 header('Content-type: application/json');
 
 $a = array();
-foreach($result as $i) 
+foreach ($result as $i)
 {
 	$a[] = $i->what;
 }

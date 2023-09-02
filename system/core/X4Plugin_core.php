@@ -4,34 +4,35 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		http://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/agpl.htm
  * @package		X4WEBAPP
  */
- 
+
 /**
  * Helper for plugin handling
- * 
+ *
  * @package X4WEBAPP
  */
-class X4Plugin_core 
+class X4Plugin_core
 {
 
 	// dictionary obj
 	protected $dict;
+
 	// site obj
 	protected $site;
-	
+
 	/**
 	 * Set site obj
 	 *
 	 * @param object	Site obj
 	 * @return void
 	 */
-	public function __construct($site)
+	public function __construct(X4Site_model $site)
 	{
 		$this->site = $site;
 	}
-	
+
 	/**
 	 * Set empty arguments for plugin
 	 *
@@ -39,12 +40,12 @@ class X4Plugin_core
 	 * @param array		array of values
 	 * @return void
 	 */
-	public function check_args(&$args, $values)
+	public function check_args(array &$args, array $values)
 	{
 		$n = sizeof($values);
-		for ($i = 0; $i < $n; $i++) 
+		for ($i = 0; $i < $n; $i++)
 		{
-			if (!isset($args[$i]) || empty($args[$i])) 
+			if (!isset($args[$i]) || empty($args[$i]))
 				$args[$i] = $values[$i];
 		}
 	}
@@ -63,18 +64,18 @@ interface X3plugin
 	 * @param	string	$param optional parameter
 	 * @return	string
 	 */
-	public function get_module($page, $args, $param = '');
-	
+	public function get_module(stdClass $page, array $args, string $param = '');
+
 	/**
 	 * call plugin actions
 	 *
 	 * @param   integer $id_area Area ID
 	 * @param   string	$control action name
-	 * @param   mixed	$a
-	 * @param   mixed	$b
-	 * @param   mixed	$c
-	 * @param   mixed	$d
+	 * @param   string	$a
+	 * @param   string	$b
+	 * @param   string	$c
+	 * @param   string	$d
 	 * @return  void
 	 */
-	 public function call_plugin($id_area, $control, $a, $b, $c, $d);
+	 public function plugin(int $id_area, string $control, string $a, string $b, string $c, string $d);
 }

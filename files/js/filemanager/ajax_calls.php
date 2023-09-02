@@ -11,9 +11,9 @@ else {
 	die('Language file is missing!');
 }
 
-if(isset($_GET['action'])) 
+if(isset($_GET['action']))
 {
-    switch($_GET['action']) 
+    switch($_GET['action'])
     {
 		case 'view':
 		    if(isset($_GET['type'])) {
@@ -27,14 +27,14 @@ if(isset($_GET['action']))
 			if(isset($_GET['sort_by'])) {
 				$_SESSION['RF']["sort_by"] = $_GET['sort_by'];
 			}
-			
+
 			if(isset($_GET['descending'])) {
 				$_SESSION['RF']["descending"] = $_GET['descending'] === "TRUE";
 			}
 			break;
 		case 'image_size': // not used
 	    	$pos = strpos($_POST['path'],$upload_dir);
-			if ($pos !== FALSE) 
+			if ($pos !== FALSE)
 			{
 				$info=getimagesize(substr_replace($_POST['path'],$current_path,$pos,strlen($upload_dir)));
 				echo json_encode($info);
@@ -54,7 +54,7 @@ if(isset($_GET['action']))
 			}
 
 		    $image_data = get_file_by_url($_POST['url']);
-		    if ($image_data === FALSE) 
+		    if ($image_data === FALSE)
 		    {
 		        die(lang_Aviary_No_Save);
 		    }
@@ -62,7 +62,7 @@ if(isset($_GET['action']))
 		    file_put_contents($current_path.$_POST['path'].$_POST['name'],$image_data);
 
 		    create_img_gd($current_path.$_POST['path'].$_POST['name'], $thumbs_base_path.$_POST['path'].$_POST['name'], 122, 91);
-		    // TODO something with this function cause its blowing my mind
+		    // TODO: something with this function cause its blowing my mind
 		    new_thumbnails_creation($current_path.$_POST['path'],$current_path.$_POST['path'].$_POST['name'],$_POST['name'],$current_path,$relative_image_creation,$relative_path_from_current_pos,$relative_image_creation_name_to_prepend,$relative_image_creation_name_to_append,$relative_image_creation_width,$relative_image_creation_height,$relative_image_creation_option,$fixed_image_creation,$fixed_path_from_filemanager,$fixed_image_creation_name_to_prepend,$fixed_image_creation_to_append,$fixed_image_creation_width,$fixed_image_creation_height,$fixed_image_creation_option);
 		    break;
 		case 'extract':
@@ -80,28 +80,28 @@ if(isset($_GET['action']))
 				    $zip = new ZipArchive;
 				    if ($zip->open($path) === TRUE) {
 						//make all the folders
-						for($i = 0; $i < $zip->numFiles; $i++) 
-						{ 
+						for($i = 0; $i < $zip->numFiles; $i++)
+						{
 						    $OnlyFileName = $zip->getNameIndex($i);
-						    $FullFileName = $zip->statIndex($i);    
+						    $FullFileName = $zip->statIndex($i);
 						    if (substr($FullFileName['name'], -1, 1) =="/")
 						    {
 								create_folder($base_folder.$FullFileName['name']);
 						    }
 						}
 						//unzip into the folders
-						for($i = 0; $i < $zip->numFiles; $i++) 
-						{ 
+						for($i = 0; $i < $zip->numFiles; $i++)
+						{
 						    $OnlyFileName = $zip->getNameIndex($i);
-						    $FullFileName = $zip->statIndex($i);    
-					    
+						    $FullFileName = $zip->statIndex($i);
+
 						    if (!(substr($FullFileName['name'], -1, 1) =="/"))
 						    {
 								$fileinfo = pathinfo($OnlyFileName);
 								if(in_array(strtolower($fileinfo['extension']),$ext))
 								{
-								    copy('zip://'. $path .'#'. $OnlyFileName , $base_folder.$FullFileName['name'] ); 
-								} 
+								    copy('zip://'. $path .'#'. $OnlyFileName , $base_folder.$FullFileName['name'] );
+								}
 						    }
 						}
 						$zip->close();
@@ -132,7 +132,7 @@ if(isset($_GET['action']))
 					die(lang_Zip_Invalid);
 		    }
 		    break;
-		case 'media_preview':    
+		case 'media_preview':
 			$preview_file = $_GET["file"];
 			$info = pathinfo($preview_file);
 			?>
@@ -189,11 +189,11 @@ if(isset($_GET['action']))
 
 				<script type="text/javascript">
 				    $(document).ready(function(){
-						
+
 				      $("#jquery_jplayer_1").jPlayer({
 				        ready: function () {
 				          $(this).jPlayer("setMedia", {
-					    title:"<?php $_GET['title']; ?>",  
+					    title:"<?php $_GET['title']; ?>",
 				            mp3: "<?php echo $preview_file; ?>",
 				            m4a: "<?php echo $preview_file; ?>",
 					    oga: "<?php echo $preview_file; ?>",
@@ -212,14 +212,14 @@ if(isset($_GET['action']))
 			<?php
 			} elseif(in_array(strtolower($info['extension']), $ext_video)) {
 			?>
-			    
+
 			    <script type="text/javascript">
 			    $(document).ready(function(){
-					
+
 			      $("#jquery_jplayer_1").jPlayer({
 			        ready: function () {
 			          $(this).jPlayer("setMedia", {
-				    title:"<?php $_GET['title']; ?>",  
+				    title:"<?php $_GET['title']; ?>",
 			            m4v: "<?php echo $preview_file; ?>",
 			            ogv: "<?php echo $preview_file; ?>"
 			          });
@@ -230,10 +230,10 @@ if(isset($_GET['action']))
 				smoothPlayBar: true,
 				keyEnabled: false
 			    });
-				  
+
 			    });
 			  </script>
-			    
+
 			<?php
 			}
 			break;
@@ -292,7 +292,7 @@ if(isset($_GET['action']))
 			{
 				die(sprintf(lang_File_Permission_Not_Allowed, (is_dir($path) ? lcfirst(lang_Folders) : lcfirst(lang_Files))));
 			}
-			else 
+			else
 			{
 				$perm = decoct(fileperms($path) & 0777);
 				$perm_user = substr($perm, 0, 1);
@@ -405,10 +405,10 @@ if(isset($_GET['action']))
 				$allowed_file_exts = array();
 			}
 
-			if (!in_array($info['extension'], $allowed_file_exts) 
-				|| !isset($is_allowed) 
+			if (!in_array($info['extension'], $allowed_file_exts)
+				|| !isset($is_allowed)
 				|| $is_allowed === FALSE
-				|| !is_readable($selected_file)) 
+				|| !is_readable($selected_file))
 			{
 				die(sprintf(lang_File_Open_Edit_Not_Allowed, ($sub_action == 'preview' ? strtolower(lang_Open) : strtolower(lang_Edit))));
 			}
@@ -430,7 +430,7 @@ if(isset($_GET['action']))
 	    default: die('no action passed');
     }
 }
-else 
+else
 {
 	die('no action passed');
 }

@@ -18,7 +18,7 @@ textarea {width:100%;height:100px;padding:.5em 1em;}
 input[type=text], select {min-width:50%;padding:.4em 1em;}
 input.large, select.large, textarea.large, button.large {width:100%;}
 input.check input.radio {width:4em !important;vertical-align:baseline;}
- 
+
 .radiobox {min-width:20%;display:inline-block;padding:0 10px;}
 .radiobox label {font-weight:normal;margin:0;}
 .radiobox input {display:inline-block;margin:0;}
@@ -89,7 +89,7 @@ td {color:#333;padding:.2em 1em;vertical-align:top;}
 .blightblue {background:#0dcdfe;}
 .bred {background:#e00;}
 .blightgray {background:#eee;}
-.red {color:#e00;} 
+.red {color:#e00;}
 
 /* containers */
 
@@ -104,7 +104,7 @@ td {color:#333;padding:.2em 1em;vertical-align:top;}
 #menu_top ul li:hover:not(.active) {background:#323232;}
 #menu_top ul li:hover:not(.active) a {color:#fff;}
 
-#topic {margin:0;padding:0 1em;clear:both;}
+#topic {margin:0;padding:0 1em;clear:both;min-height:450px;}
 
 #menu_left {margin:2em 0;}
 #menu_left ul {margin:0;padding:0;list-style:none;}
@@ -155,7 +155,7 @@ td {color:#333;padding:.2em 1em;vertical-align:top;}
 
 #x3search {margin-top:2em;}
 #x3search input {padding:.5em 1em;border:1px solid #ccc;}
-#x3search button {margin:0;border:1px solid #ccc;border-radius:0;background:#ccc;} 
+#x3search button {margin:0;border:1px solid #ccc;border-radius:0;background:#ccc;}
 
 
 /* bootstrap */
@@ -170,10 +170,10 @@ nav.navbar {border-radius:0;border:none;padding:0;border-radius:3px;}
 .table-striped.table-hover tr.red td {background:#e00;}
 
 input[type=file] {padding:.5em;}
-textarea:focus, input[type="text"]:focus, input[type="password"]:focus, input[type="datetime"]:focus, 
-input[type="datetime-local"]:focus, input[type="date"]:focus, input[type="month"]:focus, input[type="time"]:focus, input[type="week"]:focus, 
-input[type="number"]:focus, input[type="email"]:focus, input[type="url"]:focus, input[type="search"]:focus, input[type="tel"]:focus, 
-input[type="color"]:focus, input[type="checkbox"]:focus, input[type="radio"]:focus, select:focus, .uneditable-input:focus {   
+textarea:focus, input[type="text"]:focus, input[type="password"]:focus, input[type="datetime"]:focus,
+input[type="datetime-local"]:focus, input[type="date"]:focus, input[type="month"]:focus, input[type="time"]:focus, input[type="week"]:focus,
+input[type="number"]:focus, input[type="email"]:focus, input[type="url"]:focus, input[type="search"]:focus, input[type="tel"]:focus,
+input[type="color"]:focus, input[type="checkbox"]:focus, input[type="radio"]:focus, select:focus, .uneditable-input:focus {
 	box-shadow: none;
     -webkit-box-shadow: none;
 }

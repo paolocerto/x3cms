@@ -4,13 +4,13 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		http://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/agpl.htm
  * @package		X3CMS
  */
 
 $msg = (empty($msg)) 
-	? 'An error occurred' 
+	? 'An error occurred'
 	: $msg;
 ?>
-<h1><?php echo $title ?></h1>
-<p><?php echo $msg ?></p>
+<h1 class="text-center"><?php echo $title ?></h1>
+<div class="boxed"><p><?php echo $msg ?></p></div>

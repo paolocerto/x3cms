@@ -4,16 +4,16 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		http://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/agpl.htm
  * @package		X4WEBAPP
  */
 
 /**
  * Helper for URL handling
- * 
+ *
  * @package X4WEBAPP
  */
-class X4Url_helper 
+class X4Url_helper
 {
     /**
 	 * Get meta
@@ -49,7 +49,7 @@ class X4Url_helper
         }
         return array();
     }
-    
+
     /**
 	 * Get title
 	 *
@@ -60,14 +60,14 @@ class X4Url_helper
     public static function getTitle($str)
     {
         $pattern = '~<title>[\s\S]*<\/title>~ix';
-    
+
         if(preg_match_all($pattern, $str, $out, PREG_PATTERN_ORDER))
         {
             return $out[0];
         }
         return array();
     }
-    
+
     /**
      * Fix UTF8 encoding
      *
@@ -81,14 +81,14 @@ class X4Url_helper
         /*
         $src = [];
         $rpl = [];
-        
+
         return str_replace($src, $rpl, $tmp);
         */
         //return \ForceUTF8\Encoding::fixUTF8($str);
         //return preg_replace('/[^\x20-\x7E]/','', $str);
     }
-    
-    
+
+
     /**
 	 * Get meta
 	 *
@@ -96,10 +96,10 @@ class X4Url_helper
 	 * @param string	$url
 	 * @return array
 	 */
-    public static function extract_tags_from_url($url) 
+    public static function extract_tags_from_url($url)
     {
         $tags = array();
-        
+
         // url replacer
         $url = str_replace(
             array(
@@ -110,67 +110,67 @@ class X4Url_helper
             ),
             $url
         );
-        
+
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-        
+
         $contents = curl_exec($ch);
         curl_close($ch);
-        
-        if (empty($contents)) 
+
+        if (empty($contents))
         {
             return $tags;
         }
-       
+
         $matches = self::getMetaTags($contents);
-        
-        // fix non UTF8 
+
+        // fix non UTF8
         $xml = self::utf_fixer(implode($matches));
         //$xml = implode($matches);
-        
+
         try
         {
             libxml_use_internal_errors(true);
             $doc = new DOMDocument();
             $doc->loadHTML('<?xml encoding="utf-8" ?>'.$xml);
-            
+
             $src = array('og:', 'twitter:');
-            
-            foreach($doc->getElementsByTagName('meta') as $metaTag) 
+
+            foreach ($doc->getElementsByTagName('meta') as $metaTag)
             {
-                if($metaTag->getAttribute('name') != "" && !empty($metaTag->getAttribute('content'))) 
+                if($metaTag->getAttribute('name') != "" && !empty($metaTag->getAttribute('content')))
                 {
                     $tags[str_replace($src, '', $metaTag->getAttribute('name'))] = $metaTag->getAttribute('content');
                 }
-                elseif ($metaTag->getAttribute('property') != "" && !empty($metaTag->getAttribute('content'))) 
+                elseif ($metaTag->getAttribute('property') != "" && !empty($metaTag->getAttribute('content')))
                 {
                     $tags[str_replace($src, '', $metaTag->getAttribute('property'))] = $metaTag->getAttribute('content');
                 }
             }
-            
+
             if (!isset($tags['title']))
             {
                 $matches = self::getTitle($contents);
-                // fix non UTF8 
+                // fix non UTF8
                 $xml = self::utf_fixer(implode($matches));
                 //$xml = implode($matches);
                 $doc = new DOMDocument();
                 $doc->loadHTML($xml);
-                foreach($doc->getElementsByTagName('title') as $title) 
+                foreach ($doc->getElementsByTagName('title') as $title)
                 {
                     $tags['title'] = $title->nodeValue;
                 }
             }
-            
+
             // fix url
             if (isset($tags['url']))
             {
                 $tags['url'] = $url;
             }
-            
+
             if(!isset($tags['title']) || !isset($tags['description']))
             {
                 $tags = array();
@@ -180,12 +180,10 @@ class X4Url_helper
         {
              // do nothing
         }
-        
+
         return $tags;
     }
-    
-    
-    
+
 	/**
 	 * Handle meta
 	 *
@@ -195,12 +193,12 @@ class X4Url_helper
 	 */
 	public static function meta($url)
 	{
-	    $metas = self::extract_tags_from_url($url); 
-	    
+	    $metas = self::extract_tags_from_url($url);
+
 	    $am = array('title', 'description', 'url', 'player', 'video', 'image');
-	    
+
 	    $a = array();
-	    foreach ($metas as $k => $v) 
+	    foreach ($metas as $k => $v)
         {
             $keys = explode(':', $k);
             if (in_array($keys[0], $am))
@@ -229,10 +227,10 @@ class X4Url_helper
         if (!empty($a) && !isset($a['url']))
         {
             $a['url'] = $url;
-        }     
+        }
         return $a;
 	}
-	
+
 	/**
 	 * convert youtube url to embed url
 	 *
@@ -246,7 +244,7 @@ class X4Url_helper
 	    $code = array_pop($t);
 	    return 'https://www.youtube.com/embed/'.$code;
 	}
-	
+
 	/**
 	 * format post/comment contents
 	 *
@@ -261,41 +259,50 @@ class X4Url_helper
             // post
             if (!empty($data['txt']))
             {
-                $out = '<p>'.nl2br(X4Text_helper::linkify(stripslashes($data['txt']), ['http', 'https', 'mail'])).'</p>';
+                $out = '<p class="mb-4">'.nl2br(X4Text_helper::linkify(stripslashes($data['txt']), ['http', 'https', 'mail'])).'</p>';
             }
-            
-            foreach($data['related'] as $i)
+
+            foreach ($data['related'] as $k => $v)
             {
-                $out .= self::formatter($i);
+                $out .= self::formatter($k, $v);
             }
 		}
 		return $out;
 	}
-	
-	public static function formatter($i)
+
+    /**
+	 * format post/comment contents
+	 *
+	 * @param   array    $data
+	 * @return  string
+	 */
+	public static function formatter($k, $v)
 	{
 	    $out = '';
-	    if (isset($i['img']))
+	    if ($k === 'img')
         {
             // image
-            $out .= '<div class="bordered"><img src="'.$i['img'].'" /></div>';
+            foreach ($v as $ii)
+            {
+                $out .= '<img class="mb-2" src="'.$ii.'" />';
+            }
         }
-        elseif (isset($i['question']))
+        elseif (isset($v['question']))
         {
-            $src = array('XGTX', 'XLTX', '<spam>', 'XQTX');
-            $rpl = array('>', '<', '<span class="AM">', '"');
-            
+            $src = array('XGTX', 'XLTX', '<spam>', 'XQTX', 'XEQX');
+            $rpl = array('>', '<', '<span class="AM">', '"', '=');
+
             $ol = array();
             for($c = 1; $c < 6; $c++)
             {
-                $ol[] = '<li>'.str_replace($src, $rpl, $i['answer'.$c]).'</li>';
+                $ol[] = '<li class="pl-4 py-1">'.str_replace($src, $rpl, $v['answer'.$c]).'</li>';
             }
-            
-            $out .= '<div class="bordered clearfix">
-                    <blockquote>
-                        <p><strong>'.$i['subject'].'</strong></p>
-                        '.str_replace($src, $rpl, $i['question']).'
-                        <ol type="A">
+
+            $out .= '<div class="w-full text-sm border border-gray-300">
+                    <blockquote class="w-full border-l-4 border-gray-300 py-4 pl-4">
+                        <p><strong>'.$v['subject'].'</strong></p>
+                        '.str_replace($src, $rpl, $v['question']).'
+                        <ol style="list-style-type:upper-alpha;margin:.5em 0 0 2em;">
                             '.implode('', $ol).'
                         </ol>
                     </blockquote>
@@ -304,24 +311,24 @@ class X4Url_helper
         else
         {
             // link
-            $msg = self::link_format($i);
-            
-            if (empty($i['url']))
+            $msg = self::link_format($v);
+
+            if (empty($v['url']))
             {
-                $out .= '<div class="bordered clearfix">
+                $out .= '<div class="py-2 border-l-4 border-gray-300 pl-4">
                     '.$msg.'
                 </div>';
             }
             else
             {
-                $out .= '<div class="bordered clearfix">
-                    <a target="_blank" href="'.$i['url'].'">'.$msg.'</a>
+                $out .= '<div class="py-2 border-l-4 border-gray-300 pl-4">
+                    <a target="_blank" href="'.$v['url'].'">'.$msg.'</a>
                 </div>';
             }
         }
         return $out;
 	}
-	
+
 	/**
 	 * format link box
 	 *
@@ -333,49 +340,42 @@ class X4Url_helper
 	    // link
         $title = (empty($data['title']))
             ? ''
-            : '<h4 class="navy pad-left pad-right">'.$data['title'].'</h4>';
-        
+            : '<h4 class="pr-4">'.$data['title'].'</h4>';
+
         $img = (empty($data['image']))
             ? false
             : '<img src="'.$data['image'].'"/>';
-            
+
         $desc = (empty($data['description']))
             ? ''
-            : '<p class="pad-left pad-right">'.$data['description'].'</p>';
-          
+            : '<p class="pr-4 text-sm">'.$data['description'].'</p>';
+
         $site = (empty($data['site_name']))
             ? ''
-            : '<p class="pad-left pad-right">'.strtoupper($data['site_name']).'</p>';
-            
+            : '<p class="pr-4">'.strtoupper($data['site_name']).'</p>';
+
         // video replace img
         if (!empty($data['video']))
         {
-            $img = '<div class="embed-responsive embed-responsive-16by9"><iframe class="embed-responsive-item" src="'.$data['video'].'?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>';
+            $img = '<div class="w-full"><iframe class="w-full" src="'.$data['video'].'?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>';
         }
         else if (!empty($data['player']))
         {
-            $img = '<div class="embed-responsive embed-responsive-16by9"><iframe class="embed-responsive-item" src="'.$data['player'].'?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>';
+            $img = '<div class="w-full"><iframe class="w-full" src="'.$data['player'].'?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>';
         }
-            
+
         // disposition
         if ($img && (!empty($title) || !empty($desc)))
         {
-            $msg = '<div class="col-xs-12 col-sm-5 no-pad">
-                        '.$img.'
-                    </div>
-                    <div class="col-xs-12 col-sm-7 no-pad">
-                        '.$title.$desc.$site.'
-                    </div>';
+            $msg = '<div class="flex flex-col md:flex-row mb-2"><div class="w-full md:w-5/12">'.$img.'</div><div class="w-full pl-0 md:pl-4 pt-4 md:pt-0 md:w-7/12">'.$title.$desc.$site.'</div></div>';
         }
         else
         {
-            $msg = '<div class="col-xs-12 no-pad">
-                        '.$title.$desc.$site.'
-                    </div>';
+            $msg = '<div class="w-full mb-2">'.$title.$desc.$site.'</div>';
         }
         return $msg;
 	}
-	
+
 	/**
 	 * compact meta data array
 	 *
@@ -385,7 +385,7 @@ class X4Url_helper
 	public static function compact_meta($data)
 	{
 	    $a = array();
-	    foreach($data as $k => $v)
+	    foreach ($data as $k => $v)
 	    {
 	        if (!empty($v))
 	        {

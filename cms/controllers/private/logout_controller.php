@@ -4,13 +4,13 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		http://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/agpl.htm
  * @package		X3CMS
  */
- 
+
 /**
  * Logout Controller for private area
- * 
+ *
  * @package X3CMS
  */
 class Logout_controller extends X4Cms_controller
@@ -24,7 +24,7 @@ class Logout_controller extends X4Cms_controller
 	{
 		parent::__construct();
 	}
-	
+
 	/**
 	 * Perform logout
 	 * Destroy session and redirect to home
@@ -36,7 +36,7 @@ class Logout_controller extends X4Cms_controller
 		// destroy session
 		session_unset();
 		session_destroy();
-		
+
 		// redirect to home
 		header('Location: '.ROOT);
 		die;

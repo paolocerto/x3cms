@@ -4,17 +4,21 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		http://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/agpl.htm
  * @package		X3CMS
  */
- 
+
 // close button
 echo '<div id="close-modal" title="'._CLOSE.'"><i class="fas fa-times fa-lg"></i></div>';
 
+if (isset($js))
+{
+	echo $js;
+}
 ?>
 <h2><?php echo $title ?></h2>
 <p>
-<?php 
+<?php
 
 // show message
 if (isset($msg))
@@ -25,8 +29,3 @@ if (isset($msg))
 echo _ARE_YOU_SURE_DELETE .' <strong>'.$item.'</strong>?</p>';
 
 echo $form;
-
-if (isset($js))
-{
-	echo $js;
-}

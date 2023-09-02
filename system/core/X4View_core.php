@@ -4,17 +4,17 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		http://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/agpl.htm
  * @package		X4WEBAPP
  */
 
 /**
  * View class
  * THIS FILE IS DERIVED FROM KOHANA
- * 
+ *
  * @package X4WEBAPP
  */
-class X4View_core 
+class X4View_core
 {
 	// The view file name and type
 	protected $filename = false;
@@ -23,25 +23,26 @@ class X4View_core
 	// View variable storage
 	protected $local_data = array();
 	protected static $global_data = array();
-	
+
 	/**
 	 * Attempts to load a view and pre-load view data.
 	 *
 	 * @throws  Kohana_Exception  if the requested view cannot be found
-	 * @param   string  view name
-	 * @param   array   pre-load data
-	 * @param   string  type of file: html, css, js, etc.
+	 * @param   string  $name   view name
+     * @param   string  $module
+	 * @param   array   $data   pre-load data
+	 * @param   string  $type   type of file: html, css, js, etc.
 	 * @return  void
 	 */
-	public function __construct($name = NULL, $data = NULL, $type = EXT, $mod = '')
+	public function __construct(string $name, string $module = '', array $data = [], string $type = EXT)
 	{
-		if (is_string($name) AND $name !== '')
+		if (!empty($name))
 		{
 			// Set the filename
-			if (strstr($name, 'templates') != '') 
+			if (strstr($name, 'templates') != '')
 			{
 				// into theme
-				if (!file_exists($_SERVER['DOCUMENT_ROOT'].$name.$type)) 
+				if (!file_exists($_SERVER['DOCUMENT_ROOT'].$name.$type))
 				{
 					$token = explode('/', $name);
 					$token[5] = 'base';
@@ -49,12 +50,12 @@ class X4View_core
 				}
 				$this->filename = $_SERVER['DOCUMENT_ROOT'].$name.$type;
 			}
-			else 
+			else
 			{
 				// plugin
-				if (!empty($mod) && file_exists(PATH.'plugins/'.$mod.'/views/'.$name.'_view'.$type)) 
+				if (!empty($module) && file_exists(PATH.'plugins/'.$module.'/views/'.$name.'_view'.$type))
 				{
-					$this->filename = PATH.'plugins/'.$mod.'/views/'.$name.'_view'.$type;
+					$this->filename = PATH.'plugins/'.$module.'/views/'.$name.'_view'.$type;
 				}
 				elseif (file_exists(APATH.'views/'.X4Route_core::$folder.'/'.$name.'_view'.$type))
 				{
@@ -70,36 +71,36 @@ class X4View_core
 				}
 			}
 		}
-		
-		if (is_array($data) AND !empty($data))
+
+		if (!empty($data))
 		{
 			// Preload data using array_merge, to allow user extensions
 			$this->local_data = array_merge($this->local_data, $data);
 		}
 	}
-	
+
 	/**
 	 * Magically sets a view variable.
 	 *
 	 * @param   string   variable key
-	 * @param   string   variable value
+	 * @param   mixed   variable value
 	 * @return  void
 	 */
-	public function __set($key, $value)
+	public function __set(string $key, $value)
 	{
 		if (!isset($this->$key))
 		{
 			$this->local_data[$key] = $value;
 		}
 	}
-	
+
 	/**
 	 * Magically gets a view variable.
 	 *
 	 * @param  string  variable key
 	 * @return mixed   variable value if the key is found
 	 */
-	public function __get($key)
+	public function __get(string $key)
 	{
 		if (isset($this->local_data[$key]))
 		{
@@ -114,7 +115,7 @@ class X4View_core
 			return $this->$key;
 		}
 	}
-	
+
 	/**
 	 * Magically converts view object to string.
 	 *
@@ -124,7 +125,7 @@ class X4View_core
 	{
 		return $this->render();
 	}
-	
+
 	/**
 	 * Renders a view.
 	 *
@@ -132,14 +133,14 @@ class X4View_core
 	 * @param   callback  special renderer to pass the output through
 	 * @return  mixed     object if print is FALSE string if print is TRUE
 	 */
-	public function render($print = FALSE, $renderer = FALSE)
+	public function render(bool $print = FALSE, bool $renderer = FALSE)
 	{
 		// Merge global and local data, local overrides global with the same name
 		$data = array_merge(self::$global_data, $this->local_data);
-		
+
 		// Load the view in the controller for access to $this
 		$output = X4Core_core::$insta->load_view($this->filename, $data);
-		
+
 		if ($print)
 		{
 			// Display the output

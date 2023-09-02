@@ -4,41 +4,41 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		http://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/agpl.htm
  * @package		X3CMS
  */
 ?>
 <h2><?php echo _FILE_TREE ?></h2>
 <?php
-if ($items) 
+if ($items)
 {
 	echo '<div id="tree">';
 	$aopen = $copen = false;
 	$a = $cat = '';
-	
-	foreach($items as $i)
+
+	foreach ($items as $i)
 	{
-		if ($a != $i->id) 
+		if ($a != $i->id)
 		{
 			$a = $i->id;
 			$cat = '';
-			
-			if ($copen) 
+
+			if ($copen)
 			{
 				echo '</div>';
 				$copen = false;
 			}
-			
-			if ($aopen) 
+
+			if ($aopen)
 			{
 				echo '</div>';
 				$aopen = false;
 			}
 			echo '<span class="rtoggle">'.$i->title._TRAIT_.$i->description.'</span><div class="relement">';
 			$aopen = true;
-		
+
 		}
-		
+
 		if ($cat != $i->category) {
 			$cat = $i->category;
 			if ($copen) {
@@ -50,12 +50,14 @@ if ($items)
 		}
 		echo '<p><a href="'.BASE_URL.'files/index/'.$i->id.'/'.$i->category.'/'.$i->subcategory.'" title="">'.$i->subcategory.'</a></p>';
 	}
-	
+
 	if ($copen) echo '</div>';
 	if ($aopen) echo '</div>';
 	echo '</div>';
 }
-else {
+else
+{
 	echo '<p>'._NO_ITEMS.'</p>';
 }
-<script src="<?php echo THEME_URL ?>js/basic.js"></script>
+
+echo '<script src="'.THEME_URL.'js/basic.js"></script>';

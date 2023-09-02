@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		http://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/agpl.htm
  * @package		X3CMS
  */
 
@@ -16,7 +16,11 @@
 	<head>
 		<meta name="Generator" content="<?php echo SERVICE ?>" />
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<link href="<?php echo $this->site->site->domain ?>/themes/admin/css/mail.css" rel="stylesheet" type="text/css">
+		<style>
+<?php
+echo file_get_contents(PATH.'themes/default/css/mail.css');
+?>
+        </style>
 	</head>
 	<body>
 		<table width="600" border="0" align="center" cellpadding="0" cellspacing="0">

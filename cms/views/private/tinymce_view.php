@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		http://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/agpl.htm
  * @package		X3CMS
  */
 
@@ -25,26 +25,32 @@ function Tinit() {
 		selector: "textarea",
 		theme: "modern",
 		skin : "lightgray",
-	
+		
 		language : "<?php echo X4Route_core::$lang ?>",
 		selector: "textarea:not(.NoEditor)",
-	
+		paste_as_text: true,
 		autosave_interval: "30s",
+		menubar: false,
+		setup: function (editor) {
+			editor.on('change', function () {
+				tinymce.triggerSave();
+			});
+		},
 	
 <?php
 if (RTL || isset($rtl)) echo 'directionality : "rtl",';
 ?>
-		 plugins: [
-		    "advlist autolink autosave lists link image imagetools charmap print preview hr anchor pagebreak",
-		    "searchreplace wordcount visualblocks visualchars code fullscreen",
-		    "insertdatetime media nonbreaking save table contextmenu directionality",
-		    "emoticons template paste textcolor colorpicker textpattern",
+		plugins: [
+		    "advlist autolink autosave lists link imagetools charmap hr anchor pagebreak",
+		    "searchreplace visualblocks visualchars code fullscreen",
+		    "insertdatetime media nonbreaking contextmenu directionality",
+		    "template paste textpattern",
 			"responsivefilemanager importcss youtube"
 		],
 		
 		autosave_ask_before_unload: false,
 		
-		toolbar1: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | responsivefilemanager | print preview media youtube | forecolor backcolor emoticons",
+		toolbar1: "undo redo copy paste cut searchreplace insert | styleselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent blockquote | link responsivefilemanager | media youtube | table | charmap | preview code",
 		
 		imagetools_toolbar: "rotateleft rotateright | flipv fliph | editimage imageoptions",
 		
@@ -84,7 +90,7 @@ if (RTL || isset($rtl)) echo 'directionality : "rtl",';
 	
 		relative_urls : false,
 		remove_script_host : true,
-		document_base_url : "<?php echo (ROOT == '/') ? $this->site->site->domain : str_replace(ROOT, '', $this->site->site->domain.'/') ?>",
+		document_base_url : dom,
 	
 		extended_valid_elements : "article[class],header[class],section[class],div[class],p[class|style],a[href|title|class|onclick|id|name|rel|rev],figure[class],img[id|class|src|alt|style|onmouseover|onmouseout|name],span[class|style],hr[class|style],div[id|class|style],code,em[class],ul[class],ol[class],i[class]",
 		invalid_elements : "script",
@@ -94,13 +100,15 @@ if (RTL || isset($rtl)) echo 'directionality : "rtl",';
 		content_css : "<?php echo THEME_URL ?>css/tinymce.css",
 	
 		template_selected_content_classes: ".fake",
-	
+		
+		/*
 		// Drop lists for link/image/media/template dialogs
 		templates : "<?php echo BASE_URL.'admin/files/js/'.$id_area.'/template' ?>",
 		link_list : "<?php echo BASE_URL.'admin/files/js/'.$id_area.'/files' ?>",
 		image_list : "<?php echo BASE_URL.'admin/files/js/'.$id_area.'/img' ?>",
 		media_list : "<?php echo BASE_URL.'admin/files/js/'.$id_area.'/media' ?>",
-	
+		*/
+
 		pagebreak_separator : "<!--pagebreak-->",
 	
 		external_filemanager_path : "<?php echo ROOT ?>files/js/filemanager/",

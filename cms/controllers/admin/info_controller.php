@@ -4,15 +4,15 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		http://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/agpl.htm
  * @package		X3CMS
  */
- 
+
 /**
  * Controller for Admin area Info
- * 
+ *
  * @package X3CMS
- */ 
+ */
 class Info_controller extends X3ui_controller
 {
 	/**
@@ -26,7 +26,7 @@ class Info_controller extends X3ui_controller
 		parent::__construct();
 		X4Utils_helper::logged();
 	}
-	
+
 	/**
 	 * Default method
 	 *
@@ -36,67 +36,76 @@ class Info_controller extends X3ui_controller
 	{
 		$this->detail('default', 1);
 	}
-	
+
+    /**
+	 * Check hostname
+	 *
+	 * @return  string
+	 */
 	private function chk_gethostname()
 	{
-		if (function_exists('gethostname'))
-			return gethostname();
-		else
-			return 'Unknown';
+		return (function_exists('gethostname'))
+            ? gethostname()
+            : 'Unknown';
 	}
-	
-	public function detail($case = 'default', $tab = 0)
+
+    /**
+	 * Info detail
+	 *
+     * @param   string  $case
+     * @param   string  $tab
+	 * @return  void
+	 */
+	public function detail(string $case = 'default', int $tab = 0)
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('info'));
-		
+
 		// get page
 		$page = $this->get_page('info');
 		$mod = new Category_model();
-		
+
 		if ($tab)
 		{
 			$view = new X4View_core('tabber');
+            $view->tabber_name = 'tabber';
 			$view->title = _SITE_INFO;
-			
+
 			$hn = $this->chk_gethostname();
-			
+
 			$view->tabs = array('default' => array(_INFO_SERVER.' '.$hn, 'info/detail/default'),
 					'apache' => array(apache_get_version(), 'info/detail/apache'),
 					'mysql' => array('MySQL '.$mod->get_attribute('SERVER_VERSION'), 'info/detail/mysql'),
 					'php' => array('PHP '.phpversion(), 'info/detail/php'),
 				);
 			$view->on = $case;
-			
-			$view->down = new X4View_core('container');
 			$view->tabber_container = 'tdown';
-			
-			$view->down->content = new X4View_core('sites/info');
-			$view->down->content->page = $page;
-			$view->down->content->case = $case;
-			
+
+			$view->down = new X4View_core('sites/info');
+			$view->down->page = $page;
+			$view->down->case = $case;
+
 			if ($case == 'mysql')
 			{
-				$view->down->content->sinfo = $mod->get_attribute('SERVER_INFO');
+				$view->down->sinfo = $mod->get_attribute('SERVER_INFO');
 			}
 		}
 		else
 		{
 			$view = new X4View_core('container');
-			
-			$view->content = new X4View_core('sites/info');
-			$view->content->page = $page;
-			$view->content->case = $case;
-			
+
+			$view = new X4View_core('sites/info');
+			$view->page = $page;
+			$view->case = $case;
+
 			if ($case == 'mysql')
 			{
-				$view->content->sinfo = $mod->get_attribute('SERVER_INFO');
+				$view->sinfo = $mod->get_attribute('SERVER_INFO');
 			}
 		}
-		
 		$view->render(TRUE);
 	}
-	
+
 	/**
 	 * Info filter
 	 *

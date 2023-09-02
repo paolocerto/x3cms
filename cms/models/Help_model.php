@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		http://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/agpl.htm
  * @package		X3CMS
  */
 
@@ -25,19 +25,18 @@ class Help_model extends X4Model_core
 	{
 		parent::__construct('pages');
 	}
-	
+
 	/**
 	 * Get subpages
 	 *
-	 * @param   object $page Page object
+	 * @param   stdClass $page Page object
 	 * @return  object
 	 */
-	public function get_subpages($page)
+	public function get_subpages(stdClass $page)
 	{
-		return $this->db->query('SELECT * 
-			FROM pages 
+		return $this->db->query('SELECT *
+			FROM pages
 			WHERE id_area = '.intval($page->id_area).' AND lang = '.$this->db->escape($page->lang).' AND xfrom = '.$this->db->escape($page->url).' AND xon = 1
 			ORDER BY xpos ASC');
 	}
 }
-

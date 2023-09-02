@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		http://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/agpl.htm
  * @package		X3CMS
  */
 
@@ -19,21 +19,21 @@ echo '<div id="close-modal" title="'._CLOSE.'"><i class="fas fa-times fa-lg"></i
 
 $len = 0;
 $openul = $openli = 1;
-foreach($map as $i)
+foreach ($map as $i)
 {
 	$ilen = strlen($i->ordinal)/4;
 	$class = '';
-	if ($ilen > $len) 
+	if ($ilen > $len)
 	{
 		// change subpages
 		echo '<ul>';
 		$openul++;
 	}
-	elseif ($ilen < $len) 
+	elseif ($ilen < $len)
 	{
 		// change subpages
 		$n = $len - $ilen;
-		for ($l = 0; $l < $n; $l++) 
+		for ($l = 0; $l < $n; $l++)
 		{
 			echo '</li>';
 			$openli--;
@@ -42,36 +42,36 @@ foreach($map as $i)
 			$openli--;
 		}
 	}
-	else 
+	else
 	{
 		// normal subpage
-		if ($i->ordinal == 'A') 
+		if ($i->ordinal == 'A')
 		{
 			echo '<ul>';
 		}
-		else 
+		else
 		{
 			echo '</li>';
 			$openli--;
 		}
 	}
 	// menus
-	if ($ilen == 2 && $i->id_menu) 
+	if ($ilen == 2 && $i->id_menu)
 	{
 		$class = 'class="map"';
 	}
-	
+
 	$len = $ilen;
 	$description = stripslashes($i->description);
 	echo '<li '.$class.'><a class="btm" href="'.BASE_URL.'pages/index/'.$area->id.'/'.$i->lang.'/'.str_replace('/', '$', $i->xfrom).'" title="'.$description.'">'.stripslashes($i->name).'</a>'._TRAIT_.$description;
 	$openli++;
 }
 
-while ($openli > 0) 
+while ($openli > 0)
 {
 	echo '</li>';
 	$openli--;
-	if ($openul) 
+	if ($openul)
 	{
 		echo '</ul>';
 		$openul--;

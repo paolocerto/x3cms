@@ -26,7 +26,7 @@ tinymce.PluginManager.add('filemanager', function(editor) {
 			}
 		}
 	}
-	
+
 	function filemanager (id, value, type, win) {
 		// DEFAULT AS FILE
 		urltype=2;
@@ -63,11 +63,13 @@ tinymce.PluginManager.add('filemanager', function(editor) {
 				window.attachEvent('onmessage', filemanager_onMessage);
 			}
 		}
+        // get prefix
+        var prefix = getCookie("ffprefix");
 
 		tinymce.activeEditor.windowManager.open({
 			title: title,
-			file: editor.settings.external_filemanager_path+'dialog.php?type='+urltype+'&descending='+descending+sort_by+fldr+crossdomain+'&lang='+editor.settings.language+'&akey='+akey,
-			width: 860,  
+			file: editor.settings.external_filemanager_path+'dialog.php?prefix='+prefix+'&type='+urltype+'&descending='+descending+sort_by+fldr+crossdomain+'&lang='+editor.settings.language+'&akey='+akey,
+			width: 860,
 			height: 570,
 			resizable: true,
 			maximizable: true,
@@ -79,8 +81,8 @@ tinymce.PluginManager.add('filemanager', function(editor) {
 				if ("fireEvent" in fieldElm) {
 					fieldElm.fireEvent("onchange")
 				} else {
-					var evt = document.createEvent("HTMLEvents");
-					evt.initEvent("change", false, true);
+					var evt = document.createEvent("HTMLEvents", {"bubbles":false, "cancelable":true});
+					//evt.initEvent("change", false, true);
 					fieldElm.dispatchEvent(evt);
 				}
 			}

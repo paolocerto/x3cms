@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		http://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/agpl.htm
  * @package		X3CMS
  */
 ?>
@@ -14,7 +14,7 @@
 <div id="dashboard" class="band inner-pad clearfix">
 <?php
 // notices from x3cms.net
-if (NOTICES) 
+if (NOTICES)
 {
 	echo '<div class="one-fourth md-one-half xs-one-whole pad-bottom xs-pad-none">
 			<div class="widget">
@@ -27,7 +27,7 @@ if (NOTICES)
 // widgets
 $c = 0;
 $buttonized = '';
-foreach($widgets as $i)
+foreach ($widgets as $i)
 {
 	$c++;
 	echo '<div class="one-fourth md-one-half xs-one-whole pad-bottom xs-pad-none"><div id="w'.$c.'" class="widget">'.$i[0].'</div></div>';

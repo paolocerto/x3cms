@@ -4,22 +4,22 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		http://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/agpl.htm
  * @package		X4WEBAPP
  */
 
 /**
  * Default Message controller
- * 
+ *
  * @package X4WEBAPP
  */
-class X4Msg extends X4Controller_core 
+class X4Msg extends X4Controller_core
 {
 	/**
 	 * Template to use
 	 */
 	public $template = 'message';
-	
+
 	/**
 	 * Page not found
 	 *
@@ -29,7 +29,7 @@ class X4Msg extends X4Controller_core
 	{
 		echo 'Page not found';
 	}
-	
+
 	/**
 	 * Default call
 	 *
@@ -37,11 +37,11 @@ class X4Msg extends X4Controller_core
 	 * @param array		array of arguments
 	 * @return string
 	 */
-	public function __call($method, $arguments)
+	public function __call(string $method, array $args)
 	{
 		// Disable auto-rendering
 		$this->auto_render = FALSE;
-		
+
 		// By defining a __call method, all pages routed to this controller
 		// that result in 404 errors will be handled by this method, instead of
 		// being displayed as "Page Not Found" errors.

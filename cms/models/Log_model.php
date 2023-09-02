@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		http://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/agpl.htm
  * @package		X3CMS
  */
 
@@ -21,9 +21,12 @@ class Log_model extends X4Model_core
 	 *
 	 * @return  void
 	 */
-	public function __construct()
+	public function __construct($db = 'default')
 	{
-		parent::__construct('logs');
+		parent::__construct('logs', $db);
 	}
+
+ 
+
 
 }

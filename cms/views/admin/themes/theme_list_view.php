@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		http://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/agpl.htm
  * @package		X3CMS
  */
 
@@ -33,72 +33,72 @@ else
 		<th style="width:12em;"><?php echo _ACTIONS ?></th>
 		<th style="width:6em;"></th>
 	</tr>
-	
+
 <?php
-if ($theme_in) 
+if ($theme_in)
 {
 	echo '<tr><td colspan="5" class="menu">'._INSTALLED_THEMES.'</td></tr>';
 	$tmp = 0;
-	foreach($theme_in as $i)
+	foreach ($theme_in as $i)
 	{
-		if ($i->xon) 
+		if ($i->xon)
 		{
 			$status = _ON;
 			$on_status = 'orange';
 		}
-		else 
+		else
 		{
 			$status = _OFF;
 			$on_status = 'gray';
 		}
-		
+
 		if ($i->xlock) {
 			$lock = _LOCKED;
 			$lock_status = 'lock';
 		}
-		else 
+		else
 		{
 			$lock = _UNLOCKED;
 			$lock_status = 'unlock-alt';
 		}
 		$actions = $uninstall = $area = '';
-		
-		if (($i->level > 2 && $i->xlock == 0) || $i->level == 4) 
+
+		if (($i->level > 2 && $i->xlock == 0) || $i->level == 4)
 		{
 			$actions = '<a class="btl" href="'.BASE_URL.'themes/set/xon/'.$i->id.'/'.(($i->xon+1)%2).'" title="'._STATUS.' '.$status.'"><i class="far fa-lightbulb fa-lg '.$on_status.'"></i></a> ';
-			
-			if ($i->level == 4) 
+
+			if ($i->level == 4)
 			{
 				$uninstall = '<a class="btl" href="'.BASE_URL.'themes/set/xlock/'.$i->id.'/'.(($i->xlock+1)%2).'" title="'._STATUS.' '.$lock.'"><i class="fas fa-'.$lock_status.' fa-lg"></i></a>';
-				if (empty($i->area)) 
+				if (empty($i->area))
 					$uninstall .= '<a class="bta" href="'.BASE_URL.'themes/uninstall/'.$i->id.'" title="'._UNINSTALL.'"><i class="fas fa-upload fa-lg"></i></a>';
-				else 
+				else
 				{
 					$uninstall .= '<a><i class="fa faupload invisible fa-lg"></i></a>';
 					$area = '['.$i->area.']';
 				}
 			}
 		}
-		if ($tmp != $i->id) 
+		if ($tmp != $i->id)
 		{
 			$tmp = $i->id;
-			
+
 			$minify = ($i->level == 4)
 			    ? '<a class="btl" href="'.BASE_URL.'themes/minimize/'.$i->id.'/'.$i->name.'" title="'._MINIMIZE.'"><i class="fas fa-recycle fa-lg"></i></a></td>'
 			    : '';
-			
+
 			echo '<tr>
 					<td><strong>'.$i->name.'</strong> <span class="xs-hidden"> - '.$i->description.'</span></td>
 					<td>'.$area.'</td>
 					<td></td>
 					<td>'.$actions.'
-						<a class="btm" href="'.BASE_URL.'templates/index/'.$i->id.'/'.$i->name.'" title="'._TEMPLATES.'"><i class="fas fa-desktop fa-lg"></i></a> 
+						<a class="btm" href="'.BASE_URL.'templates/index/'.$i->id.'/'.$i->name.'" title="'._TEMPLATES.'"><i class="fas fa-desktop fa-lg"></i></a>
 						<a class="btm" href="'.BASE_URL.'menus/index/'.$i->id.'/'.$i->name.'" title="'._MENUS.'"><i class="fas fa-bars fa-lg"></i></a>
 						'.$minify.'
 					<td class="aright">'.$uninstall.'</td>
 					</tr>';
 		}
-		else 
+		else
 		{
 			echo '<tr>
 					<td></td>
@@ -111,26 +111,26 @@ if ($theme_in)
 	}
 }
 
-if ($theme_out && $_SESSION['level'] == 4) 
+if ($theme_out && $_SESSION['level'] == 4)
 {
 	echo '<tr><td colspan="5" class="menu">'._INSTALLABLE_THEMES.'</td></tr>';
-	foreach($theme_out as $i)
+	foreach ($theme_out as $i)
 	{
 		if(function_exists('preg_replace_callback'))
 		{
 			$name = preg_replace_callback(
-				'/(.*)\/(.*)/is', 
+				'/(.*)\/(.*)/is',
 				function($m)
 				{
 					return $m[2];
-				}, 
+				},
 				$i);
 		}
 		else
 		{
 			$name = preg_replace('/(.*)\/(.*)/is', '$2', $i, 1);
 		}
-		
+
 		$install = '<a class="btl" href="'.BASE_URL.'themes/install/'.$name.'" title="'._INSTALL.'"><i class="fas fa-download fa-lg"></i></a>';
 		echo '<tr>
 				<td colspan="2">'.$name.'</td>

@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) 	CBlu.net di Paolo Certo
- * @license		http://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/agpl.htm
  * @package		X4WEBAPP
  */
 
@@ -20,7 +20,7 @@ final class X4mongo_driver extends X3db_driver
 	 * @var Switcher for NoSQL
 	 */
 	public $sql = false;
-	
+
 	/**
 	 * Sets up the database configuration
 	 *
@@ -36,7 +36,7 @@ final class X4mongo_driver extends X3db_driver
 			$this->dsn = 'mongodb://'.X4Core_core::$db[$this->name]['db_user'].':'.X4Core_core::$db[$this->name]['db_pass'].'@'.X4Core_core::$db[$name]['db_host'].$db_port;	// .'/'.X4Core_core::$db[$name]['db_name']
 		}
 	}
-	
+
 	/**
 	 * Simple connect method to get the database queries up and running.
 	 *
@@ -44,14 +44,14 @@ final class X4mongo_driver extends X3db_driver
 	 */
 	public function connect()
 	{
-		if (!is_object($this->link)) 
+		if (!is_object($this->link))
 		{
 			$mc = new Mongo($this->dsn);
 			// Select the DB
 			$this->link = $mc->selectDB($this->name);
 		}
 	}
-	
+
 	/**
 	 * A primitive debug system
 	 *
@@ -59,7 +59,7 @@ final class X4mongo_driver extends X3db_driver
 	 * @param   array  Error messages
 	 * @return  string
 	 */
-	public function print_error($sql = array(), $msg = array()) 
+	public function print_error($sql = array(), $msg = array())
 	{
 		// If there is an error then take note of it
 		echo  '<h1>SQL/DB Error</h1><blockquote><b>SQL: ';
@@ -68,7 +68,7 @@ final class X4mongo_driver extends X3db_driver
 		print_r($msg);
 		echo '</blockquote><br /><br />';
 	}
-	
+
 	/**
 	 * A converter for arrays, used with Mongo DB results
 	 *
@@ -79,13 +79,13 @@ final class X4mongo_driver extends X3db_driver
 	private function array2obj($array)
 	{
 		$obj = new stdClass();
-		foreach($array as $k => $v)
+		foreach ($array as $k => $v)
 		{
 			$obj->$k = $v;
 		}
 		return $obj;
 	}
-	
+
 	/**
 	 * Runs a query and returns the result.
 	 *
@@ -101,14 +101,14 @@ final class X4mongo_driver extends X3db_driver
 		{
 			return FALSE;
 		}
-		
+
 		// No link? Connect!
 		$this->link or $this->connect();
-		
+
 		$this->latest_query = $sql;
 		$res = array();
-		
-		try 
+
+		try
 		{
 			if (isset($sql['distinct']))
 			{
@@ -119,7 +119,7 @@ final class X4mongo_driver extends X3db_driver
 			{
 				// get the cursor
 				$res = $this->link->$collection->find($sql, $fields);
-				
+
 				if ($res instanceof Traversable)
 				{
 					if (!empty($sort))
@@ -147,13 +147,13 @@ final class X4mongo_driver extends X3db_driver
 		self::$queries++;
 		return $res;
 	}
-	
+
 	/**
 	 * Runs a query and returns the first result row.
 	 *
 	 * @param   array  SQL query to execute
 	 * @param   string  Collection name
-	 * @param	array	Fields array 
+	 * @param	array	Fields array
 	 * @param	array	Sorting array
 	 * @return  Database_Result
 	 */
@@ -163,12 +163,12 @@ final class X4mongo_driver extends X3db_driver
 		{
 			return FALSE;
 		}
-		
+
 		// No link? Connect!
 		$this->link or $this->connect();
-		
+
 		$this->latest_query = $sql;
-		
+
 		try
 		{
 			if (false && isset($sql['_id']) && sizeof($sql) == 1)
@@ -191,7 +191,7 @@ final class X4mongo_driver extends X3db_driver
 		}
 		catch (Exception $e)
 		{
-			if (DEBUG) 
+			if (DEBUG)
 			{
 				$this->print_error($sql, $e->getMessage());
 				die;
@@ -201,7 +201,7 @@ final class X4mongo_driver extends X3db_driver
 		self::$queries++;
 		return $res;
 	}
-	
+
 	/**
 	 * Runs a query and returns the first value.
 	 *
@@ -213,16 +213,16 @@ final class X4mongo_driver extends X3db_driver
 	 */
 	public function query_var($sql = array(), $collection = '', $field = '', $sort = array())
 	{
-		if ($sql == '') 
+		if ($sql == '')
 		{
 			return FALSE;
 		}
 		$res = '';
 		// No link? Connect!
 		$this->link or $this->connect();
-		
+
 		$this->latest_query = $sql;
-		
+
 		if (empty($sort))
 		{
 			$res = $this->link->$collection->findOne($sql, array($field));
@@ -241,7 +241,7 @@ final class X4mongo_driver extends X3db_driver
 		self::$queries++;
 		return $res;
 	}
-	
+
 	/**
 	 * Compiles an exec query and runs it.
 	 *
@@ -256,22 +256,22 @@ final class X4mongo_driver extends X3db_driver
 		{
 			return false;
 		}
-		
+
 		// No link? Connect!
 		$this->link or $this->connect();
-		
+
 		$this->latest_query = $sql;
-		
+
 		try
 		{
 			$id = '$id';
-		
+
 			// sql is an array (
-			//	action => (insert|update|delete|modify), 
-			//	criteria => (array of criteria for update or remove), 
+			//	action => (insert|update|delete|modify),
+			//	criteria => (array of criteria for update or remove),
 			//	data => (object or array of data to insert or to update))
 			//	fields => (array of fields to return) only for modify
-			//	id => boolean (with true uses the Mongo $id, else an autoincrement) 
+			//	id => boolean (with true uses the Mongo $id, else an autoincrement)
 			switch ($sql['action'])
 			{
 				case 'insert':
@@ -280,84 +280,84 @@ final class X4mongo_driver extends X3db_driver
 						? $sql['data']['_id']->$id
 						: $sql['data']['_id'];
 					break;
-					
+
 				case 'update':
 					$res = $this->link->$collection->update(
-						$sql['criteria'], 
+						$sql['criteria'],
 						array('$set' => $sql['data'])
 					);
 					$result_id = (is_object($sql['criteria']['_id']))
 						? $sql['criteria']['_id']->$id
 						: $sql['criteria']['_id'];
 					break;
-					
+
 				case 'delete':
 					$res = $this->link->$collection->remove($sql['criteria']);
 					$result_id = (is_object($sql['criteria']['_id']))
 						? $sql['criteria']['_id']->$id
 						: $sql['criteria']['_id'];
 					break;
-					
+
 				case 'multiple_delete':
 					$res = $this->link->$collection->remove($sql['criteria']);
 					$result_id = 0;
 					break;
-					
+
 				case 'modify':
 					// handle the fields value
 					$fields = (empty($sql['fields']))
 						? null
 						: $sql['fields'];
-					
+
 					// options
 					$options = array(
 						'new' => true
 					);
-					
+
 					if (!empty($sql['sort']))
 					{
-						$options['sort'] = $sort;	
+						$options['sort'] = $sort;
 					}
-					
+
 					// check if data have already a key
 					$key = substr(key($sql['data']), 0, 1);
 					$data = ($key == '$')
 						? $sql['data']
 						: array('$set' => $sql['data']);
-					
+
 					$res = $this->link->$collection->findAndModify(
-						$sql['criteria'], 
-						$data, 
+						$sql['criteria'],
+						$data,
 						$fields,
 						$options
 					);
 					// return the updated document
 					$result_id = $res;
-					
+
 					// reassign $res for the error check
 					$res = (isset($res['error']) && isset($res['ok']))
 						? $res
 						: 1;
 					break;
-					
+
 				case 'count':
 					$res = $this->link->$collection->count($sql['criteria']);
 					// return the number of items found
 					$result_id = $res;
-					
+
 					// reassign $res for the error check
 					$res = (isset($res['error']) && isset($res['ok']))
 						? $res
 						: 1;
 					break;
-					
+
 				case 'drop':
 					// drop a collection
 					$res = $this->link->$collection->drop();
 					$result_id = 0;
 					$res = 1;
 					break;
-					
+
 				case 'list':
 					// list of collections
 					$res = $this->link->listCollections();
@@ -369,7 +369,7 @@ final class X4mongo_driver extends X3db_driver
 		}
 		catch (Exception $e)
 		{
-			if (DEBUG) 
+			if (DEBUG)
 			{
 				$this->print_error($sql, $e->getMessage());
 				die;
@@ -380,7 +380,7 @@ final class X4mongo_driver extends X3db_driver
 		self::$queries++;
 		return $result;
 	}
-	
+
 	/**
 	 * Compiles an array of exec query and runs it.
 	 *
@@ -390,18 +390,18 @@ final class X4mongo_driver extends X3db_driver
 	 */
 	public function multi_exec($sql, $collection = '')
 	{
-		if (empty($sql) || !is_array($sql)) 
+		if (empty($sql) || !is_array($sql))
 		{
 			return false;
 		}
-		
+
 		// No link? Connect!
 		$this->link or $this->connect();
-		
+
 		try
 		{
 			$insert = array();
-			foreach ($sql as $q) 
+			foreach ($sql as $q)
 			{
 				if ($q['action'] == 'insert')
 				{
@@ -422,7 +422,7 @@ final class X4mongo_driver extends X3db_driver
 				// Collection
 				$col = new MongoCollection($this->link, $collection);
 				$res = $col->batchInsert($insert);
-				
+
 				$result = array(0, 1);
 				self::$queries += sizeof($insert);
 			}
@@ -438,7 +438,7 @@ final class X4mongo_driver extends X3db_driver
 		}
 		return $result;
 	}
-	
+
 	/**
 	 * Escapes a value for a query.
 	 *
@@ -447,7 +447,7 @@ final class X4mongo_driver extends X3db_driver
 	 */
 	public function escape($value)
 	{
-		$value = trim($value); 
+		$value = trim($value);
 		return '\''.$value.'\'';
 	}
 }

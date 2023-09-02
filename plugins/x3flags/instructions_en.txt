@@ -6,7 +6,7 @@ WHAT IT DOES: show a language switcher
 ---
 HOW IT WORKS: you must put it into a template
 <?php
-	echo X4Utils_helper::module($this->site, $page, $args, 'x3flags', 'SEPARATOR');
+	echo X4Theme_helper::module($this->site, $page, $args, 'x3flags', 'SEPARATOR');
 ?>
 where SEPARATOR is an element between languages
 ---

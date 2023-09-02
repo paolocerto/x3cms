@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		http://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/agpl.htm
  * @package		X3CMS
  */
 
@@ -25,7 +25,7 @@ class Context_model extends X4Model_core
 	{
 		parent::__construct('contexts');
 	}
-	
+
 	/**
 	 * Get context by Context code
 	 *
@@ -34,13 +34,13 @@ class Context_model extends X4Model_core
 	 * @param   integer $code Context code
 	 * @return  object	Context object
 	 */
-	public function get_by_code($id_area, $lang, $code)
+	public function get_by_code(int $id_area, string $lang, int $code)
 	{
-		return $this->db->query_row('SELECT * 
-			FROM contexts 
-			WHERE id_area = '.intval($id_area).' AND lang = '.$this->db->escape($lang).' AND code = '.intval($code));
+		return $this->db->query_row('SELECT *
+			FROM contexts
+			WHERE id_area = '.$id_area.' AND lang = '.$this->db->escape($lang).' AND code = '.$code);
 	}
-	
+
 	/**
 	 * Get contexts by Area ID and Language code
 	 * Join with privs table
@@ -49,17 +49,17 @@ class Context_model extends X4Model_core
 	 * @param   string 	$lang Language code
 	 * @return  array	Array of Context objects
 	 */
-	public function get_contexts($id_area, $lang)
+	public function get_contexts(int $id_area, string $lang)
 	{
 		return $this->db->query('SELECT c.*, IF(p.id IS NULL, u.level, p.level) AS level
 				FROM contexts c
 				JOIN uprivs u ON u.id_area = c.id_area AND u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('categories').'
 				LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = c.id
-				WHERE c.id_area = '.intval($id_area).' AND c.lang = '.$this->db->escape($lang).'
-				GROUP BY c.id 
+				WHERE c.id_area = '.$id_area.' AND c.lang = '.$this->db->escape($lang).'
+				GROUP BY c.id
 				ORDER BY c.name ASC');
 	}
-	
+
 	/**
 	 * Check if a context already exists
 	 *
@@ -67,14 +67,14 @@ class Context_model extends X4Model_core
 	 * @param   integer $id Context ID
 	 * @return  integer	the number of contexts with the searched name
 	 */
-	public function exists($context, $id = 0) 
+	public function exists(array $context, int $id = 0)
 	{
-		$where = ($id == 0) ? '' : ' AND id <> '.intval($id);
-		return $this->db->query_var('SELECT COUNT(id) 
-			FROM contexts 
+		$where = ($id == 0) ? '' : ' AND id <> '.$id;
+		return $this->db->query_var('SELECT COUNT(id)
+			FROM contexts
 			WHERE id_area = '.intval($context['id_area']).' AND lang = '.$this->db->escape($context['lang']).' AND xkey = '.$this->db->escape($context['xkey']).' '.$where);
 	}
-	
+
 	/**
 	 * Get the highest context code relative to an area and a language
 	 *
@@ -82,11 +82,11 @@ class Context_model extends X4Model_core
 	 * @param   string 	$lang Language code
 	 * @return  integer	Context code
 	 */
-	public function get_max_code($id_area, $lang)
+	public function get_max_code(int $id_area, string $lang)
 	{
-		return $this->db->query_var('SELECT MAX(code) FROM contexts WHERE id_area = '.intval($id_area).' AND lang = '.$this->db->escape($lang));
+		return $this->db->query_var('SELECT MAX(code) FROM contexts WHERE id_area = '.$id_area.' AND lang = '.$this->db->escape($lang));
 	}
-	
+
 	/**
 	 * Check if a context name already exists in the admin dictionary
 	 * If not then insert it
@@ -95,7 +95,7 @@ class Context_model extends X4Model_core
 	 * @param   integer	$xon Context status
 	 * @return  void
 	 */
-	public function check_dictionary($array, $xon = 0)
+	public function check_dictionary(array $array, int $xon = 0)
 	{
 		// prepare post array
 		$post = array(
@@ -106,15 +106,15 @@ class Context_model extends X4Model_core
 			'xval' => ucfirst($array['name']),
 			'xon' => $xon
 			);
-		
+
 		// check if context exists
 		$dict = new Dictionary_model();
 		$check = $dict->exists($post);
-		
+
 		// insert
 		if (!$check) $dict->insert($post);
 	}
-	
+
 	/**
 	 * Get pages for refresh list of pages when change contest
 	 *
@@ -122,13 +122,13 @@ class Context_model extends X4Model_core
 	 * @param   string 	$lang Language code
 	 * @return  void
 	 */
-	public function get_pages($id_area, $lang)
+	public function get_pages(int $id_area, string $lang)
 	{
 		return $this->db->query('SELECT p.id, LPAD(p.name, CHAR_LENGTH(p.name)+p.deep, \'-\') AS name, IF(pr.id IS NULL, u.level, pr.level) AS level
 				FROM pages p
 				JOIN uprivs u ON u.id_area = p.id_area AND u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('pages').'
 				LEFT JOIN privs pr ON pr.id_who = u.id_user AND pr.what = u.privtype AND pr.id_what = p.id
-				WHERE p.id_area = '.intval($id_area).' AND p.lang = '.$this->db->escape($lang).'
+				WHERE p.id_area = '.$id_area.' AND p.lang = '.$this->db->escape($lang).'
 				GROUP BY p.id
 				ORDER BY p.ordinal ASC');
 	}
@@ -141,19 +141,19 @@ class Context_model extends X4Model_core
  *
  * @package X3CMS
  */
-class Context_obj 
+class Context_obj
 {
 	public $id_area = 0;
 	public $lang = '';
 	public $name;
-	
+
 	/**
 	 * Constructor
 	 * Initialize the new context
 	 *
 		 * @return  void
 	 */
-	public function __construct($id_area, $lang)
+	public function __construct(int $id_area, string $lang)
 	{
 		$this->id_area = $id_area;
 		$this->lang = $lang;

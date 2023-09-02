@@ -4,14 +4,14 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		http://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/agpl.htm
  * @package		X3CMS
  */
 
 ?>
 <script>
 <?php
-if (isset($location)) echo 'location.href=\''.$location.'\';';
+if (isset($location)) echo 'location.href="'.$location.'";';
 else echo 'window.location.reload();';
 ?>
 </script>

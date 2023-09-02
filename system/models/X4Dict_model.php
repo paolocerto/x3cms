@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		http://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/agpl.htm
  * @package		X4WEBAPP
  */
 
@@ -14,18 +14,18 @@
  *
  * @package X3CMS
  */
-class X4Dict_model extends X4Model_core 
+class X4Dict_model extends X4Model_core
 {
 	/**
 	 * Dictionary area
 	 */
 	private $area = '';
-	
+
 	/**
 	 * Dictionary language code
 	 */
 	private $lang = '';
-	
+
 	/**
 	 * Initialize dictionary model
 	 *
@@ -39,7 +39,29 @@ class X4Dict_model extends X4Model_core
 		$this->area = $area;
 		$this->lang = $lang;
 	}
-	
+
+	/**
+	 * Set area
+	 *
+	 * @param string	area name
+	 * @return void
+	 */
+	public function __set_area($area)
+	{
+		$this->area = $area;
+	}
+
+	/**
+	 * Set lang
+	 *
+	 * @param string	lang
+	 * @return void
+	 */
+	public function __set_lang($lang)
+	{
+		$this->lang = $lang;
+	}
+
 	/**
 	 * Get a dictionary section and define keys
 	 *
@@ -50,24 +72,22 @@ class X4Dict_model extends X4Model_core
 	{
 		// check APC
 		$keys = (APC)
-			? apc_fetch(SITE.'dict'.$this->area.$this->lang.$what)
+			? apcu_fetch(SITE.'dict'.$this->area.$this->lang.$what)
 			: array();
-		
+
 		if (empty($keys))
 		{
 			$keys = $this->db->query('SELECT xkey, xval FROM dictionary WHERE area = \''.$this->area.'\' AND lang = \''.$this->lang.'\' AND what = '.$this->db->escape($what).' AND xon = 1');
-			
-			if (APC)
-				apc_store(SITE.'dict'.$this->area.$this->lang.$what, $keys);
+
+			APC && apcu_store(SITE.'dict'.$this->area.$this->lang.$what, $keys);
 		}
-		
-		foreach($keys as $i)
+
+		foreach ($keys as $i)
 		{
-			if (!defined($i->xkey)) 
-				define($i->xkey, stripslashes($i->xval));
+			!defined($i->xkey) && define($i->xkey, stripslashes($i->xval));
 		}
 	}
-	
+
 	/**
 	 * Define multiple sections
 	 *
@@ -77,12 +97,12 @@ class X4Dict_model extends X4Model_core
 	public function get_wordarray($array)
 	{
 		array_unshift($array, 'global');
-		foreach($array as $i)
+		foreach ($array as $i)
 		{
 			$this->get_words($i);
 		}
 	}
-	
+
 	/**
 	 * Get a specified key from dictionary
 	 *
@@ -92,42 +112,45 @@ class X4Dict_model extends X4Model_core
 	 */
 	public function get_word($key, $what = 'global', $lang = '')
 	{
-	    $lang = (empty($lang)) 
-	        ? $this->lang 
+	    $lang = (empty($lang))
+	        ? $this->lang
 	        : $lang;
-	    
+
 	    return $this->db->query_var('SELECT xval FROM dictionary WHERE area = \''.$this->area.'\' AND lang = \''.$lang.'\' AND what = '.$this->db->escape($what).' AND xon = 1 AND xkey = '.$this->db->escape($key));
 	}
-	
+
 	/**
 	 * Get a specified key from dictionary and build a message object
 	 *
 	 * @param string	message title
 	 * @param string	key message
 	 * @param string	dictionary section name
+	 * @param array		$options
 	 * @return object
 	 */
-	public function get_message($title, $key, $what = 'global')
+	public function get_message($title, $key, $what = 'global', $options = array())
 	{
 		$msg = $this->get_word($key, $what);
 		$m = (strstr($msg, '<br />') != '')
 			? $msg
 			: nl2br($msg);
-		
-		if (empty($m)) 
+
+		if (empty($m))
+        {
 			$m = _MSG_ERROR;
-		$obj = new Obj_msg($title, $m);
-		return $obj;
+        }
+		return new Obj_msg($title, $m, $options);
 	}
-	
+
 	/**
 	 * Build a specified message object
 	 *
 	 * @param string	message title
 	 * @param string	message
+	 * @param array		$options
 	 * @return object
 	 */
-	public function build_message($title, $msg)
+	public function build_message($title, $msg, $options = array())
 	{
 		if (isset($_SESSION[$msg.'_msg']))
 		{
@@ -137,17 +160,17 @@ class X4Dict_model extends X4Model_core
 		}
 		else
 		{
-		   $msg = nl2br(urldecode($msg));
+            $chk = X4Validation_helper::check_code($msg);
+	        $msg = nl2br(urldecode($msg));
 		}
-		
+
 		// handle break line
 		$msg = str_replace(array('<br/>', '<br>'), '<br />', $msg);
 		$m = (strstr($msg, '<br />') != '')
 			? $msg
 			: nl2br($msg);
-		
-		$obj = new Obj_msg($title, $m);
-		return $obj;
+
+		return new Obj_msg($title, $m, $options);
 	}
 }
 
@@ -156,7 +179,7 @@ class X4Dict_model extends X4Model_core
  *
  * @package X4WEBAPP
  */
-class Obj_msg 
+class Obj_msg
 {
 	public $content;
 	public $module = '';
@@ -169,21 +192,41 @@ class Obj_msg
 	 *
 	 * @param   string message title
 	 * @param   string message body
-	 * @param   boolean envelope switcher
-	 * @param   string Hn to use
+	 * @param	array  options
 	 * @return  void
 	 */
-	public function __construct($title, $msg, $envelope = true, $hn = 'h2')
+	public function __construct($title, $msg, $options = array())
 	{
+		if (!isset($options['Hn']))
+		{
+			$options['Hn'] = 'h2';
+		}
+
+		if (!isset($options['Hclass']))
+		{
+			$options['Hclass'] = '';
+		}
+
+		if (!isset($options['envelope']))
+		{
+			$options['envelope'] = 'XXX';
+		}
+
+		if (!isset($options['container']))
+		{
+			$options['container'] = 'XXX';
+		}
+
 		$title = (is_null($title))
 			? ''
-			: '<'.$hn.'>'.$title.'</'.$hn.'>';
-		
-		$this->content = ($envelope)
-			? $title.'<p>'.$msg.'</p>'
-			: $title.$msg;
+			: '<'.$options['Hn'].' '.$options['Hclass'].'>'.$title.'</'.$options['Hn'].'>';
+
+		$msg = str_replace('XXX', $msg, $options['envelope']);
+		$msg = str_replace('XXX', $msg, $options['container']);
+
+		$this->content = $title.$msg;
 	}
-	
+
 	/**
 	 * Replace message content
 	 *
@@ -196,10 +239,10 @@ class Obj_msg
 		$title = (is_null($title))
 			? ''
 			: '<h2>'.urldecode($title).'</h2>';
-		
+
 		$this->content = $title.'<p>'.nl2br(urldecode($str)).'</p>';
 	}
-	
+
 	/**
 	 * Replace message content
 	 *
@@ -210,7 +253,7 @@ class Obj_msg
 	{
 		$this->content = $str;
 	}
-	
+
 	/**
 	 * Replace message content
 	 *
@@ -221,7 +264,7 @@ class Obj_msg
 	{
 		$this->content = $before.$this->content.$after;
 	}
-	
+
 	/**
 	 * Set module and param
 	 *

@@ -4,15 +4,15 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		http://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/agpl.htm
  * @package		X3CMS
  */
- 
+
 /**
  * Controller for Admin area Home
- * 
+ *
  * @package X3CMS
- */ 
+ */
 class Home_controller extends X3ui_controller
 {
 	/**
@@ -26,7 +26,7 @@ class Home_controller extends X3ui_controller
 		parent::__construct();
 		X4Utils_helper::logged();
 	}
-	
+
 	/**
 	 * Redirect to home method
 	 *
@@ -36,24 +36,24 @@ class Home_controller extends X3ui_controller
 	{
 		$this->start();
 	}
-	
+
 	/**
 	 * Reload to home method
 	 *
+     * @param   string $url
 	 * @return  void
 	 */
-	public function redirect($url)
+	public function redirect(string $url)
 	{
 		$page = $this->get_page('home');
-		$view = new X4View_core(X4Utils_helper::set_tpl($page->tpl));
+		$view = new X4View_core(X4Theme_helper::set_tpl($page->tpl));
 		$view->page = $page;
-		
-		$view->content = new X4View_core('loading');
-		$view->content->location = urldecode($this->site->site->domain.'/'.$url);
+
+		$view = new X4View_core('loading');
+		$view->location = urldecode($this->site->site->domain.'/'.$url);
 		$view->render(TRUE);
 	}
-	
-	
+
 	/**
 	 * Admin area home page
 	 * This page displays Notices and Bookmarks
@@ -62,26 +62,27 @@ class Home_controller extends X3ui_controller
 	 * @param   string  $start_title Title of first page to load
 	 * @return  void
 	 */
-	public function start($start_page = 'home-dashboard', $start_title = 'Home')
+	public function start(string $start_page = 'home-dashboard', string $start_title = 'Home')
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('home'));
-		
+        $qs = X4Route_core::get_query_string();
+
 		// get page
 		$page = $this->get_page('home');
-		$view = new X4View_core(X4Utils_helper::set_tpl('x3ui'));
+		$view = new X4View_core(X4Theme_helper::set_tpl('x3ui'));
 		$view->page = $page;
 		$view->menus = $this->site->get_menus(1);
-		
-		$view->start_page = str_replace('-', '/', $start_page);
+
+        $view->start_page = BASE_URL.str_replace('-', '/', $start_page).'?'.http_build_query($qs);
 		$view->start_title = urldecode($start_title);
-		
+
 		// languages
 		$mod = new Language_model();
 		$view->langs = $mod->get_alanguages($page->id_area);
 		$view->render(TRUE);
 	}
-	
+
 	/**
 	 * Admin area dashboard
 	 * This page displays Notices and Bookmarks
@@ -92,23 +93,23 @@ class Home_controller extends X3ui_controller
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('widgets', 'home'));
-		
+
 		// get page
 		$page = $this->get_page('home');
-		$view = new X4View_core(X4Utils_helper::set_tpl($page->tpl));
+		$view = new X4View_core(X4Theme_helper::set_tpl($page->tpl));
 		$view->page = $page;
-		
+
 		// content
-		$view->content = new X4View_core('home');
+		$view = new X4View_core('home');
 		// notices
-		$view->content->notices = (NOTICES) ? $this->get_notices($page->lang) : '';
+		$view->notices = (NOTICES) ? $this->get_notices($page->lang) : '';
 		// widgets
 		$mod = new Widget_model();
-		$view->content->widgets = $mod->widgets();
-		
+		$view->widgets = $mod->widgets();
+
 		$view->render(TRUE);
 	}
-	
+
 	/**
 	 * Admin area menu
 	 *
@@ -121,7 +122,7 @@ class Home_controller extends X3ui_controller
 		$view->menus = $this->site->get_menus(1);
 		$view->render(TRUE);
 	}
-	
+
 	/**
 	 * Dashboard filter
 	 *
@@ -131,14 +132,14 @@ class Home_controller extends X3ui_controller
 	{
 		echo '';
 	}
-	
+
 	/**
 	 * Get notices from x3cms.net
 	 *
 	 * @param   string  $lang Language code
 	 * @return  string
 	 */
-	private function get_notices($lang)
+	private function get_notices(string $lang)
 	{
 		$contextOptions = [
 			'ssl' => [
@@ -147,15 +148,15 @@ class Home_controller extends X3ui_controller
 			],
 		];
 		$context = stream_context_create($contextOptions);
-		
+
 		$url = 'https://www.x3cms.net/en/public/call_plugin/x3notices/2/notices/'.urlencode($this->site->site->version).'/'.md5($this->site->site->xcode).'/'.$lang;
-		
+
 		// get remote contents
 		$content = @file_get_contents($url, false, $context);
-		
+
 		// return contents or error message
-		return (empty($content)) 
-			? '<p>'._UNABLE_TO_CONNECT.'</p>' 
+		return (empty($content))
+			? '<p>'._UNABLE_TO_CONNECT.'</p>'
 			: $content;
 	}
 }

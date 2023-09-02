@@ -4,13 +4,13 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		http://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/agpl.htm
  * @package		X3CMS
  */
- 
+
 /**
  * Controller for In-line Editor
- * 
+ *
  * @package X3CMS
  */
 class X3admin_controller extends X4Cms_controller
@@ -26,7 +26,7 @@ class X3admin_controller extends X4Cms_controller
 		parent::__construct();
 		X4Utils_helper::logged();
 	}
-	
+
 	/**
 	 * Redirect to REFERER
 	 *
@@ -37,53 +37,53 @@ class X3admin_controller extends X4Cms_controller
 		header('Location: '.$_SERVER["HTTP_REFERER"]);
 		die;
 	}
-	
+
 	/**
 	 * Edit article by ID
 	 *
 	 * @param	integer	$id Article ID
 	 * @return  void
 	 */
-	public function edit($id = 0)
+	public function edit(int $id = 0)
 	{
-		if ($id == 0) 
+		if ($id == 0)
 		{
 			$this->_default();
 		}
-		else 
+		else
 		{
 			// load dictionaries
 			$this->dict->get_wordarray(array('form', 'articles'));
-			
+
 			// get object
 			$mod = new Article_model();
 			$i = $mod->get_by_id($id);
-			
+
 			// cannot edit locked items
-			if ($i->xlock == 1) 
+			if ($i->xlock == 1)
 				$this->_default();
-			
+
 			// switch editor
 			// default use Tiny MCE
-			if (empty($i->xschema)) 
+			if (empty($i->xschema))
 			{
 				// tinymce
 				$fields = array();
 				$fields[] = array(
 					'label' => null,
-					'type' => 'hidden', 
+					'type' => 'hidden',
 					'value' => 0,
 					'name' => 'schema'
 				);
 				$fields[] = array(
 					'label' => null,
-					'type' => 'hidden', 
+					'type' => 'hidden',
 					'value' => $_SERVER["HTTP_REFERER"],
 					'name' => 'from'
 				);
 				$fields[] = array(
 					'label' => null,
-					'type' => 'hidden', 
+					'type' => 'hidden',
 					'value' => $i->bid,
 					'name' => 'bid'
 				);
@@ -113,14 +113,14 @@ class X3admin_controller extends X4Cms_controller
 				);
 				$fields[] = array(
 					'label' => null,
-					'type' => 'hidden', 
+					'type' => 'hidden',
 					'value' => $i->xkeys,
 					'name' => 'xkeys'
 				);
-				
+
 				$fields[] = array(
 					'label' => null,
-					'type' => 'hidden', 
+					'type' => 'hidden',
 					'value' => stripslashes($i->name),
 					'name' => 'name'
 				);
@@ -136,58 +136,54 @@ class X3admin_controller extends X4Cms_controller
 					'value' => $i->param,
 					'name' => 'param'
 				);
-				
+
 				// the only field not hidden
 				$fields[] = array(
 					'label' => '',
-					'type' => 'textarea', 
+					'type' => 'textarea',
 					'value' => $i->content,
 					'name' => 'content'
 				);
-			
-			}
-			else 
-			{
-				// TODO: schema editor
+
 			}
 		}
-		
+
 		// if submitted
 		if (X4Route_core::$post)
 		{
 			$e = X4Validation_helper::form($fields, 'editor');
-			if ($e) 
+			if ($e)
 			{
 				$this->editing($id, $_POST);
 				die;
 			}
-			else 
+			else
 			{
 				X4Utils_helper::set_error($fields);
 			}
 		}
-		
+
 		// get page
 		$page = $this->get_page('x3admin');
-		$view = new X4View_core(X4Utils_helper::set_tpl($page->tpl));
+		$view = new X4View_core(X4Theme_helper::set_tpl($page->tpl));
 		$view->page = $page;
-		
+
 		// get menus
 		$view->menus = $this->site->get_menus($page->id_area);
 		$view->navbar = array($this->site->get_bredcrumb($page));
-		
+
 		// sections
 		$view->args = array();
 		$view->sections = array('', '');
-		
+
 		// content
 		$view->content = new X4View_core('editor');
 		$view->content->title = _EDIT_ARTICLE;
-		
+
 		// form builder
 		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'));
-		
-		if (empty($i->xschema)) 
+
+		if (empty($i->xschema))
 		{
 			$view->content->tinymce = new X4View_core('tinymce');
 			$view->content->tinymce->id_area = $page->id_area;
@@ -195,7 +191,7 @@ class X3admin_controller extends X4Cms_controller
 		}
 		$view->render(TRUE);
 	}
-	
+
 	/**
 	 * Register article
 	 *
@@ -204,18 +200,18 @@ class X3admin_controller extends X4Cms_controller
 	 * @param   array 	$_post _POST array
 	 * @return  void
 	 */
-	private function editing($id, $_post)
+	private function editing(int $id, array $_post)
 	{
 		// check permission
 		AdmUtils_helper::chklevel($_SESSION['xuid'], 'articles', $id, 2);
-		
+
 		// check editor
-		if ($_post['schema']) 
+		if ($_post['schema'])
 		{
 			// schema
 			// TODO: build post array using schema
 		}
-		else 
+		else
 		{
 			// tinymce
 			$post = array(
@@ -236,50 +232,52 @@ class X3admin_controller extends X4Cms_controller
 				'xon' => AUTOREFRESH
 			);
 		}
-		
+
 		// insert new article's version
 		$mod = new Article_model();
 		$result = $mod->insert($post);
-		
-		if ($result[1]) 
+
+		if ($result[1])
 		{
 			// add permission
 			$perm = new Permission_model();
 			// privs permissions
 			$array[] = array(
-					'action' => 'insert', 
-					'id_what' => $result[0], 
-					'id_user' => $_SESSION['xuid'], 
+					'action' => 'insert',
+					'id_what' => $result[0],
+					'id_user' => $_SESSION['xuid'],
 					'level' => 4);
 			$res = $perm->pexec('articles', $array, $_post['id_area']);
 		}
-		
+
 		// set message
 		X4Utils_helper::set_msg($result);
-		
+
 		// redirect
 		header('Location: '.$_post['from']);
 		die;
 	}
-	
+
 	/**
 	 * Save article
 	 *
+     	 * @param   integer	$id_are
+     	 * @param   string	$lang
 	 * @param   string	$bid
 	 * @return  void
 	 */
-	public function update($bid)
+	public function update(int $id_area, string $lang, string $bid)
 	{
 	    // load dictionaries
 		$this->dict->get_words();
-		
+
 	    // get article id
 	    $mod = new Article_model();
-	    $item = $mod->get_by_bid($bid);
-	    
+	    $item = $mod->get_by_bid($id_area, $lang, $bid);
+
 		// check permission
 		AdmUtils_helper::chklevel($_SESSION['xuid'], 'articles', $item->id, 2);
-		
+
 		// only if there are differences
 		if ($item->content != $_POST['content'])
 		{
@@ -301,26 +299,26 @@ class X3admin_controller extends X4Cms_controller
                 'id_editor' => $_SESSION['xuid'],
                 'xon' => AUTOREFRESH
             );
-            
+
             // insert new article's version
             $result = $mod->insert($post);
-            
-            if ($result[1]) 
+
+            if ($result[1])
             {
                 // add permission
                 $perm = new Permission_model();
                 // privs permissions
                 $array[] = array(
-                        'action' => 'insert', 
-                        'id_what' => $result[0], 
-                        'id_user' => $_SESSION['xuid'], 
+                        'action' => 'insert',
+                        'id_what' => $result[0],
+                        'id_user' => $_SESSION['xuid'],
                         'level' => 4);
-                $res = $perm->pexec('articles', $array, $item->id_area);
+                $perm->pexec('articles', $array, $item->id_area);
             }
-            
+
             // set message
             X4Utils_helper::set_msg($result);
-            
+
             echo $_SESSION['msg'];
             unset($_SESSION['msg']);
         }

@@ -4,14 +4,14 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		http://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/agpl.htm
  * @package		X3CMS
  */
 
 // language switcher
 if (MULTILANGUAGE) {
 	echo '<div class="aright sbox"><ul class="inline-list">';
-	foreach($langs as $i) 
+	foreach ($langs as $i)
 	{
 		$on = ($i->code == $lang) ? ' on' : '';
 		echo '<li><a class="btm'.$on.'" href="'.BASE_URL.'articles/index/'.$id_area.'/'.$i->code.'/'.$xcase.'/'.$id_what.'" title="'._SWITCH_LANGUAGE.'">'.ucfirst($i->language).'</a></li>';
@@ -21,7 +21,7 @@ if (MULTILANGUAGE) {
 
 // area switcher
 echo '<div class="aright sbox"><ul class="inline-list">';
-foreach($areas as $i) 
+foreach ($areas as $i)
 {
 	$on = ($i->id == $id_area) ? ' on' : '';
 	echo '<li><a class="btm'.$on.'" href="'.BASE_URL.'articles/index/'.$i->id.'/'.$lang.'/'.$xcase.'/'.$id_what.'" title="'._SWITCH_AREA.'">'.ucfirst($i->name).'</a></li>';
@@ -32,7 +32,7 @@ echo '</ul></div>';
 if (isset($categories) && $categories)
 {
 	echo '<div class="aright sbox"><ul class="inline-list">';
-	foreach($categories as $i) 
+	foreach ($categories as $i)
 	{
 		$on = ($i->name == $id_what) ? ' on' : '';
 		echo '<li><a class="btm'.$on.'" href="'.BASE_URL.'articles/index/'.$id_area.'/'.$lang.'/'.$xcase.'/'.$i->name.'" title="'._SWITCH_CATEGORY.'">'.ucfirst($i->description).'</a></li>';
@@ -44,7 +44,7 @@ if (isset($categories) && $categories)
 if (isset($contexts) && $contexts)
 {
 	echo '<div class="aright sbox"><ul class="inline-list">';
-	foreach($contexts as $i) 
+	foreach ($contexts as $i)
 	{
 		$on = ($i->code == $id_what) ? ' on' : '';
 		echo '<li><a class="btm'.$on.'" href="'.BASE_URL.'articles/index/'.$id_area.'/'.$lang.'/'.$xcase.'/'.$i->code.'" title="'._SWITCH_CONTEXT.'">'.ucfirst($i->name).'</a></li>';
@@ -53,10 +53,10 @@ if (isset($contexts) && $contexts)
 }
 
 // author switcher
-if (isset($authors) && $authors) 
+if (isset($authors) && $authors)
 {
 	echo '<div class="aright sbox"><ul class="inline-list">';
-	foreach($authors as $i) 
+	foreach ($authors as $i)
 	{
 		$on = ($i->id_editor == $id_what) ? ' on' : '';
 		echo '<li><a class="btm'.$on.'" href="'.BASE_URL.'articles/index/'.$id_area.'/'.$lang.'/'.$xcase.'/'.$i->id_editor.'" title="'._SWITCH_AUTHOR.'">'.ucfirst($i->author).'</a></li>';
@@ -65,10 +65,10 @@ if (isset($authors) && $authors)
 }
 
 // key switcher
-if (isset($keys) && $keys) 
+if (isset($keys) && $keys)
 {
 	echo '<div class="aright sbox"><ul class="inline-list">';
-	foreach($keys as $i) 
+	foreach ($keys as $i)
 	{
 		$on = ($i->xkeys == $id_what) ? ' on' : '';
 		echo '<li><a class="btm'.$on.'" href="'.BASE_URL.'articles/index/'.$id_area.'/'.$lang.'/'.$xcase.'/'.$i->xkeys.'" title="'._SWITCH_KEY.'">'.ucfirst($i->xkeys).'</a></li>';
@@ -89,8 +89,8 @@ $title = (isset($page))
 foreach ($cases as $k => $v)
 {
 	// if active
-	$on = ($k == $xcase) 
-		? 'class="on"' 
+	$on = ($k == $xcase)
+		? 'class="on"'
 		: '';
 	$label = constant('_'.strtoupper($k));
 	echo '<li '.$on.'><a class="'.$v[1].'" href="'.BASE_URL.$v[0].'/'.$id_area.'/'.$lang.'/'.$k.'" title="'.$label.'">'.$label.'</a></li>';
@@ -99,7 +99,7 @@ foreach ($cases as $k => $v)
 	</ul>
 </div>
 
-<?php 
+<?php
 // use pagination
 if ($items[0]) {
 ?>
@@ -111,55 +111,55 @@ if ($items[0]) {
 		<th style="width:6em;"></th>
 	</tr>
 <?php
-	foreach($items[0] as $i)
+	foreach ($items[0] as $i)
 	{
-		if ($i->xon) 
+		if ($i->xon)
 		{
 			$status = _ON;
 			$on_status = 'orange';
 		}
-		else 
+		else
 		{
 			$status = _OFF;
 			$on_status = 'gray';
 		}
-		
-		if ($i->xlock) 
+
+		if ($i->xlock)
 		{
 			$lock = _LOCKED;
 			$lock_status = 'lock';
 		}
-		else 
+		else
 		{
 			$lock = _UNLOCKED;
 			$lock_status = 'unlock-alt';
 		}
 		$actions = $delete = '';
-		
+
 		// check permission
-		if (($i->level > 1 && $i->xlock == 0) || $i->level == 4) 
+		if (($i->level > 1 && $i->xlock == 0) || $i->level == 4)
 		{
 			// edit
 			$actions = '<a class="btm" href="'.BASE_URL.'articles/edit/'.$i->id_area.'/'.$i->lang.'/'.$i->code_context.'/'.$i->bid.'" title="'._EDIT.'"><i class="fas fa-pencil-alt fa-lg"></i></a> ';
 			// duplicate
-			$actions .= '<a class="btm" href="'.BASE_URL.'articles/edit/'.$i->id_area.'/'.$i->lang.'/'.$i->code_context.'/'.$i->bid.'/0/1" title="'._DUPLICATE.'"><i class="fas fa-files-o fa-lg"></i></a> ';
-			
-			if ($i->level > 2) 
+			$actions .= '<a class="btm" href="'.BASE_URL.'articles/edit/'.$i->id_area.'/'.$i->lang.'/'.$i->code_context.'/'.$i->bid.'/0/1" title="'._DUPLICATE.'"><i class="fas fa-copy fa-lg"></i></a> ';
+
+			if ($i->level > 2)
 			{
 				$actions .= ' <a class="btl" href="'.BASE_URL.'articles/set_by_bid/xon/'.$i->id.'/'.(($i->xon+1)%2).'" title="'._STATUS.' '.$status.'"><i class="far fa-lightbulb fa-lg '.$on_status.'"></i></a>';
-				
+
 				if ($i->level == 4)
 				{
 					$delete = '<a class="btl" href="'.BASE_URL.'articles/set_by_bid/xlock/'.$i->id.'/'.(($i->xlock+1)%2).'" title="'._STATUS.' '.$lock.'"><i class="fas fa-'.$lock_status.' fa-lg"></i></a>
-							 <a class="bta" href="'.BASE_URL.'articles/delete/'.$i->bid.'" title="'._DELETE.'"><i class="fas fa-trash fa-lg red"></i></a>';
+							 <a class="bta" href="'.BASE_URL.'articles/delete/'.$i->id_area.'/'.$i->lang.'/'.$i->bid.'" title="'._DELETE.'"><i class="fas fa-trash fa-lg red"></i></a>';
 				}
 			}
 		}
-		
-		$link = (ADVANCED_EDITING) 
-			? '<a class="btm" href="'.BASE_URL.'sections/compose/'.$i->id_page.'">'.$i->page.'</a>' 
+
+		$link = (ADVANCED_EDITING)
+			? '<a class="btm" href="'.BASE_URL.'sections/compose/'.$i->id_page.'">'.$i->page.'</a>'
 			: '<strong>'.$i->page.'</strong>';
-		
+
 		echo '<tr>
 				<td>'.date('Y-m-d', $i->date_in).'<span class="dblock xsmall">'.$i->author.'</span></td>
 				<td><strong>'.$i->name.'</strong><span class="dblock small">'.$i->context.' '.$link.'</span></td>
@@ -168,20 +168,29 @@ if ($items[0]) {
 				</tr>';
 	}
 	echo '</table>';
-	
+
 	// pagination
-	echo '<div id="article_pager" class="pager">'.X4Pagination_helper::pager(BASE_URL.'articles/index/'.$id_area.'/'.$lang.'/'.$xcase.'/'.$id_what.'/', $items[1], 5, false, '/'.$str, 'btp').'</div>'; 
+	echo '<div id="article_pager" class="pager">'.X4Pagination_helper::pager(BASE_URL.'articles/index/'.$id_area.'/'.$lang.'/'.$xcase.'/'.$id_what.'/', $items[1], 5, false, '/'.$str, 'btp').'</div>';
 }
-else 
+else
 {
 	echo '<p>'._NO_ITEMS.'</p>';
 }
+
+// build parameters for filter
+$parameters = array($xcase, $id_what, $str);
+$link = '/'.implode('/', $parameters);
+while (substr($link, -1, 1) == '/')
+{
+    $link = substr($link, 0, strlen($link) -1);
+}
+
 ?>
 <script src="<?php echo THEME_URL ?>js/basic.js"></script>
 <script>
-window.addEvent('domready', function() 
+window.addEvent('domready', function()
 {
-	X3.content('filters', 'articles/filter/<?php echo $id_area.'/'.$lang.'/'.$xcase.'/'.$id_what.'/'.$str ?>', '<?php echo X4Utils_helper::navbar($navbar, ' . ', false) ?>');
+	X3.content('filters', 'articles/filter/<?php echo $id_area.'/'.$lang ?>', '<?php echo X4Theme_helper::navbar($navbar, ' . ', false) ?>');
 	buttonize('article_pager', 'btp', 'topic');
 	buttonize('topic', 'btm', 'topic');
 	buttonize('topic', 'bta', 'modal');

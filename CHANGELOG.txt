@@ -54,7 +54,7 @@ october 2014
 	- new helper for Arrays and improvement in Form_helper and Utils_helper
 	- added missing form messages and improved message for equal validation
 	- fixed bug in config for timezone
-	- added missing param description in call_plugin method
+	- added missing param description in plugin method
 	- improved importing languages
 	- improved area init for admin area
 	- small improvement to select field handling
@@ -364,7 +364,7 @@ october 2011
 	- added clear_apc method to delete APC cache in sites_controller
 	- modified url construction for plugin with personalized URL
 	- added escaping in queries with LIKE
-	- fixed a bug in call_plugin method
+	- fixed a bug in plugin method
 	- modified get_type method to get folder name instead file code and improved create_resized method in X4Files_helper
 	- restored missed NOCACHE handling in X4Form_helper
 	- moved empty_rows and random_string methods to X4Text_helper, added push_array and nocache methods, improved build_menu method
@@ -643,7 +643,7 @@ march 2010
 	- fixed bug eliminating articles
 	- fixed bug in queries
 	- modified get_map method for compatibility with x3subpages plugin
-	- added inline_edit method and modified unspace method
+	- added inline_edit method and modified slugify method
 	- added order by date_in in get_artt_by_context method
 	- added compatibility var to default plugins and added HTML section to instructions
 	- added compatibility check to plugin install
@@ -747,7 +747,7 @@ february 2010
 	- moved X3 CMS version from index to database
 	- added affero GPL license
 	- new captcha font
-	- renamed x4call_plugin as call_plugin
+	- renamed x4plugin as plugin
 	- added option for location.href in empty view
 	- simplified styling articles boxes in compose view
 	- added list_by_key view and improved relations between articles and pages in ADVANCED_EDITING
@@ -840,7 +840,7 @@ november 2009
 	- added refactory_table method  for one table refactory permissions
 	- added trim function to escape method
 	- added support to radio buttons, added stripslashes to strings
-	- added trim to unspace method
+	- added trim to slugify method
 	- modified get_menu method for no visualizable pages
 	- modified ordinals in page records
 	- modified sidebar layout, added multiselect rules, added rules for sortable pages

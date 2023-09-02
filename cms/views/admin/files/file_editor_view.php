@@ -4,17 +4,17 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		http://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/agpl.htm
  * @package		X3CMS
  */
 
 $js = '';
- 
+
 switch($file->xtype)
 {
 case 0:
 	// images
-	$chk = file_exists(APATH.'files/filemanager/img'.$file->name);
+	$chk = file_exists(APATH.'files/'.SPREFIX.'/filemanager/img'.$file->name);
 	if (!$chk)
 	{
 		sleep(1);
@@ -29,21 +29,21 @@ case 0:
 <script src="<?php echo ROOT ?>files/js/mootools/Lasso.Crop.js"></script>
 <script>
 Crop_handler = new Class({
-		
+
 	initialize : function(){
 		this.ratio = $('ratio').addEvent('change',this.changed.bind(this,'ratio'));
-		
+
 		this.minx = $('xcoord').addEvent('change',this.changed.bind(this,'xcoord'));
 		this.miny = $('ycoord').addEvent('change',this.changed.bind(this,'ycoord'));
-		
+
 		this.maxx = $('width').addEvent('change',this.changed.bind(this,'width'));
 		this.maxy = $('height').addEvent('change',this.changed.bind(this,'height'));
-		
+
 		this.locx = $('xcoord');
 		this.locy = $('ycoord');
 		this.locw = $('width');
 		this.loch = $('height');
-		
+
 		this.cropper = new Lasso.Crop('img', {
 			ratio : false,
 			preset: [0, 0, <?php echo $width.', '.$height ?>],
@@ -54,13 +54,13 @@ Crop_handler = new Class({
 			border: '#ff6600',
 			onResize : this.updateCoords.bind(this)
 		});
-		
+
 		// update zoom
 		this.zoom = this.cropper.options.zoom;
 		$('zoom').set('value', this.cropper.options.zoom);
 		$('zoom_label').set('html', this.cropper.options.zoom);
 	},
-	
+
 	updateCoords : function(pos){
 		if (this.zoom != undefined) {
 			this.locx.set('value',pos.x*this.zoom);
@@ -71,11 +71,11 @@ Crop_handler = new Class({
 	},
 
 	changed : function(flag){
-		var x0 = parseInt(this.minx.get('value').trim()), 
-			y0 = parseInt(this.miny.get('value').trim()), 
-			x1 = parseInt(this.maxx.get('value').trim()), 
+		var x0 = parseInt(this.minx.get('value').trim()),
+			y0 = parseInt(this.miny.get('value').trim()),
+			x1 = parseInt(this.maxx.get('value').trim()),
 			y1 = parseInt(this.maxy.get('value').trim());
-			
+
 		switch(flag){
 			case 'ratio' :
 				if(!this.ratio.checked) {
@@ -86,13 +86,13 @@ Crop_handler = new Class({
 				}
 				this.cropper.hideHandlers();
 				break;
-			case 'xcoord' : 
+			case 'xcoord' :
 				this.cropper.reclip(x0, y0, x1, y1, 0);
 				break;
 			case 'ycoord' :
 				this.cropper.reclip(x0, y0, x1, y1, 1);
 				break;
-			case 'width' : 
+			case 'width' :
 				this.cropper.reclip(x0, y0, x1, y1, 2);
 				break;
 			case 'height' :
@@ -109,16 +109,16 @@ var reset_editor = function() {
 
 window.addEvent('domready', function()
 {
-	X3.content('filters','files/filter/0', '<?php echo X4Utils_helper::navbar($navbar, ' . ', false) ?>');
-	
+	X3.content('filters','files/filter/0', '<?php echo X4Theme_helper::navbar($navbar, ' . ', false) ?>');
+
 	// refresh image
 	img = $('img').get('src');
 	$('img').set('src', img+'<?php echo '?t='.time() ?>');
 	$('img').set('width', <?php echo $width ?>);
 	$('img').set('height', <?php echo $height ?>);
-	
+
 	new Crop_handler();
-	
+
 	var slider = $('slider');
 	new Slider(slider, slider.getElement('.knob'), {
 		range: [0, 359],
@@ -131,7 +131,7 @@ window.addEvent('domready', function()
 			rotateElement('imagethumb', value);
 		}
 	 });
-	
+
 });
 </script>
 <?php
@@ -140,11 +140,11 @@ window.addEvent('domready', function()
 
 case 1:
 	// generic file
-	
+
 	echo '<h1>'._TEXT_EDIT.': '.$file->name.'</h1>
 		'.$form;
-		
-	$js .= '		
+
+	$js .= '
 <script>
 var reset_editor = function() {
 	window.location = root+"home/start/files-editor-'.$file->id.'/"+escape("Template editor");
@@ -153,7 +153,7 @@ var reset_editor = function() {
 var ratio = 0;
 window.addEvent("domready", function()
 {
-	X3.content("filters","files/filter/0", "'.X4Utils_helper::navbar($navbar, ' . ', false).'");
+	X3.content("filters","files/filter/0", "'.X4Theme_helper::navbar($navbar, ' . ', false).'");
 });
 </script>';
 
@@ -161,22 +161,22 @@ window.addEvent("domready", function()
 
 
 
-	
+
 case 2:
 	// media file
-	
+
 	$mimes = array(
 		'video/mp4',
 		'video/webm',
 		'video/ogg',
 		'application/ogg',
-		'application/vnd.adobe.flash.movie', 
+		'application/vnd.adobe.flash.movie',
 		'application/x-shockwave-flash',
 	);
-	
+
 	// for swf or flv file no capture
 	$capture = '';
-			
+
 	switch ($mime)
 	{
 		case 'video/x-flv':
@@ -184,11 +184,11 @@ case 2:
 			$width = ($width > 620)
 				? $width
 				: 620;
-			
+
 			$video = '<div id="player_9330">
-						<a href="http://get.adobe.com/flashplayer/">Flash plugin is missing</a>
+						<a href="https://get.adobe.com/flashplayer/">Flash plugin is missing</a>
 					</div>';
-			
+
 			$js .= '
 <script>
 var flashvars_9330 = {};
@@ -197,10 +197,10 @@ var params_9330 = {
 	bgcolor: "#333333",
 	allowScriptAccess: "always",
 	allowFullScreen: "true",
-	flashvars: "fichier='.$this->site->site->domain.'/cms/files/filemanager/media/'.$file->name.'"
+	flashvars: "fichier='.$this->site->site->domain.'/cms/files/'.SPREFIX.'/filemanager/media/'.$file->name.'"
 };
 var attributes_9330 = {};
-var video_editor_width = windowWidth();	
+var video_editor_width = windowWidth();
 if (video_editor_width - 590 < '.$width.') {
 	w = video_editor_width - 590;
 } else {
@@ -210,37 +210,37 @@ if (video_editor_width - 590 < '.$width.') {
 flashObject("'.$this->site->site->domain.'/files/js/flv_player.swf", "player_9330", w, "'.$height.'", "8", false, flashvars_9330, params_9330, attributes_9330);
 </script>';
 			break;
-			
+
 		case 'application/vnd.adobe.flash.movie':
 		case 'application/x-shockwave-flash':
 			// swf files
 			$video = '';
-			
+
 			$js .= '
 <script>
 // "ProjectId=<%= @project.id.to_s %>&amp;Language=<%= @locale %>"
 var flashvars = {};
 
 var params = {
-	allowScriptAccess: "sameDomain", 
+	allowScriptAccess: "sameDomain",
 	allowFullScreen: "true",
 	wmode: "opaque",
 	quality: "high",
 	bgcolor: "#333333",
 	menu: "true"
 };
-var attributes = {}; 
+var attributes = {};
 attributes.styleclass="playerBox";
-swfobject.embedSWF("'.$this->site->site->domain.'/cms/files/filemanager/media/'.$file->name.'", "video_editor", "'.$width.'", "'.$height.'", "9", "expressInstall.swf", flashvars, params, attributes);
+swfobject.embedSWF("'.$this->site->site->domain.'/cms/files/'.SPREFIX.'/filemanager/media/'.$file->name.'", "video_editor", "'.$width.'", "'.$height.'", "9", "expressInstall.swf", flashvars, params, attributes);
 </script>';
 			break;
-			
+
 		case 'video/mp4':
 		case 'video/webm':
 		case 'video/ogg':
 		case 'application/ogg':
 			$video = '<video id="movie" preload controls><source id="source" src="'.FPATH.'media/'.$file->name.'" />Your browser does not support the video tag.</video>';
-				
+
 			// to capture a frame frmo a video
 			$capture = '
 	$("capture").addEvent("click", function() {
@@ -252,26 +252,26 @@ swfobject.embedSWF("'.$this->site->site->domain.'/cms/files/filemanager/media/'.
 			$("video_section").show();
 		}
 	});
-	
+
 	v = $("movie");
 	v.onpause = function() {
 		$("sec").set("value", v.currentTime);
 	}
-	
+
 	v.onseeked = function() {
     	$("sec").set("value", v.currentTime);
     };';
     		break;
 	}
-	
+
 	echo '<h1>'._VIDEO_EDIT.': '.$file->name.'</h1>
 		<div id="video_editor" class="band acenter bmiddlegray padded hide-o">
 			'.$video.'
 		</div>
 		'._VIDEO_EDIT_MSG;
-		
+
 	$js .= '
-		
+
 <script>
 var reset_editor = function() {
 	window.location = root+"home/start/files-editor-'.$file->id.'/"+escape("Video editor");
@@ -281,9 +281,9 @@ var ratio = 0;
 window.addEvent("domready", function()
 {
 	$("image_section").hide();
-	
-	X3.content("filters","files/filter/0", "'.addslashes(X4Utils_helper::navbar($navbar, ' . ', false)).'");
-	
+
+	X3.content("filters","files/filter/0", "'.addslashes(X4Theme_helper::navbar($navbar, ' . ', false)).'");
+
 	$("ratio").addEvent("change", function() {
 		if (this.checked) {
 			ratio = $("width").get("value")/$("height").get("value");
@@ -291,21 +291,21 @@ window.addEvent("domready", function()
 			ratio = 0;
 		}
 	});
-	
+
 	$("width").addEvent("change", function() {
 		w = parseInt(this.get("value"));
 		if (ratio > 0 && w > 0) {
 			$("height").set("value", Math.round(w/ratio));
 		}
 	});
-	
+
 	$("height").addEvent("change", function() {
 		h = parseInt(this.get("value"));
 		if (ratio > 0 && h > 0) {
 			$("width").set("value", Math.round(ratio*h));
 		}
 	});
-	
+
 	'.$capture.'
 });
 </script>';
@@ -313,16 +313,16 @@ window.addEvent("domready", function()
 
 
 
-	
+
 case 3:
 	// templates
-	
+
 	echo $tinymce;
-	
+
 	echo '<h1>'._TEMPLATE_EDIT.': '.$file->name.'</h1>
 		<p>'._TEMPLATE_MSG.'</p>
 		'.$form;
-		
+
 	$js .= '
 <script>
 var reset_editor = function() {
@@ -332,12 +332,12 @@ var reset_editor = function() {
 var ratio = 0;
 window.addEvent("domready", function()
 {
-	X3.content("filters","files/filter/0", "'.addslashes(X4Utils_helper::navbar($navbar, ' . ', false)).'");
+	X3.content("filters","files/filter/0", "'.addslashes(X4Theme_helper::navbar($navbar, ' . ', false)).'");
 });
 </script>';
-	
+
 	break;
 }
 
 echo $js;
-	
+

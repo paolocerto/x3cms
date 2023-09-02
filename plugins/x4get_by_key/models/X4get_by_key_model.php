@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		http://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/agpl.htm
  * @package		X4WEBAPP
  */
 
@@ -13,7 +13,7 @@
  *
  * @package X3CMS
  */
-class X4get_by_key_model extends X4Model_core 
+class X4get_by_key_model extends X4Model_core
 {
 	/**
 	 * Constructor
@@ -25,7 +25,7 @@ class X4get_by_key_model extends X4Model_core
 	{
 		parent::__construct('articles');
 	}
-	
+
 	/**
 	 * Build the form array required to set the parameter
 	 * This method have to be updated with the plugin options
@@ -36,20 +36,20 @@ class X4get_by_key_model extends X4Model_core
 	 * @param	string	$param Parameter
 	 * @return	array
 	 */
-	public function configurator($id_area, $lang, $id_page, $param)
+	public function configurator(int $id_area, string $lang, int $id_page, string $param)
 	{
 	    $p = (empty($param))
 	        ? array('', '', '')
 	        : explode('|', urldecode($param));
-	    
+
 	    $fields = array();
-	    
+
 	    $fields[] = array(
 			'label' => null,
 			'type' => 'html',
 			'value' => '<p>'._X4GET_BY_KEY_CONFIGURATOR_MSG.'</p>'
 		);
-		
+
 		// options field store all possible cases and parts
 		// cases are separated by §
 		// parts are separated by |
@@ -59,7 +59,7 @@ class X4get_by_key_model extends X4Model_core
 			'value' => 'param1|param2',
 			'name' => 'options'
 		);
-		
+
 		// plugin option
 		$fields[] = array(
 			'label' => _X4GET_BY_KEY_OPTION,
@@ -70,10 +70,10 @@ class X4get_by_key_model extends X4Model_core
 			'rule' => 'required',
 			'extra' => 'class="large"'
 		);
-		
+
 		return $fields;
 	}
-	
+
 	/**
 	 * Get keys
 	 *
@@ -83,13 +83,13 @@ class X4get_by_key_model extends X4Model_core
 	 */
 	private function get_keys($id_area, $lang)
 	{
-		return $this->db->query('SELECT xkeys 
-		        FROM articles 
+		return $this->db->query('SELECT xkeys
+		        FROM articles
 				WHERE xkeys != \'\' AND id_area = '.intval($id_area).' AND lang = '.$this->db->escape($lang).' AND xon = 1 AND date_in <= NOW() AND (date_out = 0 OR date_out >= NOW())
 				GROUP BY xkeys
 				ORDER BY xkeys ASC');
 	}
-	
+
 	/**
 	 * Get articles by key and tag
 	 *
@@ -101,13 +101,13 @@ class X4get_by_key_model extends X4Model_core
 	 */
 	public function get_articles_by_key_and_tag($id_area, $lang, $key, $tag)
 	{
-		return $this->db->query('SELECT a.* FROM 
+		return $this->db->query('SELECT a.* FROM
 				(
-				SELECT * 
-				FROM articles 
+				SELECT *
+				FROM articles
 				WHERE id_area = '.intval($id_area).' AND lang = '.$this->db->escape($lang).' AND xon = 1 AND date_in <= NOW() AND (date_out = 0 OR date_out >= NOW()) ORDER BY date_in DESC, updated DESC
 				) a
-			WHERE a.xkeys = '.$this->db->escape($key).' AND a.tags LIKE '.$this->db->escape('%'.$tag.'%').' 
+			WHERE a.xkeys = '.$this->db->escape($key).' AND a.tags LIKE '.$this->db->escape('%'.$tag.'%').'
 			GROUP BY a.bid
 			ORDER BY a.date_in DESC, a.id DESC');
 	}

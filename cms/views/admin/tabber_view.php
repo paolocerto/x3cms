@@ -4,31 +4,36 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		http://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/agpl.htm
  * @package		X3CMS
  */
 
-?>
-<div id="tabber">
-	<h1><?php echo $title ?></h1>
-<?php 
+// tabber view
+
+echo '<div id="'.$tabber_name.'">';
+
+if (isset($title))
+{
+    echo '<h1>'.$title.'</h1>';
+}
+
 if ($tabs)
 {
 	echo '<div class="tabs"><ul class="clearfix">';
 	if (isset($tkeys))
 	{
 		// array of objects
-		foreach($tabs as $i)
+		foreach ($tabs as $i)
 		{
 			$url = $tkeys[2];
 			$class = ($i->$url == $tkeys[3])
 				? ' class="on"'
 				: '';
-			
+
 			$id = (isset($tkeys[4]))
 				? 'id="'.$tkeys[4].'"'
 				: '';
-			
+
 			$url = $tkeys[1];
 			$title = $tkeys[0];
 			echo '<li '.$id.' '.$class.'><a class="btt" href="'.BASE_URL.$i->$url.'" title="'.$i->$title.'">'.$i->$title.'</a></li>';
@@ -37,16 +42,16 @@ if ($tabs)
 	else
 	{
 		// simple array
-		foreach($tabs as $k => $v)
+		foreach ($tabs as $k => $v)
 		{
 			$class = ($k == $on)
 				? ' class="on"'
 				: '';
-			
+
 			$id = (isset($v[2]))
 				? 'id="'.$v[2].'"'
 				: '';
-			
+
 			echo '<li '.$id.' '.$class.'><a class="btt" href="'.$v[1].'" title="'.$v[0].'">'.$v[0].'</a></li>';
 		}
 	}
@@ -64,7 +69,7 @@ if (isset($tabber_container))
 <script>
 window.addEvent("domready", function()
 {
-	tabberize("btt", "'.$tabber_container.'");
+	tabberize("'.$tabber_name.'", "btt", "'.$tabber_container.'");
 });
 </script>';
 }

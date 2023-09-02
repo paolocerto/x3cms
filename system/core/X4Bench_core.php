@@ -4,14 +4,14 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		http://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/agpl.htm
  * @package		X4WEBAPP
  */
 
 /**
  * Benchmark class
  * THIS FILE IS DERIVED FROM KOHANA
- * 
+ *
  * @package X4WEBAPP
  */
 final class X4Bench_core
@@ -23,7 +23,7 @@ final class X4Bench_core
 	 * @param   string   output string
 	 * @return  string
 	 */
-	public static function info($output)
+	public static function info(string $output)
 	{
 		// memory usage in MB
 		$memory = (memory_get_usage() - X4START_MEMORY) / 1024 / 1024;
@@ -32,7 +32,7 @@ final class X4Bench_core
 		// Default DB
 		$driver = 'X4'.X4Core_core::$db['default']['db_type'].'_driver';
 		$db = new $driver('default');
-		
+
 		$out = str_replace(
 			array
 			(
@@ -52,7 +52,7 @@ final class X4Bench_core
 			),
 			$output
 		);
-		
+
 		return $out;
 	}
 

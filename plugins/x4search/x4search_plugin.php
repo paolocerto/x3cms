@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		http://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/agpl.htm
  * @package		X3CMS
  */
 
@@ -27,7 +27,7 @@ class X4search_plugin extends X4Plugin_core implements X3plugin
 		parent::__construct($site);
 		$this->dict = new X4Dict_model(X4Route_core::$area, X4Route_core::$lang);
 	}
-	
+
 	/**
 	 * Default method
 	 * Display a search form
@@ -37,36 +37,39 @@ class X4search_plugin extends X4Plugin_core implements X3plugin
 	 * @param string	$param parameter (empty)
 	 * @return string
 	 */
-	public function get_module($page, $args, $param = '')
+	public function get_module(stdClass $page, array $args, string $param = '')
 	{
 		// load dictionary
 		$this->dict->get_wordarray(array('x4search'));
-		
+
 		// get plugin configuration
 		$conf = $this->site->get_module_param('x4search', $page->id_area);
-		
+
 		// set label
-		$label = ($conf['label']) 
+		$label = ($conf['label'])
 			? '<label for="search">'._X4SEARCH_LABEL.'</label>'
 			: '';
-			
+
 		// set placeholder
-		$placeholder = ($conf['placeholder']) 
-			? 'placeholder="'._X4SEARCH_PLACEHOLDER.'"' 
+		$placeholder = ($conf['placeholder'])
+			? 'placeholder="'._X4SEARCH_PLACEHOLDER.'"'
 			: '';
-		
-		$out = '<form id="fsearch" method="post" action="'.BASE_URL.'search">
+
+		$out = '<form id="fsearch" name="fsearch" method="post" action="'.BASE_URL.'search" onsubmit="return false;">
 					'.$label.'
-					<div class="row no-gap">
-						<div class="col-xs-8 no-pad">
-							<input type="text" class="large" name="search" id="search" '.$placeholder.' />
+					<div class="row">
+						<div class="col-sm-10 form-group no-gap">
+							<input type="text" class="form-control" name="search" id="search" '.$placeholder.' />
 						</div>
-						<button class="col-xs-4" type="submit">'._X4SEARCH_BUTTON.'</button>
+						<div class="col-sm-2">
+							<button id="searcher" type="button" onclick="fireSubmit(\'fsearch\')"><span class="fa fa-search fa-2x" aria-hidden="true"></span></button>
+						</div>
 					</div>
 				</form>';
-		return '<div id="x4search" class="sm-hidden">'.$out.'</div>';
+
+		return '<div id="x4search">'.$out.'</div>';
 	}
-	
+
 	/**
 	 * call plugin actions
 	 *
@@ -78,7 +81,7 @@ class X4search_plugin extends X4Plugin_core implements X3plugin
 	 * @param   mixed	$d
 	 * @return  void
 	 */
-	public function call_plugin($id_area, $control, $a, $b, $c, $d) 
+	public function plugin(int $id_area, string $control, string $a, string $b, string $c, string $d)
 	{
 		// none
 	}

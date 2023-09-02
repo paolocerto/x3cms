@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		http://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/agpl.htm
  * @package		X3CMS
  */
 
@@ -16,9 +16,9 @@
 
 if ($items)
 {
-	
+
 	echo '<ul class="zebra">';
-	foreach($items as $i)
+	foreach ($items as $i)
 	{
 		echo '<li><a class="btm" href="'.BASE_URL.$i->url.'" title="">'.$i->title.'</a>'._TRAIT_.$i->description.'</li>';
 	}

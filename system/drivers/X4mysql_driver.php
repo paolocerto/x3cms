@@ -3,8 +3,8 @@
  * X3 CMS - A smart Content Management System
  *
  * @author		Paolo Certo
- * @copyright	(c) 	CBlu.net di Paolo Certo
- * @license		http://www.gnu.org/licenses/agpl.htm
+ * @copyright	(c) CBlu.net di Paolo Certo
+ * @license		https://www.gnu.org/licenses/agpl.htm
  * @package		X4WEBAPP
  */
 
@@ -20,25 +20,26 @@ final class X4mysql_driver extends X3db_driver
 	 * @var Switcher for NoSQL
 	 */
 	public $sql = true;
-	
+
 	/**
 	 * Sets up the database configuration
-	 *
+     *
+     * @param   string  $name
 	 */
-	public function __construct($name = 'default', $adb = '')
+	public function __construct(string $name = 'default')
 	{
 		if (isset(X4Core_core::$db[$name]))
 		{
 			$this->name = $name;
-			
+
 			// create DSN
 			// without or with socket
-			$this->dsn = (empty(X4Core_core::$db[$name]['db_socket'])) 
+			$this->dsn = (empty(X4Core_core::$db[$name]['db_socket']))
 				? X4Core_core::$db[$name]['db_type'].':host='.X4Core_core::$db[$name]['db_host'].';dbname='.X4Core_core::$db[$name]['db_name']
 				: X4Core_core::$db[$name]['db_type'].':unix_socket='.X4Core_core::$db[$name]['db_socket'].';dbname='.X4Core_core::$db[$name]['db_name'];
 		}
 	}
-	
+
 	/**
 	 * Simple connect method to get the database queries up and running.
 	 *
@@ -46,69 +47,64 @@ final class X4mysql_driver extends X3db_driver
 	 */
 	public function connect()
 	{
-		if (!is_object($this->link)) 
+		if (!is_object($this->link))
 		{
-			try 
+			try
 			{
 				$this->link = new PDO(
-					$this->dsn, 
-					X4Core_core::$db[$this->name]['db_user'], 
-					X4Core_core::$db[$this->name]['db_pass'], 
+					$this->dsn,
+					X4Core_core::$db[$this->name]['db_user'],
+					X4Core_core::$db[$this->name]['db_pass'],
 					array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES '".X4Core_core::$db[$this->name]['charset']."'"));
 				$this->link->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+                // add connection to driver instances
+                self::instance($this->name);
 			}
-			catch (PDOException $e) 
+			catch (PDOException $e)
 			{
 				echo '<h1>Error establishing a database connection!</h1>';
 				die($e->getMessage());
 			}
 		}
 	}
-	
+
 	/**
 	 * A primitive debug system
 	 *
-	 * @param   mixed  SQL query to execute or array for MongoDB
-	 * @param   mixed  Error message or error array for MongoDB
+	 * @param   string  $sql    SQL query to execute
+	 * @param   string  $msg    Error message
 	 * @return  string
 	 */
-	public function print_error($sql = '', $msg = '') 
+	public function print_error(string $sql, string $msg)
 	{
 		// If there is an error then take note of it
 		echo  '<h1>SQL/DB Error</h1><blockquote><b>SQL: '.$sql.'</b><br /><br />ERROR: '.$msg.'</blockquote><br /><br />';
 	}
-	
+
 	/**
 	 * Runs a query and returns the result.
 	 *
-	 * @param   mixed  SQL query to execute or array for MongoDB
-	 * @param   string  Collection name for Mongo DB
-	 * @param   array	fields array for Mongo DB
-	 * @param   array	sorting rules for Mongo DB
+	 * @param   mixed   $sql    SQL query to execute
 	 * @return  Database_Result
 	 */
-	public function query($sql = '', $collection = '', $fields = array(), $sort = array(), $unbuffered = false)
+	public function query(string $sql)
 	{
 		if (empty($sql))
 		{
 			return FALSE;
 		}
-		
+
 		// No link? Connect!
 		$this->link or $this->connect();
-		
-		if ($unbuffered)
-		{
-		    $this->link->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, false);
-		}
-		
 		$this->latest_query = $sql;
 		$res = array();
-		
+
 		try
 		{
 			$sth = $this->link->prepare($sql);
-			$sth->execute();
+		    $sth->execute();
+
 			$sth->setFetchMode(PDO::FETCH_OBJ);
 			$res = $sth->fetchAll();
 			$sth = null;
@@ -125,46 +121,39 @@ final class X4mysql_driver extends X3db_driver
 		self::$queries++;
 		return $res;
 	}
-	
-	/**
-	 * Runs a query and returns the first result row.
+
+    /**
+	 * Runs a query and returns the result.
 	 *
-	 * @param   mixed  SQL query to execute or array for MongoDB
-	 * @param   string  Collection name for Mongo DB
-	 * @param	array	Fields array for Mongo DB 
-	 * @param	array	Sorting array for Mongo DB 
+	 * @param   mixed   $sql    SQL query to execute
 	 * @return  Database_Result
 	 */
-	public function query_row($sql = '', $collection = '', $fields = array(), $sort = array())
+	public function query_debug(string $sql)
 	{
 		if (empty($sql))
 		{
 			return FALSE;
 		}
-		
+
 		// No link? Connect!
 		$this->link or $this->connect();
-		
 		$this->latest_query = $sql;
-		
-		// add limit if needed
-		if (strstr($sql, 'LIMIT 0, 1') == '')
-		{
-			$sql .= ' LIMIT 0, 1';
-		}
-		
-		$res = array(0, 0);
-		try 
+		$res = array();
+
+		try
 		{
 			$sth = $this->link->prepare($sql);
-			$sth->execute();
+            echo '+++'.$sth->queryString.'+++';
+            echo '+++'.$sth->debugDumpParams().'+++';
+		    $sth->execute();
+
 			$sth->setFetchMode(PDO::FETCH_OBJ);
-			$res = $sth->fetch();
-			$sth->closeCursor();
+			$res = $sth->fetchAll();
+			$sth = null;
 		}
-		catch (PDOException $e) 
+		catch (PDOException $e)
 		{
-			if (DEBUG) 
+			if (DEBUG)
 			{
 				$this->print_error($sql, $e->getMessage());
 				die;
@@ -174,28 +163,71 @@ final class X4mysql_driver extends X3db_driver
 		self::$queries++;
 		return $res;
 	}
-	
+
+	/**
+	 * Runs a query and returns the first result row.
+	 *
+	 * @param   string  $sql
+	 * @return  Database_Result
+	 */
+	public function query_row(string $sql)
+	{
+		if (empty($sql))
+		{
+			return FALSE;
+		}
+
+		// No link? Connect!
+		$this->link or $this->connect();
+
+		$this->latest_query = $sql;
+
+		// add limit if needed
+		if (strstr($sql, 'LIMIT 0, 1') == '')
+		{
+			$sql .= ' LIMIT 0, 1';
+		}
+
+		$res = array(0, 0);
+		try
+		{
+			$sth = $this->link->prepare($sql);
+			$sth->execute();
+			$sth->setFetchMode(PDO::FETCH_OBJ);
+			$res = $sth->fetch();
+			$sth->closeCursor();
+		}
+		catch (PDOException $e)
+		{
+			if (DEBUG)
+			{
+				$this->print_error($sql, $e->getMessage());
+				die;
+			}
+		}
+		// query counter
+		self::$queries++;
+		return $res;
+	}
+
 	/**
 	 * Runs a query and returns the first value.
 	 *
-	 * @param   mixed  SQL query to execute or array for MongoDB
-	 * @param   string  Collection name for Mongo DB
-	 * @param   string  Field name to retrieve for Mongo DB
-	 * @param   array	sort array for Mongo DB
+	 * @param   string  $sql
 	 * @return  Database_Result
 	 */
-	public function query_var($sql = '', $collection = '', $field = '', $sort = array())
+	public function query_var(string $sql)
 	{
-		if ($sql == '') 
+		if (empty($sql))
 		{
 			return FALSE;
 		}
 		$res = '';
 		// No link? Connect!
 		$this->link or $this->connect();
-		
+
 		$this->latest_query = $sql;
-		
+
 		try
 		{
 			$sth = $this->link->prepare($sql);
@@ -204,9 +236,9 @@ final class X4mysql_driver extends X3db_driver
 			$res = $sth->fetchColumn();
 			$sth->closeCursor();
 		}
-		catch (PDOException $e) 
+		catch (PDOException $e)
 		{
-			if (DEBUG) 
+			if (DEBUG)
 			{
 				$this->print_error($sql, $e->getMessage());
 				die;
@@ -216,38 +248,37 @@ final class X4mysql_driver extends X3db_driver
 		self::$queries++;
 		return $res;
 	}
-	
+
 	/**
 	 * Compiles an exec query and runs it.
 	 *
-	 * @param   string  SQL query to execute
-	 * @param   string  Collection name a string to force the return of the last Inserted ID
-	 * @param   array  Query options
+	 * @param   string  $sql SQL query to execute
 	 * @return  Database_Result  Query result
 	 */
-	public function single_exec($sql = '', $collection = '', $options = array())
+	public function single_exec(string $sql = '')
 	{
 		if (empty($sql))
 		{
 			return false;
 		}
-		
+
 		// No link? Connect!
-		$this->link or $this->connect();
-		
+		$this->link || $this->connect();
+
 		$this->latest_query = $sql;
-		
-		try 
+
+		try
 		{
 			$res = $this->link->exec($sql);
-			
+
 			// check res
 			$res = intval(!($res === false));
-			
-			// to avoid errors with query without ID, like create table
-			$result = (empty($collection))
-				? array($this->link->lastInsertId(), $res)
-				: array(0, $res);
+
+			// to avoid errors with query without ID, like create table or truncate table
+            $last_id = (substr($sql, 0, 15) == 'TRUNCATE TABLE ')
+                ? 1
+                : (int) $this->link->lastInsertId();
+			$result = array(intval($last_id), $res);
 		}
 		catch (PDOException $e)
 		{
@@ -262,45 +293,44 @@ final class X4mysql_driver extends X3db_driver
 		self::$queries++;
 		return $result;
 	}
-	
+
 	/**
 	 * Compiles an array of exec query and runs it.
 	 *
-	 * @param   array of queries  sql
-	 * @param   string  Collection name for Mongo DB
+	 * @param   array   $sql    Array of queries
 	 * @return  Database_Result  Query result
 	 */
-	public function multi_exec($sql, $collection = '')
+	public function multi_exec(array $sql)
 	{
-		if (empty($sql) || !is_array($sql)) 
+		if (empty($sql))
 		{
 			return false;
 		}
-		
+
 		// No link? Connect!
-		$this->link or $this->connect();
-		
-		try 
+		$this->link || $this->connect();
+
+		try
 		{
 			$res = 0;
 			$this->link->beginTransaction();
-			foreach ($sql as $q) 
+			foreach ($sql as $q)
 			{
 				$this->latest_query = $q;
 				self::$queries++;
 				$res += $this->link->exec($q);
 			}
-			// to avoid errors with query without ID, like create table
-			$last_id = (empty($collection))
-				? $this->link->lastInsertId()
-				: 0;
+			// to avoid errors with query without ID, like create table or truncate table
+            $last_id = (substr($q, 0, 15) == 'TRUNCATE TABLE ')
+                ? 1
+                : (int) $this->link->lastInsertId();
 			$this->link->commit();
 			$result = array($last_id, $res);
 		}
-		catch (PDOException $e) 
+		catch (PDOException $e)
 		{
 			$this->link->rollback();
-			if (DEBUG) 
+			if (DEBUG)
 			{
 				$this->print_error($this->latest_query, $e->getMessage());
 				die;
@@ -309,28 +339,21 @@ final class X4mysql_driver extends X3db_driver
 		}
 		return $result;
 	}
-	
+
 	/**
 	 * Escapes a value for a query.
 	 *
-	 * @param   mixed   value to escape
+	 * @param   string   value to escape
 	 * @return  string
 	 */
 	public function escape($value)
 	{
-		if (is_array($value))
-		{
-		    //print_r($value);
-		    //die;
-		}
-		else
-		{
-		    $value = trim($value);
-		    $this->link or $this->connect();
-		    return $this->link->quote($value);
-		}
+        // convert to string
+        $value = trim(strval($value));
+        $this->link || $this->connect();
+        return $this->link->quote($value);
 	}
-	
+
 	/**
 	 * Optimize MySQL tables
 	 * Probably useless with InnoDB tables
@@ -341,20 +364,20 @@ final class X4mysql_driver extends X3db_driver
 	{
 		$tables = $this->query('SHOW TABLES STATUS');
 		$sql = array();
-		foreach($tables as $i)
+		foreach ($tables as $i)
 		{
 			$sql[] = 'OPTIMIZE TABLE '.$i->name;
 		}
 		return $this->multi_exec($sql);
 	}
-	
+
 	/**
 	 * Get attribute
 	 *
 	 * @param   string	Attribute name
 	 * @return	string
 	 */
-	public function get_attribute($attr)
+	public function get_attribute(string $attr)
 	{
 		$this->link or $this->connect();
 		return $this->link->getAttribute(constant('PDO::ATTR_'.$attr));

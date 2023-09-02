@@ -4,19 +4,19 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		http://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/agpl.htm
  * @package		X4WEBAPP
  */
 
 /**
  * Controller class
  * THIS FILE IS DERIVED FROM KOHANA
- * 
+ *
  * @package X4WEBAPP
  */
-abstract class X4Controller_core 
+abstract class X4Controller_core
 {
-	
+
 	/**
 	 * Loads URI, and Input into this controller.
 	 *
@@ -38,7 +38,7 @@ abstract class X4Controller_core
 	 * @param   array   arguments
 	 * @return  void
 	 */
-	public function __call($method, $args)
+	public function __call(string $method, array $args)
 	{
 		// Default to showing a 404 page
 		die('system.404');
@@ -51,9 +51,9 @@ abstract class X4Controller_core
 	 * @param   array   array of view variables
 	 * @return  string
 	 */
-	public function load_view($view_filename, $input_data)
+	public function load_view(string $filename, array $input_data)
 	{
-		if ($view_filename == '') return;
+		if ($filename == '') return;
 
 		// Buffering on
 		ob_start();
@@ -64,7 +64,7 @@ abstract class X4Controller_core
 		// Views are straight HTML pages with embedded PHP, so importing them
 		// this way insures that $this can be accessed as if the user was in
 		// the controller, which gives the easiest access to libraries in views
-		include $view_filename;
+		include $filename;
 
 		// Fetch the output and close the buffer
 		return ob_get_clean();

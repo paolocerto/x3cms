@@ -3,11 +3,11 @@
  * X3 CMS - A smart Content Management System
  *
  * @author		Paolo Certo
- * @copyright	(c) CBlu.net di Paolo Certo
- * @license		http://www.gnu.org/licenses/agpl.htm
+ * @copyright		(c) CBlu.net di Paolo Certo
+ * @license		https://www.gnu.org/licenses/agpl.htm
  * @package		X3CMS
  */
- 
+
 /**
  * Config file
  * here you set all
@@ -15,10 +15,27 @@
 
 // start config
 
+/**
+ * Define SPREFIX: a prefix used for the path to files folder
+ */
+define('SPREFIX', 'x3_');
+
+/**
+ * Define FPATH: the path to files folder
+ * Relative path
+ */
+define('FPATH', ROOT.'cms/files/'.SPREFIX.'/filemanager/');
+
+
+// set file_folder_prefix used by filemanager
+if (!isset($_SESSION['ffprefix']) || $_SESSION['ffprefix'] != SPREFIX)
+{
+    $_SESSION['ffprefix'] = SPREFIX;
+}
+
 // default items
 $default = array();
 $default['x3default_route'] = 'public/home';
-//$default['x3default_error'] = 'error';
 
 // here you can set association by extra areas and existent folders
 // >>>> WARNING: REMEMBER TO UPDATE X4Auth_model <<<<
@@ -28,7 +45,7 @@ $default['x3default_route'] = 'public/home';
 //$default['bar_id'] = 5;
 
 // global items
-define('EXT', '.php');					
+define('EXT', '.php');
 define('SEP', '/');					// URL separator (not used)
 define('_TRAIT_', ' - ');				// text separator
 define('BR', '<br />');
@@ -53,9 +70,6 @@ define('DATETIME_FORMAT', 'd/m/Y H:i');
 
 // multilevel menu
 define('MAX_MENU_DEEP', 3);				// keep this lower for better performance
-
-// google analytics
-define('ANALYTICS', 'UA-XXXXXX-XX');
 
 // logs
 define('LOGS', true);					// disable this for better performance

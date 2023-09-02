@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		http://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/agpl.htm
  * @package		X3CMS
  */
 
@@ -13,7 +13,6 @@ if (isset($tinymce))
 {
 	echo $tinymce;
 }
-
 
 if (isset($js))
 {
@@ -27,6 +26,12 @@ if (!isset($close))
 	echo '<div id="close-modal" title="'._CLOSE.'"><i class="fas fa-times fa-lg"></i></div>';
 }
 
+// show super title
+
+if (isset($super_title))
+{
+	echo '<h1>'.$super_title.'</h1>';
+}
 // show title
 if (isset($title))
 {
@@ -38,7 +43,7 @@ if (isset($loader))
     echo '<div id="formloader" class="hidden"><i class="fas fa-sync fa-spin fa-5x orange" aria-hidden="true"></i></div>';
 }
 
-// show message
+// show optional message
 if (isset($msg))
 {
 	echo $msg;
@@ -46,11 +51,15 @@ if (isset($msg))
 
 if (isset($msg_error))
 {
+	// here we output the error message
     echo $msg_error;
 }
 else
 {
-    echo '<div class="msg-container"></div>';
+	// here we put the error message with AJAX
+	echo (isset($close))
+		? '<div id="msg"></div>'
+		: '<div class="msg-container"></div>';
 }
 
 echo $form;

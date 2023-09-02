@@ -4,14 +4,14 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		http://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/agpl.htm
  * @package		X3CMS
  */
- 
+
 /**
  * Controller for REST API calls
  * Use Restler2
- * 
+ *
  * @package X3CMS
  */
 class Api_controller extends X4Cms_controller
@@ -26,7 +26,7 @@ class Api_controller extends X4Cms_controller
 		parent::__construct();
 		X4Core_core::auto_load('restler_library');
 	}
-	
+
 	/**
 	 * Generic API override __call
 	 *
@@ -34,22 +34,22 @@ class Api_controller extends X4Cms_controller
 	 * @param array		array of arguments
 	 * @return void
 	 */
-	public function __call($url, $args)
+	public function __call(string $method, array $args)
 	{
 		// load API class
-		$check = X4Core_core::auto_load($url.'_api');
-		
+		$check = X4Core_core::auto_load($method.'_api');
+
 		// if API exists
 		if ($check)
 		{
 			// call Restler
 			$r = new Restler();
-			$r->setSupportedFormats('JsonFormat', 'XmlFormat');
-			$r->addAPIClass($url);
-			$r->addAuthenticationClass('SimpleAuth');
+			$r->setSupportedFormats('JsonFormat');  // , 'XmlFormat'
+			$r->addAPIClass($method);
+			//$r->addAuthenticationClass('SimpleAuth');
 			$r->handle();
 		}
-		else 
+		else
 		{
 			return false;
 		}

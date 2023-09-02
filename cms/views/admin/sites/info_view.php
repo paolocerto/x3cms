@@ -4,7 +4,7 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		http://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/agpl.htm
  * @package		X3CMS
  */
 
@@ -16,36 +16,36 @@ switch($case)
 {
 case 'apache':
 	$modules = apache_get_modules();
-	
+
 	echo '<tr>
 		<th>'._INFO_APACHE.'</th>
 	</tr>';
 	sort($modules);
-	foreach($modules as $i)
+	foreach ($modules as $i)
 	{
 		echo '<tr>
 		<td>'.$i.'</td>
 		</tr>';
 	}
 	break;
-	
+
 case 'mysql':
 	echo '<tr>
 		<th>'._INFO_MYSQL.'</th>
 	</tr>';
-	
+
 	echo '<tr>
 		<td>'.$sinfo.'</td>
 		</tr>';
 	break;
-	
+
 case 'php':
 	$modules = get_loaded_extensions();
 	echo '<tr>
 		<th>'._INFO_PHP.'</th>
 	</tr>';
 	sort($modules);
-	foreach($modules as $i)
+	foreach ($modules as $i)
 	{
 		echo '<tr>
 		<td>'.$i.'</td>
@@ -58,8 +58,8 @@ default:
 		<th>'._INFO_VALUE.'</th>
 	</tr>
 	<tr><td>OS</td><td>'.php_uname().'</td></tr>';
-	
-	foreach($_SERVER as $k => $v)
+
+	foreach ($_SERVER as $k => $v)
 	{
 		echo '<tr>
 		<td>'.$k.'</td>

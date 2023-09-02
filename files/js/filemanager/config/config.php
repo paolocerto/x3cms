@@ -5,6 +5,11 @@ mb_internal_encoding('UTF-8');
 // DON'T COPY THIS VARIABLES IN FOLDERS config.php FILES
 //------------------------------------------------------------------------------
 
+/**
+ * Define DOM: a code based upon domain name
+ */
+define('_DOMAIN_',  $_SERVER['HTTP_HOST']);   //$_SERVER['SERVER_NAME']);
+
 //**********************
 //Path configuration
 //**********************
@@ -19,27 +24,28 @@ mb_internal_encoding('UTF-8');
 //    |   |   |   |- responsivefilemanager
 //    |   |   |   |   |- plugin.min.js
 
-$base_url =
-   // Get HTTP/HTTPS
-   ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] && !in_array(strtolower($_SERVER['HTTPS']),array('off','no'))) ? 'https' : 'http').
-   '://'.
-// Get domain portion
-$_SERVER['HTTP_HOST']; // DON'T TOUCH (base url (only domain) of site (without final /)).
+// Get HTTP/HTTPS
+$protocol = (substr($_SERVER['HTTP_REFERER'], 0, 5) == 'https' || (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] && !in_array(strtolower($_SERVER['HTTPS']),array('off','no'))))
+    ? 'https'
+    : 'http';
+
+// Get domain portion base url (only domain) of site (without final /)
+$base_url = $protocol.'://'.$_SERVER['HTTP_HOST'];
 
 // get the ROOT
 $root = str_replace(array($_SERVER['DOCUMENT_ROOT'], '/files/js/filemanager/config/config.php'), '', __FILE__);
-$upload_dir = $root.'/cms/files/filemanager/'; // path from base_url to base of upload folder (with start and final /)
-$current_path = '../../../cms/files/filemanager/'; // relative path from filemanager folder to upload folder (with final /)
+$upload_dir = $root.'/cms/files/x3_/filemanager/'; // path from base_url to base of upload folder (with start and final /)
+$current_path = '../../../cms/files/x3_/filemanager/'; // relative path from filemanager folder to upload folder (with final /)
 //thumbs folder can't put inside upload folder
-$thumbs_base_path = '../../../cms/files/thumbs/'; // relative path from filemanager folder to thumbs folder (with final /)
+$thumbs_base_path = '../../../cms/files/x3_/thumbs/'; // relative path from filemanager folder to thumbs folder (with final /)
 
 // OPTIONAL SECURITY
-// if set to true only those will access RF whose url contains the access key(akey) like: 
+// if set to true only those will access RF whose url contains the access key(akey) like:
 // <input type="button" href="../filemanager/dialog.php?field_id=imgField&lang=en_EN&akey=myPrivateKey" value="Files">
 // in tinymce a new parameter added: filemanager_access_key:"myPrivateKey"
 // example tinymce config:
 // tiny init ...
-// 
+//
 // external_filemanager_path:"../filemanager/",
 // filemanager_title:"Filemanager" ,
 // filemanager_access_key:"myPrivateKey" ,
@@ -73,7 +79,7 @@ $show_folder_size 	= TRUE; //Show or not show folder size in list view feature i
 $show_sorting_bar 	= TRUE; //Show or not show sorting feature in filemanager
 $loading_bar 		= TRUE; //Show or not show loading bar
 $transliteration 	= FALSE; //active or deactive the transliteration (mean convert all strange characters in A..Za..z0..9 characters)
-$convert_spaces  = FALSE; //convert all spaces on files name and folders name with _
+$convert_spaces  = TRUE; //convert all spaces on files name and folders name with _
 
 //*******************************************
 //Images limit and resizing configuration
@@ -104,7 +110,7 @@ $image_resizing_height = 0;
 //******************
 $default_view = 0;
 
-//set if the filename is truncated when overflow first row 
+//set if the filename is truncated when overflow first row
 $ellipsis_title_after_first_row = TRUE;
 
 //*************************
@@ -130,7 +136,7 @@ $previewable_text_file_exts = array('txt', 'log', 'xml');
 
 // you can edit these type of files if $edit_text_files is true (only text based files)
 // you can create these type of files if $create_text_files is true (only text based files)
-// if you want you can add html,css etc. 
+// if you want you can add html,css etc.
 // but for security reasons it's NOT RECOMMENDED!
 $editable_text_file_exts = array('txt', 'log', 'xml');
 
@@ -147,7 +153,7 @@ $copy_cut_max_count	 = 200;
 //**********************
 $ext_img = array('jpg', 'jpeg', 'png', 'gif', 'bmp', 'tiff', 'svg'); //Images
 $ext_file = array('doc', 'docx','rtf', 'pdf', 'xls', 'xlsx', 'txt', 'csv','html','xhtml','psd','sql','log','fla','xml','ade','adp','mdb','accdb','ppt','pptx','odt','ots','ott','odb','odg','otp','otg','odf','ods','odp','css','ai'); //Files
-$ext_video = array('mov', 'mpeg', 'm4v', 'mp4', 'avi', 'mpg','wma','flv','webm','ogv'); //Video 
+$ext_video = array('mov', 'mpeg', 'm4v', 'mp4', 'avi', 'mpg','wma','flv','webm','ogv'); //Video
 $ext_music = array('mp3', 'm4a', 'ac3', 'aiff', 'mid','ogg','wav'); //Audio
 $ext_misc = array('zip', 'rar','gz','tar','iso','dmg'); //Archives
 
@@ -178,7 +184,7 @@ $hidden_folders = array();
 $hidden_files = array('config.php');
 
 /*******************
- * JAVA upload 
+ * JAVA upload
  *******************/
 $java_upload = TRUE;
 $JAVAMaxSizeUpload = 200; //Gb
@@ -190,12 +196,12 @@ $JAVAMaxSizeUpload = 200; //Gb
 
 
 // New image resized creation with fixed path from filemanager folder after uploading (thumbnails in fixed mode)
-// If you want create images resized out of upload folder for use with external script you can choose this method, 
+// If you want create images resized out of upload folder for use with external script you can choose this method,
 // You can create also more than one image at a time just simply add a value in the array
 // Remember than the image creation respect the folder hierarchy so if you are inside source/test/test1/ the new image will create at
 // path_from_filemanager/test/test1/
 // PS if there isn't write permission in your destination folder you must set it
-// 
+//
 $fixed_image_creation                   = FALSE; //activate or not the creation of one or more image resized with fixed path from filemanager folder
 $fixed_path_from_filemanager            = array('../test/','../test1/'); //fixed path of the image folder from the current position on upload folder
 $fixed_image_creation_name_to_prepend   = array('','test_'); //name to prepend on filename
@@ -216,7 +222,7 @@ $fixed_image_creation_option            = array('crop','auto'); //set the type o
 // With Responsive filemanager you can create automatically resized image inside the upload folder, also more than one at a time
 // just simply add a value in the array
 // The image creation path is always relative so if i'm inside source/test/test1 and I upload an image, the path start from here
-// 
+//
 $relative_image_creation                = FALSE; //activate or not the creation of one or more image resized with relative path from upload folder
 $relative_path_from_current_pos         = array('thumb/','thumb/'); //relative path of the image folder from the current position on upload folder
 $relative_image_creation_name_to_prepend= array('','test_'); //name to prepend on filename

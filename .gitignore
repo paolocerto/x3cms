@@ -1,16 +1,12 @@
-# Global to ignore 
-DOCS/*
-puphet/*
-vendor/*
-node_modules/*
-
-# Config
-cms/config/config.php
-cms/files/*
 .htaccess
-robot.txt
-humans.txt
+cms/config/*
+cms/files
+cms/files/*
 
+# Global to ignore
+DOCS/*
+composer.lock
+vendor/*
 
 # Trash box
 box/

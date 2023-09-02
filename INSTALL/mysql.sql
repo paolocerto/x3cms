@@ -266,6 +266,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'admin', 'global', '_OFF', 'Off', 0, 1),
 (NOW(), 'it', 'admin', 'global', '_DELETE', 'Elimina', 0, 1),
 (NOW(), 'it', 'admin', 'global', '_DELETE_BULK', 'Elimina selezionati', 0, 1),
+(NOW(), 'it', 'admin', 'global', '_UPDATE_BULK', 'Aggiorna selezionati', 0, 1),
 (NOW(), 'it', 'admin', 'global', '_STATUS', 'Stato attuale', 0, 1),
 (NOW(), 'it', 'admin', 'global', '_LOCKED', 'Bloccato', 0, 1),
 (NOW(), 'it', 'admin', 'global', '_UNLOCKED', 'Sbloccato', 0, 1),
@@ -302,6 +303,8 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'admin', 'global', '_ORDERABLE_MSG', 'Potete ordinare gli elementi trascinandoli', 0, 1),
 (NOW(), 'it', 'admin', 'global', '_UNSAVED_CHANGES', 'Ci sono modifiche non salvate', 0, 1),
 (NOW(), 'it', 'admin', 'global', '_CANCEL', 'Annulla', 0, 1),
+(NOW(),	'it', 'admin', 'global', '_GENERATE', 'Genera',	0, 1),
+(NOW(),	'it', 'admin', 'global', '_SETTINGS', 'Impostazioni',	0, 1),
 
 (NOW(), 'it', 'admin', 'home', '_HOME_PAGE', 'Home page', 0, 1),
 (NOW(), 'it', 'admin', 'home', '_PUBLIC_SIDE', 'Sito pubblico', 0, 1),
@@ -406,13 +409,16 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'admin', 'form', '_INVALID_MAIL', 'non &egrave; un indirizzo email valido.', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_INVALID_URL', 'non &egrave; un URL valido.', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_DEPENDS', 'dipende da un campo che non avete settato "XXXRELATEDXXX".', 0, 1),
+(NOW(), 'it', 'admin', 'form', '_CONTAINS', 'deve contenere almeno XXXVALUEXXX volte la stringa "XXXRELATEDXXX".', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_IFEMPTY', '&Egrave; obbligatorio se lasciate "XXXRELATEDXXX" vuoto.', 0, 1),
-(NOW(), 'it', 'admin', 'form', '_INARRAY', 'depende da un valore che non avete selezionato.', 0, 1),
+(NOW(), 'it', 'admin', 'form', '_INARRAY', 'dipende da un valore che non avete selezionato.', 0, 1),
+(NOW(), 'it', 'admin', 'form', '_NOTINARRAY', 'il valore selezionato "XXXVALUEXXX" non può essere contenuto in "XXXRELATEDXXX"', 0, 1),
+(NOW(), 'it', 'admin', 'form', '_SELECTED', 'dovete selezionare un numero di elementi XXXRELATEDXXX XXXVALUEXXX.', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_TOO_SHORT', 'ha una lunghezza inferiore a quella richiesta [XXXRELATEDXXX].', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_MUST_BE_EQUAL', 'non coincide con "XXXRELATEDXXX".', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_MUST_BE_DIFFERENT', 'deve essere diverso da "XXXRELATEDXXX".', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_MUST_BE_NUMERIC', 'deve essere un numero', 0, 1),
-(NOW(), 'it', 'admin', 'form', '_MUST_BE_A_DATE', 'deve essere una data nel formato aaaa-mm-gg', 0, 1),
+(NOW(), 'it', 'admin', 'form', '_MUST_BE_A_DATE', 'deve essere una data nel formato XXXVALUEXXX', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_TOO_LONG', 'ha una lunghezza superiore a quella richiesta "XXXRELATEDXXX".', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_IMAGE_SIZE_IS_TOO_BIG', 'le dimensioni, in pixel, sono superiori al consentito', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_IMAGE_SIZE_IS_TOO_SMALL', 'le dimensioni, in pixel, sono inferiori al consentito', 0, 1),
@@ -430,7 +436,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 
 (NOW(), 'it', 'admin', 'form', '_MUST_BE_A_TIME', 'deve essere un orario nel formato HH:MM', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_MUST_BE_A_TIMER', 'deve essere un numero di ore e minuti nel formato H:MM', 0, 1),
-(NOW(), 'it', 'admin', 'form', '_MUST_BE_A_DATETIME', 'deve essere una data con orario nel formato aaaa-mm-gg hh:mm[:ss]', 0, 1),
+(NOW(), 'it', 'admin', 'form', '_MUST_BE_A_DATETIME', 'deve essere una data con orario nel formato XXXVALUEXXX', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_INVALID_PIVA', 'deve essere un numero di partita iva valido', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_INVALID_CF', 'deve essere un codice fiscale valido', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_INVALID_FISCAL_ID', 'deve essere un identificativo fiscale valido', 0, 1),
@@ -482,6 +488,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'admin', 'form', '_NAME', 'Nome', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_TITLE', 'Titolo', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_DESCRIPTION', 'Descrizione', 0, 1),
+(NOW(), 'it', 'admin', 'form', '_NOTES', 'Note', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_ADDRESS', 'indirizzo', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_KEYS', 'Chiavi', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_NOT_IN_MAP', 'Non visualizzare nella mappa del sito', 0, 1),
@@ -492,7 +499,8 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'admin', 'form', '_CONTENT', 'Contenuti', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_LEVEL_RULES', 'Lettura: pu&ograve; solo leggere, Scrittura: pu&ograve; leggere e scrivere, Gestione: pu&ograve; leggere, scrivere, attivare e disattivare, Amministrazione: come gestione e in pi&ugrave; bloccare e eliminare', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_CAPTCHA_ERROR', 'Il codice di controllo con corrisponde.', 0, 1),
-
+(NOW(), 'it', 'admin', 'form', '_SELECT_COLOR', 'Scegli un colore', 0, 1),
+(NOW(), 'it', 'admin', 'form', '_TO_CHANGE', 'Da modificare', 0, 1),
 
 (NOW(), 'it', 'admin', 'sites', '_SITE_MANAGER', 'Gestione sito', 0, 1),
 (NOW(), 'it', 'admin', 'sites', '_ONLINE', 'On Line', 0, 1),
@@ -590,7 +598,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'admin', 'pages', '_ROBOT_MSG', 'se vuoto viene usato "index,follow"', 0, 1),
 (NOW(), 'it', 'admin', 'pages', '_REDIRECT_CODE', 'Codice redirect', 0, 1),
 (NOW(), 'it', 'admin', 'pages', '_REDIRECT', 'Redirect URL', 0, 1),
-(NOW(), 'it', 'admin', 'pages', '_REDIRECT_MSG', 'inserire vecchio URL', 0, 1),
+(NOW(), 'it', 'admin', 'pages', '_REDIRECT_MSG', 'inserire vecchio URL per esteso o relativo se nello stesso dominio', 0, 1),
 
 (NOW(), 'it', 'admin', 'articles', '_ARTICLE_LIST', 'Elenco articoli', 0, 1),
 (NOW(), 'it', 'admin', 'articles', '_ARTICLES', 'Articoli', 0, 1),
@@ -660,12 +668,32 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'admin', 'contexts', '_DELETE_CONTEXT', 'Elimina contesto', 0, 1),
 
 
+(NOW(), 'it', 'admin', 'sections', '_SECTIONS', 'Sezioni', 0, 1),
+(NOW(), 'it', 'admin', 'sections', '_SECTION', 'Sezione', 0, 1),
+(NOW(), 'it', 'admin', 'sections', '_SECTION_NEW', 'Nuova sezione', 0, 1),
+(NOW(), 'it', 'admin', 'sections', '_SECTION_EDIT', 'Modifica sezione', 0, 1),
+(NOW(), 'it', 'admin', 'sections', '_SECTION_EDIT_MSG', '<p>NOTA: una sezione bloccata non può essere modificata; la configurazione delle colonne si aggiorna solo dopo il salvataggio.</p>', 0, 1),
+(NOW(), 'it', 'admin', 'sections', '_SECTION_DELETE', 'Elimina sezione', 0, 1),
+(NOW(), 'it', 'admin', 'sections', '_SECTION_SETTINGS', 'Configurazione', 0, 1),
+(NOW(), 'it', 'admin', 'sections', '_SECTION_BACKGROUND', 'Colore sfondo', 0, 1),
+(NOW(), 'it', 'admin', 'sections', '_SECTION_IMG_H', 'Immagine sfondo orizzontale', 0, 1),
+(NOW(), 'it', 'admin', 'sections', '_SECTION_IMG_V', 'Immagine sfondo verticale', 0, 1),
+(NOW(), 'it', 'admin', 'sections', '_SECTION_FOREGROUND', 'Colore testo', 0, 1),
+(NOW(), 'it', 'admin', 'sections', '_SECTION_COLUMNS', 'Massimo numero di colonne', 0, 1),
+(NOW(), 'it', 'admin', 'sections', '_SECTION_COL_SIZES', 'Suddivisione colonne', 0, 1),
+(NOW(), 'it', 'admin', 'sections', '_SECTION_COL_SIZES_MSG', 'Per avere 2 colonne 2/3+1/3 inserire 3 per colonne e 2+1 in suddivisione colonne', 0, 1),
+(NOW(), 'it', 'admin', 'sections', '_SECTION_UNLOCKED', 'Sezione sbloccata: parametri personalizzabili', 0, 1),
+(NOW(), 'it', 'admin', 'sections', '_SECTION_LOCKED', 'Sezione bloccata: il tema gestirà tutti i parametri', 0, 1),
+(NOW(), 'it', 'admin', 'sections', '_SECTION_WIDTH', 'Larghezza sezione: percentuale dello schermo', 0, 1),
+(NOW(), 'it', 'admin', 'sections', '_SECTION_HEIGHT', 'Altezza: libera o fullscreen', 0, 1),
+(NOW(), 'it', 'admin', 'sections', '_SECTION_CLASS', 'CSS da assegnare alla sezione', 0, 1),
+(NOW(), 'it', 'admin', 'sections', '_SECTION_CLASS_MSG', 'inserire classi CSS previste dal tema', 0, 1),
+
+
 (NOW(), 'it', 'admin', 'sections', '_COMPOSE_EDITOR', 'Compositore pagina', 0, 1),
 (NOW(), 'it', 'admin', 'sections', '_ARTICLES_LIST', 'Articoli disponibili', 0, 1),
 (NOW(), 'it', 'admin', 'sections', '_ARTICLES_MSG', 'Trascina gli articoli nelle sezioni dei contenuti', 0, 1),
-(NOW(), 'it', 'admin', 'sections', '_SECTIONS', 'Sezioni', 0, 1),
 (NOW(), 'it', 'admin', 'sections', '_SECTIONS_MSG', 'Trascina gli articoli per ordinarli o rimuoverli', 0, 1),
-(NOW(), 'it', 'admin', 'sections', '_SECTION', 'Sezione', 0, 1),
 (NOW(), 'it', 'admin', 'sections', '_DROP_HERE', 'Rilascia qui', 0, 1),
 
 
@@ -709,6 +737,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'admin', 'dictionary', '_WORDS_LIST', 'Elenco espressioni', 0, 1),
 (NOW(), 'it', 'admin', 'dictionary', '_DICTIONARY_SEARCH_MSG', 'Cerca per chiave in tutte le lingue', 0, 1),
 (NOW(), 'it', 'admin', 'dictionary', '_DICTIONARY_SEARCH_RESULT', 'Risultato della ricerca', 0, 1),
+(NOW(), 'it', 'admin', 'dictionary', '_DICTIONARY_DELETE_DUPLICATES', 'Rimuovi duplicati', 0, 1),
 
 (NOW(), 'it', 'admin', 'users', '_GROUP', 'Gruppo', 0, 1),
 (NOW(), 'it', 'admin', 'users', '_USERS_LIST', 'Elenco utenti', 0, 1),
@@ -782,6 +811,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'admin', 'groups', '_MODULE_INSTALL', 'Installazione moduli', 0, 1),
 (NOW(), 'it', 'admin', 'groups', '_MODULE_UNINSTALL', 'Disinstallazione moduli', 0, 1),
 (NOW(), 'it', 'admin', 'groups', '_PAGE_CREATION', 'Creazione pagine', 0, 1),
+(NOW(), 'it', 'admin', 'groups', '_SECTION_CREATION', 'Creazione sezioni', 0, 1),
 (NOW(), 'it', 'admin', 'groups', '_TEMPLATE_INSTALL', 'Installare template', 0, 1),
 (NOW(), 'it', 'admin', 'groups', '_THEME_INSTALL', 'Installare temi', 0, 1),
 (NOW(), 'it', 'admin', 'groups', '_USER_CREATION', 'Creazione utenti', 0, 1),
@@ -795,13 +825,14 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'admin', 'groups', 'CONTEXTS', 'Gestione contenuti', 0, 1),
 (NOW(), 'it', 'admin', 'groups', 'DICTIONARY', 'Gestione dizionari', 0, 1),
 (NOW(), 'it', 'admin', 'groups', 'FILES', 'Gestione files', 0, 1),
-(NOW(), 'it', 'admin', 'groups', 'GROUPS', 'Gestione gruppi', 0, 1),
+(NOW(), 'it', 'admin', 'groups', 'XGROUPS', 'Gestione gruppi', 0, 1),
 (NOW(), 'it', 'admin', 'groups', 'LANGUAGES', 'Gestione lingue', 0, 1),
 (NOW(), 'it', 'admin', 'groups', 'LOGS_DATA', 'Gestione logs', 0, 1),
 (NOW(), 'it', 'admin', 'groups', 'MENUS', 'Gestione men&ugrave;', 0, 1),
 (NOW(), 'it', 'admin', 'groups', 'MODULES', 'Gestione moduli', 0, 1),
 (NOW(), 'it', 'admin', 'groups', 'PAGES', 'Gestione pagine', 0, 1),
 (NOW(), 'it', 'admin', 'groups', 'PRIVS', 'Gestione permessi', 0, 1),
+(NOW(), 'it', 'admin', 'groups', 'SECTIONS', 'Gestione sezioni', 0, 1),
 (NOW(), 'it', 'admin', 'groups', 'SITES', 'Gestione sito', 0, 1),
 (NOW(), 'it', 'admin', 'groups', 'TEMPLATES', 'Gestione template', 0, 1),
 (NOW(), 'it', 'admin', 'groups', 'THEMES', 'Gestione temi', 0, 1),
@@ -823,6 +854,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'admin', 'templates', '_TEMPLATE', 'Template', 0, 1),
 (NOW(), 'it', 'admin', 'templates', '_INVALID_TEMPLATE', 'Il nome del Template non deve contenere spazi.', 0, 1),
 (NOW(), 'it', 'admin', 'templates', '_CSS', 'Foglio di stile associato', 0, 1),
+(NOW(), 'it', 'admin', 'templates', '_SECTIONS_SETTINGS', 'Impostazioni sezioni', 0, 1),
 (NOW(), 'it', 'admin', 'templates', '_INSTALL_TEMPLATE', 'Install template', 0, 1),
 (NOW(), 'it', 'admin', 'templates', '_INSTALLED_TEMPLATES', 'Template installati', 0, 1),
 (NOW(), 'it', 'admin', 'templates', '_INSTALLABLE_TEMPLATES', 'Template installabili', 0, 1),
@@ -866,6 +898,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'admin', 'global', '_OFF', 'Off', 0, 1),
 (NOW(), 'en', 'admin', 'global', '_DELETE', 'Delete', 0, 1),
 (NOW(), 'en', 'admin', 'global', '_DELETE_BULK', 'Delete selected', 0, 1),
+(NOW(), 'en', 'admin', 'global', '_UPDATE_BULK', 'Update selected', 0, 1),
 (NOW(), 'en', 'admin', 'global', '_STATUS', 'Status', 0, 1),
 (NOW(), 'en', 'admin', 'global', '_LOCKED', 'Locked', 0, 1),
 (NOW(), 'en', 'admin', 'global', '_UNLOCKED', 'Unlocked', 0, 1),
@@ -902,6 +935,8 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'admin', 'global', '_ORDERABLE_MSG', 'You can order items with drag and drop', 0, 1),
 (NOW(), 'en', 'admin', 'global', '_UNSAVED_CHANGES', 'There are unsaved changes', 0, 1),
 (NOW(), 'en', 'admin', 'global', '_CANCEL', 'Cancel', 0, 1),
+(NOW(), 'en', 'admin', 'global', '_GENERATE', 'Generate', 0, 1),
+(NOW(), 'en', 'admin', 'global', '_SETTINGS', 'Settings', 0, 1),
 
 (NOW(), 'en', 'admin', 'home', '_HOME_PAGE', 'Home page', 0, 1),
 (NOW(), 'en', 'admin', 'home', '_PUBLIC_SIDE', 'Public side', 0, 1),
@@ -1006,13 +1041,15 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'admin', 'form', '_INVALID_MAIL', 'is not a valid email address.', 0, 1),
 (NOW(), 'en', 'admin', 'form', '_INVALID_URL', 'is not a valid URL.', 0, 1),
 (NOW(), 'en', 'admin', 'form', '_DEPENDS', 'depends on an empty field "XXXRELATEDXXX".', 0, 1),
+(NOW(), 'en', 'admin', 'form', '_CONTAINS', 'must contain at least XXXVALUEXXX times the string "XXXRELATEDXXX".', 0, 1),
 (NOW(), 'en', 'admin', 'form', '_IFEMPTY', 'is mandatory if "XXXRELATEDXXX" is empty.', 0, 1),
 (NOW(), 'en', 'admin', 'form', '_INARRAY', 'depends on a value not selected.', 0, 1),
+(NOW(), 'en', 'admin', 'form', '_NOTINARRAY', 'the selected value "XXXVALUEXXX" can\'t be in "XXXRELATEDXXX"', 0, 1),
 (NOW(), 'en', 'admin', 'form', '_TOO_SHORT', 'is too short [XXXRELATEDXXX].', 0, 1),
 (NOW(), 'en', 'admin', 'form', '_MUST_BE_EQUAL', 'is different from "XXXRELATEDXXX".', 0, 1),
 (NOW(), 'en', 'admin', 'form', '_MUST_BE_DIFFERENT', 'must be different from "XXXRELATEDXXX".', 0, 1),
 (NOW(), 'en', 'admin', 'form', '_MUST_BE_NUMERIC', 'must be numeric', 0, 1),
-(NOW(), 'en', 'admin', 'form', '_MUST_BE_A_DATE', 'expected aaaa-mm-gg format', 0, 1),
+(NOW(), 'en', 'admin', 'form', '_MUST_BE_A_DATE', 'expected XXXVALUEXXX format', 0, 1),
 (NOW(), 'en', 'admin', 'form', '_TOO_LONG', 'is too long [XXXRELATEDXXX].', 0, 1),
 (NOW(), 'en', 'admin', 'form', '_IMAGE_SIZE_IS_TOO_BIG', 'the size in pixel of uploading file is too big', 0, 1),
 (NOW(), 'en', 'admin', 'form', '_FILE_WEIGHT_IS_TOO_BIG', 'the weight in kilobyte of uploading file is too big', 0, 1),
@@ -1029,7 +1066,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 
 (NOW(), 'en', 'admin', 'form', '_MUST_BE_A_TIME', 'must be a time HH:MM format', 0, 1),
 (NOW(), 'en', 'admin', 'form', '_MUST_BE_A_TIMER', 'must be a number of hours and minutes in H:MM format', 0, 1),
-(NOW(), 'en', 'admin', 'form', '_MUST_BE_A_DATETIME', 'must be a date time in aaaa-mm-gg hh:mm[:ss] format', 0, 1),
+(NOW(), 'en', 'admin', 'form', '_MUST_BE_A_DATETIME', 'must be a date time in XXXVALUEXXX format', 0, 1),
 (NOW(), 'en', 'admin', 'form', '_INVALID_PIVA', 'must be an italian fiscal id', 0, 1),
 (NOW(), 'en', 'admin', 'form', '_INVALID_CF', 'must be an italian personal fiscal id', 0, 1),
 (NOW(), 'en', 'admin', 'form', '_INVALID_FISCAL_ID', 'must be a fiscal id', 0, 1),
@@ -1081,6 +1118,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'admin', 'form', '_MAIL', 'Email', 0, 1),
 (NOW(), 'en', 'admin', 'form', '_TITLE', 'Title', 0, 1),
 (NOW(), 'en', 'admin', 'form', '_DESCRIPTION', 'Description', 0, 1),
+(NOW(), 'en', 'admin', 'form', '_NOTES', 'Notes', 0, 1),
 (NOW(), 'en', 'admin', 'form', '_ADDRESS', 'address', 0, 1),
 (NOW(), 'en', 'admin', 'form', '_KEYS', 'Keys', 0, 1),
 (NOW(), 'en', 'admin', 'form', '_NOT_IN_MAP', 'Don\'t show in site map', 0, 1),
@@ -1091,7 +1129,8 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'admin', 'form', '_CONTENT', 'Contents', 0, 1),
 (NOW(), 'en', 'admin', 'form', '_LEVEL_RULES', 'Reader: can only read, Writer: can read and write, Manager: can read, write, enable and disable, Administrator: like manager plus lock and delete power', 0, 1),
 (NOW(), 'en', 'admin', 'form', '_CAPTCHA_ERROR', 'Wrong captcha.', 0, 1),
-
+(NOW(), 'en', 'admin', 'form', '_SELECT_COLOR', 'Pick a color', 0, 1),
+(NOW(), 'en', 'admin', 'form', '_TO_CHANGE', 'To changes', 0, 1),
 
 (NOW(), 'en', 'admin', 'sites', '_SITE_MANAGER', 'Site manager', 0, 1),
 (NOW(), 'en', 'admin', 'sites', '_ONLINE', 'On Line', 0, 1),
@@ -1102,7 +1141,6 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'admin', 'sites', '_EDIT_SITE', 'Edit site parameters', 0, 1),
 (NOW(), 'en', 'admin', 'sites', '_CLEAR_CACHE', 'Clear your cache', 0, 1),
 (NOW(), 'en', 'admin', 'sites', '_VERSION', 'version', 0, 1),
-
 
 (NOW(), 'en', 'admin', 'info', '_SITE_INFO', 'Informations', 0, 1),
 (NOW(), 'en', 'admin', 'info', '_INFO_SERVER', 'Server', 0, 1),
@@ -1189,7 +1227,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'admin', 'pages', '_ROBOT_MSG', 'if empty will be used "index,follow"', 0, 1),
 (NOW(), 'en', 'admin', 'pages', '_REDIRECT_CODE', 'Redirect code', 0, 1),
 (NOW(), 'en', 'admin', 'pages', '_REDIRECT', 'Redirect URL', 0, 1),
-(NOW(), 'en', 'admin', 'pages', '_REDIRECT_MSG', 'insert the old URL', 0, 1),
+(NOW(), 'en', 'admin', 'pages', '_REDIRECT_MSG', 'insert the old URL the full version or the relative version if in the same domain', 0, 1),
 
 (NOW(), 'en', 'admin', 'articles', '_ARTICLE_LIST', 'Articles list', 0, 1),
 (NOW(), 'en', 'admin', 'articles', '_ARTICLES', 'Articles', 0, 1),
@@ -1260,12 +1298,31 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'admin', 'contexts', '_DELETE_CONTEXT', 'Delete context', 0, 1),
 
 
+(NOW(), 'en', 'admin', 'sections', '_SECTIONS', 'Sections', 0, 1),
+(NOW(), 'en', 'admin', 'sections', '_SECTION', 'Section', 0, 1),
+(NOW(), 'en', 'admin', 'sections', '_SECTION_NEW', 'New section', 0, 1),
+(NOW(), 'en', 'admin', 'sections', '_SECTION_EDIT', 'Edit section', 0, 1),
+(NOW(), 'en', 'admin', 'sections', '_SECTION_EDIT_MSG', 'NOTE: if a section is locked wont update; columns settings will update after saving', 0, 1),
+(NOW(), 'en', 'admin', 'sections', '_SECTION_DELETE', 'Delete section', 0, 1),
+(NOW(), 'en', 'admin', 'sections', '_SECTION_SETTINGS', 'Configuration', 0, 1),
+(NOW(), 'en', 'admin', 'sections', '_SECTION_BACKGROUND', 'Background color', 0, 1),
+(NOW(), 'en', 'admin', 'sections', '_SECTION_IMG_H', 'Backgrond image horizontal', 0, 1),
+(NOW(), 'en', 'admin', 'sections', '_SECTION_IMG_V', 'Background image vertical', 0, 1),
+(NOW(), 'en', 'admin', 'sections', '_SECTION_FOREGROUND', 'Foreground color', 0, 1),
+(NOW(), 'en', 'admin', 'sections', '_SECTION_COLUMNS', 'Max number of columns', 0, 1),
+(NOW(), 'en', 'admin', 'sections', '_SECTION_COL_SIZES', 'Column subdivision', 0, 1),
+(NOW(), 'en', 'admin', 'sections', '_SECTION_COL_SIZES_MSG', 'TO get 2 columns 2/3+1/3 set 3 columns and 2+1 as subdivision', 0, 1),
+(NOW(), 'en', 'admin', 'sections', '_SECTION_UNLOCKED', 'Unlocked section: you can set parameters', 0, 1),
+(NOW(), 'en', 'admin', 'sections', '_SECTION_LOCKED', 'Locked section: the theme will handle all parameter of this section', 0, 1),
+(NOW(), 'en', 'admin', 'sections', '_SECTION_WIDTH', 'Section width: a number that is the with percentage', 0, 1),
+(NOW(), 'en', 'admin', 'sections', '_SECTION_HEIGHT', 'Height: free or fullscreen', 0, 1),
+(NOW(), 'en', 'admin', 'sections', '_SECTION_CLASS', 'CSS classes to set for section', 0, 1),
+(NOW(), 'en', 'admin', 'sections', '_SECTION_CLASS_MSG', 'insert CSS classes provided by the theme', 0, 1),
+
 (NOW(), 'en', 'admin', 'sections', '_COMPOSE_EDITOR', 'Page composer', 0, 1),
 (NOW(), 'en', 'admin', 'sections', '_ARTICLES_LIST', 'Available articles', 0, 1),
 (NOW(), 'en', 'admin', 'sections', '_ARTICLES_MSG', 'Drag the items in the areas of content', 0, 1),
-(NOW(), 'en', 'admin', 'sections', '_SECTIONS', 'Sections', 0, 1),
 (NOW(), 'en', 'admin', 'sections', '_SECTIONS_MSG', 'Drag the items to sort or remove', 0, 1),
-(NOW(), 'en', 'admin', 'sections', '_SECTION', 'Section', 0, 1),
 (NOW(), 'en', 'admin', 'sections', '_DROP_HERE', 'Drop here', 0, 1),
 
 
@@ -1308,6 +1365,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'admin', 'dictionary', '_WORDS_LIST', 'Words list', 0, 1),
 (NOW(), 'en', 'admin', 'dictionary', '_DICTIONARY_SEARCH_MSG', 'Search by key in any language', 0, 1),
 (NOW(), 'en', 'admin', 'dictionary', '_DICTIONARY_SEARCH_RESULT', 'Results of the search', 0, 1),
+(NOW(), 'en', 'admin', 'dictionary', '_DICTIONARY_DELETE_DUPLICATES', 'Remove duplicates', 0, 1),
 
 (NOW(), 'en', 'admin', 'users', '_GROUP', 'Group', 0, 1),
 (NOW(), 'en', 'admin', 'users', '_USERS_LIST', 'Users list', 0, 1),
@@ -1382,6 +1440,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'admin', 'groups', '_MODULE_INSTALL', 'Plugin installation', 0, 1),
 (NOW(), 'en', 'admin', 'groups', '_MODULE_UNINSTALL', 'Plugin uninstall', 0, 1),
 (NOW(), 'en', 'admin', 'groups', '_PAGE_CREATION', 'Page creation', 0, 1),
+(NOW(), 'en', 'admin', 'groups', '_SECTION_CREATION', 'Section creation', 0, 1),
 (NOW(), 'en', 'admin', 'groups', '_TEMPLATE_INSTALL', 'Template installation', 0, 1),
 (NOW(), 'en', 'admin', 'groups', '_THEME_INSTALL', 'Theme installation', 0, 1),
 (NOW(), 'en', 'admin', 'groups', '_USER_CREATION', 'User creation', 0, 1),
@@ -1395,13 +1454,14 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'admin', 'groups', 'CONTEXTS', 'Contexts management', 0, 1),
 (NOW(), 'en', 'admin', 'groups', 'DICTIONARY', 'Dictionary management', 0, 1),
 (NOW(), 'en', 'admin', 'groups', 'FILES', 'Files management', 0, 1),
-(NOW(), 'en', 'admin', 'groups', 'GROUPS', 'Groups management', 0, 1),
+(NOW(), 'en', 'admin', 'groups', 'XGROUPS', 'Groups management', 0, 1),
 (NOW(), 'en', 'admin', 'groups', 'LANGUAGES', 'Language management', 0, 1),
 (NOW(), 'en', 'admin', 'groups', 'LOGS_DATA', 'Logs management', 0, 1),
 (NOW(), 'en', 'admin', 'groups', 'MENUS', 'Menus management', 0, 1),
 (NOW(), 'en', 'admin', 'groups', 'MODULES', 'Plugins management', 0, 1),
 (NOW(), 'en', 'admin', 'groups', 'PAGES', 'Pages management', 0, 1),
 (NOW(), 'en', 'admin', 'groups', 'PRIVS', 'Permissions management', 0, 1),
+(NOW(), 'en', 'admin', 'groups', 'SECTIONS', 'Sections management', 0, 1),
 (NOW(), 'en', 'admin', 'groups', 'SITES', 'Site management', 0, 1),
 (NOW(), 'en', 'admin', 'groups', 'TEMPLATES', 'Template management', 0, 1),
 (NOW(), 'en', 'admin', 'groups', 'THEMES', 'Themes management', 0, 1),
@@ -1423,6 +1483,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'admin', 'templates', '_TEMPLATE', 'Template', 0, 1),
 (NOW(), 'en', 'admin', 'templates', '_INVALID_TEMPLATE', 'The Template name can\'t contains space.', 0, 1),
 (NOW(), 'en', 'admin', 'templates', '_CSS', 'Related style sheet', 0, 1),
+(NOW(), 'en', 'admin', 'templates', '_SECTIONS_SETTINGS', 'Sections settings', 0, 1),
 (NOW(), 'en', 'admin', 'templates', '_INSTALL_TEMPLATE', 'Install template', 0, 1),
 (NOW(), 'en', 'admin', 'templates', '_INSTALLED_TEMPLATES', 'Installed templates', 0, 1),
 (NOW(), 'en', 'admin', 'templates', '_INSTALLABLE_TEMPLATES', 'Installable templates', 0, 1),
@@ -1510,13 +1571,15 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'public', 'form', '_FORM_DUPLICATE', 'Questo form &egrave; gi&agrave; stato registrato.', 0, 1),
 
 (NOW(), 'it', 'public', 'form', '_REQUIRED', '&egrave; un campo obbligatorio.', 0, 1),
-(NOW(), 'it', 'public', 'form', '_REQUIREDIF', '&Egrave; obbligatorio se impostate "XXXRELATEDXXX" a "XXXVALUEXXX".', 0, 1),
+(NOW(), 'it', 'public', 'form', '_REQUIREDIF', '&egrave; obbligatorio se impostate "XXXRELATEDXXX" a "XXXVALUEXXX".', 0, 1),
 (NOW(), 'it', 'public', 'form', '_INVALID_VALUE', 'non &egrave; un valore ammesso.', 0, 1),
 (NOW(), 'it', 'public', 'form', '_INVALID_MAIL', 'non &egrave; un indirizzo email valido.', 0, 1),
 (NOW(), 'it', 'public', 'form', '_INVALID_URL', 'non &egrave; un URL valido.', 0, 1),
-(NOW(), 'it', 'public', 'form', '_INARRAY', 'depende da un valore che non avete selezionato.', 0, 1),
+(NOW(), 'it', 'public', 'form', '_INARRAY', 'dipende da un valore che non avete selezionato.', 0, 1),
+(NOW(), 'it', 'public', 'form', '_NOTINARRAY', 'il valore selezionato "XXXVALUEXXX" non può essere contenuto in "XXXRELATEDXXX"', 0, 1),
 (NOW(), 'it', 'public', 'form', '_DEPENDS', 'dipende da un campo che non avete settato "XXXRELATEDXXX".', 0, 1),
-(NOW(), 'it', 'public', 'form', '_IFEMPTY', '&Egrave; obbligatorio se lasciate "XXXRELATEDXXX" vuoto.', 0, 1),
+(NOW(), 'it', 'public', 'form', '_CONTAINS', 'deve contenere almeno XXXVALUEXXX volte la stringa "XXXRELATEDXXX".', 0, 1),
+(NOW(), 'it', 'public', 'form', '_IFEMPTY', '&egrave; obbligatorio se lasciate "XXXRELATEDXXX" vuoto.', 0, 1),
 
 (NOW(), 'it', 'public', 'form', '_IMAGE_SIZE_IS_TOO_BIG', 'le dimensioni, in pixel, sono superiori al consentito', 0, 1),
 (NOW(), 'it', 'public', 'form', '_IMAGE_SIZE_IS_TOO_SMALL', 'le dimensioni, in pixel, sono inferiori al consentito', 0, 1),
@@ -1533,7 +1596,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 
 (NOW(), 'it', 'public', 'form', '_MUST_BE_NUMERIC', 'deve essere un numero', 0, 1),
 (NOW(), 'it', 'public', 'form', '_MUST_CONTAIN_ONLY_NUMBERS', 'deve contenere solo numeri', 0, 1),
-(NOW(), 'it', 'public', 'form', '_MUST_BE_A_DATE', 'deve essere una data nel formato aaaa-mm-gg', 0, 1),
+(NOW(), 'it', 'public', 'form', '_MUST_BE_A_DATE', 'deve essere una data nel formato XXXVALUEXXX', 0, 1),
 (NOW(), 'it', 'public', 'form', '_CAPTCHA_ERROR', 'Il codice di controllo con corrisponde.', 0, 1),
 
 (NOW(), 'it', 'public', 'form', '_MUST_CONTAIN_ONLY', 'deve contenere solo "XXXRELATEDXXX"', 0, 1),
@@ -1549,7 +1612,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 
 (NOW(), 'it', 'public', 'form', '_MUST_BE_A_TIME', 'deve essere un orario nel formato HH:MM', 0, 1),
 (NOW(), 'it', 'public', 'form', '_MUST_BE_A_TIMER', 'deve essere un numero di ore e minuti nel formato H:MM', 0, 1),
-(NOW(), 'it', 'public', 'form', '_MUST_BE_A_DATETIME', 'deve essere una data con orario nel formato aaaa-mm-gg hh:mm[:ss]', 0, 1),
+(NOW(), 'it', 'public', 'form', '_MUST_BE_A_DATETIME', 'deve essere una data con orario nel formato XXXVALUEXXX', 0, 1),
 (NOW(), 'it', 'public', 'form', '_INVALID_PIVA', 'deve essere un numero di partita iva valido', 0, 1),
 (NOW(), 'it', 'public', 'form', '_INVALID_CF', 'deve essere un codice fiscale valido', 0, 1),
 (NOW(), 'it', 'public', 'form', '_INVALID_FISCAL_ID', 'deve essere un identificativo fiscale valido', 0, 1),
@@ -1691,7 +1754,9 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'public', 'form', '_INVALID_MAIL', 'invalid email address.', 0, 1),
 (NOW(), 'en', 'public', 'form', '_INVALID_URL', 'invalid URL.', 0, 1),
 (NOW(), 'en', 'public', 'form', '_INARRAY', 'depends on a value not selected.', 0, 1),
+(NOW(), 'en', 'public', 'form', '_NOTINARRAY', 'the selected value "XXXVALUEXXX" can\'t be in "XXXRELATEDXXX"', 0, 1).
 (NOW(), 'en', 'public', 'form', '_DEPENDS', 'depends on an empty field "XXXRELATEDXXX".', 0, 1),
+(NOW(), 'en', 'public', 'form', '_CONTAINS', 'must contain at least XXXVALUEXXX times the string "XXXRELATEDXXX".', 0, 1),
 (NOW(), 'en', 'public', 'form', '_IFEMPTY', 'is mandatory if "XXXRELATEDXXX" is empty.', 0, 1),
 
 (NOW(), 'en', 'public', 'form', '_IMAGE_SIZE_IS_TOO_BIG', 'the size in pixel of uploading file is too big', 0, 1),
@@ -1709,7 +1774,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 
 (NOW(), 'en', 'public', 'form', '_MUST_BE_NUMERIC', 'must be numeric', 0, 1),
 (NOW(), 'en', 'public', 'form', '_MUST_CONTAIN_ONLY_NUMBERS', 'can contain only numbers', 0, 1),
-(NOW(), 'en', 'public', 'form', '_MUST_BE_A_DATE', 'expected aaaa-mm-gg format', 0, 1),
+(NOW(), 'en', 'public', 'form', '_MUST_BE_A_DATE', 'expected XXXVALUEXXX format', 0, 1),
 (NOW(), 'en', 'public', 'form', '_CAPTCHA_ERROR', 'captcha is wrong.', 0, 1),
 
 (NOW(), 'en', 'public', 'form', '_MUST_CONTAIN_ONLY', 'can contain only "XXXRELATEDXXX"', 0, 1),
@@ -1725,7 +1790,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 
 (NOW(), 'en', 'public', 'form', '_MUST_BE_A_TIME', 'must be a time HH:MM format', 0, 1),
 (NOW(), 'en', 'public', 'form', '_MUST_BE_A_TIMER', 'must be a number of hours and minutes in H:MM format', 0, 1),
-(NOW(), 'en', 'public', 'form', '_MUST_BE_A_DATETIME', 'must be a date time in aaaa-mm-gg hh:mm[:ss] format', 0, 1),
+(NOW(), 'en', 'public', 'form', '_MUST_BE_A_DATETIME', 'must be a date time in XXXVALUEXXX format', 0, 1),
 (NOW(), 'en', 'public', 'form', '_INVALID_PIVA', 'must be an italian fiscal id', 0, 1),
 (NOW(), 'en', 'public', 'form', '_INVALID_CF', 'must be an italian personal fiscal id', 0, 1),
 (NOW(), 'en', 'public', 'form', '_INVALID_FISCAL_ID', 'must be a fiscal id', 0, 1),
@@ -1870,7 +1935,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'private', 'form', '_TOO_SHORT', 'ha una lunghezza inferiore a quella richiesta [XXXRELATEDXXX].', 0, 1),
 (NOW(), 'it', 'private', 'form', '_MUST_BE_EQUAL', 'non coincide con "XXXRELATEDXXX".', 0, 1),
 (NOW(), 'it', 'private', 'form', '_MUST_BE_NUMERIC', 'deve essere un numero', 0, 1),
-(NOW(), 'it', 'private', 'form', '_MUST_BE_A_DATE', 'deve essere una data nel formato aaaa-mm-gg', 0, 1),
+(NOW(), 'it', 'private', 'form', '_MUST_BE_A_DATE', 'deve essere una data nel formato XXXVALUEXXX', 0, 1),
 (NOW(), 'it', 'private', 'form', '_TOO_LONG', 'ha una lunghezza superiore a quella richiesta [XXXRELATEDXXX].', 0, 1),
 (NOW(), 'it', 'private', 'form', '_IMAGE_SIZE_IS_TOO_BIG', 'le dimensioni, in pixel, sono superiori al consentito', 0, 1),
 (NOW(), 'it', 'private', 'form', '_IMAGE_SIZE_IS_TOO_SMALL', 'le dimensioni, in pixel, sono inferiori al consentito', 0, 1),
@@ -1889,7 +1954,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 
 (NOW(), 'it', 'private', 'form', '_MUST_BE_A_TIME', 'deve essere un orario nel formato HH:MM', 0, 1),
 (NOW(), 'it', 'private', 'form', '_MUST_BE_A_TIMER', 'deve essere un numero di ore e minuti nel formato H:MM', 0, 1),
-(NOW(), 'it', 'private', 'form', '_MUST_BE_A_DATETIME', 'deve essere una data con orario nel formato aaaa-mm-gg hh:mm[:ss]', 0, 1),
+(NOW(), 'it', 'private', 'form', '_MUST_BE_A_DATETIME', 'deve essere una data con orario nel formato XXXVALUEXXX', 0, 1),
 (NOW(), 'it', 'private', 'form', '_INVALID_PIVA', 'deve essere un numero di partita iva valido', 0, 1),
 (NOW(), 'it', 'private', 'form', '_INVALID_CF', 'deve essere un codice fiscale valido', 0, 1),
 (NOW(), 'it', 'private', 'form', '_INVALID_FISCAL_ID', 'deve essere un identificativo fiscale valido', 0, 1),
@@ -2014,7 +2079,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'private', 'form', '_TOO_SHORT', 'is too short.', 0, 1),
 (NOW(), 'en', 'private', 'form', '_MUST_BE_EQUAL', 'is different from "XXXRELATEDXXX".', 0, 1),
 (NOW(), 'en', 'private', 'form', '_MUST_BE_NUMERIC', 'must be numeric', 0, 1),
-(NOW(), 'en', 'private', 'form', '_MUST_BE_A_DATE', 'expected aaaa-mm-gg format', 0, 1),
+(NOW(), 'en', 'private', 'form', '_MUST_BE_A_DATE', 'expected XXXVALUEXXX format', 0, 1),
 (NOW(), 'en', 'private', 'form', '_TOO_LONG', 'is too long.', 0, 1),
 (NOW(), 'en', 'private', 'form', '_IMAGE_SIZE_IS_TOO_BIG', 'the size in pixel of uploading file is too big', 0, 1),
 (NOW(), 'en', 'private', 'form', '_IMAGE_SIZE_IS_TOO_SMALL', 'the size in pixel of uploading file is too small', 0, 1),
@@ -2034,7 +2099,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 
 (NOW(), 'en', 'private', 'form', '_MUST_BE_A_TIME', 'must be a time HH:MM format', 0, 1),
 (NOW(), 'en', 'private', 'form', '_MUST_BE_A_TIMER', 'must be a number of hours and minutes in H:MM format', 0, 1),
-(NOW(), 'en', 'private', 'form', '_MUST_BE_A_DATETIME', 'must be a date time in aaaa-mm-gg hh:mm[:ss] format', 0, 1),
+(NOW(), 'en', 'private', 'form', '_MUST_BE_A_DATETIME', 'must be a date time in XXXVALUEXXX format', 0, 1),
 (NOW(), 'en', 'private', 'form', '_INVALID_PIVA', 'must be an italian fiscal id', 0, 1),
 (NOW(), 'en', 'private', 'form', '_INVALID_CF', 'must be an italian personal fiscal id', 0, 1),
 (NOW(), 'en', 'private', 'form', '_INVALID_FISCAL_ID', 'must be a fiscal id', 0, 1),
@@ -2126,7 +2191,7 @@ CREATE TABLE IF NOT EXISTS `gprivs` (
 -- Dumping data for table `gprivs`
 --
 
-INSERT INTO `gprivs` (`updated`, `id_group`, `what`, `level`, `xon`) VALUES 
+INSERT INTO `gprivs` (`updated`, `id_group`, `what`, `level`, `xon`) VALUES
 (NOW(), 1, 'areas', 4, 1),
 (NOW(), 1, 'articles', 4, 1),
 (NOW(), 1, 'categories', 4, 1),
@@ -2140,6 +2205,7 @@ INSERT INTO `gprivs` (`updated`, `id_group`, `what`, `level`, `xon`) VALUES
 (NOW(), 1, 'modules', 4, 1),
 (NOW(), 1, 'pages', 4, 1),
 (NOW(), 1, 'privs', 4, 1),
+(NOW(), 1, 'sections', 4, 1),
 (NOW(), 1, 'sites', 4, 1),
 (NOW(), 1, 'templates', 4, 1),
 (NOW(), 1, 'themes', 4, 1),
@@ -2158,6 +2224,7 @@ INSERT INTO `gprivs` (`updated`, `id_group`, `what`, `level`, `xon`) VALUES
 (NOW(), 1, '_module_install', 4, 1),
 (NOW(), 1, '_module_uninstall', 4, 1),
 (NOW(), 1, '_page_creation', 4, 1),
+(NOW(), 1, '_section_creation', 4, 1),
 (NOW(), 1, '_template_install', 4, 1),
 (NOW(), 1, '_theme_install', 4, 1),
 (NOW(), 1, '_user_creation', 4, 1),
@@ -2166,10 +2233,10 @@ INSERT INTO `gprivs` (`updated`, `id_group`, `what`, `level`, `xon`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `groups`
+-- Table structure for table `xgroups`
 --
 
-CREATE TABLE IF NOT EXISTS `groups` (
+CREATE TABLE IF NOT EXISTS `xgroups` (
   `id` int(11) NOT NULL auto_increment,
   `updated` datetime NOT NULL,
   `name` varchar(128) NOT NULL,
@@ -2184,7 +2251,7 @@ CREATE TABLE IF NOT EXISTS `groups` (
 -- Dumping data for table `groups`
 --
 
-INSERT INTO `groups` (`id`, `updated`, `name`, `id_area`, `description`, `xlock`, `xon`) VALUES
+INSERT INTO `xgroups` (`id`, `updated`, `name`, `id_area`, `description`, `xlock`, `xon`) VALUES
 (1, NOW(), 'admin', 1, 'Administrators group', 0, 1),
 (2, NOW(), 'editor', 1, 'Editors group', 1, 1);
 
@@ -2209,7 +2276,7 @@ CREATE TABLE IF NOT EXISTS `languages` (
 -- Dumping data for table `languages`
 --
 
-INSERT INTO `languages` (`updated`, `language`, `code`, `rtl`, `xlock`, `xon`) VALUES 
+INSERT INTO `languages` (`updated`, `language`, `code`, `rtl`, `xlock`, `xon`) VALUES
 (NOW(), 'italiano', 'it', 0, 0, 1),
 (NOW(), 'english', 'en', 0, 0, 1);
 
@@ -2240,6 +2307,24 @@ INSERT INTO `levels` (`id`, `name`, `description`, `xon`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `debug`
+--
+
+CREATE TABLE IF NOT EXISTS `debug` (
+  `id` int(11) NOT NULL auto_increment,
+  `updated` datetime NOT NULL,
+  `who` int(11) NOT NULL,
+  `action` varchar(255) NOT NULL,
+  `what` varchar(64) NOT NULL,
+  `id_what`	int(11) NOT NULL,
+  `memo` text NOT NULL,
+  `extra` varchar(255) NOT NULL,
+  `xon` tinyint(1) NOT NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+--
 -- Table structure for table `logs`
 --
 
@@ -2251,7 +2336,7 @@ CREATE TABLE IF NOT EXISTS `logs` (
   `what` varchar(64) NOT NULL,
   `id_what`	int(11) NOT NULL,
   `memo` text NOT NULL,
-  `extra` varchar(255) NOT NULL,  
+  `extra` varchar(255) NOT NULL,
   `xon` tinyint(1) NOT NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
@@ -2312,7 +2397,7 @@ CREATE TABLE IF NOT EXISTS `modules` (
   `updated` datetime NOT NULL,
   `id_area` int(11) NOT NULL,
   `name` varchar(128) NOT NULL,
-  `description` text NOT NULL,
+  `title` varchar(255) NOT NULL,
   `configurable` tinyint(1) NOT NULL,
   `admin` tinyint(1) NOT NULL,
   `searchable` tinyint(1) NOT NULL,
@@ -2432,6 +2517,7 @@ INSERT INTO `pages` (`updated`, `lang`, `id_area`, `tpl`, `css`, `xfrom`, `xid`,
 
 (NOW(), 'it', 1, 'base', 'x3ui', 'home', 'pages', 'areas', 'Aree', 'Gestione aree', 'Gestione aree', '', 2, 1, 1, 'A0021001', 0, 1, 1),
 (NOW(), 'it', 1, 'base', 'x3ui', 'areas', 'pages', 'pages', 'Pagine', 'Gestione pagine', 'Gestione pagine', '', 2, 1, 2, 'A00210011001', 0, 0, 1),
+(NOW(), 'it', 1, 'base', 'x3ui', 'pages', 'pages', 'sections', 'Sezioni', 'Gestione sezioni', 'Gestione sezioni', '', 2, 1, 3, 'A002100110011001', 0, 0, 1),
 (NOW(), 'it', 1, 'base', 'x3ui', 'pages', 'pages', 'areas/map', 'Mappa area', 'Mappa area', 'Mappa area', '', 0, 1, 3, 'A002100110010001', 0, 1, 1),
 (NOW(), 'it', 1, 'base', 'x3ui', 'pages', 'pages', 'sections/compose', 'Disposizione articoli', 'Disposizione articoli', 'Disposizione articoli', '', 0, 2, 3, 'A002100110010002', 0, 1, 1),
 
@@ -2476,6 +2562,7 @@ INSERT INTO `pages` (`updated`, `lang`, `id_area`, `tpl`, `css`, `xfrom`, `xid`,
 
 (NOW(), 'en', 1, 'base', 'x3ui', 'home', 'pages', 'areas', 'Areas', 'Areas manager', 'Areas manager', '', 2, 1, 1, 'A0021001', 0, 1, 1),
 (NOW(), 'en', 1, 'base', 'x3ui', 'areas', 'pages', 'pages', 'Pages', 'Pages manager', 'Pages manager', '', 2, 1, 2, 'A00210011001', 0, 0, 1),
+(NOW(), 'en', 1, 'base', 'x3ui', 'pages', 'pages', 'sections', 'Sections', 'Sections manager', 'Sections manager', '', 2, 1, 3, 'A002100110011001', 0, 0, 1),
 (NOW(), 'en', 1, 'base', 'x3ui', 'pages', 'pages', 'areas/map', 'Area map', 'Area map', 'Area map', '', 0, 1, 3, 'A002100110010001', 0, 1, 1),
 (NOW(), 'en', 1, 'base', 'x3ui', 'pages', 'pages', 'sections/compose', 'Articles disposition', 'Articles disposition', 'Articles disposition', '', 0, 2, 3, 'A002100110010002', 0, 1, 1),
 
@@ -2601,6 +2688,7 @@ INSERT INTO `privtypes` (`updated`, `xrif`, `name`, `description`, `xon`) VALUES
 (NOW(), 1, '_menu_creation', '_MENU_CREATION', 1),
 (NOW(), 1, '_module_install', '_MODULE_INSTALL', 1),
 (NOW(), 1, '_page_creation', '_PAGE_CREATION', 1),
+(NOW(), 1, '_section_creation', '_SECTION_CREATION', 1),
 (NOW(), 1, '_template_install', '_TEMPLATE_INSTALL', 1),
 (NOW(), 1, '_theme_install', '_THEME_INSTALL', 1),
 (NOW(), 1, '_user_creation', '_USER_CREATION', 1),
@@ -2612,13 +2700,14 @@ INSERT INTO `privtypes` (`updated`, `xrif`, `name`, `description`, `xon`) VALUES
 (NOW(), 1, 'contexts', 'CONTEXTS', 1),
 (NOW(), 1, 'dictionary', 'DICTIONARY', 1),
 (NOW(), 1, 'files', 'FILES', 1),
-(NOW(), 1, 'groups', 'GROUPS', 1),
+(NOW(), 1, 'xgroups', 'XGROUPS', 1),
 (NOW(), 1, 'languages', 'LANGUAGES', 1),
 (NOW(), 1, 'logs', 'LOGS_DATA', 1),
 (NOW(), 1, 'menus', 'MENUS', 1),
 (NOW(), 1, 'modules', 'MODULES', 1),
 (NOW(), 1, 'pages', 'PAGES', 1),
 (NOW(), 1, 'privs', 'PRIVS', 1),
+(NOW(), 1, 'sections', 'SECTIONS', 1),
 (NOW(), 1, 'sites', 'SITES', 1),
 (NOW(), 1, 'templates', 'TEMPLATES', 1),
 (NOW(), 1, 'themes', 'THEMES', 1),
@@ -2635,11 +2724,14 @@ CREATE TABLE IF NOT EXISTS `sections` (
   `updated` datetime NOT NULL,
   `id_area` int(11) NOT NULL,
   `id_page` int(11) NOT NULL,
+  `domain` varchar(255) NOT NULL,
   `progressive` smallint(2) NOT NULL,
+  `settings` text NOT NULL,
   `articles` text NOT NULL,
-  `show_author` int(1) NOT NULL,
-  `show_date` int(1) NOT NULL,
-  `comments` int(1) NOT NULL,
+  `show_author` tinyint(1) NOT NULL,
+  `show_date` tinyint(1) NOT NULL,
+  `comments` tinyint(1) NOT NULL,
+  `xlock` tinyint(1) NOT NULL,
   `xon` tinyint(1) NOT NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
@@ -2648,11 +2740,11 @@ CREATE TABLE IF NOT EXISTS `sections` (
 -- Dumping data for table `sections`
 --
 
-INSERT INTO `sections` (`id`, `updated`, `id_area`, `id_page`, `progressive`, `articles`, `show_author`, `show_date`, `comments`, `xon`) VALUES
-(1, NOW(), 2, 1, 1, '0665f9f126a93750d68c49acde91c0ac', 0, 0, 0, 1),
-(2, NOW(), 2, 5, 1, '0665f9f126a93750d68c49acde91c0ac', 0, 0, 0, 1),
-(3, NOW(), 3, 6, 1, '0665f9f126a93750d68c49acde91c0ac', 0, 0, 0, 1),
-(4, NOW(), 3, 10, 1, '0665f9f126a93750d68c49acde91c0ac', 0, 0, 0, 1);
+INSERT INTO `sections` (`id`, `updated`, `id_area`, `id_page`, `progressive`, `settings`, `articles`, `show_author`, `show_date`, `comments`, `xlock`, `xon`) VALUES
+(1, NOW(), 2, 1, 1, '', '0665f9f126a93750d68c49acde91c0ac', 0, 0, 0, 0, 1),
+(2, NOW(), 2, 5, 1, '', '0665f9f126a93750d68c49acde91c0ac', 0, 0, 0, 0, 1),
+(3, NOW(), 3, 6, 1, '', '0665f9f126a93750d68c49acde91c0ac', 0, 0, 0, 0, 1),
+(4, NOW(), 3, 10, 1, '', '0665f9f126a93750d68c49acde91c0ac', 0, 0, 0, 0, 1);
 
 -- --------------------------------------------------------
 
@@ -2675,7 +2767,7 @@ CREATE TABLE IF NOT EXISTS `sites` (
 --
 
 INSERT INTO `sites` (`updated`, `xcode`, `domain`, `version`, `xon`) VALUES
-(NOW(), '', 'ZZZDOMAIN', '0.5.3 STABLE', 1);
+(NOW(), '', 'ZZZDOMAIN', '0.9.0 STABLE', 1);
 
 -- --------------------------------------------------------
 
@@ -2691,6 +2783,7 @@ CREATE TABLE IF NOT EXISTS `templates` (
   `js` varchar(64) NOT NULL,
   `id_theme` int(11) NOT NULL,
   `description` varchar(255) NOT NULL,
+  `settings` text NOT NULL,
   `sections` int(4) NOT NULL,
   `xlock` tinyint(1) NOT NULL,
   `xon` tinyint(1) NOT NULL,
@@ -2701,11 +2794,11 @@ CREATE TABLE IF NOT EXISTS `templates` (
 -- Dumping data for table `templates`
 --
 
-INSERT INTO `templates` (`id`, `updated`, `name`, `css`, `js`, `id_theme`, `description`, `sections`, `xlock`, `xon`) VALUES
-(1, NOW(), 'base', 'x3ui', 'x3ui', 1, 'Default Admin template', 1, 0, 1),
-(2, NOW(), 'base', 'base', 'jqready', 2, 'Default template (two columns)', 3, 0, 1),
-(3, NOW(), 'one', 'base', 'jqready', 2, 'One column template (one column)', 2, 0, 1),
-(4, NOW(), 'offline', 'offline', 'jqready', 2, 'Offline template', 2, 0, 1);;
+INSERT INTO `templates` (`id`, `updated`, `name`, `css`, `js`, `id_theme`, `description`, `settings`, `sections`, `xlock`, `xon`) VALUES
+(1, NOW(), 'base', 'x3ui', 'x3ui', 1, 'Default Admin template', '{"s1":{"locked":1,"bgcolor":"default","fgcolor":"default","columns":1,"width":"100"},"sn":{"locked":0,"bgcolor":"#ffffff","fgcolor":"#444444","columns":4,"width":"100"}}', 1, 0, 1),
+(2, NOW(), 'base', 'base', 'jqready', 2, 'Default template (two columns)', '{"s1":{"locked":1,"bgcolor":"default","fgcolor":"default","columns":3,"width":"100","class1":"","class2":""},"s2":{"locked":1,"bgcolor":"default","fgcolor":"default","columns":1,"width":"33","class1":"","class2":""},"s3":{"locked":0,"bgcolor":"#ffffff","fgcolor":"#444444","columns":4,"width":"100","class1":"","class2":""},"sn":{"locked":0,"bgcolor":"#ffffff","fgcolor":"#444444","columns":4,"width":"100","class1":"","class2":""}}',3, 0, 1),
+(3, NOW(), 'one', 'base', 'jqready', 2, 'One column template (one column)', '{"s1":{"locked":1,"bgcolor":"default","fgcolor":"default","columns":3,"width":"100","class1":"","class2":""},"s2":{"locked":0,"bgcolor":"#ffffff","fgcolor":"#444444","columns":4,"width":"100","class1":"","class2":""},"sn":{"locked":0,"bgcolor":"#ffffff","fgcolor":"#444444","columns":4,"width":"100","class1":"","class2":""}}', 2, 0, 1),
+(4, NOW(), 'offline', 'offline', 'jqready', 2, 'Offline template', '{"s1":{"locked":1,"bgcolor":"default","fgcolor":"default","columns":1,"width":"100","class1":"","class2":""},"sn":{"locked":0,"bgcolor":"#ffffff","fgcolor":"#444444","columns":4,"width":"100","class1":"","class2":""}}', 1, 0, 1);
 
 -- --------------------------------------------------------
 
@@ -2779,8 +2872,8 @@ CREATE TABLE IF NOT EXISTS `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `updated`, `id_group`, `lang`, `username`, `password`, `description`, `mail`, `phone`, `last_in`, `level`, `hidden`, `xlock`, `xon`) VALUES
-(1, NOW(), 1, 'en', 'ZZZAUSER', 'ZZZAPASS', 'default Administrator', 'ZZZAMAIL', '', NOW(), 4, 1, 0, 1);
+INSERT INTO `users` (`id`, `updated`, `id_group`, `lang`, `username`, `password`, `description`, `mail`, `phone`, `last_in`, `level`, `hidden`, `hashkey`, `xlock`, `xon`) VALUES
+(1, NOW(), 1, 'en', 'ZZZAUSER', 'ZZZAPASS', 'default Administrator', 'ZZZAMAIL', '', NOW(), 4, 1, '', 0, 1);
 
 -- --------------------------------------------------------
 

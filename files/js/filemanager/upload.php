@@ -9,7 +9,7 @@ $storeFolderThumb = $_POST['path_thumb'];
 
 $path_pos=strpos($storeFolder,$current_path);
 $thumb_pos=strpos($_POST['path_thumb'],$thumbs_base_path);
-if($path_pos!==0 
+if($path_pos!==0
     || $thumb_pos !==0
     || strpos($storeFolderThumb,'../',strlen($thumbs_base_path))!==FALSE
     || strpos($storeFolderThumb,'./',strlen($thumbs_base_path))!==FALSE
@@ -36,12 +36,12 @@ while($cycle && $i<$max_cycles){
 if (!empty($_FILES)) {
     $info=pathinfo($_FILES['file']['name']);
     if(in_array(fix_strtolower($info['extension']), $ext)){
-	$tempFile = $_FILES['file']['tmp_name'];   
-	  
+	$tempFile = $_FILES['file']['tmp_name'];
+
 	$targetPath = $storeFolder;
 	$targetPathThumb = $storeFolderThumb;
 	$_FILES['file']['name'] = fix_filename($_FILES['file']['name'],$transliteration,$convert_spaces);
-	 
+
 	if(file_exists($targetPath.$_FILES['file']['name'])){
 	    $i = 1;
 	    $info=pathinfo($_FILES['file']['name']);
@@ -50,16 +50,16 @@ if (!empty($_FILES)) {
 	    }
 	    $_FILES['file']['name']=$info['filename']."_".$i.".".$info['extension'];
 	}
-	$targetFile =  $targetPath. $_FILES['file']['name']; 
+	$targetFile =  $targetPath. $_FILES['file']['name'];
 	$targetFileThumb =  $targetPathThumb. $_FILES['file']['name'];
-	
+
 	if(in_array(fix_strtolower($info['extension']),$ext_img)) $is_img=true;
 	else $is_img=false;
-	
-	
+
+
 	move_uploaded_file($tempFile,$targetFile);
 	chmod($targetFile, 0755);
-	
+
 	if($is_img){
 	    $memory_error=false;
 	    if(!create_img_gd($targetFile, $targetFileThumb, 122, 91)){
@@ -67,11 +67,11 @@ if (!empty($_FILES)) {
 	    }else{
 		if(!new_thumbnails_creation($targetPath,$targetFile,$_FILES['file']['name'],$current_path,$relative_image_creation,$relative_path_from_current_pos,$relative_image_creation_name_to_prepend,$relative_image_creation_name_to_append,$relative_image_creation_width,$relative_image_creation_height,$relative_image_creation_option,$fixed_image_creation,$fixed_path_from_filemanager,$fixed_image_creation_name_to_prepend,$fixed_image_creation_to_append,$fixed_image_creation_width,$fixed_image_creation_height,$fixed_image_creation_option)){
 		    $memory_error=false;
-		}else{		    
+		}else{
 		    $imginfo =getimagesize($targetFile);
 		    $srcWidth = $imginfo[0];
 		    $srcHeight = $imginfo[1];
-		    
+
 		    if($image_resizing){
 			if($image_resizing_width==0){
 			    if($image_resizing_height==0){
@@ -102,7 +102,7 @@ if (!empty($_FILES)) {
 		    if($resize)
 			create_img_gd($targetFile, $targetFile, $srcWidth, $srcHeight);
 		}
-	    }		
+	    }
 	    if($memory_error){
 		//error
 		unlink($targetFile);
@@ -126,7 +126,7 @@ if(isset($_POST['submit'])){
         'field_id'  => $_POST['field_id'],
         'fldr'      => $_POST['fldr'],
     ));
-    header("location: dialog.php?" . $query);
+    header("location: /files/js/filemanager/dialog.php?" . $query);
 }
 
-?>      
+?>

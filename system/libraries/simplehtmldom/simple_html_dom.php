@@ -834,7 +834,7 @@ class simple_html_dom_node
 		// Go throgh each element starting at this element until the end tag
 		// Note: If this element is a void tag, any previous void element is
 		// skipped.
-		foreach($nodes as $node) {
+		foreach ($nodes as $node) {
 			$pass = true;
 
 			// Skip root nodes
@@ -874,7 +874,7 @@ class simple_html_dom_node
 						$node_classes = array_map('strtolower', $node_classes);
 					}
 
-					foreach($class as $c) {
+					foreach ($class as $c) {
 						if(!in_array($c, $node_classes)) {
 							$pass = false;
 							break;
@@ -890,7 +890,7 @@ class simple_html_dom_node
 				&& $attributes !== ''
 				&& is_array($attributes)
 				&& !empty($attributes)) {
-					foreach($attributes as $a) {
+					foreach ($attributes as $a) {
 						list (
 							$att_name,
 							$att_expr,
@@ -1194,7 +1194,7 @@ class simple_html_dom_node
 				// Replace element by array
 				$m[4] = array();
 
-				foreach($attributes as $att) {
+				foreach ($attributes as $att) {
 					// Skip empty matches
 					if(trim($att[0]) === '') { continue; }
 
@@ -2470,7 +2470,7 @@ class simple_html_dom
 	/**
 	 * Parse attribute from current document position
 	 *
-	 * @param object $node Node for the attributes
+	 * @param stdClass $node Node for the attributes
 	 * @param string $name Name of the current attribute
 	 * @param array $space Array for spacing information
 	 * @return void
@@ -2519,7 +2519,7 @@ class simple_html_dom
 	/**
 	 * Link node to parent node
 	 *
-	 * @param object $node Node to link to parent
+	 * @param stdClass $node Node to link to parent
 	 * @param bool $is_child True if the node is a child of parent
 	 * @return void
 	 */
@@ -2726,7 +2726,7 @@ class simple_html_dom
 		global $debug_object;
 		if (is_object($debug_object)) { $debug_object->debug_log_entry(1); }
 
-		foreach($this->noise as $noiseElement) {
+		foreach ($this->noise as $noiseElement) {
 			if (strpos($noiseElement, $text) !== false) {
 				return $noiseElement;
 			}

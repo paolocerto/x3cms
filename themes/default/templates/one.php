@@ -15,18 +15,18 @@ $title = $css = '';
 $robots = 'index,follow';
 $xkeys = $this->site->site->keywords;
 $description = stripslashes($this->site->site->description);
-if (isset($page)) 
+if (isset($page))
 {
 	$title = stripslashes($page->title).' | ';
-	$description = (empty($page->description)) 
-		? $description 
+	$description = (empty($page->description))
+		? $description
 		: stripslashes($page->description);
 	if (!empty($page->xkeys))
 	{
 		$xkeys .= ','.stripslashes($page->xkeys);
 	}
 	$css = $page->css;
-} 
+}
 
 ?>
 <!DOCTYPE html>
@@ -51,7 +51,7 @@ echo (!DEVEL && file_exists(PATH.'themes/'.$this->site->area['theme'].'/css/'.$c
 	: '<link rel="stylesheet" href="'.THEME_URL.'css/'.$css.'.css">';
 
 // if you have to display right-to-left languages
-if (RTL) 
+if (RTL)
 {
 	echo '<link title="normal" rel="stylesheet" href="'.THEME_URL.'css/rtl.css" media="all">';
 }
@@ -66,12 +66,12 @@ var root = "<?php echo $this->site->site->domain ?>";
 </script>
 <script src="<?php echo THEME_URL ?>js/jqready.js"></script>
 <?php
-echo X4Utils_helper::inline_edit($page->id_area, $this->site->site->domain);
+echo X4Theme_helper::inline_edit($page->id_area, $this->site->site->domain);
 ?>
 </head>
 
 <body>
-<?php 
+<?php
 if (INLINE)
 {
     echo '<div id="x3_inline_editor"></div>';
@@ -82,7 +82,7 @@ if (INLINE)
 		<div class="row pad-bottom">
 <?php
 // Language switcher
-echo X4Utils_helper::module($this->site, $page, array(), 'x3flags');
+echo X4Theme_helper::module($this->site, $page, array(), 'x3flags');
 ?>
 			<div id="logo">
 				<a href="<?php echo BASE_URL ?>" title="<?php echo _X3CMS_SLOGAN ?>"><img src="<?php echo THEME_URL ?>img/x3cms.png" /></a>
@@ -91,7 +91,7 @@ echo X4Utils_helper::module($this->site, $page, array(), 'x3flags');
 <?php
 // top menu
 if (!empty($menus['menu_top']))
-{	
+{
 	echo '<div class="row">
             <nav id="navbar" class="navbar navbar-default">
                 <div class="navbar-header hidden-md">
@@ -121,7 +121,7 @@ if ($page->url == 'home')
             <img src="http://placehold.it/1200x300/C0CA33/ffffff/&amp;text=...because+Simple+is+better+:)" alt="">
         </div>
 	</div>
-<?php 
+<?php
 }
 ?>
 
@@ -129,14 +129,14 @@ if ($page->url == 'home')
 
 <?php
 // Empty pages
-if (X4Utils_helper::empty_sections($sections))
+if (X4Theme_helper::empty_sections($sections))
 {
 	// content
-	if (isset($content)) 
+	if (isset($content))
 	{
 		echo $content;
 	}
-	else 
+	else
 	{
 		echo '
             <div class="row clearfix">
@@ -150,26 +150,26 @@ if (X4Utils_helper::empty_sections($sections))
 else
 {
 	// section 1
-	if (!empty($sections[1])) 
+	if (!empty($sections[1]))
 	{
 		echo '<div class="row clearfix">';
-		
-		foreach($sections[1] as $i) 
+
+		foreach($sections[1] as $i)
 		{
 			if (!empty($i->content))
 			{
-				echo '<div class="block clearfix" id="'.$i->bid.'">'.X4Utils_helper::online_edit($i, 1);
+				echo '<div class="block clearfix" id="'.$i->bid.'">'.X4Theme_helper::online_edit($i, 1);
 				// options
-				echo X4Utils_helper::get_block_options($i);
-				echo X4Utils_helper::reset_url(stripslashes($i->content));
+				echo X4Theme_helper::get_block_options($i);
+				echo X4Theme_helper::reset_url(stripslashes($i->content));
 				echo '</div>';
 			}
-			if (!empty($i->module)) 
+			if (!empty($i->module))
 			{
-				echo stripslashes(X4Utils_helper::module($this->site, $page, $args, $i->module, $i->param));
+				echo stripslashes(X4Theme_helper::module($this->site, $page, $args, $i->module, $i->param));
 			}
 		}
-		
+
 		echo '</div>';
 	}
 }
@@ -179,44 +179,44 @@ else
 
 <?php
 // section 2
-if (!empty($sections[2])) 
+if (!empty($sections[2]))
 {
 	echo '<div id="x3row">
 			<div class="row">';
 	$c = 0;
 	$x = 4; // max number of columns
 	$n = sizeof($sections[2]);
-	
+
 	$widths = array('', '12', '6', '4', '3');
-	
-	foreach($sections[2] as $i) 
+
+	foreach($sections[2] as $i)
 	{
-		if (!empty($i->content) || !empty($i->module)) 
+		if (!empty($i->content) || !empty($i->module))
 		{
-			$class = ($n >= $x) 
-				? $widths[$x] 
+			$class = ($n >= $x)
+				? $widths[$x]
 				: $widths[$n];
-				
-			if ($c > 0 && $c%$x == 0) 
+
+			if ($c > 0 && $c%$x == 0)
 			{
 				$n = $n - $x;
-				$class = ($n >= $x) 
-					? $widths[$x] 
+				$class = ($n >= $x)
+					? $widths[$x]
 					: $widths[$n];
 				echo '</div><div class="row">';
 			}
-			echo '<div class="col-xs-12 col-sm-6 col-md-'.$class.'">'.X4Utils_helper::online_edit($i, 2).X4Utils_helper::get_block_options($i);
-			echo '<div class="block" id="'.$i->bid.'">'.X4Utils_helper::reset_url(stripslashes($i->content)).'</div>';
+			echo '<div class="col-xs-12 col-sm-6 col-md-'.$class.'">'.X4Theme_helper::online_edit($i, 2).X4Theme_helper::get_block_options($i);
+			echo '<div class="block" id="'.$i->bid.'">'.X4Theme_helper::reset_url(stripslashes($i->content)).'</div>';
 			// module
 			if (!empty($i->module))
 			{
-				echo stripslashes(X4Utils_helper::module($this->site, $page, $args, $i->module, $i->param));
+				echo stripslashes(X4Theme_helper::module($this->site, $page, $args, $i->module, $i->param));
 			}
 			echo '</div>';
 		}
 		$c++;
 	}
-	
+
 	echo '</div>
 		</div>';
 }
@@ -255,7 +255,7 @@ if (!DEBUG)
   })();
 */
 </script>
-<?php 
+<?php
 }
 ?>
 

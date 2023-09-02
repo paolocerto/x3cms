@@ -4,15 +4,15 @@
  *
  * @author		Paolo Certo
  * @copyright	(c) CBlu.net di Paolo Certo
- * @license		http://www.gnu.org/licenses/agpl.htm
+ * @license		https://www.gnu.org/licenses/agpl.htm
  * @package		X3CMS
  */
 
 // language switcher
-if (MULTILANGUAGE) 
+if (MULTILANGUAGE)
 {
 	echo '<div class="aright sbox"><ul class="inline-list">';
-	foreach($langs as $i) 
+	foreach ($langs as $i)
 	{
 		$on = ($i->code == $lang) ? ' on' : '';
 		echo '<li><a class="btm'.$on.'" href="'.BASE_URL.'contexts/index/'.$id_area.'/'.$i->code.'" title="'._SWITCH_LANGUAGE.'">'.ucfirst($i->language).'</a></li>';
@@ -22,7 +22,7 @@ if (MULTILANGUAGE)
 
 // area switcher
 echo '<div class="aright sbox"><ul class="inline-list">';
-foreach($areas as $i) 
+foreach ($areas as $i)
 {
 	$on = ($i->id == $id_area) ? ' on' : '';
 	echo '<li><a class="btm '.$on.'" href="'.BASE_URL.'contexts/index/'.$i->id.'/'.$lang.'" title="'._SWITCH_AREA.'">'.ucfirst($i->name).'</a></li>';
@@ -38,15 +38,15 @@ echo '</ul></div>';
 		<th style="width:6em;"><?php echo _ACTIONS ?></th>
 		<th style="width:6em;"></th>
 	</tr>
-		
+
 <?php
-if ($items) 
+if ($items)
 {
-	foreach($items as $i)
+	foreach ($items as $i)
 	{
-		if ($i->level) 
+		if ($i->level)
 		{
-			if ($i->xon) 
+			if ($i->xon)
 			{
 				$status = _ON;
 				$on_status = 'orange';
@@ -55,8 +55,8 @@ if ($items)
 				$status = _OFF;
 				$on_status = 'gray';
 			}
-		
-			if ($i->xlock) 
+
+			if ($i->xlock)
 			{
 				$lock = _LOCKED;
 				$lock_status = 'lock';
@@ -66,18 +66,18 @@ if ($items)
 				$lock_status = 'unlock-alt';
 			}
 			$actions = $delete = '';
-		
+
 			// check permissions
-			if (($i->level > 1 && $i->xlock == 0) || $i->level == 4) 
+			if (($i->level > 1 && $i->xlock == 0) || $i->level == 4)
 			{
-				if ($i->code > 100) 
+				if ($i->code > 100)
 				{
 					$actions = '<a class="bta" href="'.BASE_URL.'contexts/edit/'.$i->id_area.'/'.$i->lang.'/'.$i->id.'" title="'._EDIT.'"><i class="fas fa-pencil-alt fa-lg"></i></a> ';
-			
+
 					if ($i->level > 2)
 					{
 						$actions .= ' <a class="btl" href="'.BASE_URL.'contexts/set/xon/'.$i->id.'/'.(($i->xon+1)%2).'" title="'._STATUS.' '.$status.'"><i class="far fa-lightbulb fa-lg '.$on_status.'"></i></a>';
-			
+
 						if ($i->level == 4)
 						{
 							$delete = '<a class="btl" href="'.BASE_URL.'contexts/set/xlock/'.$i->id.'/'.(($i->xlock+1)%2).'" title="'._STATUS.' '.$lock.'"><i class="fas fa-'.$lock_status.' fa-lg"></i></a>
@@ -86,7 +86,7 @@ if ($items)
 					}
 				}
 			}
-		
+
 			echo '<tr>
 					<td><a class="btm" href="'.BASE_URL.'articles/index/'.$i->id_area.'/'.$i->lang.'/context_order/'.$i->code.'" title="'._VIEW_ARTICLES.'">'.$i->name.'</a></td>
 					<td class="aright">'.$actions.'</td>
@@ -99,9 +99,9 @@ if ($items)
 </table>
 <script src="<?php echo THEME_URL ?>js/basic.js"></script>
 <script>
-window.addEvent('domready', function() 
+window.addEvent('domready', function()
 {
-	X3.content('filters', 'contexts/filter/<?php echo $id_area.'/'.$lang ?>', '<?php echo X4Utils_helper::navbar($navbar, ' . ', false) ?>');
+	X3.content('filters', 'contexts/filter/<?php echo $id_area.'/'.$lang ?>', '<?php echo X4Theme_helper::navbar($navbar, ' . ', false) ?>');
 	buttonize('topic', 'btm', 'topic');
 	buttonize('topic', 'bta', 'modal');
 	actionize('topic', 'btl', 'topic', escape('contexts/index/<?php echo $id_area.'/'.$lang ?>/0'));
