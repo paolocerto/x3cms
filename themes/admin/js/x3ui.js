@@ -508,7 +508,6 @@ function page_box() {
             }
         },
         setter(url) {
-            console.log('uffa');
             this.status(true);
             fetch(url, {
                 method: 'GET'
