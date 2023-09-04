@@ -68,6 +68,21 @@ class Create_controller extends X4Cms_controller
             if ($res)
             {
                 echo NL.'The controller '.$name.' was created successfully!'.NL;
+
+                if ($area == 'admin')
+                {
+                    // create form
+                    $res = $mod->create_form($area, $name);
+
+                    if ($res)
+                    {
+                        echo NL.'Also the form '.$name.' was created successfully!'.NL;
+                    }
+                    else
+                    {
+                        echo NL.'WARNING: an error occurred'.NL.'Please, check for write permissions on the folder '.APATH.'forms/'.$area.NL;
+                    }
+                }
             }
             else
             {
