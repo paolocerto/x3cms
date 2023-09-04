@@ -592,7 +592,7 @@ class Articles_controller extends X3ui_controller
 				'module' => $_post['module'],
 				'param' => $_post['param'],
 				'id_editor' => $_SESSION['xuid'],
-			//	'xschema' => $_post['xschema'],
+
 				'xon' => AUTOREFRESH
 			);
 
@@ -666,16 +666,17 @@ class Articles_controller extends X3ui_controller
 			// set message
 			$msg = AdmUtils_helper::set_msg($result);
 
-			// add permission
+			// response
 			if ($result[1])
 			{
-				if (!empty($_post['from']))
-                {
-					$msg->update = array(
-						'element' => 'page',
-						'url' => urldecode($_post['from'])
-					);
-                }
+				$from = (!empty($_post['from']))
+                    ? urldecode($_post['from'])
+                    : $_SERVER['HTTP_REFERER'];
+
+                $msg->update = array(
+                    'element' => 'page',
+                    'url' => $from
+                );
 			}
 		}
 		$this->response($msg);
