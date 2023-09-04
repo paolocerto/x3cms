@@ -37,8 +37,8 @@ h4 {font-size:1.5em !important;line-height:1.8em !important;}
 h1 + p, h2 + p, h3 + p, p + p {margin-top:1em;}
 p > b, p > strong {font-weight:700;}
 
-ul {margin:1em 0;list-style:disc !important;list-style-position: inside !important;}
-ol {margin:.5em 0;list-style:decimal;list-style-position: inside !important;}
+ul {margin:1em 0;list-style:disc !important;list-style-position:outside !important;margin-left:1.2em !important;}
+ol {margin:.5em 0;list-style:decimal !important;list-style-position:outside !important;margin-left:1.2em !important;}
 ol.none {list-style:none !important;}
 li {margin:.5em 0}
 /* form */
