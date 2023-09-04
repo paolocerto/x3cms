@@ -87,9 +87,9 @@ class X4flags_plugin extends X4Plugin_core implements X3plugin
             ? $page->lang
             : $languages[$page->lang]->language;
 
-        if ($flags && file_exists(PATH.'files/files/'.$page->lang.'.jpg'))
+        if ($flags && file_exists(PATH.'files/files/'.$page->lang.'.png'))
         {
-            $active_flag = '<img class="md:mt-2" src="'.ROOT.'files/files/'.$page->lang.'.png" alt="'.$languages[$page->lang]->language.'" />';
+            $active_flag = '<img src="'.ROOT.'files/files/'.$page->lang.'.png" alt="'.$languages[$page->lang]->language.'" />';
         }
 
         // get others flags
@@ -103,9 +103,9 @@ class X4flags_plugin extends X4Plugin_core implements X3plugin
                     ? $v->code
                     : $languages[$v->code]->language;
 
-                if ($flags && file_exists(PATH.'files/files/'.$v->code.'.jpg'))
+                if ($flags && file_exists(PATH.'files/files/'.$v->code.'.png'))
                 {
-                    $flag = '<img class="md:mt-2" src="'.ROOT.'files/files/'.$v->code.'.png" alt="'.$languages[$v->code]->language.'" />';
+                    $flag = '<img src="'.ROOT.'files/files/'.$v->code.'.png" alt="'.$languages[$v->code]->language.'" />';
                 }
 
                 $others .= '
@@ -126,7 +126,7 @@ class X4flags_plugin extends X4Plugin_core implements X3plugin
 >
     <button
         @click="dropdown = !dropdown"
-        class="px-3 items-center focus:outline-none menu_item"
+        class="mt-2 px-3 items-center focus:outline-none menu_item"
     >
         '.$active_flag.'
     </button>
