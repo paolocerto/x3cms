@@ -109,9 +109,8 @@ interface X3plugin_controller
 	 * @param   integer $id_area Area ID
 	 * @param   string  $lang Language code
 	 * @param   integer $pp Pagination index
-	 * @param   string  $str search string
 	 * @return  void
 	 */
-	public function mod(int $id_area = 0, string $lang = '', int $pp = 0, string $str = '');
+	public function mod(int $id_area = 0, string $lang = '', int $pp = 0);
 
 }

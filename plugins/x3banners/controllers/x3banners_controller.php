@@ -36,10 +36,9 @@ class X3banners_controller extends X3ui_controller implements X3plugin_controlle
 	 * @param   integer $id_area Area ID
 	 * @param   string  $lang Language code
 	 * @param   integer $pp Pagination index
-	 * @param   string	$str search string
 	 * @return  void
 	 */
-	public function mod(int $id_area = 2, string $lang = '', int $pp = 0, string $str = '')
+	public function mod(int $id_area = 2, string $lang = '', int $pp = 0)
 	{
 		// load dictionary
 		$this->dict->get_wordarray(array('x3banners'));
