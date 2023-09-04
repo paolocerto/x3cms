@@ -51,6 +51,28 @@ class X3cli_model extends X4Model_core
 
     ';
 
+     /**
+     * Notes for forms
+     */
+    private $form_notes = '
+/*
+    NOTES FOR DEVELOPERS
+    ----------------------------------------------------------------------------
+
+    The X3CMS is a complex environment. Almost always a part of the CMS is connected and depends from a lot of other parts.
+
+    Usually we have a controller for each table (with the same name of the controller), a model for each controller (to interact with the table) and in most cases at least one view to display your data.
+
+    For actions like editing we use forms inside a modal. A form could be very complex so we use dedicated files.
+    There are some useful scripts for Alpine.js in the file /themes/admin/js/xui.js that we sometimes use inside forms, for one-time scripts is better to put them here
+
+    This file contains "commented" some frequently used snippets, so you can easily enable what you need.
+
+    Have fun
+*/
+
+    ';
+
     /**
      * Notes for models
      */
@@ -70,6 +92,7 @@ class X3cli_model extends X4Model_core
     CREATE TABLE IF NOT EXISTS `SET_HERE_YOUR_TABLE_NAME` (
       `id` int(11) NOT NULL auto_increment,
       `updated` datetime NOT NULL,
+      `id_area` int(11) NOT NULL,
       `lang` char(2) NOT NULL,
       `name` varchar(128) NOT NULL,
       `title` varchar(128) NOT NULL,
@@ -169,6 +192,9 @@ class X3cli_model extends X4Model_core
 
                 if ($area == 'admin')
                 {
+                    // check if the table exists
+                    $table = $this->get_table_name($name);
+
                     // very basic admin controller
                     $txt = '
 /**
@@ -211,7 +237,9 @@ class '.$uname.'_controller extends X3ui_controller
 		$this->dict->get_wordarray(array(\'faq\'));
 
 		// content
-		$view = new X4View_core(\'container\');
+		$view = new X4View_core(\'page\');
+        $view->breadcrumb = [];
+        $view->actions = \'\';
 
 		// dummy content
 		$view->content = \'
@@ -233,6 +261,7 @@ If you want to fully use this method you have to create:</p>
 <p>You can view the files here:</p>
 <ul>
     <li>controller: /cms/controllers/admin/'.$name.'_controller.php</li>
+    <li>form: /cms/forms/admin/'.$name.'_edit_form.php</li>
     <li>model: /cms/models/'.$uname.'_model.php</li>
     <li>view: /cms/views/admin/'.$name.'_view.php</li>
 </ul>
@@ -248,16 +277,11 @@ If you want to fully use this method you have to create:</p>
 <ul>
     <li>By default the "'.$uname.'" items are sortable. You can disable this commenting the xpos variable from the '.$uname.'_obj at the end of the '.$uname.'_model.</li>
     <li>Removing the sortable the items are automatically paginated.</li>
-    <li>If you need to add fields in the table you have to change the '.$name.'_controller for the form in the edit() method and the editing() method where data are saved in the database.</li>
+    <li>If you need to add fields in the table you have to change the '.$uname.'_model (at the end you will find the object used to create new items), the '.$name.'_edit_form then the '.$name.'_controller for the form in the editing() method where data are saved in the database.</li>
 </ul>
-<div class="buttons acenter"><button type="button" onclick="redirect();" title="\'._'.$upper_name.'_MANAGER.\'">\'._'.$upper_name.'_MANAGER.\'</button></div>
+<div class="buttons text-center"><button type="button" @click="pager(\''.$name.'/index\')" title="\'._'.$upper_name.'_MANAGER.\'">\'._'.$upper_name.'_MANAGER.\'</button></div>
 
-<p><b>Have fun</b></p>
-<script>
-function redirect() {
-    X3.content("topic","\'.BASE_URL.\''.$name.'/index", null);
-}
-</script>\';
+<p><b>Have fun</b></p>\';
 
 		$view->render(TRUE);
 
@@ -272,47 +296,57 @@ function redirect() {
 	 * @param   integer	$id_area  Area ID
 	 * @param   string	$lang     Language code
 	 * @param   integer	$pp       Active page index
-	 * @param   string	$str      Search string
 	 * @return  void
 	 */
-	public function index(int $id_area = 2, string $lang = \'en\', int $pp = 0, string $str = \'\')
+	public function index(int $id_area = 2, string $lang = \'en\', int $pp = 0)
 	{
 	    // load the dictionary
 		// you should have created a section in the dictionary for this controller
 		$this->dict->get_wordarray(array(\''.$name.'\'));
 
+        // get query string from filters
+        // here we handle only search buy string but you can extend to filter for more fields
+        // $qs = X4Route_core::get_query_string();
+        // handle filters
+        // $qs[\'xstr\'] = $qs[\'xstr\'] ?? \'\';
+
 		// get page
 		// if you created a page in the CMS with the same name
 		$page = $this->get_page(\''.$name.'\');
-		$navbar = array($this->site->get_bredcrumb($page));
+		$view = new X4View_core(\'page\');
+        $view->breadcrumb = array($this->site->get_bredcrumb($page));
+		$view->actions = $this->actions($id_area, $lang);
 
 		// content
 
 		// if you created a view for that page with the same name
-		$view = new X4View_core(\''.$name.'\');
-		$view->page = $page;
-		$view->id_area = $id_area;
-		$view->lang = $lang;
-		$view->pp = $pp;
-		$view->str = $str;
-		$view->navbar = $navbar;
+		$view->content = new X4View_core(\''.$name.'\');
+		$view->content->id_area = $id_area;
+		$view->content->lang = $lang;
+		$view->content->pp = $pp;
+
+        // do you use filters?
+        // $view->content->qs = $qs;
 
 		// if you created a model for that controller
 		$mod = new '.$uname.'_model();
 		if ($mod->is_sortable($id_area, $lang))
 		{
-		    $view->items = $mod->get_items($id_area, $lang, $str);
+		    $view->content->items = $mod->get_items($id_area, $lang, $qs);
 		}
 		else
 		{
 		    // if not sortable we paginate
-		    $view->items = X4Pagination_helper::paginate($mod->get_items($id_area, $lang, $str), $pp);
+		    $view->content->items = X4Pagination_helper::paginate($mod->get_items($id_area, $lang, $qs), $pp);
 		}
 
 		// switchers
-		// language switcher
-		$lang = new Language_model();
-		$view->langs = $lang->get_languages();
+        if (MULTILANGUAGE)
+        {
+            // language switcher
+            $lang = new Language_model();
+            $view->langs = $lang->get_languages();
+        }
 		// area switcher
 		$area = new Area_model();
 		$view->areas = $area->get_areas();
@@ -321,57 +355,19 @@ function redirect() {
 	}
 
 	/**
-	 * '.$uname.' filter
+	 * '.$uname.' actions
 	 * This method populates the top right of the admin layout
-	 * It contains the Plus button to add new items and can contain form filters or other general commands
+	 * It usually contains the Plus button to add new items
 	 *
 	 * @param   integer	$id_area  Area ID
 	 * @param   string	$lang     Language code
-	 * @param   string	$str      Search string
 	 * @return  void
 	 */
-	public function filter(int $id_area, string $lang, string $str = \'\')
+	private function actions(int $id_area, string $lang)
 	{
-		// load the dictionary
-		$this->dict->get_wordarray(array(\''.$name.'\'));
-
-		if (X4Route_core::$post)
-		{
-		    // set message
-            $msg = AdmUtils_helper::set_msg(array(0,1));
-            $msg->update[] = array(
-                    \'element\' => \'topic\',
-                    \'url\' => BASE_URL.\''.$name.'/index/\'.$id_area.\'/\'.$lang.\'/0/\'.urlencode(trim($_POST[\'search\'])),
-                    \'title\' => null
-                );
-            $this->response($msg);
-		}
-		else
-		{
-            // to avoid error for missing dictionary
-            $search = (defined(\'_'.strtoupper($name).'_SEARCH_MSG\'))
-                ? _'.strtoupper($name).'_SEARCH_MSG
-                : \'Search by title or description\';
-
-
-            // to avoid error for missing dictionary
-            $new = (defined(\'_'.strtoupper($name).'_ADD\'))
-                ? _'.strtoupper($name).'_ADD
-                : \'Add a new '.$uname.'\';
-
-            echo \'<form id="searchitems" name="searchitems" action="\'.BASE_URL.\''.$name.'/filter/\'.$id_area.\'/\'.$lang.\'" method="post" onsubmit="setForm(\\\'searchitems\\\');return false;">
-                        <input type="text" name="search" id="search" value="\'.urldecode($str).\'" title="\'.$search.\'" />
-                        <button type="button" name="searcher" class="button" onclick="setForm(\\\'searchitems\\\');">\'._FIND.\'</button>
-                        </form>\';
-
-            echo \'<a class="btf" href="\'.BASE_URL.\''.$name.'/edit/\'.$id_area.\'/\'.$lang.\'/0" title="\'.$new.\'"><i class="fas fa-plus fa-lg"></i></a>
-<script>
-window.addEvent("domready", function()
-{
-	buttonize("filters", "btf", "modal");
-});
-</script>\';
-        }
+		return \'<a class="link" @click="popup(\\\'\'.BASE_URL.\''.$name.'/edit/\'.$id_area.\'/\'.$lang.\'\\\')" title="\'._'.strtoupper($name).'_NEW.\'">
+                <i class="fa-solid fa-lg fa-circle-plus"></i>
+            </a>\';
 	}
 
 	/**
@@ -390,12 +386,9 @@ window.addEvent("domready", function()
 		$val = ($what == \'xlock\')
 			? 4
 			: 3;
-
 		$msg = AdmUtils_helper::chk_priv_level($_SESSION[\'xuid\'], \''.$name.'\', $id, $val);
 		if (is_null($msg))
 		{
-			$qs = X4Route_core::get_query_string();
-
 			// do action
 			$mod = new '.$uname.'_model();
 			$result = $mod->update($id, array($what => $value));
@@ -407,10 +400,9 @@ window.addEvent("domready", function()
 			// set update
 			if ($result[1])
             {
-				$msg->update[] = array(
-					\'element\' => $qs[\'div\'],
-					\'url\' => urldecode($qs[\'url\']),
-					\'title\' => null
+				$msg->update = array(
+					\'element\' => \'page\',
+					\'url\' => $_SERVER[\'HTTP_REFERER\']
 				);
             }
 		}
@@ -443,44 +435,18 @@ window.addEvent("domready", function()
 
 		// get the object
 		$mod = new '.$uname.'_model();
-		$item = ($id)
+
+        $item = ($id)
 			? $mod->get_by_id($id)
 			: new '.$uname.'_obj($id_area, $lang);
 
-		// build the form
-		$fields = array();
-		$fields[] = array(
-			\'label\' => null,
-			\'type\' => \'hidden\',
-			\'value\' => $id,
-			\'name\' => \'id\'
-		);
-		$fields[] = array(
-			\'label\' => null,
-			\'type\' => \'hidden\',
-			\'value\' => $id_area,
-			\'name\' => \'id_area\'
-		);
-		$fields[] = array(
-			\'label\' => null,
-			\'type\' => \'hidden\',
-			\'value\' => $lang,
-			\'name\' => \'lang\'
-		);
-		$fields[] = array(
-			\'label\' => _TITLE,
-			\'type\' => \'text\',
-			\'value\' => $item->title,
-			\'name\' => \'title\',
-			\'rule\' => \'required\',
-			\'extra\' => \'class="large"\'
-		);
-		$fields[] = array(
-			\'label\' => _DESCRIPTION,
-			\'type\' => \'textarea\',
-			\'value\' => $item->description,
-			\'name\' => \'description\'
-		);
+        // load the form
+        $form_fields = new X4Form_core(\''.$uname.'_edit\', \''.$uname.'\');
+		$form_fields->id = $id;
+		$form_fields->item = $item;
+
+        // get the fields array
+		$fields = $form_fields->render();
 
 		// if submitted
 		if (X4Route_core::$post)
@@ -497,10 +463,10 @@ window.addEvent("domready", function()
 			die;
 		}
 
-		// contents
-		$view = new X4View_core(\'editor\');
-
-		// to avoid error for missing dictionary
+        $view = new X4View_core(\'modal\');
+        // if you need a larger modal
+        // $view->wide = \'md:w-2/3 lg:w-2/3\';
+        // to avoid error for missing dictionary
 		if ($id)
 		{
             $title = (defined(\'_'.strtoupper($name).'_EDIT\'))
@@ -513,14 +479,13 @@ window.addEvent("domready", function()
                 ? _'.strtoupper($name).'_NEW
                 : \'New '.$uname.'\';
         }
+        $view->title = $title;
 
-		$view->title = $title;
-
+		// contents
+		$view->content = new X4View_core(\'editor\');
 		// form builder
-		$view->form = X4Form_helper::doform(\'editor\', BASE_URL.\''.$name.'/edit/\'.$id_area.\'/\'.$lang.\'/\'.$id, $fields, array(_RESET, _SUBMIT, \'buttons\'), \'post\', \'\',
-			\'onclick="setForm(\\\'editor\\\');"\');
-
-		$view->js = \'\';
+		$view->content->form = X4Form_helper::doform(\'editor\', BASE_URL.\''.$name.'/edit/\'.$id_area.\'/\'.$lang.\'/\'.$id, $fields, array(_RESET, _SUBMIT, \'buttons\'), \'post\', \'\',
+            \'@click="submitForm(\\\'editor\\\')"\');
 
 		$view->render(TRUE);
 	}
@@ -528,7 +493,7 @@ window.addEvent("domready", function()
 	/**
 	 * Register Edit / New item
 	 * To use this method you need:
-	 * - a Table with name = '.$name.' with fields: id, name, title, description
+	 * - a Table with name = '.$name.' with fields: id, id_area, lang, name, title, description
 	 * - you need in the table privtypes record for manage and create table items in '.$name.' ('.$name.' and _'.$name.'_creation)
 	 * - you need to assign those privileges to the group of your user in the table gprivs
 	 *
@@ -571,21 +536,8 @@ window.addEvent("domready", function()
 			    {
 			        $post[\'xpos\'] = $mod->get_max_pos($post[\'id_area\'], $post[\'lang\']) + 1;
 			    }
-
 			    // insert
 				$result = $mod->insert($post);
-
-				// add pemission
-				if ($result[1])
-				{
-					$perm = new Permission_model();
-					$array[] = array(
-							\'action\' => \'insert\',
-							\'id_what\' => $result[0],
-							\'id_user\' => $_SESSION[\'xuid\'],
-							\'level\' => 4);
-					$result = $perm->pexec(\''.$name.'\', $array, $post[\'id_area\']);
-				}
 			}
 
 			// set message
@@ -593,10 +545,9 @@ window.addEvent("domready", function()
 
 			if ($result[1])
 			{
-				$msg->update[] = array(
-					\'element\' => \'topic\',
-					\'url\' => BASE_URL.\''.$name.'/index/\'.$post[\'id_area\'].\'/\'.$post[\'lang\'],
-					\'title\' => null
+				$msg->update = array(
+					\'element\' => \'page\',
+					\'url\' => $_SERVER[\'HTTP_REFERER\']
 				);
 			}
 		}
@@ -605,7 +556,7 @@ window.addEvent("domready", function()
 
 	/**
 	 * Delete item form
-	 * This is an AJAX form, you can call this only from the admin side
+	 * You can call this only from the admin side
 	 * To use this method you need:
 	 * - a Table with name = '.$name.' with fields: id, title
 	 * - a dictionary section "'.$name.'" with at least the KEYS:  _DELETE_'.strtoupper($name).'
@@ -621,7 +572,7 @@ window.addEvent("domready", function()
 
 		// get object
 		$mod = new '.$uname.'_model();
-		$obj = $mod->get_by_id($id, \''.$name.'\', \'id, title, id_area, lang\');
+		$item = $mod->get_by_id($id, \''.$name.'\', \'id, title\');
 
 		// build the form
 		$fields = array();
@@ -635,23 +586,23 @@ window.addEvent("domready", function()
 		// if submitted
 		if (X4Route_core::$post)
 		{
-			$this->deleting($obj, $_POST);
+			$this->deleting($item);
 			die;
 		}
 
+        $view = new X4View_core(\'modal\');
 		// to avoid error for missing dictionary
 		$title = (defined(\'_'.strtoupper($name).'_DELETE\'))
 		    ? _'.strtoupper($name).'_DELETE
 		    : \'Delete '.$uname.'\';
-
+        $view->title = $title;
 		// contents
-		$view = new X4View_core(\'delete\');
-		$view->title = $title;
-		$view->item = $obj->title;
+		$view->content = new X4View_core(\'delete\');
+        $view->content->item = $item->title;
 
 		// form builder
-		$view->form = X4Form_helper::doform(\'delete\', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, \'buttons\'), \'post\', \'\',
-			\'onclick="setForm(\\\'delete\\\');"\');
+		$view->content->form = X4Form_helper::doform(\'delete\', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, \'buttons\'), \'post\', \'\',
+			\'@click="submitForm(\\\'delete\\\')"\');
 		$view->render(TRUE);
 	}
 
@@ -659,21 +610,20 @@ window.addEvent("domready", function()
 	 * Delete item
 	 *
 	 * @access	private
-	 * @param   object  $obj Item
-	 * @param   array 	$_post _POST array
+	 * @param   object  $item Item
 	 * @return  void
 	 */
-	private function deleting(stdClass $obj, array $_post)
+	private function deleting(stdClass $item)
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level($_SESSION[\'xuid\'], \''.$name.'\', $obj->id, 4);
+		$msg = AdmUtils_helper::chk_priv_level($_SESSION[\'xuid\'], \''.$name.'\', $item->id, 4);
 
 		if (is_null($msg))
 		{
 			// action
 			$mod = new '.$uname.'_model();
-			$result = $mod->delete($obj->id);
+			$result = $mod->delete($itemj->id);
 
 			// set message
 			$msg = AdmUtils_helper::set_msg($result);
@@ -681,12 +631,11 @@ window.addEvent("domready", function()
 			// clear useless permissions
 			if ($result[1]) {
 				$perm = new Permission_model();
-				$perm->deleting_by_what(\''.$name.'\', $obj->id);
+				$perm->deleting_by_what(\''.$name.'\', $item->id);
 
-				$msg->update[] = array(
-					\'element\' => \'topic\',
-					\'url\' => BASE_URL.\''.$name.'/index/\'.$obj->id_area.\'/\'.$obj->lang,
-					\'title\' => null
+				$msg->update = array(
+					\'element\' => \'page\',
+					\'url\' => $_SERVER[\'HTTP_REFERER\']
 				);
 			}
 		}
@@ -704,13 +653,12 @@ window.addEvent("domready", function()
 	public function ordering(int $id_area, string $lang)
 	{
 		$msg = null;
-		// check permission
-		$msg = AdmUtils_helper::chk_priv_level($_SESSION[\'xuid\'], \'_'.$name.'_creation\', 0, 3);
-
-		if (is_null($msg) && X4Route_core::$post)
+		// check permission not required
+		if (is_null($msg) && X4Route_core::$input)
 		{
 			// handle post
-			$elements = explode(\',\', $_POST[\'sort_order\']);
+            $_post = X4Route_core::$input;
+			$elements = $_post[\'sort_order\'];
 
 			// do action
 			$mod = new '.$uname.'_model();
@@ -721,10 +669,11 @@ window.addEvent("domready", function()
 			{
 				foreach ($items as $i)
 				{
-					$p = array_search($i->id, $elements) + 1;
+					$p = array_search($i->id, $elements);
 					if ($p && $i->xpos != $p)
 					{
 						$res = $mod->update($i->id, array(\'xpos\' => $p));
+                        // update result only if there was not errors before
 						if ($result[1] == 1)
 						{
 							$result = $res;
@@ -751,22 +700,7 @@ window.addEvent("domready", function()
 	public function rewidget(string $title, int $id_area, string $area)
 	{
 		$mod = new '.$uname.'_model();
-		$r = $mod->get_widget(urldecode($title), $id_area, urldecode($area));
-		echo $r[0];
-		if (!empty(X4Route_core::$query_string))
-		{
-			$qs = X4Route_core::get_query_string();
-			if (isset($qs[\'refresh\']))
-			{
-				echo \'<script>
-window.addEvent("domready", function()
-{
-	buttonize("\'.$qs[\'refresh\'].\'", "bta", "topic");
-	buttonize("\'.$qs[\'refresh\'].\'", "btr", "\'.$qs[\'refresh\'].\'", "", "\'.$qs[\'refresh\'].\'");
-});
-</script>\';
-            }
-		}
+		echo $mod->get_widget(urldecode($title), $id_area, urldecode($area), false);
 	}
 }';
                     }
@@ -852,6 +786,166 @@ class '.$uname.'_controller extends X4Cms_controller
         }
 	}
 
+    /**
+	 * Create form
+	 *
+	 * @param string    $area
+	 * @param string    $name
+	 * @return  boolean
+	 */
+	public function create_form(string $area, string $name)
+	{
+	    // avoid overwrite
+	    if (!file_exists(APATH.'forms/'.$area.'/'.$name.'_form'.EXT))
+	    {
+	        // try to create the file
+            try
+            {
+                // create the empty file
+                touch(APATH.'forms/'.$area.'/'.$name.'_form'.EXT);
+
+                $txt = '
+
+<?php defined(\'ROOT\') or die(\'No direct script access.\');
+/**
+ * X3 CMS - A smart Content Management System
+ *
+ * @author		Paolo Certo
+ * @copyright	(c) CBlu.net di Paolo Certo
+ * @license		https://www.gnu.org/licenses/gpl-3.0.html
+ * @package		X3CMS
+ */
+
+// '.$name.' Edit form
+
+// to handle file\'s label
+$file_array = array();
+// to handle optional JS build with the form construction
+$js_array = array();
+
+// build the form
+$fields = array();
+$fields[] = array(
+    \'label\' => null,
+    \'type\' => \'hidden\',
+    \'value\' => $id,
+    \'name\' => \'id\'
+);
+$fields[] = array(
+    \'label\' => null,
+    \'type\' => \'hidden\',
+    \'value\' => $id_area,
+    \'name\' => \'id_area\'
+);
+$fields[] = array(
+    \'label\' => null,
+    \'type\' => \'hidden\',
+    \'value\' => $lang,
+    \'name\' => \'lang\'
+);
+
+// this container fix the background of the modal for the form
+$fields[] = array(
+    \'label\' => null,
+    \'type\' => \'html\',
+    \'value\' => \'<div class="bg-white text-gray-700 md:px-8 md:pb-8 px-4 pb-4" style="border:1px solid white">\'
+);
+
+/*
+// IF YOU NEED TO SET COLUMNS
+
+// open grid
+$fields[] = array(
+    \'label\' => null,
+    \'type\' => \'html\',
+    \'value\' => \'<div class="grid grid-cols-1 md:grid-cols-2 gap-4"><div>\'
+);
+
+// put an input field here
+
+// separator
+$fields[] = array(
+    \'label\' => null,
+    \'type\' => \'html\',
+    \'value\' => \'</div><div></div>\'
+);
+
+// another input field here
+
+// close grid
+$fields[] = array(
+    \'label\' => null,
+    \'type\' => \'html\',
+    \'value\' => \'</div></div>\'
+);
+*/
+
+/*
+// IF YOU NEED TO USE ACCORDION
+
+// open accordion
+$fields[] = array(
+    \'label\' => null,
+    \'type\' => \'html\',
+    \'value\' => \'<div x-data="{ open: false }" class="cursor-pointer group">
+    <button @click="open = !open" class="bg2 rounded flex items-center justify-between w-full p-4 text-left select-none mb-1">
+        <span>Accordion title</span>
+        <svg class="w-4 h-4 duration-200 ease-out" :class="{ \\\'rotate-180\\\': open }" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+    </button>
+    <div x-show="open" @click.away="open = false" x-transition:enter.duration.300ms x-transition:leave.duration.50ms x-cloak>
+        <div class="p-4 pt-0">\'
+);
+
+// your input fields here
+
+// close accordion
+$fields[] = array(
+    \'label\' => null,
+    \'type\' => \'html\',
+    \'value\' => \'</div></div>\'
+);
+*/
+
+$fields[] = array(
+    \'label\' => _TITLE,
+    \'type\' => \'text\',
+    \'value\' => $item->title,
+    \'name\' => \'title\',
+    \'rule\' => \'required\',
+    \'extra\' => \'class="w-full"\'
+);
+$fields[] = array(
+    \'label\' => _DESCRIPTION,
+    \'type\' => \'textarea\',
+    \'value\' => $item->description,
+    \'name\' => \'description\'
+);
+
+$fields[] = array(
+    \'label\' => null,
+    \'type\' => \'html\',
+    \'value\' => \'</div>\'
+);
+';
+
+                // put the contents in the file
+                return (bool) file_put_contents(APATH.'forms/'.$area.'/'.$name.'_form'.EXT, $this->head.$this->form_notes.$txt);
+
+            }
+            catch (Exception $e)
+            {
+                echo NL.$e.NL;
+            }
+        }
+        else
+        {
+            echo NL.'WARNING: the file '.APATH.'forms/'.$area.'/'.$name.'_form'.EXT.' already exists'.NL;
+        }
+
+    }
+
 	/**
 	 * Create model
 	 *
@@ -923,36 +1017,38 @@ class '.$uname.'_model extends X4Model_core
 	 *
 	 * @param   integer $id_area Area ID
 	 * @param   string	$lang Language code
-	 * @param   string	$str Search string
+	 * @param   mixed   $qs if you use filters is the array with filters keys else is null
 	 * @return  array	array of objects
 	 */
-	public function get_items(int $id_area, string $lang, string $str = \'\')
+	public function get_items(int $id_area, string $lang, $qs)
 	{
 		$where = \'\';
-		if (!empty($str))
-		{
-			$w = array();
-			$tok = explode(\' \', urldecode($str));
-			foreach ($tok as $i)
-			{
-				$a = trim($i);
-				if (!empty($a))
+		if (!empty($qs[\'xstr\']))
+        {
+            $w = array();
+            $tok = explode(\' \', urldecode($qs[\'xstr\']));
+            foreach ($tok as $i)
+            {
+                $a = trim($i);
+                if (!empty($a))
                 {
-					$w[] = \'title LIKE \'.$this->db->escape(\'%\'.$a.\'%\').\' OR
-						description LIKE \'.$this->db->escape(\'%\'.$a.\'%\');
+                    $w[] = \'x.title LIKE \'.$this->db->escape(\'%\'.$a.\'%\').\' OR
+                        x.description LIKE \'.$this->db->escape(\'%\'.$a.\'%\');
                 }
-			}
+            }
 
-			if (!empty($w))
-				$where .= \' AND (\'.implode(\') AND (\', $w).\')\';
-		}
+            if (!empty($w))
+            {
+                $where .= \' AND (\'.implode(\') AND (\', $w).\')\';
+            }
+        }
 
 		// sorting
 		$order = ($this->is_sortable($id_area, $lang))
 		    ? \'x.xpos ASC\'
 		    : \'x.title ASC\';
 
-		return $this->db->query(\'SELECT x.*, p.level
+		return $this->db->query(\'SELECT x.*, IF(p.id IS NULL, u.level, p.level) AS level
 			FROM '.$table.' x
 			JOIN uprivs u ON u.id_area = x.id_area AND u.id_user = \'.intval($_SESSION[\'xuid\']).\' AND u.privtype = \\\''.$table.'\\\'
 			LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = x.id
@@ -1009,38 +1105,30 @@ class '.$uname.'_model extends X4Model_core
 	 */
 	public function get_widget(string $title, int $id_area, string $area)
 	{
-		// TO DO
+		// here get the data you want to show inside the widget
 
-		// Sample: get total number of active items
-		$ntot = (int) $this->db->query_var(\'SELECT COUNT(x.id) AS n
-			FROM '.$table.' x
-			JOIN uprivs u ON u.id_area = x.id_area AND u.id_user = \'.intval($_SESSION[\'xuid\']).\' AND u.privtype = \\\''.$table.'\\\'
-			LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = x.id
-			WHERE x.id_area = \'.$id_area.\' AND x.xon = 1\');
+        // dictionary
+        $dict = new X4Dict_model(X4Route_core::$folder, X4Route_core::$lang);
+        $dict->get_wordarray(array(\''.$name.'\'));
 
-		// dictionary
-		$dict = new X4Dict_model(X4Route_core::$folder, X4Route_core::$lang);
-		// you need to call a dictionary to get translations for _RELOAD and _DICTIONARY_KEY
-		$dict->get_wordarray(array(\''.$name.'\'));
-
-		// title
-		$w = \'<div class="wtitle clearfix">
-                <span class="half-pad-left">\'.$title.\'</span>\'._TRAIT_.\'<span class="xsmall">\'.$area.\'</span>
-                <div class="wtools">
-                    <a class="btr" href="\'.BASE_URL.\''.$name.'/rewidget/\'.urlencode($title).\'/\'.$id_area.\'/\'.urlencode($area).\'" title="\'._RELOAD.\'"><i class="fas fa-refresh fa-lg"></i></a>
-                    <a class="bta" href="\'.BASE_URL.\''.$name.'/mod/\'.$id_area.\'" title="\'.$title.\'"><i class="fas fa-arrow-right fa-lg"></i></a>
+        // title
+        $w = \'<div class="bg rounded-t px-4 py-4 flex items-center justify-between">
+                    <h4>\'.$title._TRAIT_.\'<span class="text-sm">\'.$area.\'</span></h4>
+                    <div class="space-x-4">
+                        <a class="link" @click="refresh(\\\''.$name.'_widget\\\', \\\'\'.BASE_URL.\''.$name.'/rewidget/\'.urlencode($title).\'/\'.$id_area.\'/\'.urlencode($area).\'\\\')" title="\'.XPREFIXX_RELOAD.\'">
+                            <i class="fa-solid fa-lg fa-rotate"></i></a>
+                        <a class="link" @click="pager(\\\'\'.BASE_URL.\''.$name.'/mod/\'.$id_area.\'\\\')" title="\'.$title.\'">
+                            <i class="fa-solid fa-lg fa-chevron-right"></i></a>
+                    </div>
                 </div>
-            </div>
-			<div class="wbox">\';
+                <div class="bg2 h-full px-4 pt-4 pb-8">
+                    <p>Here put your data</p>
+                </div>\';
 
-		// TO DO
+        return $container
+            ? \'<div id="'.$name.'_widget">\'.$w.\'</div>\'
+            : $w;
 
-		// display total number of active items
-		$w .= \'<p>Active items: \'.$ntot.\'</p>\';
-
-		$w .= \'</div>\';
-
-		return array($w, 1);
 	}';
                     }
 
@@ -1133,30 +1221,70 @@ class '.ucfirst($name).'_obj
                     // here we suppose you loaded in the controller the dictionary section for the view
                     $txt = '
 // if you don\'t need to switch between languages you can comment this section
+echo \'<div class="switcher">\';
 // lang switcher
 if (MULTILANGUAGE)
 {
-	echo \'<div class="aright sbox"><ul class="inline-list">\';
+    echo \'<div class="text-sm flex justify-end py-1 space-x-4 border-b border-gray-200">\';
 	foreach ($langs as $i)
 	{
-		$on = ($i->code == $lang) ? \'class="on"\' : \'\';
-		echo \'<li><a \'.$on.\' href="\'.BASE_URL.\''.$name.'/index/\'.$id_area.\'/\'.$i->code.\'" title="\'._SWITCH_LANGUAGE.\'">\'.ucfirst($i->language).\'</a></li>\';
+		$on = ($i->code == $lang)
+			? \'class="link"\'
+            : \'class="dark"\';
+		echo \'<a \'.$on.\' @click="pager(\\\'\'.BASE_URL.$name.\'/index/\'.$id_area.\'/\'.$i->code.\'\\\')" title="\'._SWITCH_LANGUAGE.\'">\'.ucfirst($i->language).\'</a>\';
 	}
-	echo \'</ul></div>\';
+	echo \'</div>\';
 }
 
 // if you don\'t need to switch between areas you can comment this section
 // area switcher
 if (MULTIAREA)
 {
-	echo \'<div class="aright sbox"><ul class="inline-list">\';
+    echo \'<div class="text-sm flex justify-end py-1 space-x-4 border-b border-gray-200">\';
 	foreach ($areas as $i)
 	{
-		$on = ($i->id == $id_area) ? \'class="on"\' : \'\';
-		echo \'<li><a \'.$on.\' href="\'.BASE_URL.\''.$name.'/index/\'.$i->id.\'/\'.$lang.\'" title="\'._SWITCH_AREA.\'">\'.ucfirst($i->name).\'</a></li>\';
+        if ($i->id > 1)
+        {
+            $on = ($i->id == $id_area)
+                ? \'class="link"\'
+                : \'class="dark"\';
+            echo\ '<a \'.$on.\' @click="pager(\\\'\'.BASE_URL.$name.\'/index/\'.$i->id.\'/\'.$lang.\'\\\')" title="\'._SWITCH_AREA.\'">\'.ucfirst($i->name).\'</a>\';
+        }
 	}
-	echo \'</ul></div>\';
+	echo \'</div>\';
 }
+echo \'</div>\';
+
+/*
+// filter selector
+echo \'<form name="xfilter" id="xfilter" action="\'.BASE_URL.\''.$name.'/index/\'.$id_area.\'/\'.$lang.\'" method="GET" onsubmit="return false">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">\';
+*/
+/*
+// filter sample
+echo \'<div>
+    <label for="xwhat">What filter</label>
+    <select id="xwhat" name="xwhat" class="w-full" @change="filter()">
+        \'.X4Form_helper::get_options(X4Array_helper::simplearray2obj($whats), \'value\', \'option\', $qs[\'xwhat\'], \'\').\'
+    </select>
+</div>\';
+*/
+
+/*
+echo \'<div class="col-span-2">
+        <label for="xstr">\'.'.strtoupper($name).'_SEARCH_MSG.\'</label>
+        <input
+            type="text"
+            id="xstr"
+            name="xstr"
+            class="w-full uppercase"
+            value="\'.$qs[\'xstr\'].\'"
+            autocomplete="off"
+            placeholder="\'._ENTER_TO_FILTER.\'"
+            @keyup="if ($event.key === \\\'Enter\\\') { filter(); }" />
+    </div>\';
+echo \'</div></form>\';
+*/
 
 // to avoid errors for missing dictionary
 $title = (defined(\'_'.$uname.'_MANAGER\'))
@@ -1167,9 +1295,8 @@ $elements = (defined(\'_'.$uname.'_ITEMS\'))
     ? _'.$uname.'_ITEMS
     : \''.ucfirst($name).' items\';
 
-$js = \'\';
 ?>
-<h1><?php echo $title ?></h1>
+<h1 class="mt-6"><?php echo $title ?></h1>
 <?php
 // here you should have an array of objects named $items
 // if you get paginated items the var $items will be an array like this ($array_of_objects, $array_with_data_for_pagination)
@@ -1203,119 +1330,85 @@ else
 
 if (!empty($list))
 {
-    echo \'<table class="zebra nomargin">
-		<tr>
-			<th>\'.$elements.\'</th>
-			<th style="width:6em;">\'._ACTIONS.\'</th>
-			<th style="width:6em;"></th>
-		</tr>\';
+    echo \'<table>
+        <thead>
+            <tr>
+                <th>\'.$elements.\'</th>
+                <th class="w-48">\'._ACTIONS.\'</th>
+            </tr>
+        </thead>\';
 
 	if ($sortable)
 	{
-	    echo \'</table><ul id="sortable" class="nomargin zebra">\';
+	    echo \'</table>
+            <div x-data="xsortable()" x-init="setup(\\\'sortable\\\', \\\''.$name.'/ordering/\'.$id_area.\'/\'.$lang.\'\\\')">
+                <div id="sortable">\';
 	}
+    else
+    {
+        echo \'<tbody>\';
+    }
 
 	foreach ($list as $i)
 	{
-		if ($i->xon)
-        {
-            $status = _ON;
-            $on_status = \'orange\';
-        }
-        else
-        {
-            $status = _OFF;
-            $on_status = \'gray\';
-        }
+		$statuses = AdmUtils_helper::statuses($i);
 
-        if ($i->xlock)
+        $actions = \'\';
+        if (($i->level > 1 && $i->xlock == 0) || $i->level >= 3)
         {
-            $lock = _LOCKED;
-            $lock_status = \'lock\';
-        }
-        else
-        {
-            $lock = _UNLOCKED;
-            $lock_status = \'unlock-alt\';
-        }
+            $actions = AdmUtils_helper::link(\'edit\', \''.$name.'/edit/\'.$i->id_area.\'/\'.$i->lang.\'/\'.$i->id);
 
-        $actions = $delete = \'\';
-        if (($i->level > 1 && $i->xlock == 0) || $i->level == 4)
-        {
-		    $actions = \'<a class="bta" href="\'.BASE_URL.\''.$name.'/edit/\'.$i->id_area.\'/\'.$i->lang.\'/\'.$i->id.\'" title="\'._EDIT.\'"><i class="fas fa-pencil-alt fa-lg"></i></a>\';
-
-		    if ($i->level > 2)
+            if ($i->level > 2)
             {
-                $actions .= \' <a class="btl" href="\'.BASE_URL.\''.$name.'/set/xon/\'.$i->id.\'/\'.intval(!$i->xon).\'" title="\'._STATUS.\' \'.$status.\'"><i class="far fa-lightbulb fa-lg \'.$on_status.\'"></i></a>\';
+                $actions .= AdmUtils_helper::link(\'xon\', \''.$name.'/set/xon/\'.$i->id.\'/\'.intval(!$i->xon), $statuses);
 
-                if ($i->level == 4)
+                if ($i->level >= 4)
                 {
-                    $delete = \'<a class="btl" href="\'.BASE_URL.\''.$name.'/set/xlock/\'.$i->id.\'/\'.intval(!$i->xlock).\'" title="\'._STATUS.\' \'.$lock.\'"><i class="fas fa-\'.$lock_status.\' fa-lg"></i></a>
-                        <a class="bta" href="\'.BASE_URL.\''.$name.'/delete/\'.$i->id.\'" title="\'._DELETE.\'"><i class="fas fa-trash fa-lg red"></i></a>\';
+                    $actions .= AdmUtils_helper::link(\'xlock\', \''.$name.'/set/xlock/\'.$i->id.\'/\'.intval(!$i->xlock), $statuses);
+                    $actions .= AdmUtils_helper::link(\'delete\', \''.$name.'/delete/\'.$i->id);
                 }
             }
         }
 
         if ($sortable)
         {
-            echo \'<li id="\'.$i->id.\'">
-                <table><tr>
-                <td><b>\'.$i->title.\'</b></td>
-                <td style="width:6em;">\'.$actions.\'</td>
-                <td class="aright" style="width:6em;">\'.$delete.\'</td>
-                </tr></table></li>\';
-            $order[] = $i->id;
+            echo \'<div class="sort-item" id="\'.$i->id.\'">
+                <table class="my-0">
+                    <tr>
+                        <td><strong>\'.$i->title.\'</strong></td>
+                        <td class="w-40 space-x-2 text-right">\'.$actions.\'</td>
+                    </tr>
+                </table>
+            </div>\';
         }
         else
         {
             echo \'<tr>
                 <td><b>\'.$i->title.\'</b></td>
-                <td>\'.$actions.\'</td>
-                <td class="aright">\'.$delete.\'</td>
-                </tr>\';
+                <td class="w-40 space-x-2 text-right">\'.$actions.\'</td>
+            </tr>\';
         }
     }
 
     if ($sortable)
     {
-        $o = implode(\',\', $order);
-
-        echo \'</ul>
-        <input type="hidden" name="sort_order" id="sort_order" value="\'.$o.\'" />
-        </form>\';
-
-        $js = \'
-zebraUl("zebra");
-sortize("sort_updater", "sortable", "sort_order");\';
+        echo \'</div></div>\';
     }
     else
     {
-        echo \'</table>\';
+        echo \'</tbody>
+            </table>\';
 
         if ($pagination)
         {
-            echo \'<div id="'.$name.'_pager" class="pager">\'.X4Pagination_helper::pager(BASE_URL.\''.$name.'/mod/\'.$id_area.\'/\'.$lang.\'/\', $items[1], 5, false, \'/\'.$str, \'btp\').\'</div>\';
-
-            $js .= \'buttonize("'.$name.'_pager", "btp", "topic");\';
+            echo \'<div id="'.$name.'_pager" class="pager">\'.X4Pagination_helper::tw_admin_pager(BASE_URL.\''.$name.'/mod/\'.$id_area.\'/\'.$lang.\'/\', $items[1], 5, false, \'?\'.http_build_query($qs), \'\').\'</div>\';
         }
-        $js .= \'zebraTable("zebra");\';
     }
 }
 else
 {
 	echo \'<p>\'._NO_ITEMS.\'</p>\';
-}
-?>
-<script src="<?php echo THEME_URL ?>js/basic.js"></script>
-<script>
-window.addEvent("domready", function() {
-	X3.content("filters","'.$name.'/filter/<?php echo $id_area.\'/\'.$lang.\'/\'.$str ?>", "<?php echo addslashes(X4Theme_helper::navbar($navbar, \' . \', false)) ?>");
-	buttonize("topic", "bta", "modal");
-	actionize("topic", "btl", "topic", escape("'.BASE_URL.$name.'/index/<?php echo $id_area.\'/\'.$lang.\'/\'.$pp.\'/\'.$str ?>"));
-	<?php echo $js ?>
-	linking("ul.inline-list a");
-});
-</script>';
+}';
                 }
                 else
                 {
@@ -1355,7 +1448,7 @@ window.addEvent("domready", function() {
 		else
 		{
 		    // create a default table
-		    $res = $this->db->single_exec(str_replace('XXXTABLE_NAMEXXX', $name, $this->sql), 'NO_ID');
+		    $this->db->single_exec(str_replace('XXXTABLE_NAMEXXX', $name, $this->sql), 'NO_ID');
 
 		    if ($this->table_exists($name))
 		    {
