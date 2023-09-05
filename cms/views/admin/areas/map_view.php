@@ -21,7 +21,7 @@ $openul = $openli = 1;
 foreach ($map as $i)
 {
 	$ilen = strlen($i->ordinal)/4;
-	$menu = '';
+	$deep = '';
 	if ($ilen > $len)
 	{
 		// change subpages
@@ -54,15 +54,15 @@ foreach ($map as $i)
 			$openli--;
 		}
 	}
-	// menus
-	if ($ilen == 2 && $i->id_menu)
-	{
-		$menu = '--&nbsp;';
-	}
+    // deep
+    if ($ilen >= 2)
+    {
+        $deep = str_pad($deep,  $ilen, '-');
+    }
 
 	$len = $ilen;
 	$description = stripslashes($i->description);
-	echo '<li>'.$menu.'<a class="link" @click="$dispatch(\'pager\', \''.BASE_URL.'pages/index/'.$area->id.'/'.$i->lang.'/'.str_replace('/', '$', $i->xfrom).'\');modal=false" title="'.$description.'">'.stripslashes($i->name).'</a>'._TRAIT_.$description;
+	echo '<li>'.$deep.'&nbsp;<a class="link" @click="$dispatch(\'pager\', \''.BASE_URL.'pages/index/'.$area->id.'/'.$i->lang.'/'.str_replace('/', '$', $i->xfrom).'\');modal=false" title="'.$description.'">'.stripslashes($i->name).'</a>'._TRAIT_.$description;
 	$openli++;
 }
 
