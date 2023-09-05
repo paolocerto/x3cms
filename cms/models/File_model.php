@@ -155,7 +155,7 @@ class File_model extends X4Model_core
 	 * @param   array	$qs
 	 * @return  array	Array of objects
 	 */
-	public function get_files(int $id_area, array $qs) //string $category = '', string $subcategory = '', int $xtype = -1, string $str = '')
+	public function get_files(int $id_area, array $qs)
 	{
 		// category condition
 		$where = (empty($qs['xctg']))
@@ -167,7 +167,7 @@ class File_model extends X4Model_core
 			? ''
 			: ' AND f.subcategory = '.$this->db->escape(urldecode($qs['xsctg']));
 
-		// xtype condition
+		// xtype condition, is an integer
 		$where .= ($qs['xxtype'] < 0)
 			? ''
 			: ' AND f.xtype = '.$qs['xxtype'];
@@ -284,8 +284,16 @@ class File_model extends X4Model_core
 			'template' => 3
 		);
 
+        // build array to filter
+        $qs = [
+            'xctg' => '',
+            'xsctg' => '',
+            'xxtype' => $what[$type],
+            'xstr' => ''
+        ];
+
 		// get files
-		$files = $this->get_files($id_area, '', '', $what[$type]);
+		$files = $this->get_files($id_area, $qs);
 
 		$c = 0;
 		$txt = '';

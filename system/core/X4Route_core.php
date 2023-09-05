@@ -18,7 +18,7 @@ final class X4Route_core
 {
 	// this variables hold route data
 	public static $protocol  = 'http';
-	public static $lang  = '';
+	public static $lang  = 'en';
 	public static $area = 'public';
 	public static $folder = 'public';
 	public static $control = 'home';

@@ -59,7 +59,9 @@ class X4Site_model extends X4Model_core
 		X4Route_core::set_lang($this->lang);
 
 		// get site
-		$this->site = $this->get_site($this->area->id);
+		$this->site = X4Route_core::$area != 'x3cli'
+                   ? $this->get_site($this->area->id)
+                   : $this->get_site(1, false);
 
 		if (!is_object($this->area) || !is_object($this->site))
 		{
@@ -109,7 +111,7 @@ class X4Site_model extends X4Model_core
 	 * @param integer	area ID
 	 * @return array
 	 */
-	public function get_site($id_area)
+	public function get_site($id_area, $domain = true)
 	{
 		// check APC
 		$c = (APC)
@@ -118,10 +120,15 @@ class X4Site_model extends X4Model_core
 
 		if (empty($c))
 		{
+                   // X3 cli doesn't have domain
+                   $where = $domain
+                       ? ' s.domain LIKE '.$this->db->escape('%'._DOMAIN_).' AND '
+                       : '';
+
 			$c = $this->db->query_row('SELECT s.*, l.code, l.title, l.description, l.keywords, l.rtl
 				FROM sites s
 				JOIN alang l ON l.code = '.$this->db->escape($this->lang).'
-				WHERE s.domain LIKE '.$this->db->escape('%'._DOMAIN_).' AND l.id_area = '.intval($id_area));
+				WHERE '.$where.' l.id_area = '.intval($id_area));
 
 			if (APC)
 			{

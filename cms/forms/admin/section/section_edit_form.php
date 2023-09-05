@@ -27,6 +27,7 @@ $xdata = '{
         var sizes = document.getElementById("col_sizes").value;
 
         document.getElementById("col_sizes").classList.remove("softwarn");
+        document.getElementById("rotide").disabled = false;
         // this.cleanSizes();
         let tmp = sizes.replace(/[^1-5+]/gi, "");
         let lastChar = tmp.slice(-1);
@@ -39,6 +40,7 @@ $xdata = '{
             eval("n=parseInt("+sizes+");");
             if (n != parseInt(columns)) {
                 document.getElementById("col_sizes").classList.add("softwarn");
+                document.getElementById("rotide").disabled = true;
             }
         }
     }

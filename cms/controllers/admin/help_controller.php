@@ -114,7 +114,7 @@ class Help_controller extends X3ui_controller
 		$src = array('src="/cms');
 		$rpl = array('src="http://www.x3cms.net/cms');
 
-		$view->content = (empty($lcontent))
+		$view->left = (empty($lcontent))
 			? '<p>'._UNABLE_TO_CONNECT.'</p>'
 			: '<div id="help">'.str_replace($src, $rpl, $lcontent).'</div>';
 

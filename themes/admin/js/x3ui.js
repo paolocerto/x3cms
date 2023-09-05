@@ -595,12 +595,13 @@ function small_tiny(id_area, lang) {
         relative_urls : false,
         extended_valid_elements: "i[class]",
         invalid_elements : "script",
-
+        // Example content CSS (should be your site CSS)
+		importcss_append: true,
         content_css : "/themes/"+theme+"/css/tinymce"+id_area+".css",
-        //template_selected_content_classes: "fake",
 
         // Drop lists for link/image/media/template dialogs
-		//templates : root+"files/js/"+id_area+"/template",
+		//templates : root+"files/js/"+id_area+"/template", // this is deprecated
+        // mo images in small tinyMCE
 		link_list : root+"files/js/"+id_area+"/files",
     });
 }
@@ -629,7 +630,7 @@ function tiny(id_area, lang, api_key) {
         paste_as_text: true,
 
         plugins: [
-            "advlist", "autolink", "autosave", "lists", "link", "file-manager", "charmap", "anchor", "pagebreak",
+            "advlist", "autolink", "autosave", "lists", "image", "link", "file-manager", "charmap", "anchor", "pagebreak",
             "searchreplace", "visualblocks", "visualchars", "code", "fullscreen",
             "insertdatetime", "media", "nonbreaking", "directionality",
             "table", "importcss"
@@ -642,7 +643,7 @@ function tiny(id_area, lang, api_key) {
             apiKey: api_key, // Default free key "FLMNFLMN"
         },
 
-        toolbar1: "undo redo | styleselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent blockquote | link image media table",
+        toolbar1: "undo redo | styleselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent blockquote | image link media table",
 
         toolbar_items_size: "small",
         style_formats: [
@@ -683,12 +684,11 @@ function tiny(id_area, lang, api_key) {
         extended_valid_elements: "i[class]",
         invalid_elements : "script",
         // Example content CSS (should be your site CSS)
-		//importcss_append: true,
+		importcss_append: true,
         content_css : "/themes/"+theme+"/css/tinymce"+id_area+".css",
-        //template_selected_content_classes: "fake",
 
         // Drop lists for link/image/media/template dialogs
-		//templates : root+"files/js/"+id_area+"/template",
+		//templates : root+"files/js/"+id_area+"/template", // this is deprecated
 		link_list : root+"files/js/"+id_area+"/files",
 		image_list : root+"files/js/"+id_area+"/img",
 		media_list : root+"files/js/"+id_area+"/media",
@@ -949,37 +949,3 @@ function xsortable() {
     }
     return {...sorter, ...xevents};
 }
-/*
-function imageEditor() {
-    return {
-        image: "",
-        xcoord: 0,
-        ycoord: 0,
-        width: document.getElementById("width").value,
-        height: document.getElementById("height").value,
-        ratio: false,
-        //thumb: "",
-        angle: 0,
-        initialize(img, xeditor, xfile) {
-            this.image = img;
-
-            // set croppie
-            var opts = {
-                viewport: { width: this.width-50, height: this.height-50 },
-                boundary: { width: this.width, height: this.height },
-                showZoomer: true,
-                enableResize: true,
-                enableOrientation: true,
-            };
-            let container = document.getElementById(xeditor);
-            var cropper = new Croppie(container, opts);
-            cropper.bind({
-                url: xfile,
-            });
-        },
-        rotating(){
-            document.getElementById(this.image).style.transform="rotate("+this.angle+"deg)";
-        },
-    }
-}
-*/

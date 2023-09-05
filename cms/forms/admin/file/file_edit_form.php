@@ -84,7 +84,7 @@ switch ($file->xtype)
 $fields[] = array(
     'label' => null,
     'type' => 'html',
-    'value' => '<p><b>'.$area->title.'</b>: '.$file->name.'</p>'.$action
+    'value' => '<p><b>'.$area->title.'</b>: '.$file->name.'</p>'    // temprarily disabled .$action
 );
 
 $fields[] = array(

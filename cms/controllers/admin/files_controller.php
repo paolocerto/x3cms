@@ -613,7 +613,10 @@ class Files_controller extends X3ui_controller
 		$view->actions = '';
 
 		// content
-		$view->content = new X4View_core('container_two');
+		$view->content = new X4View_core('files/editor_container');
+
+        // TODO
+
         // left
 		$view->content->left = new X4View_core('files/file_editor');
 		// right
