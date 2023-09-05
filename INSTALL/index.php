@@ -320,10 +320,10 @@ switch($step)
 			<div id="page" class="bg-gray-600 py-4">
                 <div class="w-full md:w-2/3 px-4 md:m-auto text-gray-300">
 					<h3>License agreement</h3>
-					<p>The X3 CMS is distributed under the <strong>AGPL</strong> License (GNU Affero General Public License)</p>
-					<p>You can read it online at <a href="https://www.gnu.org/licenses/gpl-3.0.htmll" title="GNU Affero General Public License">https://www.gnu.org/licenses/gpl-3.0.htmll</a> or a standalone copy <a href="../agpl-3.0.htm" title="AGPL 3.0">AGPL-3.0</a>
-					<h4>What you should know</h4>
-					<p><strong>A short summary of what does the AGPL</strong> (What you can do and can not do)</p>
+					<p>The X3 CMS is distributed under the <strong>GPL</strong> License (GNU General Public License)</p>
+					<p>You can read it online at <a href="https://www.gnu.org/licenses/gpl-3.0.html" title="GNU General Public License">https://www.gnu.org/licenses/gpl-3.0.html</a> or a standalone copy <a href="../gpl-3.0.html" title="GPL 3.0">AGPL-3.0</a>
+					<h4 class="mt-6">What you should know</h4>
+					<p><strong>A short summary of what does the GPL</strong> (What you can do and can not do)</p>
 					<ul>
 						<li>Allows people to copy, modify and distribute the X3 CMS code.</li>
 						<li>Forces any modifications done to the X3 CMS code to be shared back to the project and other users.</li>
@@ -334,7 +334,7 @@ switch($step)
 						<li>Plugins should be available under their own license and should not be in anyway dependent on the X3 CMS license.</li>
 					</ul>
 
-					<h4>If you need more freedom</h4>
+					<h4 class="mt-6">If you need more freedom</h4>
 					<p>You can choose an other license as you can see at  <a href="http://www.x3cms.net/en/download_x3cms" title="X3 CMS download">www.x3cms.net</a>.</p>
 					<p>If you for whatever reason need to remove the link to X3 CMS Legal Notices and the copyright notices in the templates the only solution is to buy a commercial license. More informations at <a href="http://www.x3cms.net" title="X3 your next Content Management System">www.x3cms.net</a></p>
 					<p class="green">NOTE: this solution is for a lifetime for just one domain name and does not remove the other constraints of the license.</p>

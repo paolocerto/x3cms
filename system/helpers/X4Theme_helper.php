@@ -922,9 +922,9 @@ function save_article(bid, content) {
 	public static function sectionize(&$css, $site, $page, $args, $index, $section, $grid = '')
 	{
         // handle advanced sections and basic sections
-		$articles = (isset($section['a']))
+		$articles = (is_array($section['a']))
             ? $section['a'] // articles in section
-            : $section; // settings in sections
+            : [$section['a']]; // settings in sections
 
         // check section style
 		$class = array();
@@ -1186,6 +1186,17 @@ function save_article(bid, content) {
 	 */
 	public static function tailwind($site, $page, $args, $articles, $section)
 	{
+        // fix for missing columns
+        if (!isset($section['columns']))
+        {
+            $section['columns'] = 1;
+        }
+        // fix for missing width
+        if (!isset($section['width']))
+        {
+            $section['width'] = 'container mx-auto';
+        }
+
         // get real number of columns
         $csizes = isset($section['col_sizes'])
             ? explode('+', $section['col_sizes'])

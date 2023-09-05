@@ -129,7 +129,7 @@ if (!empty($menus['menu_top']))
     <!-- navbar -->
     <nav
         id="navbar"
-        class="fixed bg-white text-neutral-700 z-10 w-full"
+        class="fixed bg-white text-neutral-700 z-10 w-full border-b border-neutral-200"
         x-data="{ isOpen: false, showModal: false }"
     >
 
