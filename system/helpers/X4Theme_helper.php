@@ -1128,7 +1128,7 @@ function save_article(bid, content) {
      * @param integer   $nc
 	 * @return string
 	 */
-    private static function tw_grid($nc)
+    public static function tw_grid($nc)
     {
         $grid = array(
             1 => '',

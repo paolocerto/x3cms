@@ -36,10 +36,19 @@ $sql0[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock,
 // it
 $sql0[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'it', 'admin', 'x4get_by_key', '_X4GET_BY_KEY_CONFIGURATOR_MSG', 'Seleziona una chiave per filtrare gli articoli', 0, 1)";
 $sql0[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'it', 'admin', 'x4get_by_key', '_X4GET_BY_KEY_OPTION', 'Chiave articoli', 0, 1)";
+$sql0[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'it', 'admin', 'x4get_by_key', '_X4GET_BY_TAG_OPTION', 'Visualizza Tag', 0, 1)";
 // en
 $sql0[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'en', 'admin', 'x4get_by_key', '_X4GET_BY_KEY_CONFIGURATOR_MSG', 'Select an article key to filter articles', 0, 1)";
 $sql0[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'en', 'admin', 'x4get_by_key', '_X4GET_BY_KEY_OPTION', 'Key', 0, 1)";
+$sql0[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'en', 'admin', 'x4get_by_key', '_X4GET_BY_TAG_OPTION', 'Show tags', 0, 1)";
 
+// AREA QUERIES
+// it
+$sql1[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'it', '".$area->name."', 'x4get_by_key', '_X4GET_BY_KEY_FILTER', 'filtra per Tag', 0, 1)";
+$sql1[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'it', '".$area->name."', 'x4get_by_key', '_X4GET_BY_KEY_UNFILTER', 'Rimuovi filtro', 0, 1)";
+// en
+$sql1[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'en', '".$area->name."', 'x4get_by_key', '_X4GET_BY_KEY_FILTER', 'filter by Tag', 0, 1)";
+$sql1[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'en', '".$area->name."', 'x4get_by_key', '_X4GET_BY_KEY_UNFILTER', 'remove filter', 0, 1)";
 
 // module
 $sql1[] = "INSERT INTO modules (updated, id_area, name, title, configurable, admin, searchable, pluggable, version, xon) VALUES (NOW(), $id_area, '$mod_name', 'Articles by key', 0, 0, 0, 1, '$version', 0)";

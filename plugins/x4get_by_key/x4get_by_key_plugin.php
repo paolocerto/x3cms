@@ -24,6 +24,7 @@ class X4get_by_key_plugin extends X4Plugin_core implements X3plugin
 	public function __construct($site)
 	{
 		parent::__construct($site);
+        $this->dict = new X4Dict_model(X4Route_core::$area, X4Route_core::$lang);
 	}
 
 	/**
@@ -49,30 +50,36 @@ class X4get_by_key_plugin extends X4Plugin_core implements X3plugin
 			? urldecode($args[2])
 			: false;
 
+        $params = explode('|', $param);
 		if (!empty($param))
 		{
-			if ($tag)
+            $this->dict->get_wordarray(array('x4get_by_key'));
+
+			if ($params[1] == 'with_tags' && $tag)
 			{
 				$mod = new X4get_by_key_model();
-				$items = X4Pagination_helper::paginate($mod->get_articles_by_key_and_tag($page->id_area, $page->lang, $param, $tag), $pp);
-				$out .= '<div class="block"><h3>'._TAG.': '.htmlentities($tag).'</h3></div>';
+				$items = X4Pagination_helper::paginate($mod->get_articles_by_key_and_tag($page->id_area, $page->lang, $params[0], $tag), $pp);
+				$out .= '<h3 class="mt-6">'._TAG.': '.htmlentities($tag).'  <a class="text-sm" href="'.BASE_URL.$page->url.'" title="'._X4GET_BY_KEY_UNFILTER.'">'._X4GET_BY_KEY_UNFILTER.'</a></h3>';
 			}
 			else
 			{
-				$items = X4Pagination_helper::paginate($this->site->get_articles_by_key($page->id_area, $page->lang, $param), $pp);
+				$items = X4Pagination_helper::paginate($this->site->get_articles_by_key($page->id_area, $page->lang, $params[0]), $pp);
 			}
 
 			// use pagination
 			if ($items[0])
 			{
+                // open grid
+                $grid = X4Theme_helper::tw_grid(sizeof($items[0]));
+                $out .= '<div class="mt-4 '.$grid.' gap-4">';
+
 				foreach ($items[0] as $i)
 				{
+                    // open box
+					$out .= '<div class="gbkey_box">';
+
 					if (!empty($i->content))
 					{
-						$out .= '<div class="block">'.X4Theme_helper::inline_edit($i, 0);
-						// options
-						$out .= X4Theme_helper::get_block_options($i);
-
 						// check excerpt
 						if ($i->excerpt)
 						{
@@ -80,23 +87,23 @@ class X4get_by_key_plugin extends X4Plugin_core implements X3plugin
 							$out .= X4Theme_helper::reset_url(stripslashes($text[0]));
 						}
 						else
+                        {
 							$out .= X4Theme_helper::reset_url(stripslashes($i->content));
-
-						$out .= '<div class="clear"></div>';
+                        }
 
 						// display tags
-						if ($i->show_tags && !empty($i->tags))
+						if ($params[1] == 'with_tags' && !empty($i->tags))
 						{
-							$out .= '<p class="tags"><span>'._TAGS.'</span>: ';
+							$out .= '<div class="gbkey_tags text-sm pt-2 flex justify-start space-x-4"><div>'._TAGS.'</div>: ';
 							$tt = explode(',', $i->tags);
 							foreach ($tt as $t)
 							{
 								$t = trim($t);
-								$out .= '<a href="'.BASE_URL.$page->url.'/0/tag/'.urlencode($t).'" title="'._TAG.'">'.$t.'</a> ';
+								$out .= '<div><a href="'.BASE_URL.$page->url.'/0/tag/'.urlencode($t).'" title="'._X4GET_BY_KEY_FILTER.'">'.$t.'</a></div>';
 							}
-							$out .= '</p>';
+							$out .= '</div>';
 						}
-						$out .= '</div>';
+
 					}
 
 					// module
@@ -104,17 +111,18 @@ class X4get_by_key_plugin extends X4Plugin_core implements X3plugin
 					{
 						$out .= X4Theme_helper::module($this->site, $page, $args, $i->module, $i->param);
 					}
+
+                    // close box
+					$out .= '</div>';
 				}
+                // close grid
+				$out .= '</div>';
 
 				// pager
 				if ($items[1][0] > 1)
 				{
-				    $out .= '<div id="pager">'.X4Pagination_helper::pager(BASE_URL.$page->url.'/', $items[1]).'</div>';
+				    $out .= '<div id="pager">'.X4Pagination_helper::tw_admin_pager(BASE_URL.$page->url.'/', $items[1]).'</div>';
 				}
-			}
-			else
-			{
-				//$out .= '<div class="block"><p>'._NO_ITEMS.'</p></div>';
 			}
 		}
 		return $out;

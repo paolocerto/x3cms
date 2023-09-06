@@ -130,6 +130,10 @@ class Article_model extends X4Model_core
             $where .= ' AND id_page = '.intval($qs['xpage']);
         }
 
+        if ($qs['xkey'])
+        {
+            $where .= ' AND xkeys = '.$this->db->escape($qs['xkey']);
+        }
         if ($qs['xcnt'] >= 0)
         {
             $where .= ' AND code_context = '.intval($qs['xcnt']);

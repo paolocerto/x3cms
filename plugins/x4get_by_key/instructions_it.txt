@@ -1,7 +1,15 @@
 X4GET_BY_KEY
 
-REQUISITI: nessuno
+REQUISITI: TailwindCSS e Alpine.js
 ---
 COSA FA: visualizza paginati gli articoli contrassegnati dalla KEY
 ---
-COME FUNZIONA: basta inserirlo come modulo nella pagina in cui si vuole visualizzare gli articoli con parametro uguale alla KEY
+COME FUNZIONA:
+basta inserirlo come modulo nella pagina in cui si vuole visualizzare gli articoli con parametro uguale alla KEY.
+Se si imposta Con Tags sarà possibile filtrare articoli per tag
+---
+CONFIGURAZIONE: nessuna
+---
+IMPOSTAZIONI PER IL FOGLIO DI STILE CSS:
+- box degli articoli ha classe .gbkey_box
+- box per tags ha classe .gbkey_tags

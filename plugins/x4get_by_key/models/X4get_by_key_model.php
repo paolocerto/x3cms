@@ -39,10 +39,16 @@ class X4get_by_key_model extends X4Model_core
 	public function configurator(int $id_area, string $lang, int $id_page, string $param)
 	{
 	    $p = (empty($param))
-	        ? array('', '', '')
+	        ? array('', '')
 	        : explode('|', urldecode($param));
 
 	    $fields = array();
+
+        $fields[] = array(
+            'label' => null,
+            'type' => 'html',
+            'value' => '<div class="bg-white text-gray-700 md:px-8 md:pb-8 px-4 pb-4" style="border:1px solid white">'
+        );
 
 	    $fields[] = array(
 			'label' => null,
@@ -68,8 +74,27 @@ class X4get_by_key_model extends X4Model_core
 			'options' => array($this->get_keys($id_area, $lang), 'xkeys', 'xkeys', ''),
 			'name' => 'param1',
 			'rule' => 'required',
-			'extra' => 'class="large"'
+			'extra' => 'class="w-full"'
 		);
+
+        $options = ['no_tags', 'with_tags'];
+
+        // plugin option
+		$fields[] = array(
+			'label' => _X4GET_BY_TAG_OPTION,
+			'type' => 'select',
+			'value' => $p[1],
+			'options' => array(X4Array_helper::simplearray2obj($options), 'value', 'option', ''),
+			'name' => 'param2',
+			'rule' => 'required',
+			'extra' => 'class="w-full"'
+		);
+
+        $fields[] = array(
+            'label' => null,
+            'type' => 'html',
+            'value' => '</div>'
+        );
 
 		return $fields;
 	}

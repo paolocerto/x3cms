@@ -1,7 +1,15 @@
 X4GET_BY_KEY
 
-REQUIREMENTS: none
+REQUIREMENTS: TailwindCSS and Alpine.js
 ---
 WHAT IT DOES: show pages of articles signed with the KEY
 ---
-HOW IT WORKS: put it as module into the page and set the param equal to KEY
+HOW IT WORKS:
+put it as module into the page and set the param equal to KEY.
+if you set with_tags, it will show article tags to use as filter
+---
+CONFIGURATION: none
+---
+CSS:
+- class for articles .gbkey_box
+- class for tags .gbkey_tags
