@@ -118,7 +118,7 @@ final class X4Core_core
 					self::$inst = false;
 					if (DEBUG)
 					{
-						echo X4Bench_core::info('<span>X4WebApp v. {x4wa_version} - execution time: {execution_time} - memory usage: {memory_usage} - queries: {queries} - included files: {included_files}</span>');
+						echo X4Bench_core::info('<p class="text-center pt-4 text-xs">X4WebApp v. {x4wa_version} - execution time: {execution_time} - memory usage: {memory_usage} - queries: {queries} - included files: {included_files}</p>');
 					}
 				}
 			}

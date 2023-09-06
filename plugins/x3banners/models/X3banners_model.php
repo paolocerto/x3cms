@@ -103,6 +103,12 @@ class X3banners_model extends X4Model_core
 	        ? array('', '', '')
 	        : explode('|', urldecode($param));
 
+        $fields[] = array(
+            'label' => null,
+            'type' => 'html',
+            'value' => '<div class="bg-white text-gray-700 md:px-8 md:pb-8 px-4 pb-4" style="border:1px solid white">'
+        );
+
 		// plugin option
 		$fields[] = array(
 			'label' => _ARTICLE_PARAM_OPTIONS,
@@ -113,6 +119,12 @@ class X3banners_model extends X4Model_core
 			'rule' => 'required',
 			'extra' => 'class="w-full"'
 		);
+
+        $fields[] = array(
+            'label' => null,
+            'type' => 'html',
+            'value' => '</div>'
+        );
 
 		return $fields;
 	}

@@ -582,7 +582,7 @@ class Articles_controller extends X3ui_controller
 
 				'xkeys' => strtolower($_post['xkeys']),
 				'name' => $_post['name'],
-				'content' => $_post['content'],
+				'content' => str_replace('<script src="//cdn.public.flmngr.com/pM7MjiPd/widgets.js"></script>', '', $_post['content']),
 				'ftext' => $_post['name'].' '.strip_tags($_post['content']),
 				'js' => html_entity_decode($_post['js']),
 				'excerpt' => (strstr($_post['content'], '<!--pagebreak-->') !== false) ? 1 : 0,

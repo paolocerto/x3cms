@@ -15,7 +15,7 @@
 <thead>
 	<tr class="first">
 		<th class="text-left pl-4"><?php echo _DOMAIN ?></th>
-		<th style="width:9em"><?php echo _ACTIONS ?></th>
+		<th class="w-40"><?php echo _ACTIONS ?></th>
 	</tr>
 </thead>
 <tbody>
