@@ -69,8 +69,14 @@ class X4get_by_key_plugin extends X4Plugin_core implements X3plugin
 			// use pagination
 			if ($items[0])
 			{
+                // check for few articles
+                $n = sizeof($items[0]) < 4;
+                // if few we use few else we use 4 columns
+                $columns = $n
+                    ? sizeof($items[0])
+                    : 4;
                 // get tailwind classes for columns
-                $grid = X4Theme_helper::tw_grid(sizeof($items[0]%4));
+                $grid = X4Theme_helper::tw_grid($columns);
                 // open grid
                 $out .= '<div class="mt-4 '.$grid.' gap-4">';
 
