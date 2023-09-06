@@ -14,7 +14,7 @@
 $version = '1';
 
 // compatibility
-$compatibility = '0.9.0 STABLE';
+$compatibility = '0.9.99 STABLE';
 
 // plugin name
 $mod_name = 'x4flags';

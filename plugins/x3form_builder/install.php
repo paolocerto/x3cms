@@ -10,8 +10,8 @@
 
 // X3form_builder module installer
 
-$version = '0.5';
-$compatibility = '0.5.3 STABLE';
+$version = '0.9';
+$compatibility = '0.9,99 STABLE';
 $mod_name = 'x3form_builder';
 $required = array();
 $sql0 = $sql1 = array();

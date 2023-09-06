@@ -1067,7 +1067,6 @@ function save_article(bid, content) {
 				$col = $cols[$columns];
 			}
 
-
 			// define subclasses
 			if ($columns%3 == 0)
 			{
@@ -1123,6 +1122,7 @@ function save_article(bid, content) {
 
     /**
 	 * tailwind grid
+     * Using the number of columns you get Tailwind classis for the grid
 	 *
 	 * @static
      * @param integer   $nc
@@ -1143,6 +1143,10 @@ function save_article(bid, content) {
 
     /**
 	 * tailwind span
+     * we use a two digit input
+     * - the first digit is the num of columns
+     * - the second digit is the number of colums for the article
+     * then you get the Tailwind span classes you need for the article
 	 *
 	 * @static
      * @param integer   $col
@@ -1203,14 +1207,12 @@ function save_article(bid, content) {
             : array_fill(0, $section['columns'], 1);
         // this is the real number of columns with subdivion
         $nc = sizeof($csizes);
-
         // get fake number of columns
         $columns = $section['columns'];
-
 		// number of articles
 		$na = sizeof($articles);
 
-		// if we have less articles than columns we reset columns to number of articles
+		// if we have less articles than columns we reset columns to the number of articles
 		if ($columns > 1 && $na < $nc)
 		{
 			// adjust fake columns to number of articles in the row
