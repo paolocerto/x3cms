@@ -11,10 +11,10 @@
 // X4get_by_key module installer
 
 // plugin version
-$version = '0.4';
+$version = '0.9';
 
 // compatibility
-$compatibility = '0.5.3 STABLE';
+$compatibility = '0.9.99 STABLE';
 
 // plugin name
 $mod_name = 'x4get_by_key';
@@ -31,7 +31,8 @@ $sql0[] = "INSERT INTO privtypes (updated, xrif, name, description, xon) VALUES 
 $sql0[] = "INSERT INTO gprivs (updated, id_group, what, level, xon) VALUES (NOW(), 1, 'x4_get_by_key', 4, 1)";
 
 // groups
-$sql0[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'it', 'admin', 'groups', 'X4_GET_BY_KEY', 'Articoli per chiave', 0, 1)";
+$sql0[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'it', 'admin', 'groups', 'X4_GET_BY_KEY', 'Raggruppa articoli per chiave', 0, 1)";
+$sql0[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'en', 'admin', 'groups', 'X4_GET_BY_KEY', 'Group articles by key', 0, 1)";
 
 // it
 $sql0[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'it', 'admin', 'x4get_by_key', '_X4GET_BY_KEY_CONFIGURATOR_MSG', 'Seleziona una chiave per filtrare gli articoli', 0, 1)";

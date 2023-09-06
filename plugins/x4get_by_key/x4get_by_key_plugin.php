@@ -69,8 +69,9 @@ class X4get_by_key_plugin extends X4Plugin_core implements X3plugin
 			// use pagination
 			if ($items[0])
 			{
+                // get tailwind classes for columns
+                $grid = X4Theme_helper::tw_grid(sizeof($items[0]%4));
                 // open grid
-                $grid = X4Theme_helper::tw_grid(sizeof($items[0]));
                 $out .= '<div class="mt-4 '.$grid.' gap-4">';
 
 				foreach ($items[0] as $i)
