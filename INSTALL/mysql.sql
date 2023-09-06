@@ -132,23 +132,23 @@ CREATE TABLE IF NOT EXISTS `articles` (
 --
 
 INSERT INTO `articles` (`updated`, `bid`, `id_area`, `lang`, `code_context`, `name`, `id_page`, `id_editor`, `date_in`, `date_out`, `content`, `module`, `param`, `xlock`, `xon`) VALUES
-(NOW(), '3bdda9ed1e2a332550bf2783e4a3a70b', 2, 'it', 1, 'benvenuti', 1, 1, UNIX_TIMESTAMP(), 0, '<h1>Benvenuti nel CMS X3</h1><p>Se visualizzate questa pagina il vostro Content Management System X3 &egrave; stato correttamente installato e configurato.</p><p>Per accedere al pannello di amministrazione aggiungete <strong>/admin</strong> all\'URL nella barra dell\'indirizzo.</p><p>Buon divertimento</p><p><strong>X3 CMS</strong></p>', '', '', 0, 1),
+(NOW(), '3bdda9ed1e2a332550bf2783e4a3a70b', 2, 'it', 1, 'benvenuti', 1, 1, UNIX_TIMESTAMP(), 0, '<h1>Benvenuti nel CMS X3</h1><p>Se visualizzate questa pagina il vostro Content Management System X3 &egrave; stato correttamente installato e configurato.<br>Per accedere al pannello di amministrazione aggiungete <strong>/admin</strong> all\'URL nella barra dell\'indirizzo.<br>Buon divertimento</p><p><strong>X3 CMS</strong></p>', '', '', 0, 1),
 (NOW(), '66d18c936a9cfe9d82417e9b3af69e3f', 2, 'it', 1, 'mappa sito', 4, 1, UNIX_TIMESTAMP(), 0, '<h1>Mappa del sito</h1>', '', '', 0, 1),
 (NOW(), '01415ff7588434f6797bf8869d58b2d6', 2, 'it', 1, 'risultato ricerca', 5, 1, UNIX_TIMESTAMP(), 0, '<h1>Risultato della ricerca</h1>', '', '', 0, 1),
-(NOW(), '096d1fda54d98e4dcd5924bf34e46b92', 2, 'it', 1, 'informazioni', 6, 1, UNIX_TIMESTAMP(), 0, '<h1>Informazioni</h1><p>Potete trovare informazioni e documentazione sul CMS X3 al sito <a href="http://www.x3cms.net" title="Sito del progetto X3 CMS">www.x3cms.net</a>.</p>', '', '', 0, 1),
+(NOW(), '096d1fda54d98e4dcd5924bf34e46b92', 2, 'it', 1, 'informazioni', 6, 1, UNIX_TIMESTAMP(), 0, '<h1>Informazioni</h1><p>X3 CMS è uno strumento semplice per grandi progetti: <strong>semplice è meglio</strong> è la regola principale del nostro lavoro.<br>Con questa nuova versione del CMS X3 abbiamno riscritto quasi tutto il codice per renderlo ancora più semplice e potente.</p><p>Altre informazioni e documentazione sul CMS X3 al sito <a href="http://www.x3cms.net" title="Sito del progetto X3 CMS">www.x3cms.net</a>.</p>', '', '', 0, 1),
 (NOW(), '9c7c7a6472f843dea1c6148935c78c77', 2, 'it', 1, 'sito offline', 7, 1, UNIX_TIMESTAMP(), 0, '<h1>Sito in manutenzione</h1><p>Ci scusiamo per il disagio.</p>', '', '', 0, 1),
 
-(NOW(), '9d2aa0933a39e7579dd68557dcb8324a', 2, 'en', 1, 'welcome', 8, 1, UNIX_TIMESTAMP(), 0, '<h1>Welcome to X3 CMS</h1><p>If you see this page your Content Management System X3 was correctly installed and configured.</p><p>To access to the control panel add <strong>/admin</strong>  to the URL on the address bar.</p><p>Enjoy</p><p><strong>X3 CMS</strong></p>', '', '', 0, 1),
+(NOW(), '9d2aa0933a39e7579dd68557dcb8324a', 2, 'en', 1, 'welcome', 8, 1, UNIX_TIMESTAMP(), 0, '<h1>Welcome to X3 CMS</h1><p>If you see this page your Content Management System X3 was correctly installed and configured.<br>To access to the control panel add <strong>/admin</strong> to the URL on the address bar.<br>Enjoy</p><p><strong>X3 CMS</strong></p>', '', '', 0, 1),
 (NOW(), '4fbb483bb2abca4cefe1818eddb3c6b5', 2, 'en', 1, 'site map', 11, 1, UNIX_TIMESTAMP(), 0, '<h1>Site map</h1>', '', '', 0, 1),
 (NOW(), '682146f9fc27f463cd874d5bd14a618a', 2, 'en', 1, 'search result', 12, 1, UNIX_TIMESTAMP(), 0, '<h1>Search result</h1>', '', '', 0, 1),
-(NOW(), 'c4c95c36570d5a8834be5e88e2f0f6b2', 2, 'en', 1, 'information', 13, 1, UNIX_TIMESTAMP(), 0, '<h1>Information</h1><p>More information and documentation at <a href="http://www.x3cms.net" title="Project X3 CMS site">www.x3cms.net</a>.</p>', '', '', 0, 1),
+(NOW(), 'c4c95c36570d5a8834be5e88e2f0f6b2', 2, 'en', 1, 'information', 13, 1, UNIX_TIMESTAMP(), 0, '<h1>Information</h1><p>X3 CMS aims to be a simple tool to build great projects: <strong>simple is better</strong> is the main rule of our work.<br>With this new release of X3 CMS we rewritten almost all the code to be even more simple and powerful.</p><p>More information and documentation at <a href="http://www.x3cms.net" title="Project X3 CMS site">www.x3cms.net</a>.</p>', '', '', 0, 1),
 (NOW(), '45d00683ff3a196cb430483d8208688c', 2, 'en', 1, 'site off line', 14, 1, UNIX_TIMESTAMP(), 0, '<h1>Site maintenance</h1><p>We apologize for the inconvenience.</p>', '', '', 0, 1),
 
 (NOW(), 'd266dc06172bf9e423bf83c6788483ea', 3, 'it', 1, 'benvenuti area privata', 15, 1, UNIX_TIMESTAMP(), 0, '<h1>Benvenuti nell\'area privata del CMS X3</h1><p>Se visualizzate questa pagina il vostro Content Management System X3 &egrave; stato correttamente installato e configurato.</p><p>Per accedere al pannello di amministrazione aggiungete <strong>/admin</strong> all\'URL nella barra dell\'indirizzo.</p><p>Buon divertimento</p><p><strong>X3 CMS</strong></p>', '', '', 0, 1),
 (NOW(), '05141455c70bb27de5d8925cd7560ac7', 3, 'it', 1, 'mappa area', 18, 1, UNIX_TIMESTAMP(), 0, '<h1>Mappa dell\'area</h1>', '', '', 0, 1),
 (NOW(), 'e79713eac44836bfafac19a296140538', 3, 'it', 1, 'risultato ricerca', 19, 1, UNIX_TIMESTAMP(), 0, '<h1>Risultato della ricerca</h1>', '', '', 0, 1),
 
-(NOW(), '1cd2b77d8f2b17141e1a7d94be100df1', 3, 'en', 1, 'welcome reserved area', 22, 1, UNIX_TIMESTAMP(), 0, '<h1>Welcome to the private area of X3 CMS</h1><p>If you see this page your Content Management System X3 was correctly installed and configured.</p><p>To access to the control panel add <strong>/admin</strong>  to the URL on the address bar.</p><p>Enjoy</p><p><strong>X3 CMS</strong></p>', '', '', 0, 1),
+(NOW(), '1cd2b77d8f2b17141e1a7d94be100df1', 3, 'en', 1, 'welcome reserved area', 22, 1, UNIX_TIMESTAMP(), 0, '<h1>Welcome to the private area of X3 CMS</h1><p>If you see this page your Content Management System X3 was correctly installed and configured.<br>To access to the control panel add <strong>/admin</strong>  to the URL on the address bar.<br>Enjoy</p><p><strong>X3 CMS</strong></p>', '', '', 0, 1),
 (NOW(), '0640e3193041d7d58fae88d548e43b1a', 3, 'en', 1, 'area map', 25, 1, UNIX_TIMESTAMP(), 0, '<h1>Area map</h1>', '', '', 0, 1),
 (NOW(), '14bdd61f75985a52949b033ea9957ae6', 3, 'en', 1, 'search result', 26, 1, UNIX_TIMESTAMP(), 0, '<h1>Search result</h1>', '', '', 0, 1);
 
@@ -2832,8 +2832,8 @@ CREATE TABLE IF NOT EXISTS `templates` (
 --
 
 INSERT INTO `templates` (`id`, `updated`, `name`, `css`, `js`, `id_theme`, `description`, `settings`, `sections`, `xlock`, `xon`) VALUES
-(1, NOW(), 'base', 'x3ui', 'x3ui', 1, 'Default Admin template', '{"s1":{"bgcolor":"default","fgcolor":"default","columns":1,"width":"100"},"sn":{"bgcolor":"#ffffff","fgcolor":"#444444","columns":4,"width":"100"}}', 1, 0, 1),
-(2, NOW(), 'base', 'base', 'script', 2, 'Default page template', '{"s1":{"bgcolor":"default","fgcolor":"default","columns":1,"width":"fullwidth","class1":"","class2":""},"sn":{"bgcolor":"#ffffff","fgcolor":"#444444","columns":4,"width":"fullwidth","class1":"","class2":""}}',3, 0, 1);
+(1, NOW(), 'base', 'x3ui', 'x3ui', 1, 'Default Admin template', '{"s1":{"bgcolor":"default","fgcolor":"default","columns":"1","width":"100"},"sn":{"bgcolor":"#ffffff","fgcolor":"#444444","columns":"4","width":"100"}}', 1, 0, 1),
+(2, NOW(), 'base', 'base', 'script', 2, 'Default page template', '{"s1":{"bgcolor":"default","fgcolor":"default","columns":"1","width":"container mx-auto","class":""},"sn":{"bgcolor":"#ffffff","fgcolor":"#444444","columns":"4","width":"fullwidth","class":""}}',3, 0, 1);
 -- --------------------------------------------------------
 
 --
@@ -2928,4 +2928,16 @@ CREATE TABLE IF NOT EXISTS `widgets` (
   `xon` tinyint(1) NOT NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+--
+-- Install X4 Flags
+--
+
+INSERT INTO privtypes (updated, xrif, name, description, xon) VALUES (NOW(), 1, 'x4_flags', 'X4_FLAGS', 1);
+INSERT INTO gprivs (updated, id_group, what, level, xon) VALUES (NOW(), 1, 'x4_flags', 4, 1);
+INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'en', 'admin', 'groups', 'X4_FLAGS', 'Manage X4Flags plugin', 0, 1);
+INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'it', 'admin', 'groups', 'X4_FLAGS', 'Gestione modulo X4Flags', 0, 1);
+INSERT INTO param (updated, id_area, xrif, name, description, xtype, xvalue, required, xlock, xon) VALUES (NOW(), 2, 'x4flags', 'flags', 'Flags or text', '0|1', '1', 0, 0, 1);
+INSERT INTO param (updated, id_area, xrif, name, description, xtype, xvalue, required, xlock, xon) VALUES (NOW(), 2, 'x4flags', 'short_text', 'Short text', '0|1', '0', 0, 0, 1);
+INSERT INTO modules (updated, id_area, name, title, configurable, admin, searchable, pluggable, version, xon) VALUES (NOW(), 2, 'x4flags', 'Language switcher', 1, 0, 0, 0, 1, 1);
 
