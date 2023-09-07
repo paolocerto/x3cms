@@ -139,6 +139,7 @@ class Sections_controller extends X3ui_controller
 		}
 		$this->response($msg);
 	}
+
 	/**
 	 * New / Edit section form (use Ajax)
 	 *
@@ -154,6 +155,10 @@ class Sections_controller extends X3ui_controller
 
 		// get object
 		$mod = new Section_model();
+
+        // get theme styles
+        $theme_styles = $mod->get_theme_styles($id_page);
+
 		if ($id)
 		{
 			$item = $mod->get_by_id($id);
@@ -191,7 +196,8 @@ class Sections_controller extends X3ui_controller
 		$form_fields = new X4Form_core('section/section_edit');
 		$form_fields->id = $id;
 		$form_fields->item = $item;
-		$form_fields->mod_settings = $mod->settings;
+        $form_fields->mod_settings = $mod->settings;
+		$form_fields->theme_styles = $theme_styles;
 		// get the fields array
 		$fields = $form_fields->render();
 
@@ -220,6 +226,7 @@ class Sections_controller extends X3ui_controller
         $view->title = ($id)
 			? _SECTION_EDIT.' - #'.$item->progressive
 			: _SECTION_NEW;
+        $view->wide = 'md:w-2/3 lg:w-2/3';
 		// content
 		$view->content = new X4View_core('editor');
         $view->content->msg = _SECTION_EDIT_MSG;
@@ -231,7 +238,7 @@ class Sections_controller extends X3ui_controller
 	}
 
 	/**
-	 * Register Edit / New Context form data
+	 * Register Edit / New item
 	 *
 	 * @access	private
 	 * @param   integer $id item ID (if 0 then is a new item)
@@ -293,6 +300,7 @@ class Sections_controller extends X3ui_controller
                 'fgcolor' => $_post['fgcolor'],
                 'width' => $_post['width'],
                 'height' => $_post['height'],
+                'style' => $_post['stylex'],
                 'class' => $_post['classx'],
             );
 
@@ -317,6 +325,7 @@ class Sections_controller extends X3ui_controller
                     $tmp['fg'.$i] = isset($_post['fg'.$i.'_reset'])
                         ? ''
                         : $_post['fg'.$i];
+                    $tmp['style'.$i] = $_post['style'.$i];
                     $tmp['class'.$i] = $_post['class'.$i];
                 }
             }

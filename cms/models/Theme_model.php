@@ -217,7 +217,6 @@ class Theme_model extends X4Model_core
 
 		// Remove whitespace
 		$str = str_replace(array("\r\n", "\r", "\n", "\t", '  ', '    ', '    '), '', $str);
-
 		return $str;
 	}
 

@@ -7,16 +7,16 @@
 
 /* base colors */
 :root {
-    --main-btn_color:#216692;
+    --bg_color: hsla(203, 63%, 35%, 1);/* #216692; */
+    --link-color: #FF006E;
+
     --yellow: #FFBE0B;
-    --orange: #FB5607;
-    --fucsia: #FF006E;
+    --orange: hsl(19, 97%, 51%, 1); /* #FB5607; */
+    --fucsia: hsla(339, 100%, 55%, 1);/*#FF006E;*/
     --green: #8AC926;
     --military: #6b9080;
     --violet: #8338EC;
     --blue: #3A86FF;
-
-    --link-color: #FF006E;
 }
 
 /* for tailwind */
@@ -24,7 +24,7 @@
 
 /* global */
 html {height:100%;}
-body {color:#fff;background:#216692;font-family:'Poppins', 'Open Sans','sans-serif';}
+body {color:#fff;background:var(--bg_color);font-family:'Poppins', 'Open Sans','sans-serif';}
 
 h1 {font-size:2.5rem !important;font-weight:600 !important;line-height:2.7rem !important;}
 h2 {font-size:2rem !important;line-height:2.25rem !important;font-weight:400;margin:.3em 0;}
@@ -44,7 +44,7 @@ li {margin:.5em 0}
 /* form */
 label {cursor:pointer;display:block;font-size:0.9em;line-height:1em;margin:1em 0 .3em 0;}
 label span {font-weight:normal;color:#666;}
-label.error {font-weight:700;color:#FF006E !important}
+label.error {font-weight:700;color:var(--fucsia) !important}
 .suggestion {display:block;font-size: 0.75rem;line-height: 1rem;margin-top:.3em}
 
 input, select, textarea {font-size:100%;margin:0;vertical-align:baseline;vertical-align:middle;border:1px solid #ccc;padding:.5em .5em !important;margin:0;border-radius: 0.125rem;;color:#444 !important;--moz-border-sizing:border-box;box-sizing:border-box;}
@@ -74,17 +74,42 @@ input[type="search"]::-webkit-search-decoration, input[type="search"]::-webkit-s
 .buttons button[type="reset"], button.btn.gray, a.btn.gray {background-color:#d1d5db;color:#374151}
 button[disabled], input[disabled] { cursor: default;opacity:.5; }
 
-/* colors */
+/* colors for sections */
+
+.bg-fucsia {background:var(--fucsia)}
+.bg-orange {background:var(--orange) !important}
+.bg-petroleum {background:var(--bg_color)}
+.x3bg-yellow {background:var(--yellow)}
+.x3bg-violet {background:var(--violet)}
+.bg-military {background:var(--military)}
 
 /* gradients */
 .fucsium {
-    background: hsla(339, 100%, 55%, 1);
-    background: linear-gradient(315deg, hsla(339, 100%, 55%, 1) 0%, hsla(197, 72%, 33%, 1) 100%);
-    background: -moz-linear-gradient(315deg, hsla(339, 100%, 55%, 1) 0%, hsla(197, 72%, 33%, 1) 100%);
-    background: -webkit-linear-gradient(315deg, hsla(339, 100%, 55%, 1) 0%, hsla(197, 72%, 33%, 1) 100%);
-    filter: progid: DXImageTransform.Microsoft.gradient( startColorstr="#ff1b6b", endColorstr="#176E90", GradientType=1 );
+    background: var(--fucsia);
+    background: linear-gradient(315deg, var(--fucsia) 0%, var(--bg_color) 100%);
+    background: -moz-linear-gradient(315deg, var(--fucsia) 0%, var(--bg_color) 100%);
+    background: -webkit-linear-gradient(315deg, var(--fucsia) 0%, var(--bg_color) 100%);
+    filter: progid: DXImageTransform.Microsoft.gradient( startColorstr="#FF006E", endColorstr="#216692", GradientType=1 );
 }
-/* transparent */
+
+.orangium {
+    background: var(--orange);
+    background: linear-gradient(315deg, var(--orange) 0%, var(--bg_color) 100%);
+    background: -moz-linear-gradient(315deg, var(--orange) 0%, var(--bg_color) 100%);
+    background: -webkit-linear-gradient(315deg, var(--orange) 0%, var(--bg_color) 100%);
+    filter: progid: DXImageTransform.Microsoft.gradient( startColorstr="#FB5607", endColorstr="#216692", GradientType=1 );
+}
+
+.fucsange {
+    background: var(--fucsia);
+    background: linear-gradient(315deg, var(--fucsia) 0%, var(--orange) 100%);
+    background: -moz-linear-gradient(315deg, var(--fucsia) 0%, var(--orange) 100%);
+    background: -webkit-linear-gradient(315deg, var(--fucsia) 0%, var(--orange) 100%);
+    filter: progid: DXImageTransform.Microsoft.gradient( startColorstr="#FF006E", endColorstr="#FB5607", GradientType=1 );
+}
+
+
+/* transparent backgrounds */
 .overlay1 {background:rgba(0, 0, 0, .1)}
 .overlay2 {background:rgba(0, 0, 0, .2)}
 .overlay3 {background:rgba(0, 0, 0, .3)}
@@ -103,19 +128,19 @@ button[disabled], input[disabled] { cursor: default;opacity:.5; }
 }
 
 #navbar .menu_item:hover, #navbar .menu_item.active {
-    border-color: #FF006E;
+    border-color: var(--fucsia);
     border-bottom-width: 1px;
-    color: #FF006E !important;
+    color: var(--fucsia) !important;
 }
 
 #topic {background:#fff;color:#444;padding:4em 0 0;}
-#topic .section {position:relative;padding:3em 0;}
-#topic .section:first-child {padding-top:3.5em}
-#topic .section.short {padding-top:0}
-#topic .section:not(.fucsium) a {color:#FF006E};
-#topic .section.fucsium a {color:#fff !important;font-weight:600;text-decoration:underline !important}
-#topic .section button.btn_as_link {color:#FF006E !important;font-weight:normal}
-#topic .section:first-of-type {padding-top:4em;}
+#topic section {position:relative;padding:3em 0;}
+#topic section:first-child {padding-top:3.5em}
+#topic section.short {padding-top:0}
+#topic section:not(.fucsium) a {color:var(--link-color)};
+#topic section.fucsium a {color:#fff !important;font-weight:600;text-decoration:underline !important}
+#topic section button.btn_as_link {color:var(--fucsia) !important;font-weight:normal}
+#topic section:first-of-type {padding-top:4em;}
 
 footer a {text-decoration:underline !important}
 

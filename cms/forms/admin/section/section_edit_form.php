@@ -425,6 +425,35 @@ else
 
             break;
 
+            case 'style':
+                $fields[] = array(
+                    'label' => null,
+                    'type' => 'html',
+                    'value' => '<div>'
+                );
+
+                // fix for missing class
+                if (!isset($settings['style']))
+                {
+                    $settings['style'] = '';
+                }
+                $fields[] = array(
+                    'label' => _SECTION_STYLE,
+                    'type' => 'select',
+                    'value' => $settings['style'],
+                    'name' => 'stylex',
+                    'options' => array(X4Array_helper::array2obj($theme_styles['sections'], null, null, true), 'value', 'option', ''),
+                    'extra' => 'class="w-full"',
+                    'suggestion' => _SECTION_STYLE_MSG
+                );
+
+                $fields[] = array(
+                    'label' => null,
+                    'type' => 'html',
+                    'value' => '</div>'
+                );
+            break;
+
             case 'class':
                 $fields[] = array(
                     'label' => null,
@@ -479,13 +508,14 @@ else
                     {
                         $settings['col_settings']['bg'.$i] = '#ffffff';
                         $settings['col_settings']['fg'.$i] = '#444444';
+                        $settings['col_settings']['style'.$i] = '';
                         $settings['col_settings']['class'.$i] = '';
                     }
 
                     $fields[] = array(
                         'label' => null,
                         'type' => 'html',
-                        'value' => '<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        'value' => '<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                             <div>'
                     );
                     $fields[] = array(
@@ -524,6 +554,27 @@ else
                         'value' => 1,
                         'name' => 'fg'.$i.'_reset',
                         'checked' => intval(empty($settings['col_settings']['fg'.$i]))
+                    );
+
+                    $fields[] = array(
+                        'label' => null,
+                        'type' => 'html',
+                        'value' => '</div><div>'
+                    );
+
+                    if (!isset($settings['col_settings']['style'.$i]))
+                    {
+                        $settings['col_settings']['style'.$i] = '';;
+                    }
+
+                    $fields[] = array(
+                        'label' => _SECTION_STYLE.' col '.($i+1),
+                        'type' => 'select',
+                        'value' => $settings['col_settings']['style'.$i],
+                        'name' => 'style'.$i,
+                        'options' => array(X4Array_helper::array2obj($theme_styles['articles'], null, null, true), 'value', 'option', ''),
+                        'extra' => 'class="w-full"',
+                        'suggestion' => _SECTION_STYLE_MSG
                     );
 
                     $fields[] = array(

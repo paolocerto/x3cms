@@ -13,8 +13,30 @@
 $theme = 'default';
 $version = '3';
 
+// styles
+$styles = [
+    ['what' => 'section', 'style' => 'bg-fucsia', 'description' => 'background fucsia'],
+    ['what' => 'section', 'style' => 'bg-orange', 'description' => 'background orange'],
+    ['what' => 'section', 'style' => 'bg-petroleum', 'description' => 'background petroleum'],
+    ['what' => 'section', 'style' => 'bg-violet', 'description' => 'background violet'],
+    ['what' => 'section', 'style' => 'bg-military', 'description' => 'background military'],
+    ['what' => 'section', 'style' => 'fucsium', 'description' => 'gradient fucsia -> petroleum'],
+    ['what' => 'section', 'style' => 'orangium', 'description' => 'gradient orange -> petroleum'],
+    ['what' => 'section', 'style' => 'fucsange', 'description' => 'gradient fucsia -> orange'],
+    ['what' => 'article', 'style' => 'overlay1 rounded-2xl p-8', 'description' => 'ultra lightgray transparent rounded'],
+    ['what' => 'article', 'style' => 'overlay2 rounded-2xl p-8', 'description' => 'lightgray transparent rounded'],
+    ['what' => 'article', 'style' => 'overlay3 rounded-2xl p-8', 'description' => 'gray transparent rounded'],
+    ['what' => 'article', 'style' => 'border-2 border-neutral-200 rounded-2xl p-8', 'description' => 'lightgray bordered rounded'],
+    ['what' => 'article', 'style' => 'border-2 border-neutral-200 p-8', 'description' => 'lightgray bordered not-rounded'],
+    ['what' => 'article', 'style' => 'bg-fucsia rounded-2xl p-8', 'description' => 'background fucsia rounded'],
+    ['what' => 'article', 'style' => 'bg-orange rounded-2xl p-8', 'description' => 'background orange rounded'],
+    ['what' => 'article', 'style' => 'bg-petroleum rounded-2xl p-8', 'description' => 'background petroleum rounded'],
+    ['what' => 'article', 'style' => 'bg-violet rounded-2xl p-8', 'description' => 'background violet rounded'],
+    ['what' => 'article', 'style' => 'bg-military rounded-2xl p-8', 'description' => 'background military rounded'],
+];
+
 // theme
-$sql = "INSERT INTO themes (updated, name, description, version, xon) VALUES (NOW(), '$theme', 'Default theme', '$version', 0)";
+$sql = "INSERT INTO themes (updated, name, description, styles, version, xon) VALUES (NOW(), '$theme', 'Default theme', '".json_encode($styles)."', '$version', 0)";
 
 // templates
 $templates = array();

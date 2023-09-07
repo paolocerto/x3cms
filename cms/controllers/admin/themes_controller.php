@@ -133,6 +133,132 @@ class Themes_controller extends X3ui_controller
 		$this->response($msg);
 	}
 
+    /**
+	 * New / Edit theme styles
+	 *
+	 * @param   integer	$id theme
+	 * @return  void
+	 */
+	public function edit(int $id)
+	{
+		// load dictionaries
+		$this->dict->get_wordarray(array('form', 'themes', 'sections', 'articles'));
+
+		// get object
+		$mod = new Theme_model();
+        $item = $mod->get_by_id($id);
+
+		// build the form
+		$form_fields = new X4Form_core('theme/theme_edit');
+		$form_fields->id = $id;
+		$form_fields->item = $item;
+        $form_fields->tr = $this->decompose($item->styles, 'js_fields', 1);
+
+        $form_fields->js_fields = $this->js_fields;
+
+		// get the fields array
+		$fields = $form_fields->render();
+
+		// if submitted
+		if (X4Route_core::$post)
+		{
+			$e = X4Validation_helper::form($fields, 'editor');
+			if ($e)
+			{
+				$this->editing($id, $_POST);
+			}
+			else
+			{
+				$this->notice($fields);
+			}
+			die;
+		}
+
+        $view = new X4View_core('modal');
+        $view->title = _THEME_EDIT.' - '.$item->name;
+        $view->wide = 'md:w-2/3 lg:w-2/3';
+		// content
+		$view->content = new X4View_core('editor');
+
+		// form builder
+		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', 'enctype="multipart/form-data"',
+            '@click="submitForm(\'editor\')"');
+        $view->render(TRUE);
+	}
+
+    // fields for rule configurator
+    public $js_fields = [
+        ['name' => 'what', 'rule' => 'required', 'type' => 'text'],
+        ['name' => 'style', 'rule' => 'required', 'type' => 'text'],
+        ['name' => 'description', 'rule' => 'required', 'type' => 'text']
+    ];
+
+    /**
+	 * Return recorded selected options
+	 *
+	 * @param   string 	$str Encoded options
+     * @param   string  $fields name of the array with configuration
+	 * @param   boolean	$move With or without direction buttons
+	 * @param   boolean	$echo Return or echo
+	 * @return  string
+	 */
+	public function decompose(string $str = '', string $fields = '', int $move = 0, int $echo = 0, $data = '')
+	{
+        // load dictionaries
+		$this->dict->get_words();
+
+        $res = AdmUtils_helper::decompose($str, $this->$fields, $move, $echo);
+
+		if ($echo)
+		{
+		    // AJAX call
+		    echo $res;
+		}
+		else
+		{
+		    return $res;
+		}
+    }
+
+    /**
+	 * Register Edit
+	 *
+	 * @access	private
+	 * @param   integer $id item ID (if 0 then is a new item)
+	 * @param   array 	$_post _POST array
+	 * @return  void
+	 */
+	private function editing($id, $_post)
+	{
+		$msg = null;
+		// check permission
+		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'themes', $id, 3);
+		if (is_null($msg))
+		{
+			// handle _post
+			$post = array(
+                'styles' => $_post['styles']
+            );
+
+			$mod = new Theme_model();
+            // update
+			$result = $mod->update($id, $post);
+
+            // set message
+            $msg = AdmUtils_helper::set_msg($result);
+
+            // set what update
+            if ($result[1])
+            {
+                $msg->update = array(
+                    'element' => 'page',
+                    'url' => $_SERVER['HTTP_REFERER']
+                );
+            }
+		}
+		$this->response($msg);
+	}
+
 	/**
 	 * Uninstall a theme (use Ajax)
 	 *

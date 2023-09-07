@@ -944,6 +944,12 @@ function save_article(bid, content) {
 				$css[] = '#sn'.($index).'{color:'.$section['s']['fgcolor'].';}';
 			}
 
+            // theme style
+			if (isset($section['s']['style']) && !empty($section['s']['style']))
+			{
+				$class[] = $section['s']['style'];
+			}
+
             // class
 			if (isset($section['s']['class']) && !empty($section['s']['class']))
 			{
@@ -976,7 +982,7 @@ function save_article(bid, content) {
         {
             // default section[s]
             $section['s']['columns'] = 1;
-            $section['s']['width'] = 'fullwidth';
+            $section['s']['width'] = 'container mx-auto';
         }
 
         // get section content
@@ -987,9 +993,9 @@ function save_article(bid, content) {
         {
             // anchor + section
             $tmp = '<a name="a'.($index).'"></a>
-                <div class="section '.implode(' ',  $class).'" id="sn'.($index).'">
+                <section class="'.implode(' ',  $class).'" id="sn'.($index).'">
                 '.$content.'
-                </div>';
+                </section>';
         }
 		return $tmp;
 	}
@@ -1263,7 +1269,7 @@ function save_article(bid, content) {
                 $grid = self::tw_grid($columns);
 
                 // define span with subdivision
-                $class = self::tw_span($col);
+                $class = [self::tw_span($col)];
 
                 // open/reopen the grid
                 $tmp = '';
@@ -1284,32 +1290,39 @@ function save_article(bid, content) {
                 }
                 elseif ($c%$nc == 0)
                 {
+                    // close the grid for each row
+                    // is this a good idea???
                     $tmp = '</div>'.NL.'<div class="'.$grid.' pt-4 pb-2 gap-6 px-4">';
                 }
 
                 // handle settings
-                $style = '';
+                $colors = '';
                 if (isset($section['col_settings']))
                 {
                     if (isset($section['col_settings']['bg'.$c]) && $section['col_settings']['bg'.$c] != '')
                     {
-                        $style .= 'background:'.$section['col_settings']['bg'.$c].';';
+                        $colors .= 'background:'.$section['col_settings']['bg'.$c].';';
                     }
 
                     if (isset($section['col_settings']['fg'.$c]) && $section['col_settings']['fg'.$c] != '')
                     {
-                        $style .= 'color:'.$section['col_settings']['fg'.$c];
+                        $colors .= 'color:'.$section['col_settings']['fg'.$c];
+                    }
+
+                    if (isset($section['col_settings']['style'.$c]))
+                    {
+                        $class[] = $section['col_settings']['style'.$c];
                     }
 
                     if (isset($section['col_settings']['class'.$c]))
                     {
-                        $class .= $section['col_settings']['class'.$c];
+                        $class[] = $section['col_settings']['class'.$c];
                     }
                 }
 
                 // open the columns
                 // we add padding to mantain contents not too near the end of the screen
-                $tmp .= '<div class="'.$class.'" style="'.$style.'">';
+                $tmp .= '<article class="'.implode(' ', $class).'" style="'.$colors.'">';
 
                 // scripts
                 $js = '';
@@ -1319,7 +1332,7 @@ function save_article(bid, content) {
                 }
 
                 // add the column and close it
-                $txt .= $tmp.$content.$module.$js.'</div>';
+                $txt .= $tmp.$content.$module.$js.'</article>';
                 $c++;
             }
 		}

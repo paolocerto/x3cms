@@ -22,10 +22,11 @@ class Section_model extends X4Model_core
 		'fgcolor' => '#444444',
 		'img_h' => '',		// horizontal image
 		'img_v' => '',		// vertical image
-		'width' => 100,
+		'width' => 'container mx-auto',
 		'height' => 'free',	// free: the section will have the height of the contents, fullscreen: the height will be strecthed to be fullscreen
-		'class' => '',		// useful to link a section to a set of CSS rules
-		'col_settings' => ['bg0' => '', 'fg0' => '', 'class0' => '', 'bg1' => '', 'fg1' => '', 'class1' => '']
+		'style' => '',
+        'class' => '',		// useful to link a section to a set of CSS rules
+		'col_settings' => ['bg0' => '', 'fg0' => '', 'style0' => '', 'class0' => '', 'bg1' => '', 'fg1' => '', 'style1' => '', 'class1' => '']
 	);
 
 	/**
@@ -88,6 +89,40 @@ class Section_model extends X4Model_core
 			FROM sections s
 			WHERE s.xon = 1 AND s.id_page = '.$id_page.'
 			ORDER BY s.progressive ASC');
+	}
+
+    /**
+	 * Get theme styles by id_page
+	 *
+	 * @param   integer	$id_page
+	 * @return  mixed
+	 */
+	public function get_theme_styles(int $id_page)
+	{
+		$styles = $this->db->query_var('SELECT th.styles
+					FROM themes th
+                    JOIN templates t ON t.id_theme = th.id
+					JOIN pages p ON p.tpl = t.name
+					JOIN areas a ON a.id = p.id_area AND a.id_theme = t.id_theme
+					WHERE p.id = '.$id_page);
+
+        $res = ['sections' => [], 'articles' => []];
+        if (!empty($styles))
+        {
+            $tmp = json_decode($styles);
+            foreach($tmp as $i)
+            {
+                if ($i->what == 'section')
+                {
+                    $res['sections'][$i->style] = $i->description;
+                }
+                else
+                {
+                    $res['articles'][$i->style] = $i->description;
+                }
+            }
+        }
+        return $res;
 	}
 
 	/**
@@ -204,36 +239,6 @@ class Section_model extends X4Model_core
 	{
 		return $this->db->single_exec('DELETE FROM sections WHERE id_area = '.$id_area);
 	}
-
-	/**
-	 * Get sections by page
-	 * Join with themes, areas and pages tables
-	 *
-	 * @param   object	$page Page object
-	 * @return  array	array of section objects
-	 * /
-	public function get_sections($page)
-	{
-		// get how many sections there are in the page template
-		$n = $this->db->query_var('SELECT t.sections
-			FROM templates t
-			JOIN themes th ON th.id = t.id_theme
-			JOIN areas a ON a.id_theme = th.id
-			JOIN pages p ON p.id_area = a.id
-			WHERE p.id = '.intval($page->id).' AND t.name = '.$this->db->escape($page->tpl));
-
-		$a = array_fill(1, $n, array());
-		foreach ($a as $k => $v)
-		{
-			// get section content
-			$tmp = $this->get_by_page($page->id, $k);
-
-			if ($tmp)
-				$a[$k] = $tmp;
-		}
-		return $a;
-	}
-	*/
 
 	/**
 	 * Get section contents

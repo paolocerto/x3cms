@@ -25,7 +25,7 @@ else
             <tr>
                 <th class="w-4">'._AREA.'</th>
                 <th class="text-left pl-4">'._THEME.'</th>
-                <th class="w-52">'._ACTIONS.'</th>
+                <th class="w-60">'._ACTIONS.'</th>
             </tr>
         </thead>
         <tbody>';
@@ -43,6 +43,12 @@ else
 
             if (($i->level > 2 && $i->xlock == 0) || $i->level >= 3)
             {
+                if ($i->id > 1)
+                {
+                    // not for admin theme
+                    $actions .= AdmUtils_helper::link('edit', 'themes/edit/'.$i->id);
+                }
+
                 $actions .= AdmUtils_helper::link('xon', 'themes/set/xon/'.$i->id.'/'.(($i->xon+1)%2), $statuses);
 
                 if ($i->level >= 4)

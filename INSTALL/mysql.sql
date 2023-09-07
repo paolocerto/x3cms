@@ -132,13 +132,13 @@ CREATE TABLE IF NOT EXISTS `articles` (
 --
 
 INSERT INTO `articles` (`updated`, `bid`, `id_area`, `lang`, `code_context`, `name`, `id_page`, `id_editor`, `date_in`, `date_out`, `content`, `module`, `param`, `xlock`, `xon`) VALUES
-(NOW(), '3bdda9ed1e2a332550bf2783e4a3a70b', 2, 'it', 1, 'benvenuti', 1, 1, UNIX_TIMESTAMP(), 0, '<h1>Benvenuti nel CMS X3</h1><p>Se visualizzate questa pagina il vostro Content Management System X3 &egrave; stato correttamente installato e configurato.<br>Per accedere al pannello di amministrazione aggiungete <strong>/admin</strong> all\'URL nella barra dell\'indirizzo.<br>Buon divertimento</p><p><strong>X3 CMS</strong></p>', 'x4get_by_key', 'cosa_fare|no_tags', 0, 1),
+(NOW(), '3bdda9ed1e2a332550bf2783e4a3a70b', 2, 'it', 1, 'benvenuti', 1, 1, UNIX_TIMESTAMP(), 0, '<h1>Benvenuti nel CMS X3</h1><p>Se visualizzate questa pagina il vostro Content Management System X3 &egrave; stato correttamente installato e configurato.<br>Per accedere al pannello di amministrazione aggiungete <strong>/admin</strong> all\'URL nella barra dell\'indirizzo.<br>Buon divertimento</p><p><strong>X3 CMS</strong></p><h2 class="mt-6">Cosa fare ora</h2>', 'x4get_by_key', 'cosa_fare|no_tags', 0, 1),
 (NOW(), '66d18c936a9cfe9d82417e9b3af69e3f', 2, 'it', 1, 'mappa sito', 4, 1, UNIX_TIMESTAMP(), 0, '<h1>Mappa del sito</h1>', '', '', 0, 1),
 (NOW(), '01415ff7588434f6797bf8869d58b2d6', 2, 'it', 1, 'risultato ricerca', 5, 1, UNIX_TIMESTAMP(), 0, '<h1>Risultato della ricerca</h1>', '', '', 0, 1),
 (NOW(), '096d1fda54d98e4dcd5924bf34e46b92', 2, 'it', 1, 'informazioni', 6, 1, UNIX_TIMESTAMP(), 0, '<h1>Informazioni</h1><p>X3 CMS è uno strumento semplice per grandi progetti: <strong>semplice è meglio</strong> è la regola principale del nostro lavoro.<br>Con questa nuova versione del CMS X3 abbiamno riscritto quasi tutto il codice per renderlo ancora più semplice e potente.</p><p>Altre informazioni e documentazione sul CMS X3 al sito <a href="http://www.x3cms.net" title="Sito del progetto X3 CMS">www.x3cms.net</a>.</p>', '', '', 0, 1),
 (NOW(), '9c7c7a6472f843dea1c6148935c78c77', 2, 'it', 1, 'sito offline', 7, 1, UNIX_TIMESTAMP(), 0, '<h1>Sito in manutenzione</h1><p>Ci scusiamo per il disagio.</p>', '', '', 0, 1),
 
-(NOW(), '9d2aa0933a39e7579dd68557dcb8324a', 2, 'en', 1, 'welcome', 8, 1, UNIX_TIMESTAMP(), 0, '<h1>Welcome to X3 CMS</h1><p>If you see this page your Content Management System X3 was correctly installed and configured.<br>To access to the control panel add <strong>/admin</strong> to the URL on the address bar.<br>Enjoy</p><p><strong>X3 CMS</strong></p>', 'x4get_by_key', 'what_to_do|no_tags', 0, 1),
+(NOW(), '9d2aa0933a39e7579dd68557dcb8324a', 2, 'en', 1, 'welcome', 8, 1, UNIX_TIMESTAMP(), 0, '<h1>Welcome to X3 CMS</h1><p>If you see this page your Content Management System X3 was correctly installed and configured.<br>To access to the control panel add <strong>/admin</strong> to the URL on the address bar.<br>Enjoy</p><p><strong>X3 CMS</strong></p><h2 class="mt-6">What to do now</h2>', 'x4get_by_key', 'what_to_do|no_tags', 0, 1),
 (NOW(), '4fbb483bb2abca4cefe1818eddb3c6b5', 2, 'en', 1, 'site map', 11, 1, UNIX_TIMESTAMP(), 0, '<h1>Site map</h1>', '', '', 0, 1),
 (NOW(), '682146f9fc27f463cd874d5bd14a618a', 2, 'en', 1, 'search result', 12, 1, UNIX_TIMESTAMP(), 0, '<h1>Search result</h1>', '', '', 0, 1),
 (NOW(), 'c4c95c36570d5a8834be5e88e2f0f6b2', 2, 'en', 1, 'information', 13, 1, UNIX_TIMESTAMP(), 0, '<h1>Information</h1><p>X3 CMS aims to be a simple tool to build great projects: <strong>simple is better</strong> is the main rule of our work.<br>With this new release of X3 CMS we rewritten almost all the code to be even more simple and powerful.</p><p>More information and documentation at <a href="http://www.x3cms.net" title="Project X3 CMS site">www.x3cms.net</a>.</p>', '', '', 0, 1),
@@ -719,6 +719,8 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'admin', 'sections', '_SECTION_FULL_WIDTH', 'larghezza piena', 0, 1),
 (NOW(), 'it', 'admin', 'sections', '_SECTION_FIXED_WIDTH', 'larghezza fissa da impostazioni del tema', 0, 1),
 (NOW(), 'it', 'admin', 'sections', '_SECTION_HEIGHT', 'Altezza: libera o fullscreen', 0, 1),
+(NOW(), 'it', 'admin', 'sections', '_SECTION_STYLE', 'Stile dal tema', 0, 1),
+(NOW(), 'it', 'admin', 'sections', '_SECTION_STYLE_MSG', 'seleziona uno stile dal tema', 0, 1),
 (NOW(), 'it', 'admin', 'sections', '_SECTION_CLASS', 'una o più classi CSS per la sezione', 0, 1),
 (NOW(), 'it', 'admin', 'sections', '_SECTION_CLASS_MSG', 'inserire classi CSS del tema', 0, 1),
 
@@ -881,6 +883,10 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'admin', 'themes', '_INSTALLABLE_THEMES', 'Temi installabili', 0, 1),
 (NOW(), 'it', 'admin', 'themes', '_UNINSTALL_THEME', 'Disinstalla tema', 0, 1),
 (NOW(), 'it', 'admin', 'themes', '_ARE_YOU_SURE_UNINSTALL', 'Sei sicuro di voler disinstallare il tema', 0, 1),
+(NOW(), 'it', 'admin', 'themes', '_THEME_WHAT', 'Sezione o articolo', 0, 1),
+(NOW(), 'it', 'admin', 'themes', '_THEME_EDIT', 'Modifica stili del tema', 0, 1),
+(NOW(), 'it', 'admin', 'themes', '_THEME_STYLE', 'Stile del tema', 0, 1),
+(NOW(), 'it', 'admin', 'themes', '_THEME_STYLE_MSG', 'inserire classi presenti nel CSS del tema o nel framework CSS usato', 0, 1),
 
 
 (NOW(), 'it', 'admin', 'templates', '_TEMPLATE_LIST', 'Elenco template', 0, 1),
@@ -1367,8 +1373,10 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'admin', 'sections', '_SECTION_FULL_WIDTH', 'full width', 0, 1),
 (NOW(), 'en', 'admin', 'sections', '_SECTION_FIXED_WIDTH', 'fixed width from theme settings', 0, 1),
 (NOW(), 'en', 'admin', 'sections', '_SECTION_HEIGHT', 'Height: free or fullscreen', 0, 1),
+(NOW(), 'en', 'admin', 'sections', '_SECTION_STYLE', 'Theme style', 0, 1),
+(NOW(), 'en', 'admin', 'sections', '_SECTION_STYLE_MSG', 'select one style from the theme', 0, 1),
 (NOW(), 'en', 'admin', 'sections', '_SECTION_CLASS', 'CSS classe for section', 0, 1),
-(NOW(), 'en', 'admin', 'sections', '_SECTION_CLASS_MSG', 'insert one or more CSS classes by the theme', 0, 1),
+(NOW(), 'en', 'admin', 'sections', '_SECTION_CLASS_MSG', 'insert one or more CSS classes', 0, 1),
 
 (NOW(), 'en', 'admin', 'sections', '_COMPOSE_EDITOR', 'Page composer', 0, 1),
 (NOW(), 'en', 'admin', 'sections', '_ARTICLES_LIST', 'Available articles', 0, 1),
@@ -1528,6 +1536,10 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'admin', 'themes', '_INSTALLABLE_THEMES', 'Installable themes', 0, 1),
 (NOW(), 'en', 'admin', 'themes', '_UNINSTALL_THEME', 'Uninstall theme', 0, 1),
 (NOW(), 'en', 'admin', 'themes', '_ARE_YOU_SURE_UNINSTALL', 'Are you sure to uninstall the theme', 0, 1),
+(NOW(), 'en', 'admin', 'themes', '_THEME_WHAT', 'Section or article', 0, 1),
+(NOW(), 'en', 'admin', 'themes', '_THEME_EDIT', 'Edit theme styles', 0, 1),
+(NOW(), 'en', 'admin', 'themes', '_THEME_STYLE', 'Style', 0, 1),
+(NOW(), 'en', 'admin', 'themes', '_THEME_STYLE_MSG', 'insert classes from theme CSS or from CSS framework', 0, 1),
 
 
 (NOW(), 'en', 'admin', 'templates', '_TEMPLATE_LIST', 'Templates list', 0, 1),
@@ -2660,25 +2672,25 @@ CREATE TABLE IF NOT EXISTS `param` (
 --
 
 INSERT INTO `param` (`updated`, `id_area`, `xrif`, `name`, `description`, `xtype`, `xvalue`, `required`, `xlock`, `xon`) VALUES
-(NOW(), 0, 'site', 'notices', 'Enable/disable notices', '0|1', '1', 1, 0, 1),
-(NOW(), 0, 'site', 'online', 'Enable/disable online editing', '0|1', '0', 1, 0, 1),
-(NOW(), 0, 'site', 'inline', 'Enable/disable inline editing', '0|1', '0', 1, 0, 1),
-(NOW(), 0, 'site', 'debug', 'Enable/disable debug', '0|1', '1', 1, 0, 1),
-(NOW(), 0, 'site', 'devel', 'Enable/disable development state', '0|1', '1', 1, 0, 1),
-(NOW(), 0, 'site', 'logs', 'Enable/disable logs', '0|1', '0', 1, 0, 1),
-(NOW(), 0, 'site', 'multilanguage', 'Enable/disable multilingual site', '0|1', '1', 1, 0, 1),
-(NOW(), 0, 'site', 'multiarea', 'Enable/disable multiarea site', '0|1', '1', 1, 0, 1),
-(NOW(), 0, 'site', 'cache', 'Enable/disable page caching', '0|1', '0', 1, 0, 1),
-(NOW(), 0, 'site', 'cache_time', 'Caching time (seconds)', 'INTEGER', '12000', 1, 0, 1),
-(NOW(), 0, 'site', 'advanced_editing', 'Enable/disable Advanced Editing', '0|1', '0', 1, 0, 1),
-(NOW(), 0, 'site', 'autorefresh', 'Enable/disable autorefresh articles', '0|1', '1', 1, 0, 1),
-(NOW(), 0, 'site', 'date_format', 'Date format', 'TEXT', 'F, d Y', 1, 0, 1),
-(NOW(), 0, 'site', 'pp', 'Items per page', 'INTEGER', '20', 1, 0, 1),
-(NOW(), 0, 'site', 'max_doc', 'Max uploading documents size in KB', 'INTEGER', '1024', 1, 0, 1),
-(NOW(), 0, 'site', 'max_img', 'Max uploading images size in KB', 'INTEGER', '1024', 1, 0, 1),
-(NOW(), 0, 'site', 'max_w', 'Max uploading image width in px', 'INTEGER', '1920', 1, 0, 1),
-(NOW(), 0, 'site', 'max_h', 'Max uploading image height in px', 'INTEGER', '1080', 1, 0, 1),
-(NOW(), 0, 'site', 'mail', 'Default web site email', 'EMAIL', 'ZZZAMAIL', 1, 0, 1);
+(NOW(), 1, 'site', 'notices', 'Enable/disable notices', '0|1', '1', 1, 0, 1),
+(NOW(), 1, 'site', 'online', 'Enable/disable online editing', '0|1', '0', 1, 0, 1),
+(NOW(), 1, 'site', 'inline', 'Enable/disable inline editing', '0|1', '0', 1, 0, 1),
+(NOW(), 1, 'site', 'debug', 'Enable/disable debug', '0|1', '1', 1, 0, 1),
+(NOW(), 1, 'site', 'devel', 'Enable/disable development state', '0|1', '1', 1, 0, 1),
+(NOW(), 1, 'site', 'logs', 'Enable/disable logs', '0|1', '0', 1, 0, 1),
+(NOW(), 1, 'site', 'multilanguage', 'Enable/disable multilingual site', '0|1', '1', 1, 0, 1),
+(NOW(), 1, 'site', 'multiarea', 'Enable/disable multiarea site', '0|1', '1', 1, 0, 1),
+(NOW(), 1, 'site', 'cache', 'Enable/disable page caching', '0|1', '0', 1, 0, 1),
+(NOW(), 1, 'site', 'cache_time', 'Caching time (seconds)', 'INTEGER', '12000', 1, 0, 1),
+(NOW(), 1, 'site', 'advanced_editing', 'Enable/disable Advanced Editing', '0|1', '0', 1, 0, 1),
+(NOW(), 1, 'site', 'autorefresh', 'Enable/disable autorefresh articles', '0|1', '1', 1, 0, 1),
+(NOW(), 1, 'site', 'date_format', 'Date format', 'TEXT', 'F, d Y', 1, 0, 1),
+(NOW(), 1, 'site', 'pp', 'Items per page', 'INTEGER', '20', 1, 0, 1),
+(NOW(), 1, 'site', 'max_doc', 'Max uploading documents size in KB', 'INTEGER', '1024', 1, 0, 1),
+(NOW(), 1, 'site', 'max_img', 'Max uploading images size in KB', 'INTEGER', '1024', 1, 0, 1),
+(NOW(), 1, 'site', 'max_w', 'Max uploading image width in px', 'INTEGER', '1920', 1, 0, 1),
+(NOW(), 1, 'site', 'max_h', 'Max uploading image height in px', 'INTEGER', '1080', 1, 0, 1),
+(NOW(), 1, 'site', 'mail', 'Default web site email', 'EMAIL', 'ZZZAMAIL', 1, 0, 1);
 
 
 -- --------------------------------------------------------
@@ -2856,6 +2868,7 @@ CREATE TABLE IF NOT EXISTS `themes` (
   `name` varchar(128) NOT NULL,
   `description` varchar(255) NOT NULL,
   `version` varchar(16) NOT NULL,
+  `styles` text NOT NULL,
   `xlock` tinyint(1) NOT NULL,
   `xon` tinyint(1) NOT NULL,
   PRIMARY KEY  (`id`)
@@ -2865,9 +2878,9 @@ CREATE TABLE IF NOT EXISTS `themes` (
 -- Dumping data for table `themes`
 --
 
-INSERT INTO `themes` (`id`, `updated`, `name`, `description`, `version`, `xlock`, `xon`) VALUES
-(1, NOW(), 'admin', 'Admin - default Admin theme', '3', 0, 1),
-(2, NOW(), 'default', 'Default - default site theme', '1.4', 0, 1);
+INSERT INTO `themes` (`id`, `updated`, `name`, `description`, `styles`, `version`, `xlock`, `xon`) VALUES
+(1, NOW(), 'admin', 'Admin - default Admin theme', '', '3', 0, 1),
+(2, NOW(), 'default', 'Default - default site theme', '[{"what":"section","style":"bg-fucsia","description":"background fucsia"},{"what":"section","style":"bg-orange","description":"background orange"},{"what":"section","style":"bg-petroleum","description":"background petroleum"},{"what":"section","style":"bg-violet","description":"background violet"},{"what":"section","style":"bg-military","description":"background military"},{"what":"section","style":"fucsium","description":"gradient fucsia -> petroleum"},{"what":"section","style":"orangium","description":"gradient orange -> petroleum"},{"what":"section","style":"fucsange","description":"gradient fucsia -> orange"},{"what":"article","style":"overlay1 rounded-2xl p-8","description":"ultra lightgray transparent rounded"},{"what":"article","style":"overlay2 rounded-2xl p-8","description":"lightgray transparent rounded"},{"what":"article","style":"overlay3 rounded-2xl p-8","description":"gray transparent rounded"},{"what":"article","style":"border-2 border-neutral-200 rounded-2xl p-8","description":"lightgray bordered rounded"},{"what":"article","style":"border-2 border-neutral-200 p-8","description":"lightgray bordered not-rounded"},{"what":"article","style":"bg-fucsia rounded-2xl p-8","description":"background fucsia rounded"},{"what":"article","style":"bg-orange rounded-2xl p-8","description":"background orange rounded"},{"what":"article","style":"bg-petroleum rounded-2xl p-8","description":"background petroleum rounded"},{"what":"article","style":"bg-violet rounded-2xl p-8","description":"background violet rounded"},{"what":"article","style":"bg-military rounded-2xl p-8","description":"background military rounded"},{"what":"article","style":"bg-military p-8","description":"background military squared"}]', '1.4', 0, 1);
 
 -- --------------------------------------------------------
 
