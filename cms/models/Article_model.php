@@ -113,9 +113,9 @@ class Article_model extends X4Model_core
 				$a = trim($i);
 				if (!empty($a))
                 {
-					$w[] = 'a.name LIKE '.$this->db->escape('%'.$a.'%').' OR
-						a.content LIKE '.$this->db->escape('%'.$a.'%'). ' OR
-						a.tags LIKE '.$this->db->escape('%'.$a.'%');
+					$w[] = 'name LIKE '.$this->db->escape('%'.$a.'%').' OR
+						content LIKE '.$this->db->escape('%'.$a.'%'). ' OR
+						tags LIKE '.$this->db->escape('%'.$a.'%');
                 }
 			}
 
