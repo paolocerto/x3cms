@@ -1,7 +1,7 @@
 .htaccess
 cms/config/*
-#cms/files
-#cms/files/*
+cms/files
+cms/files/*
 
 # Global to ignore
 DOCS/*
