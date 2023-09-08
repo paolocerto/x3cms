@@ -607,7 +607,7 @@ switch($step)
 				$domain = get_domain();
 
 				// set configuration
-				$search = array("define('HASH', 'md5');", "'db_host' => 'localhost',", "'db_socket' => '',", "'db_name' => 'x3cms',", "'db_user' => 'root',", "'db_pass' => 'root',", "'TIMEZONE', 'timezone'");
+				$search = array("define('HASH', 'sha1');", "'db_host' => 'localhost',", "'db_socket' => '',", "'db_name' => 'x3cms',", "'db_user' => 'root',", "'db_pass' => 'root',", "'TIMEZONE', 'timezone'");
 				$replace = array("define('HASH', '".$_POST['hash']."');", "'db_host' => '".$_POST['dbhost']."',", "'db_socket' => '".$_POST['dbsocket']."',", "'db_name' => '".$_POST['dbname']."',", "'db_user' => '".$_POST['dbuser']."',", "'db_pass' => '".$_POST['dbpass']."',", "'TIMEZONE', '".$_POST['tzone']."'");
 				$config = str_replace($search, $replace, file_get_contents(FINAL_ROOT.'cms/config/config.php'));
 				$check_config = file_put_contents(FINAL_ROOT.'cms/config/config.php', $config);
@@ -670,7 +670,7 @@ switch($step)
             </div>';
 		}
 
-		$hashes = array('md5', 'sha1', 'tiger192,4', 'sha512', 'whirlpool');
+		$hashes = array('sha1', 'tiger192,4', 'sha512', 'whirlpool');
 		$hash_options = '';
 		foreach ($hashes as $i)
 		{
