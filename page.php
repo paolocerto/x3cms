@@ -66,9 +66,13 @@ define('SPATH', PATH.$system_path);
 define('APATH', PATH.$app_path);
 
 /**
- * Define DOM: a code based upon domain name
+ * Define DOMAIN: a code based upon domain name
  */
-define('_DOMAIN_',  $_SERVER['HTTP_HOST']);   //$_SERVER['SERVER_NAME']);
+// X3 cli doesn't handle HTTP_HOST
+if (isset($_SERVER['HTTP_HOST']))
+{
+    define('_DOMAIN_',  $_SERVER['HTTP_HOST']);
+}
 
 /**
  * Define FFPATH: the path to file folder

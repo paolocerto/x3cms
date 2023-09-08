@@ -11,13 +11,15 @@
 
 // X3CMS cli
 
+$version = '0.2';
+
 // get arguments
 if (sizeof($argv) == 1 || $argv[1] == '-h' || $argv[1] == '--help')
 {
     define('NL', "\n");
 
     // print usage
-    echo 'X3CMS Command Line'.NL.'Version 0.1'.NL.NL.'Usage:'.NL;
+    echo 'X3CMS Command Line'.NL.'Version '.$version.NL.NL.'Usage:'.NL;
 
     // Options
     echo 'create: to create controllers, models, views and dictionaries'.NL.

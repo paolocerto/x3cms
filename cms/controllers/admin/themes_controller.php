@@ -179,7 +179,7 @@ class Themes_controller extends X3ui_controller
         $view->wide = 'md:w-2/3 lg:w-2/3';
 		// content
 		$view->content = new X4View_core('editor');
-
+        $view->content->msg = _THEME_EDIT_MSG;
 		// form builder
 		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', 'enctype="multipart/form-data"',
             '@click="submitForm(\'editor\')"');
