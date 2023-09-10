@@ -5,12 +5,17 @@ X3CMS README.md
 
 X3 CMS
 Your Next Content Management System: X3 CMS is a CMS PHP based, is easy to use,
-W3C compliant, accessible, support themes and plugins. Since 0.4 version the
+W3C compliant, accessible, it supports themes and plugins. Since 0.4 version the
 engine is a Php MVC Framework derived from Kohana (http://kohanaphp.com).
 
 ---
 
 VERSION 0.9.99 STABLE (September 2023)
+
+X3 CMS is now an old project: I learnt a lot working on it.
+There are still few web applications built with it. One of them lately required a refresh so I decided to refresh the repo as a tribute.
+The PHP code is old style but many ideas in it were good and allowed to create complex web applications that run today.
+With a bit of new (Alpine.js and TailwindCSS) it still looks great.
 
 Which news?
     - moved to TailwindCSS and Alpine.js
