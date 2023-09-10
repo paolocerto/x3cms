@@ -57,7 +57,7 @@ define('COOKIE', 'your_cookie_name');	// set your cookie name
 define('SITE', 'sitekey');				// site key used for checking login status: use an unique key to distinguish between different sites in the same domain
 
 // security
-define('HASH', 'md5');					// hash method (md5, sha1, sha512 or whatever you want, up to 128 char) DO NOT CHANGE AFTER INSTALLATION!
+define('HASH', 'sha1');					// hash method (sha1, sha512 or whatever you want, up to 128 char) DO NOT CHANGE AFTER INSTALLATION!
 
 define('SALT', 'aLongSecretComplexString');
 

@@ -532,7 +532,7 @@ switch($step)
 	case 4:
 		// CHECK CONFIG
 		$fields = array();
-		$fields['hash'] = array('label' => 'Encryption method', 'value' =>'MD5');
+		$fields['hash'] = array('label' => 'Encryption method', 'value' =>'SHA1');
 		$fields['dbhost'] = array('label' => 'Database host', 'value' => 'localhost');
 		$fields['dbsocket'] = array('label' => 'Socket', 'value' => '');
 		$fields['dbname'] = array('label' => 'Database name', 'value' => '');
