@@ -17,7 +17,7 @@ defined('ROOT') or die('No direct script access.');
     </div>
 
     <div class="flex-auto px-6 py-3 text-sm text-gray-600 ">
-        <div class="flex justify-end space-x-2">
+        <div class="text-right space-x-2">
             <?php echo $actions ?>
         </div>
     </div>

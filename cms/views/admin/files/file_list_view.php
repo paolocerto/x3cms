@@ -156,12 +156,12 @@ if (!empty($items[0]))
                 <div class="flex-auto text-sm p-4 overflow-x-hidden">
                     <a href="'.FPATH.$what[$i->xtype].'/'.$i->name.'" title="'.$i->alt.'">'.$i->name.'</a><br />
                     <span class="text-xs">'.$size.$filesize.'</span><br />
-                    <div class="acenter pad-top">'.$thumb.'</div>
+                    <div class="text-center pt-4">'.$thumb.'</div>
                     <p>caption: '.$i->alt.'</p>
                 </div>
                 <div class="flex-none w-14 bg px-3 pt-3 text-center rounded-r leading-8">
                     '.$actions.'
-                    <input type="checkbox" class="bulkable" x-model="bulk" value="'.$i->id.'" />
+                    <input type="checkbox" class="bulkable p-0" x-model="bulk" value="'.$i->id.'" />
                 </div>
             </div>';
 	}

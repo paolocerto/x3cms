@@ -42,7 +42,7 @@ $xdata = '{
 
 ?>
 <sidebar id="sidebar" class="flex-none w-18 bg-gray-300 px-3 pt-3 leading-8" x-data="<?php echo $xdata ?>">
-    <a href="javascript:void(0)" class="x-cloak pointer" @click="open=!open;close()" title="Show/hide text">
+    <a href="javascript:void(0)" x-cloak  class="pointer" @click="open=!open;close()" title="Show/hide text">
         <i x-show="!open" class="fa-solid fa-lg fa-fw fa-circle-chevron-right"></i>
         <i x-show="open" class="fa-solid fa-lg fa-fw fa-circle-chevron-left"></i>
     </a>
@@ -75,7 +75,7 @@ foreach ($menus['sidebar'] as $k => $v)
             case 'sites':
                 echo '<a @click="settings=!settings;toggle()"
                     title="'._SETTINGS.'"><i class="fa-solid fa-lg fa-fw fa-gear"></i> <span x-show="open">'._SETTINGS.'</span></a><br>
-                    <div x-show="settings" class="pl-8 font-sm leading-5 mb-4"><ul>';
+                    <div x-show="settings" class="pl-3 text-sm leading-5 mb-4"><ul style="list-style:none">';
                 $open = true;
                 break;
             case 'modules':
@@ -88,7 +88,7 @@ foreach ($menus['sidebar'] as $k => $v)
                 else
                 {
                     echo '<a @click="plugins=!plugins;toggle()" title="'._PLUGINS.'"><i class="fa-solid fa-lg fa-fw fa-plug"></i> <span x-show="open">'._PLUGINS.'</span></a><br>
-                        <div x-show="plugins" class="pl-8 font-sm leading-5 mb-4"><ul>
+                        <div x-show="plugins" class="pl-3 text-sm leading-5 mb-4"><ul style="list-style:none">
                             <li><a @click="$dispatch(\'pager\', \''.BASE_URL.'modules\');" title="'._ALL_PLUGINS.'">'._ALL_PLUGINS.'</a></li>';
                         $open = true;
                 }
