@@ -79,7 +79,7 @@ if (sizeof($authors) > 1)
 }
 
 echo '<div class="col-span-2">
-        <label for="xstr">Search by text</label>
+        <label for="xstr">'._SEARCH_BY_TEXT.'</label>
         <input
             type="text"
             id="xstr"
