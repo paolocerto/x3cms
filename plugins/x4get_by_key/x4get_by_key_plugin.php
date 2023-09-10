@@ -51,19 +51,18 @@ class X4get_by_key_plugin extends X4Plugin_core implements X3plugin
 			: false;
 
         $params = explode('|', $param);
+        $mod = new X4get_by_key_model();
 		if (!empty($param))
 		{
             $this->dict->get_wordarray(array('x4get_by_key'));
-
 			if ($params[1] == 'with_tags' && $tag)
 			{
-				$mod = new X4get_by_key_model();
 				$items = X4Pagination_helper::paginate($mod->get_articles_by_key_and_tag($page->id_area, $page->lang, $params[0], $tag), $pp);
 				$out .= '<h3 class="mt-6">'._TAG.': '.htmlentities($tag).'  <a class="text-sm" href="'.BASE_URL.$page->url.'" title="'._X4GET_BY_KEY_UNFILTER.'">'._X4GET_BY_KEY_UNFILTER.'</a></h3>';
 			}
 			else
 			{
-				$items = X4Pagination_helper::paginate($this->site->get_articles_by_key($page->id_area, $page->lang, $params[0]), $pp);
+				$items = X4Pagination_helper::paginate($mod->get_articles_by_key($page->id_area, $page->lang, $params[0]), $pp);
 			}
 
 			// use pagination

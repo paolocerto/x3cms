@@ -126,7 +126,14 @@ class X4get_by_key_model extends X4Model_core
 	 */
 	public function get_articles_by_key_and_tag($id_area, $lang, $key, $tag)
 	{
-		return $this->db->query('SELECT a.* FROM
+        // check APC
+		$c = (APC)
+            ? apcu_fetch(SITE.'akeytag'.$id_area.$lang.$key.$tag)
+            : array();
+
+        if (empty($c))
+        {
+            $c = $this->db->query('SELECT a.* FROM
 				(
 				SELECT *
 				FROM articles
@@ -135,5 +142,53 @@ class X4get_by_key_model extends X4Model_core
 			WHERE a.xkeys = '.$this->db->escape($key).' AND a.tags LIKE '.$this->db->escape('%'.$tag.'%').'
 			GROUP BY a.bid
 			ORDER BY a.date_in DESC, a.id DESC');
+
+			if (APC)
+			{
+				apcu_store(SITE.'akeytag'.$id_area.$lang.$key.$tag, $c);
+			}
+		}
+		return $c;
+	}
+
+    /**
+	 * Get articles by key
+	 *
+	 * @param integer	area ID
+	 * @param string	lang
+	 * @param string	article key
+	 * @return array	array of objects
+	 */
+	public function get_articles_by_key($id_area, $lang, $key)
+	{
+	    // check APC
+		$c = (APC)
+			? apcu_fetch(SITE.'akey'.$id_area.$lang.$key)
+			: array();
+
+		if (empty($c))
+		{
+		    $c = $this->db->query('SELECT a.*
+                FROM articles a
+                JOIN (
+                    SELECT MAX(id) AS id, bid
+                    FROM articles
+                    WHERE
+                        id_area = '.intval($id_area).' AND
+                        lang = '.$this->db->escape($lang).' AND
+                        xon = 1 AND
+                        date_in <= NOW() AND
+                        (date_out = 0 OR date_out >= NOW())
+                    GROUP BY bid
+                    ) b ON b.id = a.id AND b.bid = a.bid
+                WHERE a.xkeys = '.$this->db->escape($key).'
+                ORDER BY a.date_in DESC, a.id DESC');
+
+			if (APC)
+			{
+				apcu_store(SITE.'akey'.$id_area.$lang.$key, $c);
+			}
+		}
+		return $c;
 	}
 }
