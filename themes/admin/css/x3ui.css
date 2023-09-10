@@ -165,11 +165,6 @@ input[type=range]::-webkit-slider-runnable-track {
 	cursor: pointer;
   }
 
-
-/*
-label input.check.inline {float:left;width:1.5em;height:1.5em;margin:.2em .5em .5em 1.5em;}
-label input.check.inline.first {margin:.2em .5em .5em 0;}
-*/
 .suggestion {display:block;font-size: 0.75rem;line-height: 1rem;margin-top:.3em}
 
 /* BUTTONS */
@@ -211,8 +206,8 @@ h2 + h3 {font-weight:300 !important;}
 
 h4 {font-size:1.4em !important;line-height:1.3em;}
 
-ul {margin:.5em 0;list-style:disc;list-style-position: inside !important;}
-ol {margin:.5em 0;list-style:decimal !important;list-style-position: inside !important;}
+ul {margin:.5em 0 !important;list-style:disc;list-style-position: inside !important;}
+ol {margin:.5em 0 !important;list-style:decimal !important;list-style-position: inside !important;}
 ol.none {list-style:none !important;}
 
 img.thumb {max-width:150px}
@@ -234,29 +229,12 @@ td:not(:first-child) {border-left:1px solid #d1d5db;}
 
 tr:nth-child(even) {background-color: #e5e7eb;}
 
-
-
-/* SORTABLE */
-ul.sortable li {border-bottom:1px solid #d1d5db;}
-ul.sortable li:first-child {border-bottom:1px solid #9ca3af;text-align:center;background:#d1d5db;line-height:2.2em;border-top-left-radius: 0.3rem;border-top-right-radius: 0.3rem;}
-ul.sortable li:nth-child(even) {background-color: #e5e7eb;}
-ul.sortable li table {margin:0}
-
-
-/*
-td.blue {background-color:#cef;}
-td.red {background-color:#fec;}
-td.alert {color:#c00;}
-td.menu {background:#bbb;color:var(--main-darkcolor);font-weight:bold;text-align:center;padding:.5em 0;}
-td a, td > i {font-weight:bold;margin-right:.5em;}
-td a:last-child{margin-right:0;}
-td img {margin-left:.5em;}
-*/
+div.sort_item table {margin:0}
 
 /* CONTAINERS */
 
 /* SPINNER */
-#working {position: absolute;left: 0;right: 0;margin-left: auto;margin-right: auto;width: 20px;z-index:100}
+#working {position:absolute;top:0;left:0;right:0;margin-left:auto;margin-right:auto;width:20px;z-index:100}
 
 /* fix min-width */
 #head, #main, #footer, #modal, .xmodal {min-width:320px}
@@ -266,6 +244,7 @@ td img {margin-left:.5em;}
 .switcher {margin-top:-1em;}
 /* modal */
 #modal > div {background:var(--main-darkcolor);color:var(--main-darkcolor);}
+#modal div > p {margin-top:0 !important}
 
 @media screen and (max-width: 768px) {
     html {font-size:.75em;}

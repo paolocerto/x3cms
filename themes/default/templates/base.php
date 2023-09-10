@@ -63,6 +63,16 @@ if (!empty($xkeys))
     <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml">
 
     <link rel="shortcut icon" href="<?php echo THEME_URL ?>favicon.ico" type="images/x-icon">
+<?php
+if (file_exists(PATH.'files/css/tailwind.css'))
+{
+    echo '<link rel="stylesheet" href="'.ROOT.'files/css/tailwind.css">';
+}
+else
+{
+    echo '<script src="https://cdn.tailwindcss.com"></script>';
+}
+?>
     <link rel="stylesheet" href="<?php echo THEME_URL ?>css/fontawesome-all.min.css" >
 <?php
 echo (!DEVEL && file_exists(PATH.'themes/'.$this->site->area->theme.'/css/'.$css.'.min.css'))
@@ -76,7 +86,6 @@ if (RTL)
 }
 ?>
     <script src="https://kit.fontawesome.com/2e7ce67797.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
 
     <script defer src="<?php echo THEME_URL ?>js/dragula.min.js"></script>
     <script defer src="<?php echo THEME_URL ?>js/alpine.min.js"></script>

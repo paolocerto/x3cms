@@ -40,6 +40,16 @@ if (isset($page)) {
     <link rel="icon" type="image/png" sizes="16x16" href="<?php echo ROOT ?>favicon-16x16.png">
     <link rel="manifest" href="<?php echo ROOT ?>site.webmanifest">
 
+<?php
+if (file_exists(PATH.'files/css/tailwind.css'))
+{
+    echo '<link rel="stylesheet" href="'.ROOT.'files/css/tailwind.css">';
+}
+else
+{
+    echo '<script src="https://cdn.tailwindcss.com"></script>';
+}
+?>
     <link rel="stylesheet" href="<?php echo THEME_URL ?>css/fontawesome-all.min.css">
     <link rel="stylesheet" href="<?php echo THEME_URL ?>css/dragula.min.css">
 
@@ -54,7 +64,6 @@ if (RTL)
 }
 ?>
     <script src="https://kit.fontawesome.com/2e7ce67797.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
 
     <script defer src="<?php echo THEME_URL ?>js/tinymce/tinymce.min.js"></script>
     <script defer src="<?php echo THEME_URL ?>js/dragula.min.js"></script>
@@ -95,7 +104,7 @@ echo (!DEVEL && file_exists(PATH.'themes/'.$this->site->area->theme.'/js/x3ui.mi
         ></i>
     </div>
 
-    <header id="head" class="flex bg-gray-700 px-3 py-2">
+    <header id="head" class="relative flex bg-gray-700 px-3 py-2">
         <div class="flex-none w-18">
             <a href="<?php echo BASE_URL ?>" title="Home page">
                 <img src="<?php echo THEME_URL ?>img/x3cms_light_small.png" class="max-h-8 inline-block align-bottom " alt="X3 CMS"/> <span class="text-gray-100">&nbsp;CMS</span>
