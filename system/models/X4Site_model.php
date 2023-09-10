@@ -397,7 +397,7 @@ class X4Site_model extends X4Model_core
 
 			if (APC)
 			{
-				apcu_store(SITE.'abid'.$id_area.$lang.$bid, $c);
+				apcu_store(SITE.'akey'.$id_area.$lang.$key, $c);
 			}
 		}
 		return $c;
