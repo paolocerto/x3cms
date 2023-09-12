@@ -241,7 +241,7 @@ class Pages_controller extends X3ui_controller
 			else
 			{
                 // get deep
-                $page_from = $mode->get_from($post['xfrom']);
+                $page_from = $mod->get_from($post['xfrom']);
                 $post['deep'] = $page_from->deep + 1;
 
 				// set css for the template of the new page

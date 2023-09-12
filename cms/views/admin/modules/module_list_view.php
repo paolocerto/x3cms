@@ -66,11 +66,19 @@ if ($plugged || $pluggable)
                 // adminlevel is the specific privs on this item
                 if ($i->level >= 4 && $i->adminlevel > 1)
                 {
-                    $hidden = $i->hidden
-                        ? _HIDDEN
-                        : _VISIBLE;
+                    if ($i->hidden)
+                    {
+                        $hidden = _HIDDEN;
+                        $icon = '-slash';
+                    }
+                    else
+                    {
+                        $hidden = _VISIBLE;
+                        $icon = '';
+                    }
+
                     $actions .= '<a class="link" @click="setter(\''.BASE_URL.'modules/set/hidden/'.$i->id.'/'.(($i->hidden+1)%2).'\')" title="'._STATUS.' '.$hidden.'">
-                            <i class="fa-solid fa-link-slash fa-lg"></i>
+                            <i class="fa-solid fa-link'.$icon.' fa-lg"></i>
                         </a>';
 
                     $actions .= AdmUtils_helper::link('xlock', 'modules/set/xlock/'.$i->id.'/'.(($i->xlock+1)%2), $statuses);

@@ -437,7 +437,10 @@ class Page_model extends X4Model_core
 		// delete related articles
 		$sql[] = 'DELETE FROM articles WHERE id_page = '.$id;
 
-		// delete the page
+		// delete sections
+		$sql[] = 'DELETE FROM sections WHERE id_page = '.$id;
+
+        // delete the page
 		$sql[] = 'DELETE FROM pages WHERE id = '.$id;
 
 		// move up subpages

@@ -181,8 +181,8 @@ class File_model extends X4Model_core
 				$a = trim($i);
 				if (!empty($a))
                 {
-					$w[] = 'name LIKE '.$this->db->escape('%'.$a.'%').' OR
-						alt LIKE '.$this->db->escape('%'.$a.'%');
+					$w[] = 'f.name LIKE '.$this->db->escape('%'.$a.'%').' OR
+						f.alt LIKE '.$this->db->escape('%'.$a.'%');
                 }
 			}
 

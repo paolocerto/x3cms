@@ -40,7 +40,7 @@ $sql = "INSERT INTO themes (updated, name, description, styles, version, xon) VA
 
 // templates
 $templates = array();
-$templates[] = "INSERT INTO templates (updated, name, js, css, id_theme, description, settings, sections, xon) VALUES (NOW(), 'base', 'script', 'base', XXX, 'Base page template', '{\"s1\":{\"locked\":1,\"bgcolor\":\"default\",\"fgcolor\":\"default\",\"columns\":1,\"width\":\"fullwidth\",\"class1\":\"\",\"class2\":\"\"},\"sn\":{\"locked\":0,\"bgcolor\":\"#ffffff\",\"fgcolor\":\"#444444\",\"columns\":4,\"width\":\"100\",\"class1\":\"\",\"class2\":\"\"}}', 1, 1)";
+$templates[] = "INSERT INTO templates (updated, name, js, css, id_theme, description, settings, sections, xon) VALUES (NOW(), 'base', 'script', 'base', XXX, 'Base page template', '{\"s1\":{\"locked\":1,\"bgcolor\":\"default\",\"fgcolor\":\"default\",\"columns\":1,\"width\":\"fullwidth\",\"class1\":\"\",\"class2\":\"\"},\"sn\":{\"locked\":0,\"bgcolor\":\"#ffffff\",\"fgcolor\":\"#444444\",\"columns\":4, \"col_sizes\":\"1+1+1+1\",\"width\":\"100\",\"class1\":\"\",\"class2\":\"\"}}', 1, 1)";
 
 // menus
 $menus = array();

@@ -226,13 +226,13 @@ class X3form_builder_plugin extends X4Plugin_core implements X3plugin
 	 * @access private
      * @param   integer $id_area Area ID
 	 * @param   string	$lang Language code
-	 * @param   object	$form Form name
+	 * @param   object	$form Form object
 	 * @param   array	$_post _POST array
 	 * @param   array	$fields fields array
 	 * @param   array 	$file_array Files labels array
 	 * @return  void
 	 */
-	private function form_result(int $id_area, string $lang, string $form, array $_post, array $fields, array $file_array)
+	private function form_result(int $id_area, string $lang, stdClass $form, array $_post, array $fields, array $file_array)
 	{
 		// get data
 		$mod = new X3form_builder_model();

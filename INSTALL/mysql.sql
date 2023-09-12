@@ -2235,7 +2235,7 @@ CREATE TABLE IF NOT EXISTS `files` (
   `xtype` tinyint(1) NOT NULL,
   `category` varchar(128) NOT NULL,
   `subcategory` varchar(128) NOT NULL,
-  `filename` varchar(255) NOT NULL,
+  `name` varchar(255) NOT NULL,
   `alt` varchar(255) NOT NULL,
   `xlock` tinyint(1) NOT NULL,
   `xon` tinyint(1) NOT NULL,
@@ -2864,7 +2864,7 @@ CREATE TABLE IF NOT EXISTS `templates` (
 
 INSERT INTO `templates` (`id`, `updated`, `name`, `css`, `js`, `id_theme`, `description`, `settings`, `sections`, `xlock`, `xon`) VALUES
 (1, NOW(), 'base', 'x3ui', 'x3ui', 1, 'Default Admin template', '{"s1":{"bgcolor":"default","fgcolor":"default","columns":"1","width":"100"},"sn":{"bgcolor":"#ffffff","fgcolor":"#444444","columns":"4","width":"100"}}', 1, 0, 1),
-(2, NOW(), 'base', 'base', 'script', 2, 'Default page template', '{"s1":{"bgcolor":"default","fgcolor":"default","columns":"1","width":"container mx-auto","class":""},"sn":{"bgcolor":"#ffffff","fgcolor":"#444444","columns":"4","width":"fullwidth","class":""}}',3, 0, 1);
+(2, NOW(), 'base', 'base', 'script', 2, 'Default page template', '{"s1":{"bgcolor":"default","fgcolor":"default","columns":"1","col_sizes":"1", "width":"container mx-auto","class":""},"sn":{"bgcolor":"#ffffff","fgcolor":"#444444","columns":"4","col_sizes":"1+1+1+1","width":"fullwidth","class":""}}',1, 0, 1);
 -- --------------------------------------------------------
 
 --

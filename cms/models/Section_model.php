@@ -167,7 +167,7 @@ class Section_model extends X4Model_core
 	public function count_default_sections(int $id_page)
 	{
 		return $this->db->query_var('SELECT COUNT(s.id) AS n FROM sections s
-			WHERE s.id_page = '.$id_page.' AND s.settings LIKE '.$this->db->escape('{"locked":1,%'));
+			WHERE s.id_page = '.$id_page.' AND s.settings LIKE '.$this->db->escape('%"locked":"y"%'));
 	}
 
 	/**
@@ -191,31 +191,38 @@ class Section_model extends X4Model_core
 			// get template settings
 			$settings = json_decode($tpl->settings, true);
 
-			for($i = 1; $i <= $tpl->sections; $i++)
+			for ($i = 1; $i <= sizeof($settings); $i++)
 			{
-                // fix for missing col_sizes
-                if (!isset($settings['s'.$i]['col_sizes']))
+                if (isset($settings['s'.$i]))
                 {
-                    $cs = array_fill(0, $settings['s'.$i]['columns'], '1');
-                    $settings['s'.$i]['col_sizes'] = implode('+', $cs);
-                }
+                    // fix for missing col_sizes
+                    if (!isset($settings['s'.$i]['col_sizes']))
+                    {
+                        $cs = array_fill(0, $settings['s'.$i]['columns'], '1');
+                        $settings['s'.$i]['col_sizes'] = implode('+', $cs);
+                    }
 
-				// recreate missing sections
-				if (!isset($sections[$i]))
-				{
-					// create section
-					$post = array(
-						'id_area' => $id_area,
-						'name' => 's'.$i,
-						'id_page' => $id_page,
-						'progressive' => $i,
-						'settings' => json_encode($settings['s'.$i]),
-						'xon' => 1
-					);
-					$this->insert($post);
-				}
+                    // recreate missing sections
+                    if (!isset($sections[$i]))
+                    {
+                        // to know default section
+                        $settings['s'.$i]['locked'] = "y";
+
+                        // create section
+                        $post = array(
+                            'id_area' => $id_area,
+                            'name' => 's'.$i,
+                            'id_page' => $id_page,
+                            'progressive' => $i,
+                            'settings' => json_encode($settings['s'.$i]),
+                            'xon' => 1
+                        );
+                        $this->insert($post);
+                    }
+                }
 			}
 
+            /*
 			// add settings to extra section if missing
 			for ($i = $tpl->sections; $i < sizeof($sections); $i++)
 			{
@@ -225,6 +232,7 @@ class Section_model extends X4Model_core
 					$this->update($sections[$i]->id, $post);
 				}
 			}
+            */
 		}
 	}
 
