@@ -1387,16 +1387,26 @@ function save_article(bid, content) {
                                 </a>';
                     }
 
+                    $svg = '<svg
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                        :class="{\'rotate-180\': '.$key.', \'rotate-0\': !'.$key.'}"
+                        class="inline w-4 h-4 mt-1 ml-1 transition-transform duration-200 transform md:-mt-1"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                        clip-rule="evenodd">
+                        </path>
+                    </svg>';
+
                     // is a dropdown
                     if ($i['fake'])
                     {
-                        $menu_items .= ' <div @click.away="'.$key.' = false" class="relative" x-data="{ '.$key.': false }">
+                        // with no link
+                        $menu_items .= ' <div @click.away="'.$key.' = false" class="relative hidden md:inline" x-data="{ '.$key.': false }">
                                             <button
                                                 @click="'.$key.' = !'.$key.'"
                                                 class="focus:outline-none pt-2 '.$style.'"
                                             >
                                                 <span>'.stripslashes($i['name']).'</span>
-                                                <svg fill="currentColor" viewBox="0 0 20 20" :class="{\'rotate-180\': '.$key.', \'rotate-0\': !'.$key.'}" class="inline w-4 h-4 mt-1 ml-1 transition-transform duration-200 transform md:-mt-1"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                                                '.$svg.'
                                             </button>
 
                                             <div
@@ -1407,34 +1417,56 @@ function save_article(bid, content) {
                                                     '.$sub.'
                                                 </div>
                                             </div>
+                                        </div>
+                                        <div class="w-full inline-flex md:inline-flex py-2 lg:py-0 flex flex-col">
+                                            <a
+                                                href="'.$i['url'].'"
+                                                title="'.stripslashes($i['title']).'"
+                                                class="focus:outline-none px-2 pt-2 '.$style.' '.$active.'"
+                                            >
+                                                '.str_replace(' ', '&nbsp;', stripslashes($i['name'])).'
+                                            </a>
+                                            <div class="block w-full flex flex-col bg-gray-200">
+                                                '.$sub.'
+                                            </div>
                                         </div>';
                     }
                     else
                     {
-                        $menu_items .= ' <div @click.away="'.$key.' = false" class="relative" x-data="{ '.$key.': false }">
+                        // with link
+                        $menu_items .= ' <div @click.away="'.$key.' = false" class="relative hidden md:inline" x-data="{ '.$key.': false }">
                                             <button
-                                                x-on:mouseover="'.$key.' = !'.$key.'"
+                                                x-on:mouseover="'.$key.' = true"
+                                                x-on:ontouchstart="'.$key.' = true"
                                                 onclick="window.location.href=\''.$i['url'].'\';"
                                                 class="focus:outline-none pt-2 '.$style.'"
                                             >
                                                 <span>'.str_replace(' ', '&nbsp;', stripslashes($i['name'])).'</span>
-                                                <svg
-                                                    fill="currentColor"
-                                                    viewBox="0 0 20 20"
-                                                    :class="{\'rotate-180\': '.$key.', \'rotate-0\': !'.$key.'}"
-                                                    class="inline w-4 h-4 mt-1 ml-1 transition-transform duration-200 transform md:-mt-1"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                                    clip-rule="evenodd">
-                                                    </path>
-                                                </svg>
+                                                '.$svg.'
                                             </button>
 
                                             <div
                                                 x-show="'.$key.'"
+                                                x-on:mouseleave="'.$key.' = false"
+                                                x-on:ontouchend="'.$key.' = false"
                                                 '.$transition.'
+                                                class="z-50"
                                             >
                                                 <div class="px-2 py-2 bg-white shadow">
                                                     '.$sub.'
                                                 </div>
+                                            </div>
+                                        </div>
+                                        <div class="w-full inline-flex md:hidden py-2 lg:py-0 flex flex-col">
+                                            <a
+                                                href="'.$i['url'].'"
+                                                title="'.stripslashes($i['title']).'"
+                                                class="focus:outline-none px-2 pt-2 '.$style.' '.$active.'"
+                                            >
+                                                '.str_replace(' ', '&nbsp;', stripslashes($i['name'])).'
+                                            </a>
+                                            <div class="block w-full flex flex-col bg-gray-200">
+                                                '.$sub.'
                                             </div>
                                         </div>';
                     }
@@ -1443,13 +1475,21 @@ function save_article(bid, content) {
                 else
                 {
                     // normal item
-                    $menu_items .= '<a
-                                        href="'.$i['url'].'"
-                                        title="'.stripslashes($i['title']).'"
-                                        class="focus:outline-none px-2 pt-2 '.$style.' '.$active.'"
-                                    >
-                                        '.str_replace(' ', '&nbsp;', stripslashes($i['name'])).'
-                                    </a>';
+                    $link = '<a
+                        href="'.$i['url'].'"
+                        title="'.stripslashes($i['title']).'"
+                        class="focus:outline-none px-2 pt-2 '.$style.' '.$active.'"
+                    >
+                        '.str_replace(' ', '&nbsp;', stripslashes($i['name'])).'
+                    </a>';
+
+                    // for screens and mobile
+                    $menu_items .= '<div class="hidden md:inline-flex">
+                                    '.$link.'
+                                </div>
+                                <div class="w-full inline-flex md:hidden py-2 lg:py-0 border-b border-b-gray-300">
+                                    '.$link.'
+                                </div>';
                 }
 
             }
