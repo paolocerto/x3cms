@@ -40,7 +40,108 @@ $sql = "INSERT INTO themes (updated, name, description, styles, version, xon) VA
 
 // templates
 $templates = array();
-$templates[] = "INSERT INTO templates (updated, name, js, css, id_theme, description, settings, sections, xon) VALUES (NOW(), 'base', 'script', 'base', XXX, 'Base page template', '{\"s1\":{\"locked\":1,\"bgcolor\":\"default\",\"fgcolor\":\"default\",\"columns\":1,\"width\":\"fullwidth\",\"class1\":\"\",\"class2\":\"\"},\"sn\":{\"locked\":0,\"bgcolor\":\"#ffffff\",\"fgcolor\":\"#444444\",\"columns\":4, \"col_sizes\":\"1+1+1+1\",\"width\":\"100\",\"class1\":\"\",\"class2\":\"\"}}', 1, 1)";
+
+// settings template base
+$t1 = [
+    's1' => [
+        'locked' => 'y',
+        'bgcolor' => 'default',
+        'fgcolor' => 'default',
+        'columns' => 1,
+        'col_sizes' => '1',
+        'width' => 'fullwidth',
+        'height' => 'free',
+        'style' => '',
+        'class' => '',
+        'col_settings' => [
+            'bg0' => '',
+            'fg0' => '',
+            'style0' => '',
+            'class0' => ''
+        ]
+    ],
+    'sn' => [
+        'bgcolor' => '#ffffff',
+        'fgcolor' => '#444444',
+        'columns' => 3,
+        'col_sizes' => '2+1',
+        'width' => 'container mx-auto',
+        'height' => 'free',
+        'style' => '',
+        'class' => '',
+        'col_settings' => [
+            'bg0' => '',
+            'fg0' => '',
+            'style0' => '',
+            'class0' => '',
+            'bg1' => '',
+            'fg1' => '',
+            'style1' => '',
+            'class1' => ''
+        ]
+    ]
+];
+
+// settings template two
+$t2 = [
+    's1' => [
+        'locked' => 'y',
+        'bgcolor' => 'default',
+        'fgcolor' => 'default',
+        'columns' => 1,
+        'col_sizes' => '1',
+        'width' => 'fullwidth',
+        'height' => 'free',
+        'style' => '',
+        'class' => '',
+        'col_settings' => [
+            'bg0' => '',
+            'fg0' => '',
+            'style0' => '',
+            'class0' => ''
+        ]
+    ],
+    's2' => [
+        'locked' => 'y',
+        'bgcolor' => 'default',
+        'fgcolor' => 'default',
+        'columns' => 1,
+        'col_sizes' => '1',
+        'width' => 'fullwidth',
+        'height' => 'free',
+        'style' => '',
+        'class' => '',
+        'col_settings' => [
+            'bg0' => '',
+            'fg0' => '',
+            'style0' => '',
+            'class0' => ''
+        ]
+    ],
+    'sn' => [
+        'bgcolor' => '#ffffff',
+        'fgcolor' => '#444444',
+        'columns' => 3,
+        'col_sizes' => '2+1',
+        'width' => 'container mx-auto',
+        'height' => 'free',
+        'style' => '',
+        'class' => '',
+        'col_settings' => [
+            'bg0' => '',
+            'fg0' => '',
+            'style0' => '',
+            'class0' => '',
+            'bg1' => '',
+            'fg1' => '',
+            'style1' => '',
+            'class1' => ''
+        ]
+    ]
+];
+
+$templates[] = "INSERT INTO templates (updated, name, js, css, id_theme, description, settings, sections, xon) VALUES (NOW(), 'base', 'script', 'base', XXX, 'Base page template', '".json_encode($t1)."', 1, 1)";
+$templates[] = "INSERT INTO templates (updated, name, js, css, id_theme, description, settings, sections, xon) VALUES (NOW(), 'two', 'script', 'base', XXX, 'Two columns template','".json_encode($t2)."', 2, 1)";
 
 // menus
 $menus = array();
