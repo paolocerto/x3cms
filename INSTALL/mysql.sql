@@ -2534,7 +2534,7 @@ INSERT INTO `pages` (`updated`, `lang`, `id_area`, `tpl`, `css`, `xfrom`, `xid`,
 (NOW(), 'it', 2, 'base', 'base', 'home', 'base', 'map', 'Mappa del sito', 'Mappa del sito', 'Mappa del sito', '', 0, 3, 1, 'A0000003', 0, 1, 1),
 (NOW(), 'it', 2, 'base', 'base', 'home', 'base', 'search', 'Risultati della ricerca', 'Risultati della ricerca', 'Risultati della ricerca', '', 0, 4, 1, 'A0000004', 1, 1, 1),
 (NOW(), 'it', 2, 'base', 'base', 'home', 'base', 'info', 'Informazioni', 'Informazioni', 'Informazioni', '', 4, 5, 1, 'A0041001', 0, 0, 1),
-(NOW(), 'it', 2, 'offline', 'offline', 'home', 'base', 'offline', 'Sito in manutenzione', 'Sito in manutenzione', 'Sito in manutenzione', '', 0, 6, 1, 'A0000006', 1, 0, 1);
+(NOW(), 'it', 2, 'base', 'base', 'home', 'base', 'offline', 'Sito in manutenzione', 'Sito in manutenzione', 'Sito in manutenzione', '', 0, 6, 1, 'A0000006', 1, 0, 1);
 
 
 -- default pages public en
@@ -2546,7 +2546,7 @@ INSERT INTO `pages` (`updated`, `lang`, `id_area`, `tpl`, `css`, `xfrom`, `xid`,
 (NOW(), 'en', 2, 'base', 'base', 'home', 'base', 'map', 'Site map', 'Site map', 'Site map', '', 0, 3, 1, 'A0000003', 0, 1, 1),
 (NOW(), 'en', 2, 'base', 'base', 'home', 'base', 'search', 'Search results', 'Search results', 'Search results', '', 0, 4, 1, 'A0000004', 1, 1, 1),
 (NOW(), 'en', 2, 'base', 'base', 'home', 'base', 'info', 'Informations', 'Informations', 'Informations', '', 4, 5, 1, 'A0041001', 0, 0, 1),
-(NOW(), 'en', 2, 'offline', 'offline', 'home', 'base', 'offline', 'Site maintenance', 'Site maintenance', 'Site maintenance', '', 0, 6, 1, 'A0000006', 1, 0, 1);;
+(NOW(), 'en', 2, 'base', 'base', 'home', 'base', 'offline', 'Site maintenance', 'Site maintenance', 'Site maintenance', '', 0, 6, 1, 'A0000006', 1, 0, 1);;
 
 
 -- default pages private it
