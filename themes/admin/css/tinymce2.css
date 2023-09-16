@@ -75,7 +75,7 @@ button[disabled], input[disabled] { cursor: default;opacity:.5; }
 * colors for sections */
 
 .bg-fucsia {background:var(--fucsia)}
-.bg-orange {background:var(--orange) !important}
+.x3bg-orange {background:var(--orange) !important}
 .bg-petroleum {background:var(--bg_color)}
 .x3bg-yellow {background:var(--yellow)}
 .x3bg-violet {background:var(--violet)}
