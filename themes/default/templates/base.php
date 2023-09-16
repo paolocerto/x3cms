@@ -244,8 +244,8 @@ else
     <!-- footer -->
     <footer class="py-8">
         <p class="text-center text-sm">
-            <a href="http://www.x3cms.net" title="X3 your next Content Management System">X3 CMS</a> powered by <a href="http://www.cblu.net" title="Cblu.net - Software &amp; Web design">Cblu.net</a><br />
-            <a href="http://www.x3cms.net/en/x3_cms_legal_notices" title="X3 CMS Legal Notices">X3 CMS Legal Notices</a>
+            <a href="https://www.x3cms.net" title="X3 your next Content Management System">X3 CMS</a> powered by <a href="https://www.cblu.net" title="Cblu.net - Software &amp; Web design">Cblu.net</a><br />
+            <a href="https://www.x3cms.net/en/x3-cms-legal-notices" title="X3 CMS Legal Notices">X3 CMS Legal Notices</a>
         </p>
 <?php
 if (DEBUG)
