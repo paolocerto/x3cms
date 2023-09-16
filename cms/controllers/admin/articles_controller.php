@@ -522,14 +522,12 @@ class Articles_controller extends X3ui_controller
 
 				// set message
 				$msg = AdmUtils_helper::set_msg($result);
-				if (!empty($p))
-				{
-				    $msg->update = array(
-                        'element' => 'field',
-                        'field' => 'param',
-                        'value' => implode('|', $p)
-                    );
-				}
+                // update param
+				$msg->update = array(
+                    'element' => 'field',
+                    'field' => 'param',
+                    'value' => implode('|', $p)
+                );
 				$this->response($msg);
 			}
 			else
