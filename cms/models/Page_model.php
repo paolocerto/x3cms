@@ -290,10 +290,10 @@ class Page_model extends X4Model_core
 						lang = '.$this->db->escape($page->lang).' AND
 						xfrom = '.$this->db->escape($page->url);
             }
-		}
-        // we need to update xpos of the pages where me moved
-        // shift xpos in new xfrom
-        $sql[] = 'UPDATE pages
+
+            // we need to update xpos of the pages where me moved
+            // shift xpos in new xfrom
+            $sql[] = 'UPDATE pages
             SET updated = NOW(), xpos = (xpos + 1)
             WHERE
                 id_area = '.$page->id_area.' AND
@@ -303,6 +303,7 @@ class Page_model extends X4Model_core
                 deep = '.$deep.' AND
                 url != '.$this->db->escape($page->url).' AND
                 xpos >= '.$post['xpos'];
+		}
 
 		// perform the update
 		$result = $this->db->multi_exec($sql);
