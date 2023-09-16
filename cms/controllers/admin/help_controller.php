@@ -138,7 +138,7 @@ class Help_controller extends X3ui_controller
 	 *
 	 * @param   string  $lang
      * @param   string  $area
-     * @param   string  $url Remote URL
+     * @param   string  $page Remote URL
      * @param   string  $suffix
 	 * @return  void
 	 */
@@ -165,12 +165,12 @@ class Help_controller extends X3ui_controller
 	}
 
 	/**
-	 * Help filter
+	 * Help actions
 	 *
 	 * @return  void
 	 */
-	public function filter(string $lang)
+	public function actions(string $lang)
 	{
-		echo '';
+		return '';
 	}
 }
