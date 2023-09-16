@@ -310,10 +310,12 @@ foreach ($codes as $i)
 ?>
 	</div>
 
-	<div>
-		<h2><?php echo _ARTICLES_LIST ?></h2>
-		<p><?php echo _ARTICLES_MSG ?></p>
-		<div class="mt-4">
+	<div class="relative">
+		<div>
+            <h2><?php echo _ARTICLES_LIST ?></h2>
+		    <p><?php echo _ARTICLES_MSG ?></p>
+        </div>
+		<div class="mt-4 w-1/3 md:w-1/5 fixed" style="right:2rem;">
 <?php
 	echo $right;
 
