@@ -71,7 +71,7 @@ define('APATH', PATH.$app_path);
 // X3 cli doesn't handle HTTP_HOST
 if (isset($_SERVER['HTTP_HOST']))
 {
-    define('_DOMAIN_',  $_SERVER['HTTP_HOST']);
+    define('_DOMAIN_',  $_SERVER['HTTP_HOST'].$root);
 }
 
 /**
