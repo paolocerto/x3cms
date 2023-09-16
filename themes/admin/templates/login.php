@@ -140,7 +140,7 @@ else
 		</div>
 	</div>
 	<footer class="bg  text-center text-xs py-6">
-	    <a href="http://www.x3cms.net" title="X3 your next Content Management System">X3 CMS</a> &copy; <a href="http://www.cblu.net" title="CBlu.net - Freelance PHP Developer">CBlu.net</a>
+	    <a href="https://www.x3cms.net" title="X3 your next Content Management System">X3 CMS</a> &copy; <a href="https://www.cblu.net" title="CBlu.net - Freelance PHP Developer">CBlu.net</a>
     </footer>
 
 </body>

@@ -17,7 +17,6 @@ class X3form_builder_plugin extends X4Plugin_core implements X3plugin
 {
 	/**
 	 * Constructor
-	 * Set Class vars
 	 *
 	 * @param   object Site
 	 * @return  void
