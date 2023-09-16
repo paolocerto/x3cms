@@ -30,10 +30,7 @@ class X4Page_controller extends X4Cms_controller
 	{
 		parent::__construct();
 
-		$url = (MULTILANGUAGE)
-		    ? X4Route_core::$lang.'/offline'
-		    : 'offline';
-
+		$url = 'offline';
 		if (isset($_SESSION['uid']))
 		{
 		    $url = str_replace('offline', 'logout', $url);
