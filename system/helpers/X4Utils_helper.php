@@ -327,38 +327,33 @@ class X4Utils_helper
 	 *
 	 * @static
 	 * @param string	$text text to convert
-	 * @param string	$from_enc original encoding
 	 * @return string
 	 */
-	public static function to7bit($text, $from_enc)
+	public static function to7bit($text)
     {
-        $text = htmlspecialchars_decode(mb_convert_encoding(htmlentities($text, ENT_COMPAT, $from_enc, false), 'UTF-8', mb_list_encodings()));
-		if (function_exists('preg_replace_callback'))
-		{
-			$text = preg_replace_callback(
-				array(
-					'/&(..)lig;/',
-					'/&([aouAOUy])uml;/',
-					'/&(.)[^;]*;/'
-				),
-				function($m)
-				{
-					if (isset($m[1]))
-					{
-						return $m[1];
-					}
-				},
-				$text);
-		}
-		else
-		{
-			$text = preg_replace(
-				array('/&szlig;/','/&(..)lig;/',
-					 '/&([aouAOU])uml;/','/&(.)[^;]*;/'),
-				array('ss',"$1","$1".'e',"$1"),
-				$text);
-		}
-		return $text;
+        $enc = mb_detect_encoding($text);
+        if ($enc != 'UTF-8')
+        {
+            $text = mb_convert_encoding($text, 'UTF-8', $enc);
+        }
+        $text = htmlspecialchars_decode($text);
+
+        $text = preg_replace_callback(
+            array(
+                '/&(..)lig;/',
+                '/&([aouAOUy])uml;/',
+                '/&(.)[^;]*;/'
+            ),
+            function($m)
+            {
+                if (isset($m[1]))
+                {
+                    return $m[1];
+                }
+            },
+            $text);
+
+        return $text;
 	}
 
 	/**
@@ -373,76 +368,62 @@ class X4Utils_helper
 	public static function slugify($str, $deep = false, $negative = false)
 	{
 		$str = trim($str);
-		$str = X4Utils_helper::to7bit($str, 'UTF-8');
+		$str = X4Utils_helper::to7bit($str);
 		$str = strtolower(html_entity_decode($str));
 
-		if (function_exists('preg_replace_callback'))
-		{
-			// strip special chars
-			$str = preg_replace_callback(
-			'/[àèéìòùç]+/is',
-			function($m)
-			{
-				$r = '';
-				switch($m[0])
-				{
-					case 'à':
-						$r = 'a';
-						break;
-					case 'è':
-					case 'é':
-						$r = 'e';
-						break;
-					case 'ì':
-						$r = 'i';
-						break;
-					case 'ò':
-						$r = 'o';
-						break;
-					case 'ù':
-						$r = 'u';
-						break;
-					case 'ç':
-						$r = 'c';
-						break;
-				}
-				return $r;
-			},
-			$str);
+        // strip special chars
+        $str = preg_replace_callback(
+        '/[àèéìòùç]+/is',
+        function($m)
+        {
+            $r = '';
+            switch($m[0])
+            {
+                case 'à':
+                    $r = 'a';
+                    break;
+                case 'è':
+                case 'é':
+                    $r = 'e';
+                    break;
+                case 'ì':
+                    $r = 'i';
+                    break;
+                case 'ò':
+                    $r = 'o';
+                    break;
+                case 'ù':
+                    $r = 'u';
+                    break;
+                case 'ç':
+                    $r = 'c';
+                    break;
+            }
+            return $r;
+        },
+        $str);
 
-			// clean
-			$regex = ($deep)
-				? '/[^a-z0-9-]+/is'
-				: '/[^a-z0-9-\/\.]+/is';
+        // clean
+        $regex = ($deep)
+            ? '/[^a-z0-9-]+/is'
+            : '/[^a-z0-9-\/\.]+/is';
 
-			$res = preg_replace_callback(
-				$regex,
-				function($m)
-				{
-					return '-';
-				},
-				$str);
+        $res = preg_replace_callback(
+            $regex,
+            function($m)
+            {
+                return '-';
+            },
+            $str);
 
-			// remove duplicates
-			$res = preg_replace_callback(
-				'/-(-*)/',
-				function($m)
-				{
-					return '-';
-				},
-				$res);
-		}
-		else
-		{
-			$str = preg_replace('/[àèéìòùç]+/e', '-', $str);
-			// clean
-			$res = ($deep)
-			    ? preg_replace('/[^a-z0-9-\.]+/', '-', $str)
-			    : preg_replace('/[^a-z0-9-\/\.]+/', '-', $str);
-
-			// remove duplicates
-			$res = preg_replace('/-(-*)/', '-', $res);
-		}
+        // remove duplicates
+        $res = preg_replace_callback(
+            '/-(-*)/',
+            function($m)
+            {
+                return '-';
+            },
+            $res);
 
 		return ($negative)
 			? str_replace('-', '_', $res)
