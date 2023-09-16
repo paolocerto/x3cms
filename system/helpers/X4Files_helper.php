@@ -30,7 +30,10 @@ class X4Files_helper
 	    'application/vnd.oasis.opendocument.text', 'application/vnd.oasis.opendocument.presentation', 'application/vnd.oasis.opendocument.spreadsheet',
 	    'binary/octet-stream', 'audio/mpeg', 'audio/wav', 'audio/x-wav', 'application/x-compress', 'application/x-compressed', 'multipart/x-zip',
 	    'application/octet-stream', 'application/pkcs7-mime', 'application/x-pkcs7-mime', 'application/x-dike');
-	private static $file = array();
+
+    private static $bad_mimetypes = array('text/x-sh', 'application/x-sh', 'text/javascript', 'text/php', 'application/x-httpd-php', 'text/x-python', 'application/x-python-code');
+
+    private static $file = array();
 
 	private static function phpv()
 	{
@@ -88,6 +91,13 @@ class X4Files_helper
 						break;
 					}
 					break;
+                case 'sh':
+                    case 'js':
+                    case 'php':
+                    case 'py':
+                    case 'rb':
+                        return false;
+                        break;
 				case 'xls':
 				case 'xlsx':
 				case 'doc':
@@ -154,6 +164,13 @@ class X4Files_helper
 					? 'template'
 					: 3;
 				break;
+            case 'sh':
+            case 'js':
+            case 'php':
+            case 'py':
+            case 'rb':
+                return false;
+                break;
 			case 'xls':
             case 'xlsx':
             case 'doc':
@@ -255,6 +272,18 @@ class X4Files_helper
 				case 'pdf':
 				    return 'application/pdf';
 				    break;
+                case 'sh':
+                    return 'application/x-sh';
+                    break;
+                case 'js':
+                    return 'text/javascript';
+                    break;
+                case 'php':
+                    return 'application/x-httpd-php';
+                    break;
+                case 'py':
+                    return 'text/x-python';
+                    break;
 				case 'xls':
 				    return 'application/vnd.ms-excel';
 				    break;
@@ -304,6 +333,12 @@ class X4Files_helper
 	 */
 	private static function filter_mime($mimes, $file_type)
 	{
+        //is a bad file?
+        if (in_array($file_type, self::$bad_mimetypes))
+        {
+            return false;
+        }
+
 		$mime = array();
 		$mime['img'] = (empty($mimes)) ? self::$mimg : array_intersect(self::$mimg, $mimes);
 		$mime['media'] = (empty($mimes)) ? self::$mmedia : array_intersect(self::$mmedia, $mimes);
@@ -386,7 +421,7 @@ class X4Files_helper
 		}
 
 		// check mime and type
-		if (!empty($mimes) && empty($type))
+		if ((!empty($mimes) && empty($type)) || $type === false)
 		{
 			header('Location: '.BASE_URL.'msg/message/_bad_mimetype');
 			die;
@@ -469,7 +504,7 @@ class X4Files_helper
 		if (is_uploaded_file($_FILES[$file]['tmp_name']))
 		{
 			$type = self::filter_mime($mimes, $_FILES[$file]['type']);
-			if (!empty($mimes) && empty($type))
+			if ((!empty($mimes) && empty($type)) || $type === false)
 			{
 				$errors[$file][] = '_bad_mimetype';
 			}
@@ -604,7 +639,7 @@ class X4Files_helper
 				$type = self::filter_mime($mimes, $_FILES[$file]['type'][$i]);
                 $action = '';
 
-				if (!empty($mimes) && empty($type))
+				if ((!empty($mimes) && empty($type)) || $type === false)
 				{
 					$errors[$file][] = '_bad_mimetype';
 				}
