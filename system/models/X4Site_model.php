@@ -232,24 +232,28 @@ class X4Site_model extends X4Model_core
 					$bids = empty($i->articles)
                         ? []
                         : json_decode($i->articles, true);
-					foreach ($bids as $bid)
-					{
-						// get articles
-						$article = $this->db->query_row('SELECT *
-                            FROM articles
-                            WHERE
-                                id_area = '.intval($i->id_area).' AND
-                                (code_context = 1 OR code_context = 2) AND
-                                bid = '.$this->db->escape($bid).' AND
-                                xon = 1 AND
-                                date_in <= '.$this->now.' AND (date_out = 0 OR date_out >= '.$this->now.')
-                                ORDER BY id DESC');
 
-						if ($article)
-						{
-							$articles[] = $article;
-						}
-					}
+                    if (is_array($bids) && !empty($bids))
+                    {
+                        foreach ($bids as $bid)
+                        {
+                            // get articles
+                            $article = $this->db->query_row('SELECT *
+                                FROM articles
+                                WHERE
+                                    id_area = '.intval($i->id_area).' AND
+                                    (code_context = 1 OR code_context = 2) AND
+                                    bid = '.$this->db->escape($bid).' AND
+                                    xon = 1 AND
+                                    date_in <= '.$this->now.' AND (date_out = 0 OR date_out >= '.$this->now.')
+                                    ORDER BY id DESC');
+
+                            if ($article)
+                            {
+                                $articles[] = $article;
+                            }
+                        }
+                    }
 					$sections[$i->progressive] = array('a' => $articles, 's' => $settings);
 				}
 			}
