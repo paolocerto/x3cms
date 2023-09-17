@@ -56,7 +56,7 @@ class Templates_controller extends X3ui_controller
 		$view->content->tpl_in = $mod->get_tpl_installed($id_theme);
 		// installable templates
 		$view->content->tpl_out = $mod->get_tpl_installable($id_theme, $theme_name);
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**
@@ -153,7 +153,7 @@ class Templates_controller extends X3ui_controller
 			$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
                 '@click="submitForm(\'editor\')"');
 		}
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**
@@ -260,7 +260,7 @@ class Templates_controller extends X3ui_controller
 		// form builder
 		$view->content->form = X4Form_helper::doform('uninstall', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
             '@click="submitForm(\'uninstall\')"');
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**
@@ -365,7 +365,7 @@ class Templates_controller extends X3ui_controller
 		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
         '@click="submitForm(\'editor\')"');
 
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**

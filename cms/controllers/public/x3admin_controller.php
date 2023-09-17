@@ -189,7 +189,7 @@ class X3admin_controller extends X4Cms_controller
 			$view->content->tinymce->id_area = $page->id_area;
 			$view->content->tinymce->tinybrowser = true;
 		}
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**

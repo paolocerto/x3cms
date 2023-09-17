@@ -114,7 +114,7 @@ class Articles_controller extends X3ui_controller
 		    $lang = new Language_model();
             $view->content->langs = $lang->get_languages();
         }
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**
@@ -465,7 +465,7 @@ class Articles_controller extends X3ui_controller
 		{
 			$view->content->tinymce->rtl = 1;
 		}
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**
@@ -546,7 +546,7 @@ class Articles_controller extends X3ui_controller
 		$view->content->form = X4Form_helper::doform('configurator', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
             '@click="submitForm(\'configurator\')"');
 
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**
@@ -590,7 +590,6 @@ class Articles_controller extends X3ui_controller
 				'module' => $_post['module'],
 				'param' => $_post['param'],
 				'id_editor' => $_SESSION['xuid'],
-
 				'xon' => AUTOREFRESH
 			);
 
@@ -712,7 +711,7 @@ class Articles_controller extends X3ui_controller
 		$mod = new Article_model();
 		$view->content->art = $mod->get_by_bid($id_area, $lang, $bid);
 		$view->content->history = $mod->get_history($id_area, $bid);
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**
@@ -761,7 +760,7 @@ class Articles_controller extends X3ui_controller
 		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
             '@click="submitForm(\'editor\')"');
 
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**
@@ -843,7 +842,7 @@ class Articles_controller extends X3ui_controller
 		// form builder
 		$view->content->form = X4Form_helper::doform('delete', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
             '@click="submitForm(\'delete\')"');
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**
@@ -939,7 +938,7 @@ class Articles_controller extends X3ui_controller
 		// form builder
 		$view->content->form = X4Form_helper::doform('delete', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
             '@click="submitForm(\'delete\')"');
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**

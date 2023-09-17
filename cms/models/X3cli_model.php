@@ -283,7 +283,7 @@ If you want to fully use this method you have to create:</p>
 
 <p><b>Have fun</b></p>\';
 
-		$view->render(TRUE);
+		$view->render(true);
 
 		// end section
 		// ------------------------------------------------------------------ */
@@ -351,7 +351,7 @@ If you want to fully use this method you have to create:</p>
 		$area = new Area_model();
 		$view->areas = $area->get_areas();
 
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**
@@ -487,7 +487,7 @@ If you want to fully use this method you have to create:</p>
 		$view->content->form = X4Form_helper::doform(\'editor\', BASE_URL.\''.$name.'/edit/\'.$id_area.\'/\'.$lang.\'/\'.$id, $fields, array(_RESET, _SUBMIT, \'buttons\'), \'post\', \'\',
             \'@click="submitForm(\\\'editor\\\')"\');
 
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**
@@ -603,7 +603,7 @@ If you want to fully use this method you have to create:</p>
 		// form builder
 		$view->content->form = X4Form_helper::doform(\'delete\', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, \'buttons\'), \'post\', \'\',
 			\'@click="submitForm(\\\'delete\\\')"\');
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**

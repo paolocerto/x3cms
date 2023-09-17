@@ -54,7 +54,7 @@ class Themes_controller extends X3ui_controller
 		// installable themes
 		$view->content->theme_out = $mod->get_installable();
 
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**
@@ -183,7 +183,7 @@ class Themes_controller extends X3ui_controller
 		// form builder
 		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', 'enctype="multipart/form-data"',
             '@click="submitForm(\'editor\')"');
-        $view->render(TRUE);
+        $view->render(true);
 	}
 
     // fields for rule configurator
@@ -301,7 +301,7 @@ class Themes_controller extends X3ui_controller
 		// form builder
 		$view->content->form = X4Form_helper::doform('uninstall', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
             '@click="submitForm(\'delete\')"');
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**

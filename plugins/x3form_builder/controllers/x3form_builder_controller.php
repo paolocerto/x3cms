@@ -75,7 +75,7 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
             $mod = new Language_model();
             $view->content->langs = $mod->get_languages();
         }
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**
@@ -154,7 +154,7 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
 		$view->content->form = $mod->get_by_id($id_form);
 		$view->content->items = $mod->get_form_fields($id_area, $lang, $id_form);
 
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**
@@ -196,7 +196,7 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
 		$view->content->mod = $mod;
 
 		$view->content->items = X4Pagination_helper::paginate($mod->get_form_results($id_area, $lang, $id_form), $pp);
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
     /**
@@ -245,7 +245,7 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
             $view->content->langs = $mod->get_languages();
         }
         $view->content->areas = $areas;
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**
@@ -346,7 +346,7 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
 		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
             '@click="submitForm(\'editor\')"');
 
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**
@@ -476,7 +476,7 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
 		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
             '@click="submitForm(\'editor\')"');
 
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**
@@ -613,7 +613,7 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
 		// form builder
 		$view->content->form = X4Form_helper::doform('delete', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
             '@click="submitForm(\'delete\')"');
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	// fields
@@ -681,7 +681,7 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
 		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
             '@click="submitForm(\'editor\')"');
 
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
     // fields for rule configurator
@@ -926,7 +926,7 @@ function checkRule(item) {
 		// form builder
 		$view->content->form = X4Form_helper::doform('delete', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
             '@click="submitForm(\'delete\')"');
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	// form result
@@ -1045,7 +1045,7 @@ function checkRule(item) {
 		// form builder
 		$view->content->form = X4Form_helper::doform('delete', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
             '@click="submitForm(\'delete\')"');
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
     /**
@@ -1151,7 +1151,7 @@ function checkRule(item) {
 		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
             '@click="submitForm(\'editor\')"');
 
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
     /**

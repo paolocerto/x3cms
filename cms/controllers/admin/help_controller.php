@@ -53,7 +53,7 @@ class Help_controller extends X3ui_controller
 			_HELP_ON_LINE => ['url', BASE_URL.'help/online/'.$page->lang]
 		);
 
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**
@@ -78,7 +78,7 @@ class Help_controller extends X3ui_controller
 
 		if ($render)
         {
-			$view->render(TRUE);
+			$view->render(true);
         }
 		else
         {
@@ -118,7 +118,7 @@ class Help_controller extends X3ui_controller
 			? '<p>'._UNABLE_TO_CONNECT.'</p>'
 			: '<div id="help">'.str_replace($src, $rpl, $lcontent).'</div>';
 
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**
@@ -161,7 +161,7 @@ class Help_controller extends X3ui_controller
 			? '<p>'._UNABLE_TO_CONNECT.'</p>'
 			: '<div id="help">'.str_replace($src, $rpl, $content).'</div>';
 
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**

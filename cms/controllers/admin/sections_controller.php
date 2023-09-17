@@ -69,7 +69,7 @@ class Sections_controller extends X3ui_controller
 		}
 		$view->content->items = $items;
 
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**
@@ -234,7 +234,7 @@ class Sections_controller extends X3ui_controller
 		// form builder
 		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', 'enctype="multipart/form-data"',
             '@click="submitForm(\'editor\')"');
-        $view->render(TRUE);
+        $view->render(true);
 	}
 
 	/**
@@ -486,7 +486,7 @@ class Sections_controller extends X3ui_controller
 		// form builder
 		$view->content->form = X4Form_helper::doform('delete', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
             '@click="submitForm(\'delete\')"');
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**
@@ -631,7 +631,7 @@ class Sections_controller extends X3ui_controller
 			? ROOT.'themes/'.$theme->name.'/img/'.$epage->tpl.'.png'
 			: '';
 
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**

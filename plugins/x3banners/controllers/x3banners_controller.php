@@ -84,7 +84,7 @@ class X3banners_controller extends X3ui_controller implements X3plugin_controlle
 		$view->content->id_area = $id_area;
 		$area = new Area_model();
 		$view->content->areas = $area->get_areas();
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**
@@ -199,7 +199,7 @@ class X3banners_controller extends X3ui_controller implements X3plugin_controlle
 		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
             '@click="submitForm(\'editor\')"');
 
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**

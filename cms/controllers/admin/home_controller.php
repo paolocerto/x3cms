@@ -51,7 +51,7 @@ class Home_controller extends X3ui_controller
 
 		$view = new X4View_core('loading');
 		$view->location = urldecode($this->site->site->domain.'/'.$url);
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**
@@ -79,7 +79,7 @@ class Home_controller extends X3ui_controller
 		// languages
 		$mod = new Language_model();
 		$view->langs = $mod->get_alanguages($page->id_area);
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**
@@ -108,7 +108,7 @@ class Home_controller extends X3ui_controller
 		$mod = new Widget_model();
 		$view->content->widgets = $mod->widgets();
 
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**
@@ -121,7 +121,7 @@ class Home_controller extends X3ui_controller
 		// content
 		$view = new X4View_core('menu');
 		$view->menus = $this->site->get_menus(1);
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**

@@ -62,7 +62,7 @@ class Areas_controller extends X3ui_controller
 		list($id_area, $areas) = $mod->get_my_areas();
 		$view->content->areas = $areas;
 
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**
@@ -169,7 +169,7 @@ class Areas_controller extends X3ui_controller
 		$view->content->form = X4Form_helper::doform('editor', BASE_URL.'areas/edit/'.$id, $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
 			'@click="submitForm(\'editor\')"');
 
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**
@@ -351,7 +351,7 @@ class Areas_controller extends X3ui_controller
 		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
             '@click="submitForm(\'editor\')"');
 
-    	$view->render(TRUE);
+    	$view->render(true);
 	}
 
 	/**
@@ -446,7 +446,7 @@ class Areas_controller extends X3ui_controller
 		// form builder
 		$view->content->form = X4Form_helper::doform('delete', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
             '@click="submitForm(\'delete\')"');
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**
@@ -510,7 +510,7 @@ class Areas_controller extends X3ui_controller
 		$view->content->lang = $lang;
 		$view->content->map = $this->site->get_map($mod->get_page('home'), false, false);
 
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**

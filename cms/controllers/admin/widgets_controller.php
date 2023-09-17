@@ -50,7 +50,7 @@ class Widgets_controller extends X3ui_controller
 
 		$mod = new Widget_model();
 		$view->content->items = $mod->get_my_widgets();
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**
@@ -179,7 +179,7 @@ class Widgets_controller extends X3ui_controller
                 <p>'._NO_WIDGETS_TO_SET.'</p>
             </div>';
 		}
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**
@@ -321,7 +321,7 @@ class Widgets_controller extends X3ui_controller
 		// form builder
 		$view->content->form = X4Form_helper::doform('delete', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
             '@click="submitForm(\'delete\')"');
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**

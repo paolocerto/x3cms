@@ -97,7 +97,7 @@ class Pages_controller extends X3ui_controller
 		// area switcher
 		$view->content->areas = $areas;
 
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**
@@ -331,7 +331,7 @@ class Pages_controller extends X3ui_controller
 		$view->content->form = X4Form_helper::doform('editor', BASE_URL.'pages/move/'.$id, $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
             '@click="submitForm(\'editor\')"');
 
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 
@@ -473,7 +473,7 @@ class Pages_controller extends X3ui_controller
 		$view->content->form = X4Form_helper::doform('editor', BASE_URL.'pages/seo/'.$id, $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
             '@click="submitForm(\'editor\')"');
 
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**
@@ -600,7 +600,7 @@ class Pages_controller extends X3ui_controller
 		// form builder
 		$view->content->form = X4Form_helper::doform('delete', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
             '@click="submitForm(\'delete\')"');
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**

@@ -51,6 +51,6 @@ class Error_controller extends X4Cms_controller
 
 		// get message
 		$view->sections = array($this->dict->get_message(_WARNING, strtoupper($what), 'msg'));
-		$view->render(TRUE);
+		$view->render(true);
 	}
 }

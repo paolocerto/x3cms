@@ -86,7 +86,7 @@ class Categories_controller extends X3ui_controller
             $lang = new Language_model();
             $view->content->langs = $lang->get_languages();
         }
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**
@@ -198,7 +198,7 @@ class Categories_controller extends X3ui_controller
 		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
             '@click="submitForm(\'editor\')"');
 
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**
@@ -299,7 +299,7 @@ class Categories_controller extends X3ui_controller
 		$view->content->form = X4Form_helper::doform('delete', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
             '@click="submitForm(\'delete\')"');
 
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**

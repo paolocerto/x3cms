@@ -110,9 +110,9 @@ class Search_controller extends X4Cms_controller
 
 						// set message
 						if (defined('_SEARCH_'.$plugin))
-                        			{
+                        {
 							$tmp .= '<strong>'.constant('_SEARCH_'.$plugin).'</strong></p>';
-                        			}
+                        }
 						// build links to items found
 						$tmp .= '<ul class="search_result">';
 						foreach ($found as $ii)
@@ -138,20 +138,16 @@ class Search_controller extends X4Cms_controller
 			}
 
 			// if found
-			if ($tot)
-            		{
-				$tmp = '<p>'._SEARCH_FOUND.' '.$tot.' '._SEARCH_ITEMS.'</p>'.$tmp;
-            		}
-			else
-            		{
-				$tmp .= '<p>'._SEARCH_ZERO_RESULT.'</p>';
-            		}
-			$msg = new Obj_msg(_SEARCH_RESULT, _SEARCH_OF.' <strong>'.addslashes($_POST['search']).'</strong>'.$tmp, false);
+			$tmp = ($tot)
+                ? '<p>'._SEARCH_FOUND.' '.$tot.' '._SEARCH_ITEMS.'</p>'.$tmp
+                : '<p>'._SEARCH_ZERO_RESULT.'</p>';
+
+			$msg = new Obj_msg(_SEARCH_RESULT, _SEARCH_OF.' <strong>'.addslashes($_POST['search']).'</strong>'.$tmp);
 		}
 		else
 		{
 			// empty request
-			$msg = new Obj_msg(_SEARCH_RESULT, '<p>'._SEARCH_MSG_SEARCH_EMPTY.'</p>', false);
+			$msg = new Obj_msg(_SEARCH_RESULT, '<p>'._SEARCH_MSG_SEARCH_EMPTY.'</p>');
 		}
 
 		// get menus
@@ -160,10 +156,10 @@ class Search_controller extends X4Cms_controller
 
 		// popolate section
 		$sections = $this->site->get_sections($page->id);
-		$sections[1] = array($msg);
+		$sections[1] = array('a' => $msg);
 		$view->sections = $sections;
 		$view->args = array('_default');
 
-		$view->render(TRUE);
+		$view->render(true);
 	}
 }

@@ -112,7 +112,7 @@ class Login_controller extends X4Cms_controller
 			// form builder
 			$view->content->form = X4Form_helper::doform('formlogin', $_SERVER['REQUEST_URI'], $fields, array(null, _LOGIN, 'buttons'));
 		}
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**
@@ -301,7 +301,7 @@ class Login_controller extends X4Cms_controller
 
 		// form builder
 		$view->content->form = X4Form_helper::doform('formrecovery', $_SERVER['REQUEST_URI'], $fields, array(null, _SEND, 'buttons'));
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**

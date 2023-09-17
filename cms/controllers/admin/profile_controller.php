@@ -76,7 +76,7 @@ class Profile_controller extends X3ui_controller
 		$view->content->form = X4Form_helper::doform('profile', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
             '@click="submitForm(\'profile\')"');
 
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**

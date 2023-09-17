@@ -78,7 +78,7 @@ class Modules_controller extends X3ui_controller
 		// area switcher
 		$view->content->areas = $areas;
 
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**
@@ -173,7 +173,7 @@ class Modules_controller extends X3ui_controller
 		$view->content->form = X4Form_helper::doform('configure', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
             '@click="submitForm(\'configure\')"');
 
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**
@@ -351,7 +351,7 @@ class Modules_controller extends X3ui_controller
 		// form builder
 		$view->content->form = X4Form_helper::doform('uninstall', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
             '@click="submitForm(\'uninstall\')"');
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**
@@ -422,7 +422,7 @@ class Modules_controller extends X3ui_controller
             <pre class="text-sm">'.nl2br(htmlspecialchars(file_get_contents(PATH.'plugins/'.$module.'/instructions_'.$lang.'.txt'))).'</pre>
             </div>';
 
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**

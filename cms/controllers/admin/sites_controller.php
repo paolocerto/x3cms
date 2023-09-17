@@ -64,7 +64,7 @@ class Sites_controller extends X3ui_controller
         $view->content = new X4View_core('sites/settings');
         $view->content->items = $this->site->get_subpages($page->id_area, 'sites');
 
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**
@@ -102,7 +102,7 @@ class Sites_controller extends X3ui_controller
         $mod = new Site_model();
         $view->content->items = $mod->get_items($_SESSION['xuid']);
 
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
     /**
@@ -230,7 +230,7 @@ class Sites_controller extends X3ui_controller
 		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
             '@click="submitForm(\'editor\')"');
 
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**
@@ -346,7 +346,7 @@ class Sites_controller extends X3ui_controller
 		// form builder
 		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
             '@click="submitForm(\'editor\')"');
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**

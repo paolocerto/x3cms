@@ -53,7 +53,7 @@ class Menus_controller extends X3ui_controller
 
 		$mod = new Menu_model();
 		$view->content->menus = $mod->get_menus_by_theme($id_theme);
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**
@@ -157,7 +157,7 @@ class Menus_controller extends X3ui_controller
 		// form builder
 		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
             '@click="submitForm(\'editor\')"');
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**
@@ -248,7 +248,7 @@ class Menus_controller extends X3ui_controller
 		// form builder
 		$view->content->form = X4Form_helper::doform('delete', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
             '@click="submitForm(\'delete\')"');
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**

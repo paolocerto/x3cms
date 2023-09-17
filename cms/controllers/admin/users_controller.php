@@ -50,7 +50,7 @@ class Users_controller extends X3ui_controller
 
 		$mod = new Group_model();
 		$view->content->groups = $mod->get_groups();
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**
@@ -79,7 +79,7 @@ class Users_controller extends X3ui_controller
 		$view->content->title = 'username';
 		$view->content->value = 'username';
 
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**
@@ -216,7 +216,7 @@ class Users_controller extends X3ui_controller
         // get user privileges
         $perm = new Permission_model();
         $view->content->aprivs = $perm->get_aprivs($id);
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**
@@ -285,7 +285,7 @@ class Users_controller extends X3ui_controller
 		// form builder
 		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
             '@click="submitForm(\'editor\')"');
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**
@@ -437,7 +437,7 @@ class Users_controller extends X3ui_controller
 		$view->content->form = X4Form_helper::doform('editpriv', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
             '@click="submitForm(\'editpriv\')"');
 
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**
@@ -639,7 +639,7 @@ class Users_controller extends X3ui_controller
 		$view->content->form = X4Form_helper::doform('detpriv', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons', $extra_btn), 'post', '',
             '@click="submitForm(\'detpriv\')"');
 
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
     /**
@@ -756,7 +756,7 @@ function setForAll(val) {
 		// form builder
 		$view->content->form = X4Form_helper::doform('delete', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
             '@click="submitForm(\'delete\')"');
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**

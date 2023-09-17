@@ -45,7 +45,7 @@ class Msg_controller extends X4Cms_controller
 		$_SESSION['msg'] = $this->dict->get_word($xkey, $what);
 
 		$view = new X4View_core('empty');
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**
@@ -75,7 +75,7 @@ class Msg_controller extends X4Cms_controller
 
 		// load the message
 		$view->content->msg = $this->dict->get_word($what, 'msg');
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**

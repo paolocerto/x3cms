@@ -54,7 +54,7 @@ class Login_controller extends X4Cms_controller
 
             // get sections
             $view->sections =  $this->site->get_sections($page->id);
-            $view->render(TRUE);
+            $view->render(true);
         }
         else
         {

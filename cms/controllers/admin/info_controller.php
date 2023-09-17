@@ -52,7 +52,7 @@ class Info_controller extends X3ui_controller
             'Mysql' => ['view', 'sites/mysql'],
             'Php' => ['view', 'sites/php'],
         );
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
     /**

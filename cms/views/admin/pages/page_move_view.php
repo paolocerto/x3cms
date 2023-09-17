@@ -13,4 +13,4 @@
 $view = new X4View_core('editor');
 $view->form = $form;
 
-$view->render(TRUE);
+$view->render(true);

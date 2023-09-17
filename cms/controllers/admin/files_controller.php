@@ -87,7 +87,7 @@ class Files_controller extends X3ui_controller
 		// files subcategory switcher
 		$view->content->subcategories = $mod->get_subcat($id_area, $qs['xctg']);
 
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**
@@ -108,7 +108,7 @@ class Files_controller extends X3ui_controller
 		$file = new File_model();
 		$view->items = $file->get_tree();
 
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**
@@ -264,7 +264,7 @@ class Files_controller extends X3ui_controller
 		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _UPLOAD_FILE, 'buttons'), 'post', 'enctype="multipart/form-data"',
             '@click="submitForm(\'editor\')" x-bind:disabled="files[\'filename\'] != null && !files[\'filename\'].length"');
 
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**
@@ -377,7 +377,7 @@ class Files_controller extends X3ui_controller
 		$files = new File_model();
 		$view = new X4View_core('json');
 		$view->result = $files->get_cat($id, $_POST['category']);
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**
@@ -392,7 +392,7 @@ class Files_controller extends X3ui_controller
 		$files = new File_model();
 		$view = new X4View_core('json');
 		$view->result = $files->get_subcat($id, $_POST['subcategory']);
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**
@@ -443,7 +443,7 @@ class Files_controller extends X3ui_controller
 		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
             '@click="submitForm(\'editor\')"');
 
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**
@@ -532,7 +532,7 @@ class Files_controller extends X3ui_controller
 		// form builder
 		$view->content->form = X4Form_helper::doform('delete', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
             '@click="submitForm(\'delete\')"');
-		$view->render(TRUE);
+		$view->render(true);
 	}
 
 	/**
@@ -956,7 +956,7 @@ class Files_controller extends X3ui_controller
 				die;
 			}
 
-			$view->render(TRUE);
+			$view->render(true);
 		}
 		else
 		{
