@@ -16,7 +16,7 @@ $version = '3';
 // styles
 $styles = [
     ['what' => 'section', 'style' => 'bg-fucsia', 'description' => 'background fucsia'],
-    ['what' => 'section', 'style' => 'bg-orange', 'description' => 'background orange'],
+    ['what' => 'section', 'style' => 'x3bg-orange', 'description' => 'background orange'],
     ['what' => 'section', 'style' => 'bg-petroleum', 'description' => 'background petroleum'],
     ['what' => 'section', 'style' => 'bg-violet', 'description' => 'background violet'],
     ['what' => 'section', 'style' => 'bg-military', 'description' => 'background military'],
@@ -29,9 +29,9 @@ $styles = [
     ['what' => 'article', 'style' => 'border-2 border-neutral-200 rounded-2xl p-8', 'description' => 'lightgray bordered rounded'],
     ['what' => 'article', 'style' => 'border-2 border-neutral-200 p-8', 'description' => 'lightgray bordered not-rounded'],
     ['what' => 'article', 'style' => 'bg-fucsia rounded-2xl p-8', 'description' => 'background fucsia rounded'],
-    ['what' => 'article', 'style' => 'bg-orange rounded-2xl p-8', 'description' => 'background orange rounded'],
+    ['what' => 'article', 'style' => 'x3bg-orange rounded-2xl p-8', 'description' => 'background orange rounded'],
     ['what' => 'article', 'style' => 'bg-petroleum rounded-2xl p-8', 'description' => 'background petroleum rounded'],
-    ['what' => 'article', 'style' => 'bg-violet rounded-2xl p-8', 'description' => 'background violet rounded'],
+    ['what' => 'article', 'style' => 'x3bg-violet rounded-2xl p-8', 'description' => 'background violet rounded'],
     ['what' => 'article', 'style' => 'bg-military rounded-2xl p-8', 'description' => 'background military rounded'],
 ];
 
