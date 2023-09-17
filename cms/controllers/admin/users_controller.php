@@ -690,7 +690,7 @@ function setForAll(val) {
 				$c++;
 			}
 
-			if(!empty($post))
+			if (!empty($post))
 			{
 				// perform the update
 				$result = $mod->update_detail_privs($_post['id_user'], $_post['id_area'], $_post['what'], $post);
@@ -729,7 +729,7 @@ function setForAll(val) {
 
         // get item
 		$user = new User_model();
-		$item = $user->get_by_id($id, 'users', 'id, username');
+		$item = $user->get_by_id($id, 'users', 'id, username, level');
 
 		// build the form
 		$fields = array();
@@ -771,8 +771,12 @@ function setForAll(val) {
 		$msg = null;
 		// check permission
 		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'users', $item->id, 4);
-
-		if (is_null($msg))
+        // check user level
+        if (!is_null($msg) || $_SESSION['level'] < $item->level)
+        {
+            $msg = AdmUtils_helper::set_msg(false, '', $this->dict->get_word('_NOT_PERMITTED', 'msg'));
+        }
+        else
 		{
 			// do action
 			$mod = new User_model();
