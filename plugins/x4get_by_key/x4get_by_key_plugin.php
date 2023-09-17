@@ -82,7 +82,7 @@ class X4get_by_key_plugin extends X4Plugin_core implements X3plugin
 				foreach ($items[0] as $i)
 				{
                     // open box
-					$out .= '<div class="gbkey_box">';
+					$out .= '<article class="gbkey_box">';
 
 					if (!empty($i->content))
 					{
@@ -107,7 +107,7 @@ class X4get_by_key_plugin extends X4Plugin_core implements X3plugin
 								$t = trim($t);
 								$out .= '<div><a href="'.BASE_URL.$page->url.'/0/tag/'.urlencode($t).'" title="'._X4GET_BY_KEY_FILTER.'">'.$t.'</a></div>';
 							}
-							$out .= '</div>';
+							$out .= '</article>';
 						}
 
 					}
