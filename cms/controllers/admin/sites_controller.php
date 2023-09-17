@@ -408,9 +408,8 @@ class Sites_controller extends X3ui_controller
 		$this->dict->get_words();
 		$msg = AdmUtils_helper::set_msg(true);
 		$msg->update[] = array(
-			'element' => 'topic',
-			'url' => BASE_URL.'sites/show/1',
-			'title' => null
+			'element' => 'page',
+			'url' => $_SERVER['HTTP_REFERER']
 		);
 		$this->response($msg);
 	}
@@ -429,9 +428,8 @@ class Sites_controller extends X3ui_controller
 		$this->dict->get_words();
 		$msg = AdmUtils_helper::set_msg(true);
 		$msg->update[] = array(
-			'element' => 'topic',
-			'url' => BASE_URL.'sites/show/1',
-			'title' => null
+			'element' => 'page',
+			'url' => $_SERVER['HTTP_REFERER']
 		);
 		$this->response($msg);
 	}
