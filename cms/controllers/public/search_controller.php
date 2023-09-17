@@ -177,7 +177,7 @@ class Search_controller extends X4Cms_controller
 
 		// popolate section
 		$sections = $this->site->get_sections($page->id);
-		$sections[1] = array('a' => $msg);
+		$sections[1]['a'] = array($msg);
 		$view->sections = $sections;
 		$view->args = array('_default');
 
