@@ -47,31 +47,30 @@ class X4search_plugin extends X4Plugin_core implements X3plugin
 
 		// set label
 		$label = ($conf['label'])
-			? '<label for="search">'._X4SEARCH_LABEL.'</label>'
-			: '';
+			? _X4SEARCH_LABEL
+			: '<i class="fa-solid fa-magnifying-glass"></i>';
 
 		// set placeholder
 		$placeholder = ($conf['placeholder'])
 			? 'placeholder="'._X4SEARCH_PLACEHOLDER.'"'
 			: '';
 
-		$out = '<form id="fsearch" name="fsearch" method="post" action="'.BASE_URL.'search" onsubmit="return false;">
-					'.$label.'
-					<div class="row">
-						<div class="col-sm-10 form-group no-gap">
-							<input type="text" class="form-control" name="search" id="search" '.$placeholder.' />
+		$out = '<form name="fsearch" method="post" action="'.BASE_URL.'search" >
+					<div x-data=\'{disabled: true}\' class="w-full flex flex-row gap-4">
+						<div class="flex-1">
+							<input type="text" class="w-full" x-on:input="disabled=$el.value.length < 3" name="search" id="search" autocomplete="off" '.$placeholder.' />
 						</div>
-						<div class="col-sm-2">
-							<button id="searcher" type="button" onclick="fireSubmit(\'fsearch\')"><span class="fa fa-search fa-2x" aria-hidden="true"></span></button>
+						<div class="flex-none">
+							<button class="btn link" type="submit" x-bind:disabled="disabled">'.$label.'</button>
 						</div>
 					</div>
 				</form>';
 
-		return '<div id="x4search">'.$out.'</div>';
+		return '<div id="x4search" class="w-full">'.$out.'</div>';
 	}
 
 	/**
-	 * call plugin actions
+	 * plugin actions
 	 *
 	 * @param   integer $id_area Area ID
 	 * @param   string	$control action name

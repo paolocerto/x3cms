@@ -11,10 +11,10 @@
 // x4search module installer
 
 // plugin version
-$version = '0.4';
+$version = '0.5';
 
 // compatibility
-$compatibility = '0.5 STABLE';
+$compatibility = '0.9.0 STABLE';
 
 // plugin name
 $mod_name = 'x4search';
