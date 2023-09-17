@@ -107,7 +107,7 @@ class X4get_by_key_plugin extends X4Plugin_core implements X3plugin
 								$t = trim($t);
 								$out .= '<div><a href="'.BASE_URL.$page->url.'/0/tag/'.urlencode($t).'" title="'._X4GET_BY_KEY_FILTER.'">'.$t.'</a></div>';
 							}
-							$out .= '</article>';
+							$out .= '</div>';
 						}
 
 					}
@@ -119,7 +119,7 @@ class X4get_by_key_plugin extends X4Plugin_core implements X3plugin
 					}
 
                     // close box
-					$out .= '</div>';
+					$out .= '</article>';
 				}
                 // close grid
 				$out .= '</div>';
