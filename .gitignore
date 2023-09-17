@@ -8,10 +8,7 @@ DOCS/*
 composer.lock
 vendor/*
 
-# Trash box
+# Trash boxes
 box/
 *.*~
 .*~
-
-# Vagrant
-.vagrant/*
