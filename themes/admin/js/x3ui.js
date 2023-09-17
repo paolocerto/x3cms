@@ -697,6 +697,11 @@ function tiny(id_area, lang, api_key) {
     });
 }
 
+// shorten urlencoded string
+function compact(str) {
+    return str.replace(/%22/g, "!").replace(/%7B/g, "{").replace(/%7D/g, "}").replace(/%3A/g, "@");
+}
+
 function configurator() {
     return {
         xindex: -1,

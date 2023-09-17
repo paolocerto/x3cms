@@ -360,6 +360,8 @@ class AdmUtils_helper
         $res = '';
 		if (!empty($str))
 		{
+            // replace substitution
+            $str = str_replace(['@', '!', '{', '}'], ['%3A', '%22', '%7B', '%7D'], $str);
 			$str = urldecode($str);
 			if ($echo)
 			{
