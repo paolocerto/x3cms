@@ -361,7 +361,7 @@ class AdmUtils_helper
 		if (!empty($str))
 		{
             // replace substitution
-            $str = str_replace(['@', '!', '{', '}'], ['%3A', '%22', '%7B', '%7D'], $str);
+            $str = str_replace(['@', '!', ',', '_.', '+'], ['%3A', '%22', '%2C', '%2F', ' '], $str);
 			$str = urldecode($str);
 			if ($echo)
 			{
