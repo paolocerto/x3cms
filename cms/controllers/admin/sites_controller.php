@@ -288,7 +288,7 @@ class Sites_controller extends X3ui_controller
 			// set what update
 			if ($result[1])
 			{
-				$msg->update[] = array(
+				$msg->update = array(
 					'element' => 'whole',
 					'url' => BASE_URL.'sites/index'
 				);
@@ -382,7 +382,7 @@ class Sites_controller extends X3ui_controller
 			// set what update
 			if ($result[1])
 			{
-				$msg->update[] = array(
+				$msg->update = array(
 					'element' => 'whole',
 					'url' => BASE_URL.'sites/index'
 				);
@@ -407,7 +407,7 @@ class Sites_controller extends X3ui_controller
 		// set message
 		$this->dict->get_words();
 		$msg = AdmUtils_helper::set_msg(true);
-		$msg->update[] = array(
+		$msg->update = array(
 			'element' => 'page',
 			'url' => $_SERVER['HTTP_REFERER']
 		);
@@ -427,7 +427,7 @@ class Sites_controller extends X3ui_controller
 		// set message
 		$this->dict->get_words();
 		$msg = AdmUtils_helper::set_msg(true);
-		$msg->update[] = array(
+		$msg->update = array(
 			'element' => 'page',
 			'url' => $_SERVER['HTTP_REFERER']
 		);

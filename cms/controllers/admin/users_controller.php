@@ -727,6 +727,10 @@ function setForAll(val) {
 		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'users'));
 
+        // get item
+		$user = new User_model();
+		$item = $user->get_by_id($id, 'users', 'id, username');
+
 		// build the form
 		$fields = array();
 		$fields[] = array(
@@ -739,22 +743,19 @@ function setForAll(val) {
 		// if submitted
 		if (X4Route_core::$post)
 		{
-			$this->deleting($_POST);
+			$this->deleting($item);
 			die;
 		}
-
-		// get object
-		$user = new User_model();
-		$obj = $user->get_by_id($id, 'users', 'username');
+        $view = new X4View_core('modal');
+        $view->title = _DELETE_USER;
 
 		// contents
-		$view = new X4View_core('delete');
-		$view->title = _DELETE_USER;
-		$view->item = $obj->username;
+		$view->content = new X4View_core('delete');
+		$view->content->item = $item->username;
 
 		// form builder
-		$view->form = X4Form_helper::doform('delete', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
-			'onclick="setForm(\'delete\');"');
+		$view->content->form = X4Form_helper::doform('delete', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
+            '@click="submitForm(\'delete\')"');
 		$view->render(TRUE);
 	}
 
@@ -762,20 +763,20 @@ function setForAll(val) {
 	 * Delete user
 	 *
 	 * @access	private
-	 * @param   array 	$_post _POST array
+	 * @param   stdClass    $item
 	 * @return  void
 	 */
-	private function deleting(array $_post)
+	private function deleting(stdClass $item)
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'users', $_post['id'], 4);
+		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'users', $item->id, 4);
 
 		if (is_null($msg))
 		{
 			// do action
 			$mod = new User_model();
-			$result = $mod->delete($_post['id']);
+			$result = $mod->delete($item->id);
 
 			// set message
 			$msg = AdmUtils_helper::set_msg($result);
@@ -786,16 +787,15 @@ function setForAll(val) {
 				$perm = new Permission_model();
 
 				// clean permission on user
-				$perm->deleting_by_what('users', $_post['id']);
+				$perm->deleting_by_what('users', $item->id);
 
 				// clean user permissions
-				$perm->deleting_by_user($_post['id']);
+				$perm->deleting_by_user($item->id);
 
 				// set what update
-				$msg->update[] = array(
-					'element' => 'tdown',
-					'url' => BASE_URL.'users',
-					'title' => null
+				$msg->update = array(
+					'element' => 'page',
+					'url' => BASE_URL.'users'
 				);
 			}
 		}

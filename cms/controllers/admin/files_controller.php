@@ -1266,7 +1266,7 @@ class Files_controller extends X3ui_controller
 				// set what update
 				if ($result[1])
 				{
-					$msg->update[] = array(
+					$msg->update = array(
 						'element' => 'topic',
 						'url' => BASE_URL.'files/editor/'.$id,
 						'title' => null
