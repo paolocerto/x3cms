@@ -25,10 +25,9 @@ $fields[] = array(
     'value' => '<div class="bg-white text-gray-700 md:px-8 md:pb-8 px-4 pb-4" style="border:1px solid white">'
 );
 
-
 $start_value = empty($item->styles)
-? '[]'
-: $item->styles;
+    ? '[]'
+    : $item->styles;
 
 $fields[] = array(
 'label' => null,
