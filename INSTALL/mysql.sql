@@ -106,7 +106,7 @@ CREATE TABLE IF NOT EXISTS `articles` (
   `xkeys` text NOT NULL,
   `category` varchar(255) NOT NULL,
   `tags` text NOT NULL,
-  `content` text NOT NULL,
+  `content` mediumtext NOT NULL,
   `ftext` text NOT NULL,
   `js` text NOT NULL,
   `excerpt` tinyint(1) NOT NULL,
