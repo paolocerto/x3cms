@@ -194,35 +194,7 @@ class X4get_by_key_model extends X4Model_core
 
     // FOR INTERNAL SEARCHES
 
-    /**
-	 * Get page URL by plugin name and parameter
-	 *
-	 * @param integer	area ID
-	 * @param string	lang
-	 * @param string	plugin name
-	 * @param string	parameter value, accepts * wildcard
-	 * @return string	page URL
-	 */
-	public function get_page_to($id_area, $lang, $modname, $param = '')
-	{
-        $where = (strstr($param, '*') != '')
-            ? '	AND a.param LIKE '.$this->db->escape(str_replace('*', '%', $param))
-            : ' AND a.param = '.$this->db->escape($param);
 
-        $sql = 'SELECT p.url FROM pages p
-                JOIN articles a ON a.id_area = p.id_area AND a.id_page = p.id
-                WHERE p.xon = 1 AND
-                    p.id_area = '.$id_area.' AND
-                    p.lang = '.$this->db->escape($lang).' AND
-                    a.xon = 1 AND
-                    a.date_in <= '.$this->time().' AND
-                    (a.date_out = 0 OR a.date_out >= '.$this->time().') AND
-                    a.module = '.$this->db->escape($modname).$where.'
-                GROUP BY a.bid
-                ORDER BY a.id DESC';
-
-        return $this->db->query_var($sql);
-	}
 
     /**
 	 * Get an array of articles that contains search keys
@@ -244,10 +216,9 @@ class X4get_by_key_model extends X4Model_core
 				LOWER(a.ftext) LIKE '.$this->db->escape('%'.html_entity_decode($i).'%').'
 				) ';
 		}
-
 		$where = implode(' AND ', $w);
 
-		$sql = 'SELECT a.bid, a.name, a.xkeys, a.tags
+		$sql = 'SELECT a.bid, a.name, a.xkeys, a.id_page
 				FROM articles a
                 JOIN (
                     SELECT MAX(id) AS id, bid
@@ -256,8 +227,8 @@ class X4get_by_key_model extends X4Model_core
                         id_area = '.intval($id_area).' AND
                         lang = '.$this->db->escape($lang).' AND
                         xon = 1 AND
-                        date_in <= '.$this->time().' AND
-                        (date_out = 0 OR date_out >= '.$this->time().')
+                        date_in <= NOW() AND
+                        (date_out = 0 OR date_out >= NOW())
                     GROUP BY bid
                     ) b ON b.id = a.id AND b.bid = a.bid
 				WHERE
@@ -277,29 +248,58 @@ class X4get_by_key_model extends X4Model_core
 				$k = explode(' ', $a->xkeys);
 				foreach($k as $i)
 				{
-					$sql[] = 'SELECT \''.$a->bid.'\' AS id, p.id_area, p.lang, \''.$i.'\' AS xkeys, p.name, p.description
-					FROM articles a
-                    JOIN (
-                        SELECT MAX(id) AS id, bid
-                        FROM articles
-                        WHERE
-                            id_area = '.$id_area.' AND
-                            lang = '.$this->db->escape($lang).' AND
-                            xon = 1 AND
-                            date_in <= '.$this->time().' AND
-                            (date_out = 0 OR date_out >= '.$this->time().')
-                        GROUP BY bid
-                        ) b ON b.id = a.id AND b.bid = a.bid
-					JOIN pages p ON p.id = a.id_page
-					WHERE
-						p.xon = 1 AND
-						p.id_area = '.$id_area.' AND
-						p.lang = '.$this->db->escape($lang).' AND
-						a.module = \'x4get_by_key\' AND
-						a.param LIKE '.$this->db->escape($i.'|%');
+                    // here we search pages which have articles with x4get_by_key module with specified value of xkeys as param
+                    if (ADVANCED_EDITING)
+                    {
+                        // advance editing uses sections and you can have articles for multipages
+                        $sql[] = 'SELECT \''.$a->bid.'\' AS id, p.id_area, p.lang, \''.$i.'\' AS xkeys, p.name, p.description
+                            FROM pages p
+                            JOIN sections s oN s.id_page = p.id AND s.xon = 1
+                            JOIN articles a ON s.articles LIKE CONCAT(\'%"\', a.bid, \'"%\')
+                            JOIN (
+                                SELECT MAX(id) AS id, bid
+                                FROM articles
+                                WHERE
+                                    xon = 1 AND
+                                    date_in <= NOW() AND
+                                    (date_out = 0 OR date_out >= NOW())
+                                GROUP BY bid
+                                ) b ON b.id = a.id AND b.bid = a.bid
+                            WHERE
+                                p.xon = 1 AND
+                                p.id_area = '.$id_area.' AND
+                                p.lang = '.$this->db->escape($lang).' AND
+                                a.module = \'x4get_by_key\' AND
+                                a.param LIKE '.$this->db->escape($i.'|%').'
+                            GROUP BY p.url
+                            ORDER BY p.url ASC';
+
+                    }
+                    else
+                    {
+                        $sql[] = 'SELECT \''.$a->bid.'\' AS id, p.id_area, p.lang, \''.$i.'\' AS xkeys, p.name, p.description
+                            FROM pages p
+                            JOIN articles a ON a.id_page = p.id
+                            JOIN (
+                                SELECT MAX(id) AS id, bid
+                                FROM articles
+                                WHERE
+                                    xon = 1 AND
+                                    date_in <= NOW() AND
+                                    (date_out = 0 OR date_out >= NOW())
+                                GROUP BY bid
+                                ) b ON b.id = a.id AND b.bid = a.bid
+                            WHERE
+                                p.xon = 1 AND
+                                p.id_area = '.$id_area.' AND
+                                p.lang = '.$this->db->escape($lang).' AND
+                                a.module = \'x4get_by_key\' AND
+                                a.param LIKE '.$this->db->escape($i.'|%').'
+                            GROUP BY p.url
+                            ORDER BY p.url ASC';
+                    }
                 }
 			}
-
 		}
 
 		// get results
@@ -317,6 +317,67 @@ class X4get_by_key_model extends X4Model_core
 
     // this module require a personalized url for the internal search engine
 	public $personalized_url = true;
+
+    /**
+	 * Get page URL by plugin name and parameter
+	 *
+	 * @param integer	area ID
+	 * @param string	lang
+	 * @param string	plugin name
+	 * @param string	parameter value, accepts * wildcard
+	 * @return string	page URL
+	 */
+	public function get_page_to($id_area, $lang, $modname, $param = '')
+	{
+        $where = (strstr($param, '*') != '')
+            ? '	AND a.param LIKE '.$this->db->escape(str_replace('*', '%', $param))
+            : ' AND a.param = '.$this->db->escape($param);
+
+        if (ADVANCED_EDITING)
+        {
+            // advance editing uses sections and you can have articles for multipages
+            $sql = 'SELECT p.url FROM pages p
+                JOIN sections s oN s.id_page = p.id AND s.xon = 1
+                JOIN articles a ON s.articles LIKE CONCAT(\'%"\', a.bid, \'"%\')
+                JOIN (
+                    SELECT MAX(id) AS id, bid
+                    FROM articles
+                    WHERE
+                        xon = 1 AND
+                        date_in <= NOW() AND
+                        (date_out = 0 OR date_out >= NOW())
+                    GROUP BY bid
+                ) b ON b.id = a.id AND b.bid = a.bid
+                WHERE p.xon = 1 AND
+                    p.id_area = '.$id_area.' AND
+                    p.lang = '.$this->db->escape($lang).' AND
+                    a.module = '.$this->db->escape($modname).$where.'
+                GROUP BY p.url
+                ORDER BY p.url ASC';
+        }
+        else
+        {
+            $sql = 'SELECT p.url FROM pages p
+                JOIN articles a ON a.id_area = p.id_area AND a.id_page = p.id
+                JOIN (
+                    SELECT MAX(id) AS id, bid
+                    FROM articles
+                    WHERE
+                        xon = 1 AND
+                        date_in <= NOW() AND
+                        (date_out = 0 OR date_out >= NOW())
+                    GROUP BY bid
+                ) b ON b.id = a.id AND b.bid = a.bid
+                WHERE p.xon = 1 AND
+                    p.id_area = '.$id_area.' AND
+                    p.lang = '.$this->db->escape($lang).' AND
+                    a.module = '.$this->db->escape($modname).$where.'
+                GROUP BY p.url
+                ORDER BY p.url ASC';
+        }
+
+        return $this->db->query_var($sql);
+	}
 
     /**
 	 * Get url for search
