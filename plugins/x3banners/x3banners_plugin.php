@@ -94,7 +94,7 @@ class X3banners_plugin extends X4Plugin_core implements X3plugin
 #topic .section:first-of-type {padding-top:8em !important;}
 </style>
 <div id="banner_top" '.$xdata.' class="w-full z-10 shadow-lg" style="background:'.$banner->bg_color.';color:'.$banner->fg_color.'">
-    <div class="max-w-screen-lg p-4 mx-auto">'.$banner->description.'</div>
+    <div class="max-w-screen-lg pt-8 pb-4 mx-auto">'.$banner->description.'</div>
 </div>';
 		}
 		else

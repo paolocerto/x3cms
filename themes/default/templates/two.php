@@ -143,12 +143,6 @@ if (!empty($menus['menu_top']))
         class="fixed bg-white text-neutral-700 z-10 w-full border-b border-neutral-200"
         x-data="{ isOpen: false, showModal: false }"
     >
-
-<?php
-// banner
-echo stripslashes(X4Theme_helper::module($this->site, $page, [], 'x3banners', 'banner_top'));
-?>
-
         <!-- container -->
         <div class="container mx-auto px-4">
 
@@ -205,6 +199,10 @@ echo $flags['screen'];
     <!-- topic -->
     <div id="topic">
 
+<?php
+// banner
+echo stripslashes(X4Theme_helper::module($this->site, $page, [], 'x3banners', 'banner_top'));
+?>
         <div id="breadcrumb" class="small_container mx-auto text-sm mt-14 lg:mt-6 px-6">
             <?php echo X4Theme_helper::navbar($breadcrumb, ' . ') ?>
         </div>
