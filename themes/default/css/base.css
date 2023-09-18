@@ -51,7 +51,7 @@ label span {font-weight:normal;color:#666;}
 label.error {font-weight:700;color:var(--fucsia) !important}
 .suggestion {display:block;font-size: 0.75rem;line-height: 1rem;margin-top:.3em}
 
-input:not(image), select, textarea {font-size:100%;margin:0;vertical-align:baseline;vertical-align:middle;border:1px solid #ccc;padding:.5em .5em !important;margin:0;border-radius: 0.125rem;;color:#444 !important;--moz-border-sizing:border-box;box-sizing:border-box;}
+input:not([type="image"]), select, textarea {font-size:100%;margin:0;vertical-align:baseline;vertical-align:middle;border:1px solid #ccc;padding:.5em .5em !important;margin:0;border-radius: 0.125rem;;color:#444 !important;--moz-border-sizing:border-box;box-sizing:border-box;}
 select {padding:.5em .6em !important;}
 select:not([multiple]) {max-height: calc(1.2em + 20) !important;height: calc(1.2em + 20px) !important;}
 input:focus, textarea:focus, select:focus {border:.1em solid #f60 !important;}
@@ -72,10 +72,11 @@ input[type="search"]::-webkit-search-decoration, input[type="search"]::-webkit-s
 .buttons {text-align:center;padding:1em;margin-top:1em;margin-bottom: 1.5rem;}
 .buttons button, button.btn, a.btn {border-radius: 1rem;--tw-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
     box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);font-size: 0.875rem;
-    font-weight:600;line-height: 1.25rem;padding-left: 1.5rem;padding-right: 1.5rem;padding-top: 0.75rem;padding-bottom: 0.7rem;margin-left: 0.5rem;
+    font-weight:600;line-height: 1.25rem;padding:1.5rem 0.75rem 0.7rem;margin-left: 0.5rem;
 }
 .buttons button[type="submit"], .buttons button[type="button"], button.btn.link, a.btn.link {background-color:var(--link-color) !important;color:#fff !important}
 .buttons button[type="reset"], button.btn.gray, a.btn.gray {background-color:#d1d5db;color:#374151}
+button.small {line-height:1rem;padding:0.7rem 0.7rem 0.5rem !important;}
 button[disabled], input[disabled] { cursor: default;opacity:.5; }
 
 /* colors for sections */
@@ -192,7 +193,9 @@ iframe, iframe[style] {
 .gbkey_box {padding: 2rem;--tw-border-opacity: 1;border-color: rgb(229 229 229 / var(--tw-border-opacity));border-width: 2px;border-radius: 1rem;}
 .gbkey_tags {--tw-border-opacity: 1;border-color: rgb(229 229 229 / var(--tw-border-opacity));border-top-width: 1px;}
 
-
+/* x4search */
+/*#x4search {margin:0 auto}*/
+navbar #x4search button {line-height: 1rem;padding:0.7rem 0.5rem 0.5rem !important;}
 
 /* for chrome */
 @-moz-document url-prefix() {

@@ -186,6 +186,10 @@ echo $flags['mobile'];
                     class="flex-col flex-grow py-2 md:py-4 hidden md:flex md:justify-end md:flex-row md:space-x-5"
                 >
 <?php
+// search
+echo stripslashes(X4Theme_helper::module($this->site, $page, [], 'x4search', ''));
+
+// menu items
 echo $menu_items;
 
 // flags
