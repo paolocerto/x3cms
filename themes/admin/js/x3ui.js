@@ -699,7 +699,7 @@ function tiny(id_area, lang, api_key) {
 
 // shorten urlencoded string
 function compact(str) {
-    return str.replace(/%22/g, "!").replace(/%2C/g, ",").replace(/\//g, "_.").replace(/%2F/g, "_.").replace(/%3A/g, "@").replace(/%20/g, "+");// replace(/%7B/g, "{").replace(/%7D/g, "}")
+    return str.replace(/%22/g, "._").replace(/%2C/g, ",").replace(/\//g, "_.").replace(/%2F/g, "_.").replace(/%3A/g, "@").replace(/%20/g, "+");
 }
 
 function configurator() {
