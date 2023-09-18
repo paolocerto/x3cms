@@ -624,15 +624,17 @@ class X4Site_model extends X4Model_core
 
 		if (empty($c))
 		{
+            $where = $pwhere = '';
 			if ($xon)
 			{
 				$where = ' AND a.xon = 1';
 				$pwhere = ' AND p.xon = 1';
 			}
-			else $where = $pwhere = '';
 
 			if ($page->id_area == 1)
+            {
 				$hidden = $phidden = $disabled = '';
+            }
 			else
 			{
 				$hidden = ' AND a.hidden = 0';
@@ -665,12 +667,12 @@ class X4Site_model extends X4Model_core
 	 * @param array		array of strings
 	 * @return array	array of objects
 	 */
-	public function search($id_area, $array)
+	public function search(int $id_area, array $array)
 	{
 		$w_p = $w_c = array();
 		foreach ($array as $a) {
 			$i = htmlentities($a);
-			$w_c[] = ' LOWER(a.ftext) LIKE '.$this->db->escape('%'.$i.'%');
+			$w_c[] = ' LOWER(ftext) LIKE '.$this->db->escape('%'.$i.'%');
 			$w_p[] = ' (
 				LOWER(p.name) LIKE '.$this->db->escape('%'.$i.'%').' OR
 				LOWER(p.title) LIKE '.$this->db->escape('%'.$i.'%').' OR
@@ -680,27 +682,59 @@ class X4Site_model extends X4Model_core
 		$where_c = implode(' AND ', $w_c);
 		$where_p = implode(' AND ', $w_p);
 
-		$sql = 'SELECT p.url, p.name, p.description FROM pages p
+        if (ADVANCED_EDITING)
+        {
+            // advance editing uses sections and you can have articles for multipages
+            $sql = 'SELECT p.url, p.name, p.description
+                FROM pages p
+                JOIN sections s oN s.id_page = p.id AND s.xon = 1
+                JOIN articles a ON s.articles LIKE CONCAT(\'%"\', a.bid, \'"%\')
+                LEFT JOIN (
+                    SELECT MAX(id) AS id, bid
+                    FROM articles
+                    WHERE
+                        xon = 1 AND
+                        date_in <= NOW() AND
+                        (date_out = 0 OR date_out >= NOW()) AND
+                        ('.$where_c.')
+                    GROUP BY bid
+                ) b ON b.id = a.id AND b.bid = a.bid
+				WHERE p.xon = 1 AND
+					p.id_area = '.$id_area.' AND
+					p.lang = '.$this->db->escape($this->lang).' AND
+                    (
+					    '.$where_p.' OR
+                        b.bid IS NOT NULL
+                    )
+                GROUP BY p.url
+                ORDER BY p.url ASC';
+        }
+        else
+        {
+		    $sql = 'SELECT p.url, p.name, p.description
+                FROM pages p
+                JOIN articles a ON a.id_page = p.id
+                LEFT JOIN (
+                    SELECT MAX(id) AS id, bid
+                    FROM articles
+                    WHERE
+                        xon = 1 AND
+                        date_in <= NOW() AND
+                        (date_out = 0 OR date_out >= NOW())
+                        AND
+						('.$where_c.')
+                    GROUP BY bid
+                ) b ON b.id = a.id AND b.bid = a.bid
 				WHERE p.xon = 1 AND
 					p.id_area = '.$id_area.' AND
 					p.lang = '.$this->db->escape($this->lang).' AND
 					(
-						'.$where_p.' OR
-						(
-							(
-								SELECT COUNT(a.id)
-								FROM articles a
-								WHERE p.id = a.id_page AND
-									a.date_in <= '.$this->now.' AND
-									(a.date_out = 0 OR a.date_out >= '.$this->now.') AND
-									a.xon = 1 AND
-									('.$where_c.')
-								GROUP BY a.id_page
-								ORDER BY a.id DESC
-							) > 0
-						)
-					)
+					    '.$where_p.' OR
+                        b.bid IS NOT NULL
+                    )
+                GROUP BY p.url
 				ORDER BY p.url ASC';
+        }
 
 		return $this->db->query($sql);
 	}
@@ -714,7 +748,7 @@ class X4Site_model extends X4Model_core
 	 * @param string	parameter value, accepts * wildcard
 	 * @return string	page URL
 	 */
-	public function get_page_to($id_area, $lang, $modname, $param = '')
+	public function get_page_to(int $id_area, string $lang, string $modname, string $param = '')
 	{
 		// check APC
 		$c = (APC)
@@ -756,7 +790,7 @@ class X4Site_model extends X4Model_core
 	 * @param integer	area ID
 	 * @return array	associative array (parameter name => value)
 	 */
-	public function get_module_param($plugin_name, $id_area)
+	public function get_module_param(string $plugin_name, int $id_area)
 	{
 		// check APC
 		$conf = (APC)
@@ -792,7 +826,7 @@ class X4Site_model extends X4Model_core
 	 * @param string	parameter name
 	 * @return array	associative array (parameter name => value)
 	 */
-	public function get_module_param_value($plugin_name, $id_area, $param)
+	public function get_module_param_value(string $plugin_name, int $id_area, string $param)
 	{
 		// check APC
 		$value = (APC)
