@@ -191,4 +191,147 @@ class X4get_by_key_model extends X4Model_core
 		}
 		return $c;
 	}
+
+    // FOR INTERNAL SEARCHES
+
+    /**
+	 * Get page URL by plugin name and parameter
+	 *
+	 * @param integer	area ID
+	 * @param string	lang
+	 * @param string	plugin name
+	 * @param string	parameter value, accepts * wildcard
+	 * @return string	page URL
+	 */
+	public function get_page_to($id_area, $lang, $modname, $param = '')
+	{
+        $where = (strstr($param, '*') != '')
+            ? '	AND a.param LIKE '.$this->db->escape(str_replace('*', '%', $param))
+            : ' AND a.param = '.$this->db->escape($param);
+
+        $sql = 'SELECT p.url FROM pages p
+                JOIN articles a ON a.id_area = p.id_area AND a.id_page = p.id
+                WHERE p.xon = 1 AND
+                    p.id_area = '.$id_area.' AND
+                    p.lang = '.$this->db->escape($lang).' AND
+                    a.xon = 1 AND
+                    a.date_in <= '.$this->time().' AND
+                    (a.date_out = 0 OR a.date_out >= '.$this->time().') AND
+                    a.module = '.$this->db->escape($modname).$where.'
+                GROUP BY a.bid
+                ORDER BY a.id DESC';
+
+        return $this->db->query_var($sql);
+	}
+
+    /**
+	 * Get an array of articles that contains search keys
+	 *
+	 * @param integer	area ID
+	 * @param string	lang
+	 * @param array		array of keys
+	 * @return array	array of objects for search results
+	 */
+	public function search(int $id_area, string $lang, array $array)
+	{
+		// first step: get articles which can be highlighted
+		$w = array();
+		foreach ($array as $a) {
+			$i = htmlentities(strtolower($a));
+			$w[] = ' (
+				LOWER(a.name) LIKE \'%'.$i.'%\' OR
+				LOWER(a.ftext) LIKE \'%'.$i.'%\' OR
+				LOWER(a.ftext) LIKE '.$this->db->escape('%'.html_entity_decode($i).'%').'
+				) ';
+		}
+
+		$where = implode(' AND ', $w);
+
+		$sql = 'SELECT a.bid, a.name, a.xkeys, a.tags
+				FROM articles a
+                JOIN (
+                    SELECT MAX(id) AS id, bid
+                    FROM articles
+                    WHERE
+                        id_area = '.intval($id_area).' AND
+                        lang = '.$this->db->escape($lang).' AND
+                        xon = 1 AND
+                        date_in <= '.$this->time().' AND
+                        (date_out = 0 OR date_out >= '.$this->time().')
+                    GROUP BY bid
+                    ) b ON b.id = a.id AND b.bid = a.bid
+				WHERE
+					(a.xkeys <> \'\') AND
+					'.$where.'
+				ORDER BY a.id DESC';
+
+		$items = $this->db->query($sql);
+
+		// second step: check if there are articles with x4get_by_key
+		$sql = array();
+		foreach ($items as $a)
+		{
+            if (!empty($a->xkeys))
+			{
+				// for keys
+				$k = explode(' ', $a->xkeys);
+				foreach($k as $i)
+				{
+					$sql[] = 'SELECT \''.$a->bid.'\' AS id, p.id_area, p.lang, \''.$i.'\' AS xkeys, p.name, p.description
+					FROM articles a
+                    JOIN (
+                        SELECT MAX(id) AS id, bid
+                        FROM articles
+                        WHERE
+                            id_area = '.$id_area.' AND
+                            lang = '.$this->db->escape($lang).' AND
+                            xon = 1 AND
+                            date_in <= '.$this->time().' AND
+                            (date_out = 0 OR date_out >= '.$this->time().')
+                        GROUP BY bid
+                        ) b ON b.id = a.id AND b.bid = a.bid
+					JOIN pages p ON p.id = a.id_page
+					WHERE
+						p.xon = 1 AND
+						p.id_area = '.$id_area.' AND
+						p.lang = '.$this->db->escape($lang).' AND
+						a.module = \'x4get_by_key\' AND
+						a.param LIKE '.$this->db->escape($i.'|%');
+                }
+			}
+
+		}
+
+		// get results
+		$a = array();
+		foreach($sql as $q)
+		{
+			$tmp = $this->db->query_row($q);
+			if ($tmp)
+            {
+                $a[] = $tmp;
+            }
+		}
+		return $a;
+	}
+
+    // this module require a personalized url for the internal search engine
+	public $personalized_url = true;
+
+    /**
+	 * Get url for search
+	 * if you need a special URL with search
+	 *
+	 * @param object	Plugin obj
+     * @param string    $topage if this function fails
+	 * @return string
+	 */
+	public function get_url($obj, $topage)
+	{
+		$to_page = $this->get_page_to($obj->id_area, $obj->lang, 'x4get_by_key', $obj->xkeys.'|*');
+
+        return ($to_page)
+            ? $to_page
+            : $topage;
+	}
 }

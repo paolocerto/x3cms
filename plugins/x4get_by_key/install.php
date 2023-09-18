@@ -52,4 +52,4 @@ $sql1[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock,
 $sql1[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'en', '".$area->name."', 'x4get_by_key', '_X4GET_BY_KEY_UNFILTER', 'remove filter', 0, 1)";
 
 // module
-$sql1[] = "INSERT INTO modules (updated, id_area, name, title, configurable, admin, searchable, pluggable, version, xon) VALUES (NOW(), $id_area, '$mod_name', 'Articles by key', 0, 0, 0, 1, '$version', 0)";
+$sql1[] = "INSERT INTO modules (updated, id_area, name, title, configurable, admin, searchable, pluggable, version, xon) VALUES (NOW(), $id_area, '$mod_name', 'Articles by key', 0, 0, 1, 1, '$version', 0)";

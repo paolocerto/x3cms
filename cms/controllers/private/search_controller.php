@@ -45,18 +45,30 @@ class Search_controller extends X4Cms_controller
 		// build the message
 		$tmp = '';
 
+        // check post
+		$is_post = (X4Route_core::$post && trim($_POST['search']) != '');
+		// check query string
+		$is_get = false;
+		if (X4Route_core::$query_string)
+		{
+			$qs = X4Route_core::get_query_string();
+			$is_get = (isset($qs['search']) && !empty($qs['search']));
+		}
+
 		// search
 		// if submitted
-		if (X4Route_core::$post && trim($_POST['search']) != '')
+		if ($is_post || $is_get)
 		{
 			// found counter
 			$tot = 0;
 
 			// sanitize
-			$str = X4Validation_helper::sanitize(strtolower($_POST['search']), 'string');
+			$searched = ($is_post)
+			    ? X4Validation_helper::sanitize(strtolower($_POST['search']), 'string')
+                : $qs['search'];
 
-			// handle _POST
-			$str = explode(' ', addslashes($str));
+			// handle data
+			$str = explode(' ', addslashes($searched));
 
 			// search in area's articles
 			$found = $this->site->search($page->id_area, $str);
@@ -94,7 +106,7 @@ class Search_controller extends X4Cms_controller
 					// get page URL to use as link
 					$to_page = (isset($mod->search_param))
 						? $this->site->get_page_to($page->id_area, $page->lang, $i->name, $mod->search_param)
-                        			: $to_page = $this->site->get_page_to($page->id_area, $page->lang, $i->name, '*');
+                        : $this->site->get_page_to($page->id_area, $page->lang, $i->name, '*');
 
 					// perform plugin search
 					$found = $mod->search($page->id_area, $page->lang, $str);
@@ -115,6 +127,7 @@ class Search_controller extends X4Cms_controller
                         }
 						// build links to items found
 						$tmp .= '<ul class="search_result">';
+                        // create list to pages where found articles with matched contents
 						foreach ($found as $ii)
 						{
 							// create url

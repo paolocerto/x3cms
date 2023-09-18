@@ -61,16 +61,11 @@ class Search_controller extends X4Cms_controller
 			$tot = 0;
 
 			// sanitize
-			if ($is_post)
-			{
-				$searched = X4Validation_helper::sanitize(strtolower($_POST['search']), 'string');
-			}
-			else
-			{
-				$searched = $qs['search'];
-			}
+			$searched = ($is_post)
+			    ? X4Validation_helper::sanitize(strtolower($_POST['search']), 'string')
+                : $qs['search'];
 
-			// handle _POST
+			// handle data
 			$str = explode(' ', addslashes($searched));
 
 			// search in area's articles
@@ -107,14 +102,9 @@ class Search_controller extends X4Cms_controller
 					$mod = new $model;
 
 					// get page URL to use as link
-					if (isset($mod->search_param))
-					{
-						$to_page = $this->site->get_page_to($page->id_area, $page->lang, $i->name, $mod->search_param);
-					}
-					else
-					{
-						$to_page = $this->site->get_page_to($page->id_area, $page->lang, $i->name, '*');
-					}
+					$to_page = (isset($mod->search_param))
+						? $this->site->get_page_to($page->id_area, $page->lang, $i->name, $mod->search_param)
+                        : $this->site->get_page_to($page->id_area, $page->lang, $i->name, '*');
 
 					// perform plugin search
 					$found = $mod->search($page->id_area, $page->lang, $str);
@@ -136,6 +126,7 @@ class Search_controller extends X4Cms_controller
 
 						// build links to items found
 						$tmp .= '<ul class="search_result">';
+                        // create list to pages where found articles with matched contents
 						foreach ($found as $ii)
 						{
 							// create url
