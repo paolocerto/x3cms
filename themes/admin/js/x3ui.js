@@ -809,7 +809,8 @@ function configurator() {
             });
         },
         composer_update_table() {
-            fetch(root + this.xurl+JSON.stringify(this.xdata)+"/"+this.xname+"/"+this.xmove+"/1", {
+            let data = encodeURIComponent(JSON.stringify(this.xdata))
+            fetch(root + this.xurl+compact(data)+"/"+this.xname+"/"+this.xmove+"/1", {
                 method: "GET",
                 headers: { "Content-Type": "text/html" }
             })
