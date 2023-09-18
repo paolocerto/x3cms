@@ -61,12 +61,12 @@ class X4search_plugin extends X4Plugin_core implements X3plugin
 							<input type="text" class="w-full" x-on:input="disabled=$el.value.length < 3" name="search" id="search" autocomplete="off" '.$placeholder.' />
 						</div>
 						<div class="flex-none">
-							<button class="btn link" type="submit" x-bind:disabled="disabled">'.$label.'</button>
+							<button class="btn link small" type="submit" x-bind:disabled="disabled">'.$label.'</button>
 						</div>
 					</div>
 				</form>';
 
-		return '<div id="x4search" class="w-full">'.$out.'</div>';
+		return '<div id="x4search" class="max-w-3xl text-sm">'.$out.'</div>';
 	}
 
 	/**
