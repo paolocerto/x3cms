@@ -506,7 +506,7 @@ else
                     // exists col_class set for this column?
                     if (!isset($settings['col_settings']) || !isset($settings['col_settings']['bg'.$i]))
                     {
-                        $settings['col_settings']['bg'.$i] = '#ffffff';
+                        $settings['col_settings']['bg'.$i] = '';
                         $settings['col_settings']['fg'.$i] = '#444444';
                         $settings['col_settings']['style'.$i] = '';
                         $settings['col_settings']['class'.$i] = '';
