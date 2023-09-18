@@ -75,7 +75,7 @@ $fields[] = array(
     'type' => 'select',
     'value' => $item->id_page,
     'name' => 'id_page',
-    'options' => array($pages, 'id', 'name', [0, '']),
+    'options' => array($pages, 'id', 'name', ['', '']),
 	'rule' => 'required|numeric',
     'extra' => 'class="text-right w-full"'
 );

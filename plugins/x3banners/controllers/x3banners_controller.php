@@ -167,19 +167,13 @@ class X3banners_controller extends X3ui_controller implements X3plugin_controlle
         // get the fields array
         $fields = $form_fields->render();
 
-        // get the file_array
-		$file_array = $form_fields->__get('file_array');
-
-        // get js array
-        $js_array = $form_fields->__get('js_array');
-
 		// if submitted
 		if (X4Route_core::$post)
 		{
 			$e = X4Validation_helper::form($fields);
 			if ($e)
 			{
-				$this->editing($_POST, $file_array);
+				$this->editing($_POST);
 			}
 			else
 			{
@@ -207,10 +201,9 @@ class X3banners_controller extends X3ui_controller implements X3plugin_controlle
 	 *
 	 * @access	private
 	 * @param   array 	$_post _POST array
-     * @param   array 	$file_array File\'s labels array
-	 * @return  void
+     * @return  void
 	 */
-	private function editing(array $_post, array $file_array)
+	private function editing(array $_post)
 	{
 		$msg = null;
 		// check permission
