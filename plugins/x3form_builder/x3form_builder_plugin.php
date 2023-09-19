@@ -97,10 +97,9 @@ class X3form_builder_plugin extends X4Plugin_core implements X3plugin
 					{
 					    switch ($i->xtype)
 						{
-
-						default:
-						    $value = ($i->xtype == 'checkbox') ? _YES : '';
-						    break;
+                            default:
+                                $value = ($i->xtype == 'checkbox') ? _YES : '';
+                                break;
 						}
 					}
 
@@ -110,6 +109,12 @@ class X3form_builder_plugin extends X4Plugin_core implements X3plugin
 						'value' => $value,
 						'name' => $i->name
 					);
+
+                    // fix default value for radiobuttons
+                    if ($i->xtype == 'radio')
+                    {
+                        $fields[$c]['checked'] = $value;
+                    }
 
 					// handle label and alabel (alternative label)
 					$label = null;
