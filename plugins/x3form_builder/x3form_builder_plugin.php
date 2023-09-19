@@ -292,7 +292,7 @@ class X3form_builder_plugin extends X4Plugin_core implements X3plugin
                 'id_form' => $form->id,
                 'result' => json_encode($_post + $_files)
             );
-            $result = $mod->insert($post, 'x3_results');
+            $result = $mod->insert($post, 'x3_forms_results');
 
             // return msg
             $msg = ($result[1])
