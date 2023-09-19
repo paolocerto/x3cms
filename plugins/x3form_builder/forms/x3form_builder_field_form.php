@@ -39,7 +39,7 @@ $helps = [
 ];
 
 $xdata = '{
-    xtype:"",
+    xtype:"'.$item->xtype.'",
     fbhelp:[],
     init() {
         this.fbhelp = '.str_replace("'", "&quot;", json_encode($helps)).';
