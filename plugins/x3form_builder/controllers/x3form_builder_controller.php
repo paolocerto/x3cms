@@ -646,6 +646,8 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
         $form_fields->js_fields = $this->js_fields;
         $form_fields->tr = $this->decompose($item->rule, 'js_fields', 1);
         // for the script required by the editor
+        // here can't load scripts
+        // so we load it with the popup
         //$form_fields->options = $this->encoded_rules();
 
         // get the fields array
@@ -705,7 +707,7 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
         // load dictionaries
 		$this->dict->get_words();
 
-        $str = urldecode($str);
+        //$str = urldecode($str);
 
         $res = AdmUtils_helper::decompose($str, $this->$fields, $move, $echo);
 
@@ -740,6 +742,7 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
         header("Content-Disposition: attachment; filename=encoded_rules.js");
 		echo '// extra script for validation rules
 var rules = '.json_encode($a).';
+
 // extra check on configurator item for validation rules
 function checkRule(item) {
 

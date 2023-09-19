@@ -21,12 +21,41 @@ $opts = array(
     array('v' => 'radio', 'o' => _X3FB_RADIO._TRAIT_._X3FB_RADIO_SUGGESTION),
     array('v' => 'singleradio', 'o' => _X3FB_SINGLERADIO._TRAIT_._X3FB_SINGLERADIO_SUGGESTION),
     array('v' => 'file', 'o' => _X3FB_FILE._TRAIT_._X3FB_FILE_SUGGESTION),
-    array('v' => 'fieldset', 'o' => _X3FB_FIELDSET._TRAIT_._X3FB_FIELDSET_SUGGESTION),
+    //array('v' => 'fieldset', 'o' => _X3FB_FIELDSET._TRAIT_._X3FB_FIELDSET_SUGGESTION),
     //array('v' => 'recaptcha', 'o' => _X3FB_CAPTCHA._TRAIT_._X3FB_RECAPTCHA_SUGGESTION)
 );
 
+// x-data for types
+$helps = [
+    'html' => _X3FB_HELP_HTML,
+    'hidden' => _X3FB_HELP_HIDDEN,
+    'text' => _X3FB_HELP_TEXT,
+    'textarea' => _X3FB_HELP_TEXTAREA,
+    'select' => _X3FB_HELP_SELECT,
+    'checkbox' => _X3FB_HELP_CHECKBOX,
+    'radio' => _X3FB_HELP_RADIO,
+    'singleradio' => _X3FB_HELP_SINGLERADIO,
+    'file' => _X3FB_HELP_FILE,
+];
+
+$xdata = '{
+    xtype:"",
+    fbhelp:[],
+    init() {
+        this.fbhelp = '.str_replace("'", "&quot;", json_encode($helps)).';
+    },
+    msg() {
+        if (this.xtype == "") {
+            return "'._X3FB_HELP.'";
+        } else {
+            return this.fbhelp[this.xtype];
+        }
+    }
+}';
+
 // build the form
 $fields = array();
+
 $fields[] = array(
     'label' => null,
     'type' => 'hidden',
@@ -55,7 +84,8 @@ $fields[] = array(
 $fields[] = array(
     'label' => null,
     'type' => 'html',
-    'value' => '<div class="bg-white text-gray-700 md:px-8 md:pb-8 px-4 pb-4" style="border:1px solid white">'
+    'value' => '<div class="bg-white text-gray-700 md:px-8 md:pb-8 px-4 pb-4" style="border:1px solid white">
+        <div x-data=\''.$xdata.'\''
 );
 
 $fields[] = array(
@@ -65,13 +95,20 @@ $fields[] = array(
     'name' => 'xtype',
     'options' => array(X4Array_helper::array2obj($opts, 'v', 'o'), 'value', 'option', ''),
     'rule' => 'required',
-    'extra' => 'class="w-full"'
+    'extra' => 'class="w-full" x-model="xtype"'
 );
-
+/*
 $fields[] = array(
     'label' => null,
     'type' => 'html',
     'value' => _X3FB_HELP
+);
+*/
+$fields[] = array(
+    'label' => null,
+    'type' => 'html',
+    'value' => '<div class="py-4" x-html="msg()"></div>
+        </div>'
 );
 
 $fields[] = array(
@@ -147,6 +184,7 @@ $fields[] = array(
         x-cloak
     >'
 );
+
 $fields[] = array(
     'label' => null,
     'type' => 'html',
