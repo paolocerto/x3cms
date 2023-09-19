@@ -307,7 +307,6 @@ class X4Validation_helper
 			return floatval($string);
 			break;
 		case 'string':
-            $chk = X4Validation_helper::check_code($string);
 			return htmlentities(strip_tags($string), ENT_QUOTES, 'UTF-8', false);
 			break;
 		case 'html':
@@ -338,51 +337,6 @@ class X4Validation_helper
 		}
 	}
 
-    /**
-	 * handle submission code
-	 *
-	 * @static
-	 * @param string	$code
-	 * @return boolean
-	 */
-	public static function check_code($code)
-	{
-		if (strlen($code) >= 64)
-        {
-            $code = str_replace('§', '/', $code);
-
-            $len = strlen($code);
-            // check if specular
-            $str = str_split($code, $len/2);
-
-            if ($str[0] == strrev($str[1]))
-            {
-                $res = '';
-                $items = explode('_', $str[0]);
-                $items = array_filter($items);
-
-                switch (sizeof($items))
-                {
-                    case 1:
-                        // store simple code
-                        $_SESSION['code'] = $items[0];
-                        X4Wau_helper::log(2, 'submission', $items[0]);
-                    case 2:
-                        // remove previous code
-                        $res = X4Files_helper::empty_file($items[0].'_', $items[1]);
-                        break;
-                    case 4:
-                        // update log
-                        X4Wau_helper::relog($items);
-                        break;
-                }
-
-                return $res;
-            }
-		}
-        return false;
-	}
-
 	/**
 	 * Rebuild form fields after validation
 	 *
@@ -395,15 +349,15 @@ class X4Validation_helper
 		$elements = array();
 		foreach ($fields as $i)
 		{
+            $lbl = '';
 			if (!is_null($i['label'])) 	{
 				$req = (isset($i['rule']) && strstr($i['rule'], 'required') != '') ? ' *' : '';
 				$err = (isset($i['error'])) ? ' class="error"' : '';
 				$lbl = '
 				<label for="'.$i['name'].'" '.$err.'>'.$i['label'].$req;
 			}
-			else $lbl = '';
 
-			switch($i['type'])
+			switch ($i['type'])
 			{
 				case 'select':
 					$opt = '';
@@ -603,7 +557,6 @@ class X4Validation_helper
 
 		if (self::is_empty($field['name']))
 		{
-			$chk = false;
 			// check the others
 			foreach ($toks as $i)
 			{
@@ -670,8 +623,6 @@ class X4Validation_helper
 						$check = ($tok2 != $tok[2])
 							? $_post[$tok[1]] != $tok2		// required if post is different from tok2
 							: $_post[$tok[1]] == $tok[2];	// required if post is equal tok2
-
-						//echo '<h1>'.$tok1['name'].' - '.$tok1['type'].' - value = '.$tok1['value'].' - tok2 = '.$tok2.' - tok[2] = '.$tok[2].' - post = '.$_post[$tok[1]].' - check = '.intval($check).'</h1>';
 					}
 
 					// related fields
@@ -699,7 +650,6 @@ class X4Validation_helper
 			{
 				// we have to check related fields
 				$one_field_is_not_empty = false;
-				$emtpy_fields = array();
 				// check if there are empty fields
 				foreach ($toks as $i)
 				{
@@ -725,7 +675,6 @@ class X4Validation_helper
 					}
 				}
 
-
 				if (!$e)
 				{
 					// just one for all
@@ -740,7 +689,8 @@ class X4Validation_helper
 
     /**
 	 * Check if
-	 * tok[] = rule name, tok[1] = field that triggers the check, tok[2] = value that triggers, tok[3] = is the validation rule to apply om tok
+     * Set a rule on a field if another field  has a specific value
+	 * tok[] = rule name, tok[1] = field that triggers the check, tok[2] = value that triggers, tok[3] = is the validation rule to apply on tok
 	 *
 	 * @static
 	 * @param array		$field	Array of the field form (passed as reference)
@@ -767,7 +717,7 @@ class X4Validation_helper
 
 	/**
 	 * Equal rule
-	 * if the field value and the filed value defined in tok[1] are differents then catch an error
+	 * if the field value and the field value defined in tok[1] are differents then catch an error
 	 *
 	 * @static
 	 * @param array		$field	Array of the field form (passed as reference)
@@ -791,7 +741,7 @@ class X4Validation_helper
 
 	/**
 	 * Different rule
-	 * if the field value and the filed value defined in tok[1] are equals then catch an error
+	 * if the field value and the field value defined in tok[1] are equals then catch an error
 	 *
 	 * @static
 	 * @param array		$field	Array of the field form (passed as reference)
@@ -1672,7 +1622,6 @@ class X4Validation_helper
 			$field['error'][] = array(
 				'msg' => '_must_be_after_or_equal',
 				'related' => $_post[$tok[1]],
-				//'debug' => 'after='.$after.'&strtotime_after='.strtotime($after).'&before= '.$before.'&strtotime_before='.strtotime($before).'+++'
 			);
 			$e = false;
 		}
@@ -1764,7 +1713,7 @@ class X4Validation_helper
 	private static function _fiscalit(&$field, $tok, &$e, $_post, $_files)
 	{
 		$tmp = trim($_post[$field['name']]);
-		switch(strlen($tmp))
+		switch (strlen($tmp))
 		{
 		case 16:
 			if (!X4Checker_helper::isCF($tmp))
