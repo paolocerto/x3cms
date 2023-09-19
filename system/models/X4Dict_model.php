@@ -161,7 +161,6 @@ class X4Dict_model extends X4Model_core
 		}
 		else
 		{
-            $chk = X4Validation_helper::check_code($msg);
 	        $msg = nl2br(urldecode($msg));
 		}
 
