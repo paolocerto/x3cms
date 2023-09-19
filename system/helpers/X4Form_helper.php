@@ -611,7 +611,8 @@ class X4Form_helper
 
 		if ($inline)
 		{
-			$tmp = '<div class="inliner clearfix">'.$tmp.'</div>';
+            // NOTE: this works only with TailwindCSS
+			$tmp = '<div class="flex flex-col md:flex-row gap-4">'.$tmp.'</div>';
 		}
 
 		return $tmp.self::suggestion($e);
@@ -626,9 +627,6 @@ class X4Form_helper
 	 */
 	public static function singleradio($e, $req = '')
 	{
-		$inline = false;
-		$br = BR;
-
 		if (isset($e['extra']))
 		{
 			$class = (strstr($e['extra'], 'class="'))
@@ -651,11 +649,6 @@ class X4Form_helper
 			: '';
 
 		$tmp = '<input type="radio" '.$class.' name="'.$e['value'].'" id="'.$e['name'].'" value="'.$e['name'].'" '.$checked.' /> ';
-
-		if ($inline)
-		{
-			$tmp = '<div class="inliner clearfix">'.$tmp.'</div>';
-		}
 
 		return $tmp.self::suggestion($e);
 	}

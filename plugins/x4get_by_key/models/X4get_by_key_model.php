@@ -302,7 +302,7 @@ class X4get_by_key_model extends X4Model_core
 			}
 		}
 
-		// get results
+        // get results
 		$a = array();
 		foreach($sql as $q)
 		{

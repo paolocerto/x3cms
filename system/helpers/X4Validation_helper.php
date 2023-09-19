@@ -1920,7 +1920,7 @@ class X4Validation_helper
 		if ($i)
 		{
             $name = self::get_name($i);
-            switch($i['type'])
+            switch ($i['type'])
             {
                 case 'file':
 					$res = 'file';
@@ -2019,7 +2019,6 @@ class X4Validation_helper
 	 */
 	public static function get_related_value($name, $value)
 	{
-		$res = '';
 		$i = self::get_field($name);
 		if ($i)
 		{
