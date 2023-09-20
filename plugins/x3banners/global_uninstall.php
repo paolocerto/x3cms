@@ -30,7 +30,6 @@ $sql[] = 'DELETE FROM dictionary WHERE what = \''.$mod_name.'\'';
 $sql[] = 'DELETE FROM dictionary WHERE xkey = \'_SEARCH_X3BANNERS\'';
 
 // privtypes, gvprivs, uprivs
-
 $privtypes = array('_x3banners_creation','x3_banners');
 foreach ($privtypes as $i)
 {

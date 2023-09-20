@@ -18,9 +18,11 @@ $sql = array();
 $privtypes = array('x4_flags');
 foreach ($privtypes as $i)
 {
-    $sql[] = 'DELETE FROM privs WHERE what = \''.$i.'\'';
+	$sql[] = 'DELETE FROM privtypes WHERE name = \''.$i.'\'';
+	$sql[] = 'DELETE FROM gprivs WHERE what = \''.$i.'\'';
+	$sql[] = 'DELETE FROM uprivs WHERE privtype = \''.$i.'\'';
+	$sql[] = 'DELETE FROM dictionary WHERE xkey = \''.strtoupper($i).'\'';
 }
 
 $sql[] = 'DELETE FROM param WHERE xrif = \''.$mod_name.'\'';
-$sql[] = 'DELETE FROM dictionary WHERE xkey = \'X4_FLAGS\'';
 $sql[] = 'DELETE FROM modules WHERE name = \''.$mod_name.'\'';
