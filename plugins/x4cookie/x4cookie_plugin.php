@@ -74,6 +74,10 @@ class X4cookie_plugin extends X4Plugin_core implements X3plugin
             ? 'true'
             : 'false';
 
+        $profile = $cookie['profile']
+            ? 'true'
+            : 'false';
+
         // add var for profilation if you need it
 		$xdata = '{
             modal: false,
@@ -82,6 +86,7 @@ class X4cookie_plugin extends X4Plugin_core implements X3plugin
             modal_msg: "",
             tech: true,
             thirdy: '.$thirdy.',
+            profile: '.$profile.',
 
             settings() {
                 this.html_modal = "";
@@ -173,6 +178,7 @@ class X4cookie_plugin extends X4Plugin_core implements X3plugin
             modal_msg: "",
             tech: true,
             thirdy: false,
+            profile: false,
             init() {
                 this.html_modal = "";
                 this.error_msg = "";
@@ -208,9 +214,7 @@ class X4cookie_plugin extends X4Plugin_core implements X3plugin
                 });
             },
             setup() {
-                let str = JSON.stringify({tech: true, thirdy: this.thirdy});
-                console.log(str);
-                console.log(btoa(str));
+                let str = JSON.stringify({tech: true, thirdy: this.thirdy, profile: this.profile});
                 document.cookie="'.COOKIE.'_policy="+btoa(str)+";expires='.gmdate(DATE_COOKIE, strtotime('next year')).';path='.$this->site->site->domain.BASE_URL.';SameSite=Lax";
             },
             close() {
@@ -332,13 +336,17 @@ class X4cookie_plugin extends X4Plugin_core implements X3plugin
         }
 
         $title =  _X4COOKIE_SETUP;
-        $thirdy = '';
+        $thirdy = $profile = '';
         if (isset($_COOKIE[COOKIE.'_policy']))
         {
             $title = _X4COOKIE_CONFIG;
             $data = json_decode(base64_decode($_COOKIE[COOKIE.'_policy']), true);
 
             $thirdy = (is_null($data['thirdy']) || empty($data['thirdy']))
+                ? ''
+                : 'checked';
+
+            $profile = (!isset($data['profile']) || is_null($data['profile']) || empty($data['profile']))
                 ? ''
                 : 'checked';
         }
@@ -359,15 +367,31 @@ class X4cookie_plugin extends X4Plugin_core implements X3plugin
                             '._X4COOKIE_TECHNICAL.'
                         </label>
                         <p class="text-sm">'.nl2br(_X4COOKIE_TECHNICAL_MSG).'</p>
-                    </div>
-                    <div>
+                    </div>';
+
+        if ($conf['third_party_cookies'])
+        {
+            echo '  <div>
                         <label for="thirdy">
                             <input type="checkbox" name="thirdy" x-model="thirdy" '.$thirdy.' >
                             '._X4COOKIE_THIRDY.'
                         </label>
                         <p class="text-sm">'.nl2br(_X4COOKIE_THIRDY_MSG).'</p>
-                    </div>
-                </div>
+                    </div>';
+        }
+
+        if ($conf['profiling_cookies'])
+        {
+            echo '  <div>
+                        <label for="thirdy">
+                            <input type="checkbox" name="profile" x-model="profile" '.$profile.' >
+                            '._X4COOKIE_PROFILE.'
+                        </label>
+                        <p class="text-sm">'.nl2br(_X4COOKIE_PROFILE_MSG).'</p>
+                    </div>';
+        }
+
+        echo '</div>
             </div>
             <div class="mt-8 flex flex-col md:flex-row justify-end gap-4">
                 '.$more.'
