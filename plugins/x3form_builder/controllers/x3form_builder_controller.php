@@ -1255,12 +1255,12 @@ function checkRule(item) {
             ? ''
             : '_'.$table;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'x3_forms'.$table, $item->id, 4);
+		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'x3_forms_'.$table, $item->id, 4);
 		if (is_null($msg))
 		{
 			// do action
 			$mod = new X3form_builder_model();
-			$result = $mod->delete($item->id, 'x3_forms'.$table);
+			$result = $mod->delete($item->id, 'x3_forms_'.$table);
 
 			// set message
 			$msg = AdmUtils_helper::set_msg($result);
@@ -1269,7 +1269,7 @@ function checkRule(item) {
 			if ($result[1])
 			{
 				$perm = new Permission_model();
-				$perm->deleting_by_what('x3_forms'.$table, $item->id);
+				$perm->deleting_by_what('x3_forms_'.$table, $item->id);
 
 				// set what update
 				$msg->update = array(
