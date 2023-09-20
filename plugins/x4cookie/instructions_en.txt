@@ -1,0 +1,17 @@
+X4COOKIE
+
+REQUIREMENTS: 
+---
+WHAT IT DOES: ---
+---
+HOW IT WORKS: ---
+---
+CONFIGURATION: 
+	- url: Cookie info URL (TEXT)
+---
+HTML: ---
+---
+CSS RULES: ---
+---
+JAVASCRIPT: ---
+---
