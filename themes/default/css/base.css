@@ -34,7 +34,7 @@ h1 + h2 {font-size:2em;line-height:1.3em;font-weight:300;margin:.3em 0;font-styl
 h2 + h3 {font-weight:300;}
 h4 {font-size:1.5em !important;line-height:1.8em !important;}
 
-.mpt0 {margin-top:0 !important;padding-top:0 !important;}
+.mpt0 {margin-top:0 !important;margin-bottom:0 !important;padding-top:0 !important;}
 
 article > h2, article > h3 {margin-top:0.5em !important}
 
@@ -78,6 +78,7 @@ input[type="search"]::-webkit-search-decoration, input[type="search"]::-webkit-s
 .buttons button[type="reset"], button.btn.gray, a.btn.gray {background-color:#d1d5db;color:#374151}
 button.small {line-height:1rem;padding:0.7rem 0.7rem 0.5rem !important;}
 button[disabled], input[disabled] { cursor: default;opacity:.5; }
+a.link {color:var(--link-color) !important}
 
 /* colors for sections */
 
