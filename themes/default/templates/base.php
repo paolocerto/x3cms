@@ -74,6 +74,7 @@ else
 }
 ?>
     <link rel="stylesheet" href="<?php echo THEME_URL ?>css/fontawesome-all.min.css" >
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" >
 <?php
 echo (!DEVEL && file_exists(PATH.'themes/'.$this->site->area->theme.'/css/'.$css.'.min.css'))
 	? '<link rel="stylesheet" href="'.THEME_URL.'css/'.$css.'.min.css?v=0">'
@@ -263,7 +264,9 @@ if (!DEBUG)
 {
     // put here extra scripts
 }
-?>
 
+// check cookie policy
+echo stripslashes(X4Theme_helper::module($this->site, $page, [], 'x4cookie', 'alert'));
+?>
 </body>
 </html>
