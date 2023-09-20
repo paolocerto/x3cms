@@ -55,11 +55,11 @@ class X4Form_helper
 	 */
 	public static function doform($name, $action, $fields, $buttons = array(_RESET, _SUBMIT, 'text-center'), $method = 'post', $extra = '', $submit_action = '', $reset_action = '', $inline = false)
 	{
-		if (!defined('NOCACHE')) define('NOCACHE', true);
-
 		if (!empty($submit_action))
+        {
 			$extra .= ' onsubmit="return false"';
-
+        }
+        
 		// sanitize action
 		$action = htmlentities(strip_tags($action), ENT_QUOTES, 'UTF-8', false);
 
