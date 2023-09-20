@@ -36,7 +36,8 @@ $sql0[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock,
 // en
 $sql1[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'en', '".$area->name."', 'x4cookie', '_X4COOKIE_CONFIG', 'Review your choices about cookies', 0, 1)";
 $sql1[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'en', '".$area->name."', 'x4cookie', '_X4COOKIE_SETUP', 'Cookies setup', 0, 1)";
-$sql1[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'en', '".$area->name."', 'x4cookie', '_X4COOKIE_MESSAGE', 'This site uses technical and third-party cookies.\nBy continuing browsing you implicitly accept the use of cookies.', 0, 1)";
+$sql1[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'en', '".$area->name."', 'x4cookie', '_X4COOKIE_MESSAGE', 'This site uses technical and third-party cookies.\nBy continuing browsing you implicitly accept the use of cookies', 0, 1)";
+$sql1[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'en', '".$area->name."', 'x4cookie', '_X4COOKIE_EDIT', '\nYou can change your choices with a click on the cookie icon at the bottom left', 0, 1)";
 $sql1[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'en', '".$area->name."', 'x4cookie', '_X4COOKIE_OK', 'It\'s OK', 0, 1)";
 $sql1[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'en', '".$area->name."', 'x4cookie', '_X4COOKIE_MORE_INFO', 'More info', 0, 1)";
 
@@ -54,6 +55,7 @@ $sql1[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock,
 $sql1[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'it', '".$area->name."', 'x4cookie', '_X4COOKIE_CONFIG', 'Rivedi le tue scelte sui cookie', 0, 1)";
 $sql1[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'it', '".$area->name."', 'x4cookie', '_X4COOKIE_SETUP', 'Impostazione cookie', 0, 1)";
 $sql1[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'it', '".$area->name."', 'x4cookie', '_X4COOKIE_MESSAGE', 'Questo sito fa uso di cookies tecnici e di terze parti.\nContinuando la navigazione si accetta implicitamente l\'uso dei cookie', 0, 1)";
+$sql1[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'it', '".$area->name."', 'x4cookie', '_X4COOKIE_EDIT', '\nPotrete cambiare le vostre scelte con un click sull\'icona del biscotto in basso a sinistra', 0, 1)";
 $sql1[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'it', '".$area->name."', 'x4cookie', '_X4COOKIE_OK', 'Va bene', 0, 1)";
 $sql1[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'it', '".$area->name."', 'x4cookie', '_X4COOKIE_MORE_INFO', 'Voglio saperne di più', 0, 1)";
 
@@ -70,6 +72,7 @@ $sql1[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock,
 
 // param
 $sql1[] = "INSERT INTO param (updated, id_area, xrif, name, description, xtype, xvalue, required, xlock, xon) VALUES (NOW(), $id_area, '$mod_name', 'url', 'Cookie info URL', 'TEXT', '', 0, 0, 1)";
+$sql1[] = "INSERT INTO param (updated, id_area, xrif, name, description, xtype, xvalue, required, xlock, xon) VALUES (NOW(), $id_area, '$mod_name', 'edit_settings', 'Allow to edit previous choices', 'BOOLEAN', '1', 0, 0, 1)";
 $sql1[] = "INSERT INTO param (updated, id_area, xrif, name, description, xtype, xvalue, required, xlock, xon) VALUES (NOW(), $id_area, '$mod_name', 'third_party_cookies', 'Third party cookies used on the website', 'BOOLEAN', '1', 0, 0, 1)";
 $sql1[] = "INSERT INTO param (updated, id_area, xrif, name, description, xtype, xvalue, required, xlock, xon) VALUES (NOW(), $id_area, '$mod_name', 'profiling_cookies', 'Profiling cookies used on the website', 'BOOLEAN', '0', 0, 0, 1)";
 

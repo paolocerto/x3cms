@@ -65,6 +65,14 @@ class X4cookie_plugin extends X4Plugin_core implements X3plugin
 	 */
 	private function cookie_config(stdClass $page)
 	{
+        // get conf
+		$conf = $this->site->get_module_param('x4cookie', $page->id_area);
+
+        if (!$conf['edit_settings'])
+        {
+            return '';
+        }
+
 	    // load dictionary
 		$this->dict->get_wordarray(array('x4cookie'));
 
@@ -74,7 +82,7 @@ class X4cookie_plugin extends X4Plugin_core implements X3plugin
             ? 'true'
             : 'false';
 
-        $profile = $cookie['profile']
+        $profile = isset($cookie['profile']) && $cookie['profile']
             ? 'true'
             : 'false';
 
@@ -120,7 +128,7 @@ class X4cookie_plugin extends X4Plugin_core implements X3plugin
         }';
 
         // here we added a dedicated modal so if you want you can personalize it
-		$out = '
+		return '
 <dix
     id="x4cookie_cfg"
     class="fixed text-white z-10 left-0 pl-8 bottom-0 pb-8"
@@ -143,8 +151,6 @@ class X4cookie_plugin extends X4Plugin_core implements X3plugin
         </div>
     </div>
 </div>';
-
-		return $out;
 	}
 
 	/**
@@ -298,6 +304,13 @@ class X4cookie_plugin extends X4Plugin_core implements X3plugin
             $more = '<button type="button" class="btn gray" onclick="window.location.href=\''.$this->site->site->domain.BASE_URL.$conf['url'].'\'">'._X4COOKIE_MORE_INFO.'</button>';
         }
 
+        // edit
+        $edit = '';
+        if ($conf['edit_settings'])
+        {
+            $edit = _X4COOKIE_EDIT;
+        }
+
         echo '<div class="bg-white text-gray-700 md:px-8 px-4 py-10">
             <div class="flex flex-row items-center justify-between">
                 <h3 class="mpt0 mb-0 pb-0 font-bold tracking-tight">'._X4COOKIE_SETUP.'</h3>
@@ -305,7 +318,7 @@ class X4cookie_plugin extends X4Plugin_core implements X3plugin
                     <i class="fa-solid fa-2x fa-circle-xmark" ></i>
                 </a>
             </div>
-            <div class="pt-6">'.nl2br(_X4COOKIE_MESSAGE).'</div>
+            <div class="pt-6">'.nl2br(_X4COOKIE_MESSAGE.$edit).'</div>
             <div class="mt-8 flex flex-col md:flex-row justify-end gap-4">
                 '.$more.'
                 <button type="button" class="btn gray" @click="settings()">'._X4COOKIE_SETUP.'</button>
