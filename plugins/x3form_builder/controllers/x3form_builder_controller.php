@@ -1068,6 +1068,7 @@ function checkRule(item) {
             $perm = new Permission_model();
 
             // NOTE: we here have only bulk_action = delete
+            $result = [0, 1];
             foreach ($_post['bulk'] as $i)
             {
                 $msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'x3_forms_results', $i, 4);

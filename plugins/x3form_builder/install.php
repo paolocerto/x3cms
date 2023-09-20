@@ -57,6 +57,7 @@ $sql0[] = 'CREATE TABLE IF NOT EXISTS x3_forms_results (
 			updated datetime NOT NULL,
 			id_area int(11) NOT NULL,
 			lang char(2) NOT NULL,
+            name varchar(255) NOT NULL,
 			id_form int(11) NOT NULL,
 			result text NOT NULL,
 			xlock tinyint(1) NOT NULL,
@@ -68,7 +69,7 @@ $sql0[] = 'CREATE TABLE IF NOT EXISTS x3_forms_blacklist (
             updated datetime NOT NULL,
             id_area int(11) NOT NULL,
             lang char(2) NOT NULL,
-            name varchar(255) Not NULL,
+            name varchar(255) NOT NULL,
             xlock tinyint(1) NOT NULL,
             xon tinyint(1) NOT NULL,
             PRIMARY KEY (id)) ENGINE=INNODB DEFAULT CHARSET=utf8';

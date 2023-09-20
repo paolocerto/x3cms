@@ -161,14 +161,6 @@ class Login_controller extends X4Cms_controller
 				$_SESSION['site'] = SITE;
 				$_SESSION['id_area'] = 1;	// admin AREA ID
 
-                /*
-				// set cookie for remember me
-				if (isset($_post['remember_me']))
-				{
-					setcookie(COOKIE.'_login', $conditions['username'].'-'.$conditions['password'], time() + 2592000, '/', $_SERVER['HTTP_HOST']);
-				}
-                */
-
 				// refactory permissions
 				$mod = new Permission_model();
 				$mod->refactory($_SESSION['xuid']);
