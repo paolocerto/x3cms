@@ -68,7 +68,7 @@ class X4cookie_plugin extends X4Plugin_core implements X3plugin
         // get conf
 		$conf = $this->site->get_module_param('x4cookie', $page->id_area);
 
-        if (!$conf['edit_settings'])
+        if (!isset($conf['edit_settings']) || !$conf['edit_settings'])
         {
             return '';
         }
@@ -306,7 +306,7 @@ class X4cookie_plugin extends X4Plugin_core implements X3plugin
 
         // edit
         $edit = '';
-        if ($conf['edit_settings'])
+        if (isset($conf['edit_settings']) && $conf['edit_settings'])
         {
             $edit = _X4COOKIE_EDIT;
         }
