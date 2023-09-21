@@ -106,7 +106,7 @@ if (!empty($pages))
                         </a>';
 
 				// manager user
-				if ($i->level > 2)
+				if ($i->level >= 2)
 				{
 					if (in_array($i->url, $no_del))
                     {
@@ -123,16 +123,17 @@ if (!empty($pages))
 
 					$actions .= AdmUtils_helper::link('settings', 'pages/seo/'.$i->id);
 
+                    // add sections editing
+                    if (ADVANCED_EDITING)
+                    {
+                        $actions .= '<a class="link" @click="pager(\''.BASE_URL.'sections/index/'.$i->id_area.'/'.$i->id.'\')" title="'._SECTIONS.'">
+                            <i class="fa-regular fa-object-group fa-lg"></i>
+                        </a>';
+                    }
+
 					// admin user
 					if ($i->level >= 4)
 					{
-						// add sections editing
-						if (ADVANCED_EDITING)
-						{
-							$actions .= '<a class="link" @click="pager(\''.BASE_URL.'sections/index/'.$i->id_area.'/'.$i->id.'\')" title="'._SECTIONS.'">
-                                <i class="fa-regular fa-object-group fa-lg"></i>
-                            </a>';
-						}
 						$actions .= AdmUtils_helper::link('xlock', 'pages/set/xlock/'.$page->id_area.'/'.$i->id.'/'.(($i->xlock+1)%2), $statuses);
 
 						$actions .= (!in_array($i->url, $no_del))
