@@ -57,7 +57,6 @@ final class X4mysql_driver extends X3db_driver
 					X4Core_core::$db[$this->name]['db_pass'],
 					array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES '".X4Core_core::$db[$this->name]['charset']."'"));
 				$this->link->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                //$this->link->setAttribute(PDO::ATTR_AUTOCOMMIT, false);
 
                 // add connection to driver instances
                 self::instance($this->name);
@@ -254,9 +253,10 @@ final class X4mysql_driver extends X3db_driver
 	 * Compiles an exec query and runs it.
 	 *
 	 * @param   string  $sql SQL query to execute
+     * @param   string  $action
 	 * @return  Database_Result  Query result
 	 */
-	public function single_exec(string $sql = '')
+	public function single_exec(string $sql = '', $action = '')
 	{
 		if (empty($sql))
 		{
@@ -271,15 +271,24 @@ final class X4mysql_driver extends X3db_driver
 		try
 		{
 			$res = $this->link->exec($sql);
-
 			// check res
 			$res = intval(!($res === false));
 
-			// to avoid errors with query without ID, like create table or truncate table
-            $last_id = (substr($sql, 0, 15) == 'TRUNCATE TABLE ')
-                ? 1
-                : (int) $this->link->lastInsertId();
-			$result = array(intval($last_id), $res);
+            switch ($action)
+            {
+                case 'insert':
+                    $last_id = (int) $this->link->lastInsertId();
+                    $result = array($last_id, $res);
+                    break;
+                case 'update':
+                case 'delete':
+                    $affected = (int) $this->link->rowCount();
+                    $result = array(0, $affected);
+                    break;
+                default:
+                    $result = array(1, $res);
+                    break;
+            }
 		}
 		catch (PDOException $e)
 		{
@@ -329,17 +338,14 @@ final class X4mysql_driver extends X3db_driver
                     die;
                 }
 			}
-			// to avoid errors with query without ID, like create table or truncate table
-            $last_id = (strpos($q, 'ATE TABLE ') === false)
-                ? 1
-                : (int) $this->link->lastInsertId();
+
             // commit
-            // some queries could 
+            // some queries could
             if ($this->link->inTransaction())
             {
                 $this->link->commit();
             }
-			$result = array($last_id, $res);
+			$result = array(0, $res);
 		}
 		catch (PDOException $e)
 		{

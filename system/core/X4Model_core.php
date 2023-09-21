@@ -454,7 +454,7 @@ abstract class X4Model_core
                 ? 'INSERT INTO '.$t.' ('.implode(',', $field).') VALUES ('.implode(',', $insert).')'
                 : 'INSERT INTO '.$t.' (updated, '.implode(',', $field).') VALUES (\''.$this->now().'\', '.implode(',', $insert).')';
 
-            $res = $this->db->single_exec($sql);
+            $res = $this->db->single_exec($sql, 'insert');
 
 			if ($this->log && $res[1])
 			{
@@ -549,7 +549,7 @@ abstract class X4Model_core
 
             }
 
-			$res = $this->db->single_exec('UPDATE '.$t.' SET updated = \''.$this->now().'\' '.$update.' WHERE id = '.$id.$where);
+			$res = $this->db->single_exec('UPDATE '.$t.' SET updated = \''.$this->now().'\' '.$update.' WHERE id = '.$id.$where, 'update');
 			$res = array($id, $res[1]);
 
 			if ($this->log && $res[1])
@@ -597,7 +597,7 @@ abstract class X4Model_core
 		if ($this->db->sql)
 		{
 			// Relational DB
-			$res = $this->db->single_exec('DELETE FROM '.$t.' WHERE id = '.$id);
+			$res = $this->db->single_exec('DELETE FROM '.$t.' WHERE id = '.$id, 'delete');
 			$res = array($id, $res[1]);
 
 			if ($this->log && $res[1])
