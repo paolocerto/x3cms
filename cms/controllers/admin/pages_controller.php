@@ -133,7 +133,7 @@ class Pages_controller extends X3ui_controller
 		{
 			// do action
 			$mod = new Page_model($id_area, X4Route_core::$lang, $id);
-			$result = $mod->update($id, array($what => $value), 'pages', $conditions);
+			$result = $mod->update($id, array($what => $value), 'pages');
 
 			// set message
 			$this->dict->get_words();
