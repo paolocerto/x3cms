@@ -265,13 +265,10 @@ final class X4mysql_driver extends X3db_driver
 
 		// No link? Connect!
 		$this->link || $this->connect();
-
 		$this->latest_query = $sql;
-
 		try
 		{
 			$res = (int) $this->link->exec($sql);
-
             switch ($action)
             {
                 case 'insert':
@@ -324,8 +321,8 @@ final class X4mysql_driver extends X3db_driver
 			{
 				$this->latest_query = $q;
 				self::$queries++;
-                $tmp = (int) $this->link->exec($q);
-				if ($tmp)
+                $tmp = $this->link->exec($q);
+				if ($tmp !== false)
                 {
                     $res += $tmp;
                 }
