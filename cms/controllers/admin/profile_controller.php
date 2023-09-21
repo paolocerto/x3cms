@@ -94,7 +94,7 @@ class Profile_controller extends X3ui_controller
         // not for demouser
         if ($_SESSION['username'] == 'demouser')
         {
-            $msg = AdmUtils_helper::set_msg($false, '', $this->dict->get_word('_USER_CANNOT_BE_MODIFIED', 'msg'));
+            $msg = AdmUtils_helper::set_msg(false, '', $this->dict->get_word('_USER_CANNOT_BE_MODIFIED', 'msg'));
             $this->response($msg);
             die;
         }
