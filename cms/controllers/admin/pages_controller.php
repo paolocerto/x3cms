@@ -137,7 +137,7 @@ class Pages_controller extends X3ui_controller
             $conditions = [];
             if ($what == 'xon')
             {
-                $conditions['xlock' => ['relation' => '=', 'value' => '0']];
+                $conditions['xlock'] = ['relation' => '=', 'value' => 0];
             }
 
 			$result = $mod->update($id, array($what => $value), 'pages', $conditions);
