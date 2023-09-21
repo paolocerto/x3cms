@@ -293,6 +293,19 @@ class Dictionary_controller extends X3ui_controller
 				else
 				{
 				    $result = $mod->insert($post);
+
+                    if ($result[1])
+                    {
+                        // permissions
+                        $perm = new Permission_model();
+                        $array[] = array(
+                            'action' => 'insert',
+                            'id_what' => $result[0],
+                            'id_user' => $_SESSION['xuid'],
+                            'level' => 4
+                        );
+                        $perm->pexec('dictionary', $array, $post['id_area']);
+                    }
                 }
 
                 // set message

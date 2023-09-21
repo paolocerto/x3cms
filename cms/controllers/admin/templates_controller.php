@@ -417,7 +417,7 @@ class Templates_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level(1, $_SESSION['xuid'], 'templates', $_post['id'], 2);
+		$msg = AdmUtils_helper::chk_priv_level(1, $_SESSION['xuid'], 'templates', $_post['id'], 3);
 
 		if (is_null($msg))
 		{

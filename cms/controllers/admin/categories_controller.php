@@ -250,6 +250,19 @@ class Categories_controller extends X3ui_controller
 				// set what update
 				if ($result[1])
 				{
+                    if (!$id)
+                    {
+                        // permissions
+                        $perm = new Permission_model();
+                        $array[] = array(
+                            'action' => 'insert',
+                            'id_what' => $result[0],
+                            'id_user' => $_SESSION['xuid'],
+                            'level' => 4
+                        );
+                        $perm->pexec('categories', $array, $post['id_area']);
+                    }
+
 					$msg->update = array(
 						'element' => 'page',
 						'url' => BASE_URL.'categories/index/'.$post['id_area'].'/'.$post['lang'].'/'.$post['tag']

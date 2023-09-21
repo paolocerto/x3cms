@@ -133,13 +133,6 @@ class Pages_controller extends X3ui_controller
 		{
 			// do action
 			$mod = new Page_model($id_area, X4Route_core::$lang, $id);
-
-            $conditions = [];
-            if ($what == 'xon')
-            {
-                $conditions['xlock'] = ['relation' => '=', 'value' => 0];
-            }
-
 			$result = $mod->update($id, array($what => $value), 'pages', $conditions);
 
 			// set message
@@ -271,6 +264,16 @@ class Pages_controller extends X3ui_controller
 				// set what update
 				if ($result[1])
 				{
+                    // permissions
+                    $perm = new Permission_model();
+                    $array[] = array(
+                        'action' => 'insert',
+                        'id_what' => $result[0],
+                        'id_user' => $_SESSION['xuid'],
+                        'level' => 4
+                    );
+                    $perm->pexec('pages', $array, $post['id_area']);
+
 					$msg->update = array(
 						'element' => 'page',
 						'url' => $_SERVER['HTTP_REFERER']   //BASE_URL.'pages/index/'.$post['id_area'].'/'.$post['lang'].'/'.str_replace('/', '-', $post['xfrom'])

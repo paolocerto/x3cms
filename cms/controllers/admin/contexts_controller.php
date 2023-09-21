@@ -252,6 +252,16 @@ class Contexts_controller extends X3ui_controller
 					$result = $mod->insert($post);
 					if ($result[1])
 					{
+                        // permissions
+                        $perm = new Permission_model();
+                        $array[] = array(
+                            'action' => 'insert',
+                            'id_what' => $result[0],
+                            'id_user' => $_SESSION['xuid'],
+                            'level' => 4
+                        );
+                        $perm->pexec('contexts', $array, $post['id_area']);
+
 						// add item into dictionary
 						$mod->check_dictionary($post, 1);
 					}
@@ -263,7 +273,7 @@ class Contexts_controller extends X3ui_controller
 				// set what update
 				if ($result[1])
 				{
-					$msg->update = array(
+                	$msg->update = array(
 						'element' => 'topic',
 						'url' => BASE_URL.'contexts/index/'.$post['id_area'].'/'.$post['lang']
 					);

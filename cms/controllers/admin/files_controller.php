@@ -335,6 +335,15 @@ class Files_controller extends X3ui_controller
 				// set what update
 				if ($result[1])
 				{
+                    // permissions
+                    $perm = new Permission_model();
+                    $array[] = array(
+                            'action' => 'insert',
+                            'id_what' => $result[0],
+                            'id_user' => $_SESSION['xuid'],
+                            'level' => 4);
+                    $perm->pexec('files', $array, $post['id_area']);
+
                     $qs = [
                         'xxtype' => -1,
                         'xctg' => $post[0]['category'],

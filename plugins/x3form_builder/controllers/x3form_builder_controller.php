@@ -416,6 +416,19 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
 				// set what update
 				if ($result[1])
 				{
+                    if (!$_post['id'])
+                    {
+                        // permissions
+                        $perm = new Permission_model();
+                        $array[] = array(
+                            'action' => 'insert',
+                            'id_what' => $result[0],
+                            'id_user' => $_SESSION['xuid'],
+                            'level' => 4
+                        );
+                        $perm->pexec('x3_forms', $array, $post['id_area']);
+                    }
+
 					$msg->update = array(
 						'element' => 'page',
 						'url' => $_SERVER['HTTP_REFERER']
@@ -529,6 +542,16 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
 					// add permission
 					if ($result[1])
 					{
+                        // permissions
+                        $perm = new Permission_model();
+                        $array[] = array(
+                            'action' => 'insert',
+                            'id_what' => $result[0],
+                            'id_user' => $_SESSION['xuid'],
+                            'level' => 4
+                        );
+                        $perm->pexec('x3_forms', $array, $post['id_area']);
+
 						$id_form = $result[0];
 
 						// duplicate fields
@@ -552,6 +575,17 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
 								'xon' => 1
 							);
 							$result = $mod->insert($post_i, 'x3_forms_fields');
+
+                            if ($result[1])
+                            {
+                                $array[] = array(
+                                    'action' => 'insert',
+                                    'id_what' => $result[0],
+                                    'id_user' => $_SESSION['xuid'],
+                                    'level' => 4
+                                );
+                                $perm->pexec('x3_forms_fields', $array, $post['id_area']);
+                            }
 						}
 					}
 

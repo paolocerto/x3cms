@@ -668,6 +668,15 @@ class Articles_controller extends X3ui_controller
 			// response
 			if ($result[1])
 			{
+                // permissions
+                $perm = new Permission_model();
+                $array[] = array(
+                        'action' => 'insert',
+                        'id_what' => $result[0],
+                        'id_user' => $_SESSION['xuid'],
+                        'level' => 4);
+                $perm->pexec('articles', $array, $post['id_area']);
+
 				$from = (!empty($_post['from']))
                     ? urldecode($_post['from'])
                     : $_SERVER['HTTP_REFERER'];

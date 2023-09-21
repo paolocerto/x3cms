@@ -422,6 +422,19 @@ class Sections_controller extends X3ui_controller
 				// set what update
 				if ($result[1])
 				{
+                    if (!$id)
+                    {
+                        // permissions
+                        $perm = new Permission_model();
+                        $array[] = array(
+                            'action' => 'insert',
+                            'id_what' => $result[0],
+                            'id_user' => $_SESSION['xuid'],
+                            'level' => 4
+                        );
+                        $perm->pexec('sections', $array, $post['id_area']);
+                    }
+
 					$msg->update = array(
 						'element' => 'page',
 						'url' => BASE_URL.'sections/index/'.$post['id_area'].'/'.$post['id_page']
@@ -538,7 +551,7 @@ class Sections_controller extends X3ui_controller
 	public function ordering(int $id_area, int $id_page)
 	{
 		$msg = null;
-        $msg = AdmUtils_helper::chk_priv_level($id_area, $_SESSION['xuid'], '_section_creation', 0, 4);
+        $msg = AdmUtils_helper::chk_priv_level($id_area, $_SESSION['xuid'], 'pages', $id_page, 3);
 		if (is_null($msg) && X4Route_core::$input)
 		{
             // handle post

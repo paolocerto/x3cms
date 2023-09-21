@@ -196,6 +196,19 @@ class Menus_controller extends X3ui_controller
 
 			if ($result[1])
 			{
+                if (!$id)
+                {
+                    // permissions
+                    $perm = new Permission_model();
+                    $array[] = array(
+                        'action' => 'insert',
+                        'id_what' => $result[0],
+                        'id_user' => $_SESSION['xuid'],
+                        'level' => 4
+                    );
+                    $perm->pexec('menus', $array, 1);
+                }
+
 				$theme = $mod->get_var($post['id_theme'], 'themes', 'name');
 				$msg->update = array(
 					'element' => 'page',
