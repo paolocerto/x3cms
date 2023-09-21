@@ -503,7 +503,7 @@ class Users_controller extends X3ui_controller
 			{
 				$msg->update = array(
 					'element' => 'page',
-					'url' => BASE_URL.'users/detail/'.$_post['id']
+					'url' => $_SERVER['HTTP_REFERER']
 				);
 			}
 		}
