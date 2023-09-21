@@ -345,7 +345,7 @@ function xmodal() {
         },
         failed(data) {
             this.modal_title = data.title;
-            this.msg = data.msg;
+            this.modal_msg = data.msg;
             this.modal = true;
             this.html_modal = modal_ko;
         },
