@@ -508,11 +508,12 @@ abstract class X4Model_core
 	 * @param   integer	record ID
 	 * @param   array	data to update
 	 * @param   string	table name
+     * @param   array   array of conditions
 	 * @param   array   array of floats
      * @param   array   array of fields to concat
 	 * @return  array   (id row, success)
 	 */
-	final public function update(int $id, array $data, string $table = '', array $floats = [], array $concat = [])
+	final public function update(int $id, array $data, string $table = '', array $conditions = [], array $floats = [], array $concat = [])
 	{
 		$t = empty($table)
             ? $this->table
@@ -538,7 +539,17 @@ abstract class X4Model_core
 				}
 			}
 
-			$res = $this->db->single_exec('UPDATE '.$t.' SET updated = \''.$this->now().'\' '.$update.' WHERE id = '.$id);
+            $where = '';
+            if (!empty($conditions))
+            {
+                foreach($conditions as $k => $v)
+                {
+                    $where .= ' AND '.addslashes($k).' '.$v['relation'].' '.$this->db->escape($v['value']);
+                }
+
+            }
+
+			$res = $this->db->single_exec('UPDATE '.$t.' SET updated = \''.$this->now().'\' '.$update.' WHERE id = '.$id.$where);
 			$res = array($id, $res[1]);
 
 			if ($this->log && $res[1])
