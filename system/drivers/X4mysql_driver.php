@@ -270,9 +270,7 @@ final class X4mysql_driver extends X3db_driver
 
 		try
 		{
-			$res = $this->link->exec($sql);
-			// check res
-			$res = intval(!($res === false));
+			$res = (int) $this->link->exec($sql);
 
             switch ($action)
             {
@@ -282,8 +280,7 @@ final class X4mysql_driver extends X3db_driver
                     break;
                 case 'update':
                 case 'delete':
-                    $affected = (int) $this->link->rowCount();
-                    $result = array(0, $affected);
+                    $result = array(0, $res);
                     break;
                 default:
                     $result = array(1, $res);
@@ -327,8 +324,8 @@ final class X4mysql_driver extends X3db_driver
 			{
 				$this->latest_query = $q;
 				self::$queries++;
-                $tmp = $this->link->exec($q);
-				if ($tmp !== false)
+                $tmp = (int) $this->link->exec($q);
+				if ($tmp)
                 {
                     $res += $tmp;
                 }
