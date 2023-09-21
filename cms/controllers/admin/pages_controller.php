@@ -132,7 +132,7 @@ class Pages_controller extends X3ui_controller
 		if (is_null($msg))
 		{
 			// do action
-			$mod = new Page_model(2, X4Route_core::$lang, $id);
+			$mod = new Page_model($id_area, X4Route_core::$lang, $id);
 
             $conditions = [];
             if ($what == 'xon')
