@@ -131,7 +131,7 @@ if ($items[0]) {
 
 			if ($i->level > 2)
 			{
-                $actions .= AdmUtils_helper::link('xon', 'articles/set_by_bid/xon/'.$i->id.'/'.(($i->xon+1)%2), $statuses);
+                $actions .= AdmUtils_helper::link('xon', 'articles/set_by_bid/xon/'.$i->id_area.'/'.$i->id.'/'.(($i->xon+1)%2), $statuses);
 
                 $actions .= '<a class="link" @click="pager(\''.BASE_URL.'articles/history/'.$id_area.'/'.$lang.'/'.$i->bid.'\')" title="'._ARTICLE_HISTORY.'">
                         <i class="fa-solid fa-clock-rotate-left fa-lg"></i>
@@ -139,7 +139,7 @@ if ($items[0]) {
 
 				if ($i->level >= 4)
 				{
-                    $actions .= AdmUtils_helper::link('xlock', 'articles/set_by_bid/xlock/'.$i->id.'/'.(($i->xlock+1)%2), $statuses);
+                    $actions .= AdmUtils_helper::link('xlock', 'articles/set_by_bid/xlock/'.$i->id_area.'/'.$i->id.'/'.(($i->xlock+1)%2), $statuses);
 
                     $actions .= AdmUtils_helper::link('delete','articles/delete/'.$i->id_area.'/'.$i->lang.'/'.$i->bid);
 				}

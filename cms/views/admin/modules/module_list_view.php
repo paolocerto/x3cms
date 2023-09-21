@@ -52,7 +52,7 @@ if ($plugged || $pluggable)
             // check permission
             if (($i->level > 2 && $i->xlock == 0) || $i->level >= 3)
             {
-                $actions .= AdmUtils_helper::link('xon', 'modules/set/xon/'.$i->id.'/'.(($i->xon+1)%2), $statuses);
+                $actions .= AdmUtils_helper::link('xon', 'modules/set/xon/'.$i->id_area.'/'.$i->id.'/'.(($i->xon+1)%2), $statuses);
 
                 // configurable
                 if ($i->configurable)
@@ -77,11 +77,11 @@ if ($plugged || $pluggable)
                         $icon = '';
                     }
 
-                    $actions .= '<a class="link" @click="setter(\''.BASE_URL.'modules/set/hidden/'.$i->id.'/'.(($i->hidden+1)%2).'\')" title="'._STATUS.' '.$hidden.'">
+                    $actions .= '<a class="link" @click="setter(\''.BASE_URL.'modules/set/hidden/'.$i->id_area.'/'.$i->id.'/'.(($i->hidden+1)%2).'\')" title="'._STATUS.' '.$hidden.'">
                             <i class="fa-solid fa-link'.$icon.' fa-lg"></i>
                         </a>';
 
-                    $actions .= AdmUtils_helper::link('xlock', 'modules/set/xlock/'.$i->id.'/'.(($i->xlock+1)%2), $statuses);
+                    $actions .= AdmUtils_helper::link('xlock', 'modules/set/xlock/'.$i->id_area.'/'.$i->id.'/'.(($i->xlock+1)%2), $statuses);
 
                     $actions .= '<a class="link" @click="popup(\''.BASE_URL.'modules/uninstall/'.$i->id.'\')" title="'._UNINSTALL.'">
                             <i class="fa-solid fa-download fa-lg warn"></i>

@@ -102,7 +102,7 @@ if (!empty($items[0]))
             // manager or admin user
             if ($i->level > 2)
             {
-                $actions .= AdmUtils_helper::link('xon', 'files/set/xon/'.$i->id.'/'.(($i->xon+1)%2), $statuses);
+                $actions .= AdmUtils_helper::link('xon', 'files/set/xon/'.$id_area.'/'.$i->id.'/'.(($i->xon+1)%2), $statuses);
             }
             // filter
             $tmp['xctg'] = $i->category;
@@ -114,7 +114,7 @@ if (!empty($items[0]))
             // admin user
             if ($i->level >= 4)
             {
-                $actions .= AdmUtils_helper::link('xlock', 'files/set/xlock/'.$i->id.'/'.(($i->xlock+1)%2), $statuses);
+                $actions .= AdmUtils_helper::link('xlock', 'files/set/xlock/'.$id_area.'/'.$i->id.'/'.(($i->xlock+1)%2), $statuses);
                 $actions .= AdmUtils_helper::link('delete','files/delete/'.$i->id);
             }
 		}

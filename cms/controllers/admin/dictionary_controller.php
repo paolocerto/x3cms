@@ -130,7 +130,7 @@ class Dictionary_controller extends X3ui_controller
 	 */
 	private function actions(string $lang, string $area, string $what = '')
 	{
-		return '<a class="link" @click="popup(\''.BASE_URL.'dictionary/clean\')" title="'._DICTIONARY_DELETE_DUPLICATES.'">
+		return '<a class="link" @click="popup(\''.BASE_URL.'dictionary/clean/'.$area.'\')" title="'._DICTIONARY_DELETE_DUPLICATES.'">
             <i class="fa-solid fa-lg fa-broom"></i>
         </a>
         <a class="link" @click="popup(\''.BASE_URL.'dictionary/import/'.$lang.'/'.$area.'\')" title="'._IMPORT_KEYS.'">
@@ -145,11 +145,12 @@ class Dictionary_controller extends X3ui_controller
 	 * Change status
 	 *
 	 * @param   string  $what field to change
+     * @param   integer $id_area
 	 * @param   integer $id ID of the item to change
 	 * @param   integer $value value to set (0 = off, 1 = on)
 	 * @return  void
 	 */
-	public function set(string $what, int $id, int $value = 0)
+	public function set(string $what, int $id_area, int $id, int $value = 0)
 	{
 		$msg = null;
 		// check permission
@@ -157,7 +158,7 @@ class Dictionary_controller extends X3ui_controller
 			? 4
 			: 3;
 
-		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'dictionary', $id, $val);
+		$msg = AdmUtils_helper::chk_priv_level($id_area, $_SESSION['xuid'], 'dictionary', $id, $val);
 		if (is_null($msg))
 		{
 			// do action
@@ -250,8 +251,8 @@ class Dictionary_controller extends X3ui_controller
         // check permissions
         $id_area = X4Route_core::get_id_area($_post['area']);
 		$msg = ($id)
-            ? AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'dictionary', $id_area, 2)
-            : AdmUtils_helper::chk_priv_level($_SESSION['xuid'], '_word_creation', 0, 4);
+            ? AdmUtils_helper::chk_priv_level($id_area, $_SESSION['xuid'], 'dictionary', $id_area, 2)
+            : AdmUtils_helper::chk_priv_level($id_area, $_SESSION['xuid'], '_word_creation', 0, 4);
 
 		if (is_null($msg))
 		{
@@ -326,7 +327,7 @@ class Dictionary_controller extends X3ui_controller
 
 		// get object
 		$mod = new Dictionary_model();
-		$item = $mod->get_by_id($id, 'dictionary', 'id, xkey');
+		$item = $mod->get_by_id($id, 'dictionary', 'id, area, xkey');
 
 		// build the form
 		$fields = array();
@@ -340,7 +341,7 @@ class Dictionary_controller extends X3ui_controller
 		// if submitted
 		if (X4Route_core::$post)
 		{
-			$this->deleting($id);
+			$this->deleting($item);
 			die;
 		}
 
@@ -360,14 +361,15 @@ class Dictionary_controller extends X3ui_controller
 	 * Delete dictionary word
 	 *
 	 * @access	private
-	 * @param   integer     $id
+	 * @param   stdClass     $item
 	 * @return  void
 	 */
-	private function deleting(int $id)
+	private function deleting(stdClass $item)
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'dictionary', $id, 4);
+        $id_area = X4Route_core::get_id_area($item->area);
+		$msg = AdmUtils_helper::chk_priv_level($id_area, $_SESSION['xuid'], 'dictionary', $item->id, 4);
 
 		if (is_null($msg))
 		{
@@ -397,9 +399,10 @@ class Dictionary_controller extends X3ui_controller
     /**
 	 * Remove duplicates in dictionary table
 	 *
+     * @param   string  $area
 	 * @return  void
 	 */
-	public function clean()
+	public function clean(string $area)
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'dictionary'));
@@ -416,7 +419,7 @@ class Dictionary_controller extends X3ui_controller
 		// if submitted
 		if (X4Route_core::$post)
 		{
-			$this->cleaning();
+			$this->cleaning($area);
 			die;
 		}
 
@@ -437,13 +440,15 @@ class Dictionary_controller extends X3ui_controller
 	 * Remove duplicates
 	 *
 	 * @access	private
+     * @param   string  $area
 	 * @return  void
 	 */
-	private function cleaning()
+	private function cleaning($area)
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], '_word_creation', 0, 4);
+        $id_area = X4Route_core::get_id_area($area);
+		$msg = AdmUtils_helper::chk_priv_level($id_area, $_SESSION['xuid'], '_word_creation', 0, 4);
 
 		if (is_null($msg))
 		{
@@ -529,7 +534,8 @@ class Dictionary_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], '_key_import', 0, 4);
+        $id_area = X4Route_core::get_id_area($_post['area']);
+		$msg = AdmUtils_helper::chk_priv_level($id_area, $_SESSION['xuid'], '_key_import', 0, 4);
 
 		if (is_null($msg))
 		{

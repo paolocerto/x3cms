@@ -74,11 +74,11 @@ if ($items)
             $actions = AdmUtils_helper::link('edit', 'categories/edit/'.$i->id_area.'/'.$i->lang.'/'.$i->tag.'/'.$i->id);
 			if ($i->level > 2)
 			{
-                $actions .= AdmUtils_helper::link('xon', 'categories/set/xon/'.$i->id.'/'.(($i->xon+1)%2), $statuses);
+                $actions .= AdmUtils_helper::link('xon', 'categories/set/xon/'.$id_area.'/'.$i->id.'/'.(($i->xon+1)%2), $statuses);
 
 				if ($i->level >= 4)
 				{
-                    $actions .= AdmUtils_helper::link('xlock', 'categories/set/xlock/'.$i->id.'/'.(($i->xlock+1)%2), $statuses);
+                    $actions .= AdmUtils_helper::link('xlock', 'categories/set/xlock/'.$id_area.'/'.$i->id.'/'.(($i->xlock+1)%2), $statuses);
 
                     $actions .= AdmUtils_helper::link('delete', 'categories/delete/'.$i->id);
 				}

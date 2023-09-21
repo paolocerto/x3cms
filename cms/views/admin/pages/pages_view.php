@@ -115,7 +115,7 @@ if (!empty($pages))
                     }
                     else
                     {
-                        $actions .= AdmUtils_helper::link('xon', 'pages/set/xon/'.$i->id.'/'.(($i->xon+1)%2), $statuses);
+                        $actions .= AdmUtils_helper::link('xon', 'pages/set/xon/'.$page->id_area.'/'.$i->id.'/'.(($i->xon+1)%2), $statuses);
                         $actions .= '<a class="link" @click="popup(\''.BASE_URL.'pages/move/'.$i->id.'\')" title="'._MENU_AND_ORDER.'">
                         <i class="fa-solid fa-lg fa-arrows-up-down-left-right"></i>
                             </a>';
@@ -133,7 +133,7 @@ if (!empty($pages))
                                 <i class="fa-regular fa-object-group fa-lg"></i>
                             </a>';
 						}
-						$actions .= AdmUtils_helper::link('xlock', 'pages/set/xlock/'.$i->id.'/'.(($i->xlock+1)%2), $statuses);
+						$actions .= AdmUtils_helper::link('xlock', 'pages/set/xlock/'.$page->id_area.'/'.$i->id.'/'.(($i->xlock+1)%2), $statuses);
 
 						$actions .= (!in_array($i->url, $no_del))
 						    ? AdmUtils_helper::link('delete', 'pages/delete/'.$i->id)

@@ -193,7 +193,7 @@ class Widgets_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permissions
-		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'modules', $_post['id'], 1);
+		$msg = AdmUtils_helper::chk_priv_level(1, $_SESSION['xuid'], 'modules', $_post['id'], 1);
 
 		if (is_null($msg))
 		{
@@ -335,7 +335,7 @@ class Widgets_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permissions
-		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'widgets', $_post['id'], 4);
+		$msg = AdmUtils_helper::chk_priv_level(1, $_SESSION['xuid'], 'widgets', $_post['id'], 4);
 
 		if (is_null($msg))
 		{

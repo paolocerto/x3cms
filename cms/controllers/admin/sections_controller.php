@@ -104,18 +104,19 @@ class Sections_controller extends X3ui_controller
 	 * Change status
 	 *
 	 * @param   string  $what field to change
+     * @param   integer $id_area
 	 * @param   integer $id ID of the item to change
 	 * @param   integer $value value to set (0 = off, 1 = on)
 	 * @return  void
 	 */
-	public function set(string $what, int $id, int $value = 0)
+	public function set(string $what, int $id_area, int $id, int $value = 0)
 	{
 		$msg = null;
 		// check permission
 		$val = ($what == 'xlock')
 			? 4
 			: 3;
-		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'sections', $id, $val);
+		$msg = AdmUtils_helper::chk_priv_level($id_area, $_SESSION['xuid'], 'sections', $id, $val);
 		if (is_null($msg))
 		{
 			// do action
@@ -251,8 +252,8 @@ class Sections_controller extends X3ui_controller
 		$msg = null;
 		// check permission
 		$msg = ($id)
-			? AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'sections', $id, 3)
-			: AdmUtils_helper::chk_priv_level($_SESSION['xuid'], '_section_creation', 0, 4);
+			? AdmUtils_helper::chk_priv_level($_post['id_area'], $_SESSION['xuid'], 'sections', $id, 3)
+			: AdmUtils_helper::chk_priv_level($_post['id_area'], $_SESSION['xuid'], '_section_creation', 0, 4);
 
 		if (is_null($msg))
 		{
@@ -500,7 +501,7 @@ class Sections_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permissions
-		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'sections', $item->id, 4);
+		$msg = AdmUtils_helper::chk_priv_level($item->id_area, $_SESSION['xuid'], 'sections', $item->id, 4);
 
 		if (is_null($msg))
 		{
@@ -530,13 +531,14 @@ class Sections_controller extends X3ui_controller
 	/**
 	 * Move item
 	 *
+     * @param   integer $id_area
 	 * @param   integer $id_page
 	 * @return  void
 	 */
-	public function ordering(int $id_page)
+	public function ordering(int $id_area, int $id_page)
 	{
 		$msg = null;
-        $msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], '_section_creation', 0, 4);
+        $msg = AdmUtils_helper::chk_priv_level($id_area, $_SESSION['xuid'], '_section_creation', 0, 4);
 		if (is_null($msg) && X4Route_core::$input)
 		{
             // handle post
@@ -697,7 +699,7 @@ class Sections_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'pages', $_POST['id_page'], 3);
+		$msg = AdmUtils_helper::chk_priv_level($_POST['id_area'], $_SESSION['xuid'], 'pages', $_POST['id_page'], 3);
 
 		if (is_null($msg) && X4Route_core::$post)
 		{

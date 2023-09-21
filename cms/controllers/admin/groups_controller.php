@@ -31,18 +31,19 @@ class Groups_controller extends X3ui_controller
 	 * Change status
 	 *
 	 * @param   string  $what field to change
+     * @param   integer $id_area
 	 * @param   integer $id ID of the item to change
 	 * @param   integer $value value to set (0 = off, 1 = on)
 	 * @return  void
 	 */
-	public function set(string $what, int $id, int $value = 0)
+	public function set(string $what, int $id_area, int $id, int $value = 0)
 	{
 		$msg = null;
 		// check permission
 		$val = ($what == 'xlock')
 			? 4
 			: 3;
-		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'xgroups', $id, $val);
+		$msg = AdmUtils_helper::chk_priv_level($id_area, $_SESSION['xuid'], 'xgroups', $id, $val);
 		if (is_null($msg))
 		{
 			// do action
@@ -131,8 +132,8 @@ class Groups_controller extends X3ui_controller
 		$msg = null;
 		// check permission
 		$msg = ($_post['id'])
-			? AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'menus', $_post['id'], 2)
-			: AdmUtils_helper::chk_priv_level($_SESSION['xuid'], '_group_creation', 0, 4);
+			? AdmUtils_helper::chk_priv_level($_post['id_area'], $_SESSION['xuid'], 'menus', $_post['id'], 2)
+			: AdmUtils_helper::chk_priv_level($_post['id_area'], $_SESSION['xuid'], '_group_creation', 0, 4);
 
 		if (is_null($msg))
 		{
@@ -202,7 +203,7 @@ class Groups_controller extends X3ui_controller
 			$e = X4Validation_helper::form($fields, 'editor');
 			if ($e)
 			{
-				$this->permitting($_POST);
+				$this->permitting($group_id_area, $_POST);
 			}
 			else
 			{
@@ -226,14 +227,15 @@ class Groups_controller extends X3ui_controller
 	 * Register edited group permissions
 	 *
 	 * @access	private
+     * @param   integer $id_area
 	 * @param   array 	$_post _POST array
 	 * @return  void
 	 */
-	private function permitting(array $_post)
+	private function permitting(int $id_area, array $_post)
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'xgroups', $_post['id'], 4);
+		$msg = AdmUtils_helper::chk_priv_level($id_area, $_SESSION['xuid'], 'xgroups', $_post['id'], 4);
 
 		if (is_null($msg))
 		{
@@ -295,6 +297,10 @@ class Groups_controller extends X3ui_controller
 		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'groups'));
 
+        // get object
+		$group = new Group_model();
+		$item = $group->get_by_id($id, 'xgroups', 'id, id_area, name');
+
 		// build the form
 		$fields = array();
 		$fields[] = array(
@@ -307,13 +313,9 @@ class Groups_controller extends X3ui_controller
 		// if submitted
 		if (X4Route_core::$post)
 		{
-			$this->deleting($id);
+			$this->deleting($item);
 			die;
 		}
-
-        // get object
-		$group = new Group_model();
-		$item = $group->get_by_id($id, 'xgroups', 'name');
 
         $view = new X4View_core('modal');
         $view->title = _DELETE_GROUP;
@@ -331,20 +333,20 @@ class Groups_controller extends X3ui_controller
 	 * Delete Group
 	 *
 	 * @access	private
-	 * @param   integer $id
+	 * @param   stdClass $item
 	 * @return  void
 	 */
-	private function deleting(int $id)
+	private function deleting(stdClass $item)
 	{
 		$msg = null;
 		// check permissions
-		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'xgroups', $id, 4);
+		$msg = AdmUtils_helper::chk_priv_level($item->id_area, $_SESSION['xuid'], 'xgroups', $item->id, 4);
 
 		if (is_null($msg))
 		{
 			// action
 			$group = new Group_model();
-			$result = $group->delete($id);
+			$result = $group->delete($item->id);
 
 			// set message
 			$msg = AdmUtils_helper::set_msg($result);
@@ -353,7 +355,7 @@ class Groups_controller extends X3ui_controller
 			if ($result[1])
 			{
 				$perm = new Permission_model();
-				$perm->deleting_by_what('xgroups', $id);
+				$perm->deleting_by_what('xgroups', $item->id);
 
 				// set what update
 				$msg->update = array(

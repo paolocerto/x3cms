@@ -43,7 +43,7 @@ else
             // manager group but not admin
             if ($i->level > 2 && $i->id > 1)
             {
-                $actions .= AdmUtils_helper::link('xon', 'groups/set/xon/'.$i->id.'/'.(($i->xon+1)%2), $statuses);
+                $actions .= AdmUtils_helper::link('xon', 'groups/set/xon/'.$i->id_area.'/'.$i->id.'/'.(($i->xon+1)%2), $statuses);
             }
 
             // new user
@@ -58,7 +58,7 @@ else
                 {
                     $actions .= AdmUtils_helper::link('settings', 'groups/gperm/'.$i->id, [], _EDIT_GPRIV);
                 }
-                $actions .= AdmUtils_helper::link('xlock', 'groups/set/xlock/'.$i->id.'/'.(($i->xlock+1)%2), $statuses);
+                $actions .= AdmUtils_helper::link('xlock', 'groups/set/xlock/'.$i->id_area.'/'.$i->id.'/'.(($i->xlock+1)%2), $statuses);
                 $actions .= AdmUtils_helper::link('delete', 'groups/delete/'.$i->id);
             }
         }

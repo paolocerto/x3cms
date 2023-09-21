@@ -76,19 +76,20 @@ class AdmUtils_helper
 	 * @param   integer	$id_who User ID
 	 * @param   string	$what Privilege type
 	 * @param   integer	$id_what Item ID
+     * @param   integer	$id_area
 	 * @return  integer	Permission level
 	 */
-	public static function get_priv_level(int $id_who, string $what, int $id_what)
+	public static function get_priv_level(int $id_who, string $what, int $id_what, int $id_area = 0)
 	{
 		$mod = new Permission_model();
-		return $mod->check_priv($id_who, $what, $id_what);
+		return $mod->check_priv($id_who, $what, $id_what, $id_area);
 	}
 
 	/**
 	 * Get User permission level on a table
 	 *
 	 * @static
-     	 * @param   integer	$id_area
+     * @param   integer	$id_area
 	 * @param   integer	$id_who User ID
 	 * @param   string	$what Privilege type
 	 * @return  integer	Permission level
@@ -103,6 +104,7 @@ class AdmUtils_helper
 	 * Check User permission level on a record of a table
 	 *
 	 * @static
+     * @param   integer	$id_area
 	 * @param   integer	$id_who User ID
 	 * @param   string	$what Privilege type
 	 * @param   integer	$id_what Item ID
@@ -110,13 +112,13 @@ class AdmUtils_helper
 	 * @param   boolean	$force Enable check even if User is an administrator
 	 * @return  void
 	 */
-	public static function chklevel(int $id_who, string $what, int $id_what, int $value, bool $force = false)
+	public static function chklevel(int $id_area, int $id_who, string $what, int $id_what, int $value, bool $force = false)
 	{
 		// if not administrator with god permission
 		if ($_SESSION['level'] < 4 || $force)
 		{
 			// get level
-			$level = self::get_priv_level($id_who, $what, $id_what);
+			$level = self::get_priv_level($id_who, $what, $id_what, $id_area);
 
 			// if level lower than required redirect
 			if ($level < $value)
@@ -131,16 +133,17 @@ class AdmUtils_helper
 	 * Check User permission level on a record of a table
 	 *
 	 * @static
+     * @param   integer	$id_area
 	 * @param   integer	$id_who User ID
 	 * @param   string	$what Privilege type
 	 * @param   integer	$id_what Item ID
 	 * @param   integer	$value Privilege value
 	 * @return  null or object
 	 */
-	public static function chk_priv_level(int $id_who, string $what, int $id_what, int $value)
+	public static function chk_priv_level(int $id_area, int $id_who, string $what, int $id_what, int $value)
 	{
 		// get level
-		$level = self::get_priv_level($id_who, $what, $id_what);
+		$level = self::get_priv_level($id_who, $what, $id_what, $id_area);
 
 		// if level lower than required redirect
 		if ($level < $value)

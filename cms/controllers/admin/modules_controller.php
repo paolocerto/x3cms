@@ -85,18 +85,19 @@ class Modules_controller extends X3ui_controller
 	 * Change status
 	 *
 	 * @param   string  $what field to change
+     * @param   integer $id_area
 	 * @param   integer $id ID of the item to change
 	 * @param   integer $value value to set (0 = off, 1 = on)
 	 * @return  void
 	 */
-	public function set(string $what, int $id, int $value = 0)
+	public function set(string $what, int $id_area, int $id, int $value = 0)
 	{
 		$msg = null;
 		// check permission
 		$val = ($what == 'xlock')
 			? 4
 			: 3;
-		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'modules', $id, $val);
+		$msg = AdmUtils_helper::chk_priv_level($id_area, $_SESSION['xuid'], 'modules', $id, $val);
 		if (is_null($msg))
 		{
 			$qs = X4Route_core::get_query_string();
@@ -189,6 +190,7 @@ class Modules_controller extends X3ui_controller
 		$msg = null;
 		// check permission
 		$msg = AdmUtils_helper::chk_priv_level(
+            $item->id_area,
             $_SESSION['xuid'],
             str_replace(array('x3', 'x4'), array('x3_', 'x4_'), $_post['xrif']),
             $_post['id'], 3
@@ -261,7 +263,7 @@ class Modules_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], '_module_install', 0, 4);
+		$msg = AdmUtils_helper::chk_priv_level($id_area, $_SESSION['xuid'], '_module_install', 0, 4);
 		if (is_null($msg))
 		{
 			// load global dictionary
@@ -325,7 +327,7 @@ class Modules_controller extends X3ui_controller
 
 		// get obj
 		$mod = new X4Plugin_model();
-		$item = $mod->get_by_id($id, 'modules', 'id, name');
+		$item = $mod->get_by_id($id, 'modules', 'id, id_area, name');
 
 		// build the form
 		$fields = array();
@@ -365,7 +367,7 @@ class Modules_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'modules', $item->id, 4);
+		$msg = AdmUtils_helper::chk_priv_level($item->id_area, $_SESSION['xuid'], 'modules', $item->id, 4);
 		if (is_null($msg))
 		{
 			// do action

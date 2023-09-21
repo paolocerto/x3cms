@@ -61,11 +61,11 @@ if ($items)
                 $actions = AdmUtils_helper::link('edit', 'contexts/edit/'.$i->id_area.'/'.$i->lang.'/'.$i->id);
                 if ($i->level > 2)
 			    {
-                    $actions .= AdmUtils_helper::link('xon', 'contexts/set/xon/'.$i->id.'/'.(($i->xon+1)%2), $statuses);
+                    $actions .= AdmUtils_helper::link('xon', 'contexts/set/xon/'.$i->id_area.'/'.$i->id.'/'.(($i->xon+1)%2), $statuses);
 
                     if ($i->level >= 4)
                     {
-                        $actions .= AdmUtils_helper::link('xlock', 'contexts/set/xlock/'.$i->id.'/'.(($i->xlock+1)%2), $statuses);
+                        $actions .= AdmUtils_helper::link('xlock', 'contexts/set/xlock/'.$i->id_area.'/'.$i->id.'/'.(($i->xlock+1)%2), $statuses);
 
                         $actions .= AdmUtils_helper::link('delete', 'contexts/delete/'.$i->id);
                     }

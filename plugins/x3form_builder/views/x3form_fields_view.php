@@ -49,10 +49,10 @@ if (!empty($items))
 
             if ($i->level > 2)
 			{
-                $actions .= AdmUtils_helper::link('xon', 'x3form_builder/set/fields/xon/'.$i->id.'/'.intval(!$i->xon), $statuses);
+                $actions .= AdmUtils_helper::link('xon', 'x3form_builder/set/fields/xon/'.$i->id_area.'/'.$i->id.'/'.intval(!$i->xon), $statuses);
 				if ($i->level >= 4)
 				{
-                    $actions .= AdmUtils_helper::link('xlock', 'x3form_builder/set/fields/xlock/'.$i->id.'/'.intval(!$i->xlock), $statuses);
+                    $actions .= AdmUtils_helper::link('xlock', 'x3form_builder/set/fields/xlock/'.$i->id_area.'/'.$i->id.'/'.intval(!$i->xlock), $statuses);
                     $actions .= AdmUtils_helper::link('delete', 'x3form_builder/delete_field/'.$i->id_area.'/'.$i->id);
 				}
 			}

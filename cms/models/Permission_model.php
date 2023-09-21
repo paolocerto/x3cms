@@ -100,12 +100,16 @@ class Permission_model extends X4Model_core
 	 * @param   integer	$id_what Item ID in the table
 	 * @return  integer
 	 */
-	public function check_priv(int $id_user, string $what, int $id_what)
+	public function check_priv(int $id_user, string $what, int $id_what, int $id_area = 0)
 	{
+        $where = $id_area
+            ? 'u.id_area = '.$id_area.' AND'
+            : '';
+
 		return (int) $this->db->query_var('SELECT IF(p.id IS NULL, u.level, p.level) AS level
 			FROM uprivs u
 			LEFT JOIN privs p ON p.id_who = u.id_user AND p.id_area = u.id_area AND p.what = u.privtype AND p.id_what = '.$id_what.'
-			WHERE u.id_user = '.$id_user.' AND u.privtype = '.$this->db->escape($what));
+			WHERE '.$where.' u.id_user = '.$id_user.' AND u.privtype = '.$this->db->escape($what));
 	}
 
 	/**

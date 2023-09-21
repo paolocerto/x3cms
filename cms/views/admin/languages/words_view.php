@@ -85,12 +85,12 @@ if ($items)
 			// manager or admin user
 			if ($i->level > 2 || $i->level == 4)
 			{
-				$actions .= AdmUtils_helper::link('xon', 'dictionary/set/xon/'.$i->id.'/'.(($i->xon+1)%2), $statuses);
+				$actions .= AdmUtils_helper::link('xon', 'dictionary/set/xon/'.$i->area.'/'.$i->id.'/'.(($i->xon+1)%2), $statuses);
 			}
 			// admin user
 			if ($i->level >= 4)
 			{
-				$actions .= AdmUtils_helper::link('xlock', 'dictionary/set/xlock/'.$i->id.'/'.(($i->xlock+1)%2), $statuses);
+				$actions .= AdmUtils_helper::link('xlock', 'dictionary/set/xlock/'.$i->area.'/'.$i->id.'/'.(($i->xlock+1)%2), $statuses);
                 $actions .= AdmUtils_helper::link('delete', 'dictionary/delete/'.$i->id);
 			}
 		}

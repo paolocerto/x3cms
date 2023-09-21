@@ -145,7 +145,7 @@ class Files_controller extends X3ui_controller
             // NOTE: we here have only bulk_action = delete
             foreach ($_post['bulk'] as $i)
             {
-                $msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'files', $i, 4);
+                $msg = AdmUtils_helper::chk_priv_level($id_area, $_SESSION['xuid'], 'files', $i, 4);
                 if (is_null($msg))
                 {
                     $result = $mod->delete_file($i);
@@ -176,18 +176,19 @@ class Files_controller extends X3ui_controller
 	 * Change status
 	 *
 	 * @param   string  $what field to change
+     * @param   integer $id_area
 	 * @param   integer $id ID of the item to change
 	 * @param   integer $value value to set (0 = off, 1 = on)
 	 * @return  void
 	 */
-	public function set(string $what, int $id, int $value = 0)
+	public function set(string $what, int $id_area, int $id, int $value = 0)
 	{
 		$msg = null;
 		// check permission
 		$val = ($what == 'xlock')
 			? 4
 			: 3;
-		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'files', $id, $val);
+		$msg = AdmUtils_helper::chk_priv_level($id_area, $_SESSION['xuid'], 'files', $id, $val);
 		if (is_null($msg))
 		{
 			// do action
@@ -279,7 +280,7 @@ class Files_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], '_file_upload', 0, 4);
+		$msg = AdmUtils_helper::chk_priv_level($_post['id_area'][0], $_SESSION['xuid'], '_file_upload', 0, 4);
 		if (is_null($msg))
 		{
             $mod = new File_model();
@@ -457,7 +458,7 @@ class Files_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'files', $_post['id'], 2);
+		$msg = AdmUtils_helper::chk_priv_level($_post['id_area'], $_SESSION['xuid'], 'files', $_post['id'], 2);
 		if (is_null($msg))
 		{
 			// handle _post
@@ -546,7 +547,7 @@ class Files_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'files', $item->id, 4);
+		$msg = AdmUtils_helper::chk_priv_level($item->id_area, $_SESSION['xuid'], 'files', $item->id, 4);
 		if (is_null($msg))
 		{
 			// action
@@ -661,6 +662,20 @@ class Files_controller extends X3ui_controller
                 $form_fields->size = $size;
                 // get the fields array
                 $fields = $form_fields->render();
+
+                $fields[] = array(
+					'label' => null,
+					'type' => 'hidden',
+					'value' => $id_file,
+					'name' => 'id'
+				);
+
+                $fields[] = array(
+					'label' => null,
+					'type' => 'hidden',
+					'value' => $file->id_area,
+					'name' => 'id_area'
+				);
 				break;
 			case 1:
 				// generic file
@@ -669,14 +684,7 @@ class Files_controller extends X3ui_controller
 				$form = 'left';
 				$view->right = '';
 
-				$fields[] = array(
-					'label' => null,
-					'type' => 'hidden',
-					'value' => $id_file,
-					'name' => 'id'
-				);
-
-					$content = file_get_contents(APATH.'files/'.SPREFIX.'/filemanager/files/'.$file->name);
+				$content = file_get_contents(APATH.'files/'.SPREFIX.'/filemanager/files/'.$file->name);
 
 				$fields[] = array(
 					'label' => _TEMPLATE_EDIT,
@@ -700,13 +708,6 @@ class Files_controller extends X3ui_controller
 					'label' => null,
 					'type' => 'html',
 					'value' => '<h3> Filesize: '.number_format($data['filesize']/(1024*1024), 2, '.', ',').' MB</h3><p>'._VIDEO_FORMAT_MSG.'</p>'
-				);
-
-				$fields[] = array(
-					'label' => null,
-					'type' => 'hidden',
-					'value' => $id_file,
-					'name' => 'id'
 				);
 
 				$fields[] = array(
@@ -896,13 +897,6 @@ class Files_controller extends X3ui_controller
 				$form = 'left';
 				$tinymce = true;
 
-				$fields[] = array(
-					'label' => null,
-					'type' => 'hidden',
-					'value' => $id_file,
-					'name' => 'id'
-				);
-
 				$content = file_get_contents(APATH.'files/'.SPREFIX.'/filemanager/template/'.$file->name);
 
 				$fields[] = array(
@@ -976,7 +970,7 @@ class Files_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permissions
-		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'files', $id_file, 2);
+		$msg = AdmUtils_helper::chk_priv_level($_post['id_area'], $_SESSION['xuid'], 'files', $id_file, 2);
 
 		if (is_null($msg))
 		{

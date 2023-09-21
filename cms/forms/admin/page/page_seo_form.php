@@ -19,6 +19,12 @@ $fields[] = array(
     'name' => 'id'
 );
 
+$fields[] = array(
+    'label' => null,
+    'type' => 'hidden',
+    'value' => $page->id_area,
+    'name' => 'id_area'
+);
 
 $fields[] = array(
     'label' => null,

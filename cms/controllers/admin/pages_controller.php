@@ -116,18 +116,19 @@ class Pages_controller extends X3ui_controller
 	 * Change status
 	 *
 	 * @param   string  $what field to change
+     * @param   integer $id_area
 	 * @param   integer $id ID of the item to change
 	 * @param   integer $value value to set (0 = off, 1 = on)
 	 * @return  void
 	 */
-	public function set(string $what, int $id, int $value = 0)
+	public function set(string $what, int $id_area, int $id, int $value = 0)
 	{
 		$msg = null;
 		// check permission
 		$val = ($what == 'xlock')
 			? 4
 			: 3;
-		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'pages', $id, $val);
+		$msg = AdmUtils_helper::chk_priv_level($id_area, $_SESSION['xuid'], 'pages', $id, $val);
 		if (is_null($msg))
 		{
 			// do action
@@ -208,7 +209,7 @@ class Pages_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permissions
-		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], '_page_creation', 0, 4);
+		$msg = AdmUtils_helper::chk_priv_level($_post['id_area'], $_SESSION['xuid'], '_page_creation', 0, 4);
 
 		if (is_null($msg))
 		{
@@ -370,7 +371,7 @@ class Pages_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permissions
-		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'pages', $_post['id'], 2);
+		$msg = AdmUtils_helper::chk_priv_level($_post['id_area'], $_SESSION['xuid'], 'pages', $_post['id'], 2);
 
 		if (is_null($msg))
 		{
@@ -487,7 +488,7 @@ class Pages_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permissions
-		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'pages', $_post['id'], 2);
+		$msg = AdmUtils_helper::chk_priv_level($_post['id_area'], $_SESSION['xuid'], 'pages', $_post['id'], 2);
 
 		if (is_null($msg))
 		{
@@ -571,7 +572,7 @@ class Pages_controller extends X3ui_controller
 
 		// get object
 		$mod = new Page_model(2, X4Route_core::$lang, $id);
-		$page = $mod->get_by_id($id, 'pages', 'name');
+		$item = $mod->get_by_id($id, 'pages', 'id, id_area, lang, name');
 
 		// build the form
 		$fields = array();
@@ -585,7 +586,7 @@ class Pages_controller extends X3ui_controller
 		// if submitted
 		if (X4Route_core::$post)
 		{
-			$this->deleting($id);
+			$this->deleting($item);
 			die;
 		}
 
@@ -595,7 +596,7 @@ class Pages_controller extends X3ui_controller
 		// contents
 		$view->content = new X4View_core('delete');
 
-		$view->content->item = $page->name;
+		$view->content->item = $item->name;
 
 		// form builder
 		$view->content->form = X4Form_helper::doform('delete', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
@@ -607,26 +608,25 @@ class Pages_controller extends X3ui_controller
 	 * Delete page
 	 *
 	 * @access	private
-	 * @param   integer 	$id Page ID
+	 * @param   stdClass    $item
 	 * @return  void
 	 */
-	private function deleting(int $id)
+	private function deleting(stdClass $item)
 	{
 		$msg = null;
 		// check permissions
-		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'pages', $id, 4);
+		$msg = AdmUtils_helper::chk_priv_level($item->id_area, $_SESSION['xuid'], 'pages', $item->id, 4);
 		if (is_null($msg))
 		{
 			// action
-			$mod = new Page_model(2, X4Route_core::$lang, $id);
-			$page = $mod->get_by_id($id, 'pages', 'id_area, lang, xfrom');
-			$result = $mod->delete_page($id, $this->site->site->domain);
+			$mod = new Page_model($item->id_area, $item->lang, $item->id);
+			$result = $mod->delete_page($item->id, $this->site->site->domain);
 
 			// clear useless permissions
 			if ($result[1])
 			{
 				$perm = new Permission_model();
-				$perm->deleting_by_what('pages', $id);
+				$perm->deleting_by_what('pages', $item->id);
 			}
 
 			// set message
@@ -637,7 +637,7 @@ class Pages_controller extends X3ui_controller
 			{
 				$msg->update = array(
 					'element' => 'page',
-					'url' => $_SERVER['HTTP_REFERER']   // BASE_URL.'pages/index/'.$page->id_area.'/'.$page->lang.'/'.str_replace('/', '-', $page->xfrom)
+					'url' => $_SERVER['HTTP_REFERER']
 				);
 			}
 		}
@@ -655,7 +655,7 @@ class Pages_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permissions
-		$msg = AdmUtils_helper::chklevel($_SESSION['xuid'], '_page_creation', 0, 4);
+		$msg = AdmUtils_helper::chklevel($id_area, $_SESSION['xuid'], '_page_creation', 0, 4);
 
 		if (is_null($msg))
 		{

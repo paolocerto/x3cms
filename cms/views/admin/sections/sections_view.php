@@ -45,11 +45,11 @@ foreach ($items as $i)
 
         if ($i->level > 2)
         {
-            $actions .= AdmUtils_helper::link('xon', 'sections/set/xon/'.$i->id.'/'.(($i->xon+1)%2), $statuses);
+            $actions .= AdmUtils_helper::link('xon', 'sections/set/xon/'.$i->id_area.'/'.$i->id.'/'.(($i->xon+1)%2), $statuses);
 
             if ($i->level >= 4)
             {
-                $actions .= AdmUtils_helper::link('xlock', 'sections/set/xlock/'.$i->id.'/'.(($i->xlock+1)%2), $statuses);
+                $actions .= AdmUtils_helper::link('xlock', 'sections/set/xlock/'.$i->id_area.'/'.$i->id.'/'.(($i->xlock+1)%2), $statuses);
 
                 $actions .= AdmUtils_helper::link('delete', 'sections/delete/'.$i->id);
             }
@@ -80,7 +80,7 @@ foreach ($items as $i)
             </tr>
             </tbody>
             </table>
-            <div x-data="xsortable()" x-init="setup(\'sortable\', \'sections/ordering/'.$xpage->id.'\')">
+            <div x-data="xsortable()" x-init="setup(\'sortable\', \'sections/ordering/'.$xpage->id_area.'/'.$xpage->id.'\')">
                 <div id="sortable">';
 
         // switcher to close sortable box

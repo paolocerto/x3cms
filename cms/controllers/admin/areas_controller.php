@@ -94,7 +94,7 @@ class Areas_controller extends X3ui_controller
 			? 4
 			: 3;
 
-		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'areas', $id, $val);
+		$msg = AdmUtils_helper::chk_priv_level($id, $_SESSION['xuid'], 'areas', $id, $val);
 		if (is_null($msg))
 		{
 			// do action
@@ -185,8 +185,8 @@ class Areas_controller extends X3ui_controller
 		$msg = null;
 		// check permissions
 		$msg = ($id_area)
-			? AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'areas', $id_area, 2)
-			: AdmUtils_helper::chk_priv_level($_SESSION['xuid'], '_area_creation', 0, 4);
+			? AdmUtils_helper::chk_priv_level($id_area, $_SESSION['xuid'], 'areas', $id_area, 2)
+			: AdmUtils_helper::chk_priv_level($id_area, $_SESSION['xuid'], '_area_creation', 0, 4);
 
 		if (is_null($msg))
 		{
@@ -366,7 +366,7 @@ class Areas_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'areas', $id_area, 2);
+		$msg = AdmUtils_helper::chk_priv_level($id_area, $_SESSION['xuid'], 'areas', $id_area, 2);
 
 		if (is_null($msg))
 		{
@@ -419,7 +419,7 @@ class Areas_controller extends X3ui_controller
 
 		// get object
 		$area = new Area_model();
-		$item = $area->get_by_id($id, 'areas', 'name');
+		$item = $area->get_by_id($id, 'areas', 'id, id_area, name');
 
 		// build the form
 		$fields = array();
@@ -433,7 +433,7 @@ class Areas_controller extends X3ui_controller
 		// if submitted
 		if (X4Route_core::$post)
 		{
-			$this->deleting($id, $item->name);
+			$this->deleting($item);
 			die;
 		}
 
@@ -453,21 +453,20 @@ class Areas_controller extends X3ui_controller
 	 * Delete area
 	 *
 	 * @access	private
-	 * @param   integer	$id Area ID
-	 * @param   string 	$name Area name
+	 * @param   stdClass $item
 	 * @return  void
 	 */
-	private function deleting(int $id, string $name)
+	private function deleting(stdClass $item)
 	{
 		$msg = null;
 		// check permissions
-		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'areas', $id, 4);
+		$msg = AdmUtils_helper::chk_priv_level($item->id, $_SESSION['xuid'], 'areas', $item->id, 4);
 
 		if (is_null($msg))
 		{
 			// action
 			$area = new Area_model();
-			$result = $area->delete_area($id, $name);
+			$result = $area->delete_area($item->id, $item->name);
 
 			// set message
 			$msg = AdmUtils_helper::set_msg($result);
@@ -476,7 +475,7 @@ class Areas_controller extends X3ui_controller
 			if ($result[1])
 			{
 				$perm = new Permission_model();
-				$perm->deleting_by_what('areas', $id);
+				$perm->deleting_by_what('areas', $item->id);
 
 				// set what update
 				$msg->update = array(

@@ -21,6 +21,13 @@ $fields[] = array(
 
 $fields[] = array(
     'label' => null,
+    'type' => 'hidden',
+    'value' => $page->id_area,
+    'name' => 'id_area'
+);
+
+$fields[] = array(
+    'label' => null,
     'type' => 'html',
     'value' => '<div
                 class="bg-white text-gray-700 md:px-8 md:pb-8 px-4 pb-4" style="border:1px solid white"

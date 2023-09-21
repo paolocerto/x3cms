@@ -95,18 +95,19 @@ class Contexts_controller extends X3ui_controller
 	 * Change status
 	 *
 	 * @param   string  $what field to change
+     * @param   integer $id_area
 	 * @param   integer $id ID of the item to change
 	 * @param   integer $value value to set (0 = off, 1 = on)
 	 * @return  void
 	 */
-	public function set(string $what, int $id, int $value = 0)
+	public function set(string $what, int $id_area, int $id, int $value = 0)
 	{
 		$msg = null;
 		// check permission
 		$val = ($what == 'xlock')
 			? 4
 			: 3;
-		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'contexts', $id, $val);
+		$msg = AdmUtils_helper::chk_priv_level($id_area, $_SESSION['xuid'], 'contexts', $id, $val);
 		if (is_null($msg))
 		{
 			// do action
@@ -206,8 +207,8 @@ class Contexts_controller extends X3ui_controller
 		$msg = null;
 		// check permission
 		$msg = ($id)
-			? AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'contexts', $id, 3)
-			: AdmUtils_helper::chk_priv_level($_SESSION['xuid'], '_context_creation', 0, 4);
+			? AdmUtils_helper::chk_priv_level($_post['id_area'], $_SESSION['xuid'], 'contexts', $id, 3)
+			: AdmUtils_helper::chk_priv_level($_post['id_area'], $_SESSION['xuid'], '_context_creation', 0, 4);
 
 		if (is_null($msg))
 		{
@@ -330,7 +331,7 @@ class Contexts_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permissions
-		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'contexts', $item->id, 4);
+		$msg = AdmUtils_helper::chk_priv_level($item->id_area, $_SESSION['xuid'], 'contexts', $item->id, 4);
 		if (is_null($msg))
 		{
 			// do action

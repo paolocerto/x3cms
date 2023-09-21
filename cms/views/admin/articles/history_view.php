@@ -60,7 +60,7 @@ foreach ($history as $i)
             // administrator
             if ($i->level >= 4)
             {
-                $actions .= AdmUtils_helper::link('xlock', 'articles/set_by_bid/xlock/'.$i->id.'/'.(($i->xlock+1)%2), $statuses);
+                $actions .= AdmUtils_helper::link('xlock', 'articles/set_by_bid/xlock/'.$i->id_area.'/'.$i->id.'/'.(($i->xlock+1)%2), $statuses);
 
                 $actions .= AdmUtils_helper::link('delete','articles/delete_version/'.$i->id);
             }

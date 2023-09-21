@@ -152,7 +152,7 @@ class Articles_controller extends X3ui_controller
             // NOTE: we here have only bulk_action = delete
             foreach ($_post['bulk'] as $i)
             {
-                $msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'articles', $i, 4);
+                $msg = AdmUtils_helper::chk_priv_level($id_area, $_SESSION['xuid'], 'articles', $i, 4);
                 if (is_null($msg))
                 {
                     $result = $mod->delete($i);
@@ -183,17 +183,18 @@ class Articles_controller extends X3ui_controller
 	 * Change status
 	 *
 	 * @param   string  $what field to change
+     * @param   integer $id_area
 	 * @param   integer $id ID of the item to change
 	 * @param   integer $value value to set (0 = off, 1 = on)
 	 * @return  void
 	 */
-	public function set(string $what, int $id, int $value = 0)
+	public function set(string $what, int $id_area, int $id, int $value = 0)
 	{
 		// check permissions
 		$val = ($what == 'xlock')
 			? 4
 			: 3;
-		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'articles', $id, $val);
+		$msg = AdmUtils_helper::chk_priv_level($id_area, $_SESSION['xuid'], 'articles', $id, $val);
 		if (is_null($msg))
 		{
 			// do action
@@ -221,17 +222,18 @@ class Articles_controller extends X3ui_controller
 	 * bid is the uniqueID of articles
 	 *
 	 * @param   string	$what field to change
+     * @param   integer $id_area
 	 * @param   integer $id ID of the item to change
 	 * @param   integer $value value to set (0 = off, 1 = on)
 	 * @return  void
 	 */
-	public function set_by_bid(string $what, int $id, int $value = 0)
+	public function set_by_bid(string $what, int $id_area, int $id, int $value = 0)
 	{
 		// check permissions
 		$val = ($what == 'xlock')
 			? 4
 			: 3;
-		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'articles', $id, $val);
+		$msg = AdmUtils_helper::chk_priv_level($id_area, $_SESSION['xuid'], 'articles', $id, $val);
 		if (is_null($msg))
 		{
 			// do action
@@ -563,7 +565,7 @@ class Articles_controller extends X3ui_controller
 		// check permission
 		if ($item->id)
 		{
-			$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'articles', $item->id, 2);
+			$msg = AdmUtils_helper::chk_priv_level($item->id_area, $_SESSION['xuid'], 'articles', $item->id, 2);
 		}
 
 		if (is_null($msg))
@@ -727,7 +729,7 @@ class Articles_controller extends X3ui_controller
 
 		// get object
 		$mod = new Article_model();
-		$item = $mod->get_by_id($id, 'articles', 'id, date_in, date_out');
+		$item = $mod->get_by_id($id, 'articles', 'id, id_area, date_in, date_out');
 
 		// build the form
         $form_fields = new X4Form_core('article/article_date');
@@ -774,7 +776,7 @@ class Articles_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permissions
-		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'articles', $_post['id'], 2);
+		$msg = AdmUtils_helper::chk_priv_level($_post['id_area'], $_SESSION['xuid'], 'articles', $_post['id'], 2);
 		if (is_null($msg))
 		{
 			// handle _post
@@ -863,7 +865,7 @@ class Articles_controller extends X3ui_controller
 		{
 			if (is_null($msg))
             {
-				$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'articles', $i->id, 4);
+				$msg = AdmUtils_helper::chk_priv_level($item->id_area, $_SESSION['xuid'], 'articles', $i->id, 4);
             }
 		}
 
@@ -874,7 +876,7 @@ class Articles_controller extends X3ui_controller
 		{
 			if (is_null($msg))
             {
-				$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'pages', $i->id, 3);
+				$msg = AdmUtils_helper::chk_priv_level($item->id_area, $_SESSION['xuid'], 'pages', $i->id, 3);
             }
 		}
 
@@ -909,6 +911,10 @@ class Articles_controller extends X3ui_controller
 		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'articles'));
 
+        // get object
+		$mod = new Article_model();
+		$item = $mod->get_by_id($id, 'articles', 'id, id_area, name, updated');
+
 		// build the form
 		$fields = array();
 		$fields[] = array(
@@ -921,13 +927,9 @@ class Articles_controller extends X3ui_controller
 		// if submitted
 		if (X4Route_core::$post)
 		{
-			$this->deleting_version($id);
+			$this->deleting_version($item);
 			die;
 		}
-
-		// get object
-		$mod = new Article_model();
-		$item = $mod->get_by_id($id, 'articles', 'name, updated');
 
         $view = new X4View_core('modal');
         $view->title = _DELETE_ARTICLE;
@@ -945,27 +947,26 @@ class Articles_controller extends X3ui_controller
 	 * Delete article's version
 	 *
 	 * @access	private
-	 * @param   integer $id article ID
-	 * @param   string 	$bid BID code
+	 * @param   stdClass $item
 	 * @return  void
 	 */
-	private function deleting_version(int $id)
+	private function deleting_version(stdClass $item)
 	{
 		$msg = null;
 		// check permissions
-		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'articles', $id, 4);
+		$msg = AdmUtils_helper::chk_priv_level($item->id_area, $_SESSION['xuid'], 'articles', $item->id, 4);
 
 		if (is_null($msg))
 		{
 			// do action
 			$mod = new Article_model();
-			$result = $mod->delete($id);
+			$result = $mod->delete($item->id);
 
 			// clear useless permissions
 			if ($result[1])
 			{
 				$perm = new Permission_model();
-				$perm->deleting_by_what('articles', $id);
+				$perm->deleting_by_what('articles', $item->id);
 			}
 
 			// set message

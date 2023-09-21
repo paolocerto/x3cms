@@ -252,12 +252,13 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
 	 * Change status
 	 *
 	 * @param   string	$table Table name
+     * @param   integer $id_area
 	 * @param   string	$what field to change
 	 * @param   integer $id ID of the item to change
 	 * @param   integer $value value to set (0 = off, 1 = on)
 	 * @return  void
 	 */
-	public function set(string $table, string $what, int $id, int $value)
+	public function set(string $table, string $what, int $id_area, int $id, int $value)
 	{
 		$msg = null;
 		// check permission
@@ -268,7 +269,7 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
         $table = ($table == 'forms')
             ? ''
             : '_'.$table;
-		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'x3_forms'.$table, $id, $val);
+		$msg = AdmUtils_helper::chk_priv_level($id_area, $_SESSION['xuid'], 'x3_forms'.$table, $id, $val);
 		if (is_null($msg))
 		{
 			// do action
@@ -361,8 +362,8 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
 		$msg = null;
 		// check permission
 		$msg = ($_post['id'])
-			? AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'x3_forms', $_post['id'], 4)
-			: AdmUtils_helper::chk_priv_level($_SESSION['xuid'], '_x3form_creation', 0, 4);
+			? AdmUtils_helper::chk_priv_level($_post['id_area'], $_SESSION['xuid'], 'x3_forms', $_post['id'], 4)
+			: AdmUtils_helper::chk_priv_level($_post['id_area'], $_SESSION['xuid'], '_x3form_creation', 0, 4);
 
 		if (is_null($msg))
 		{
@@ -490,7 +491,7 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], '_x3form_creation', 0, 4);
+		$msg = AdmUtils_helper::chk_priv_level($_post['id_area'], $_SESSION['xuid'], '_x3form_creation', 0, 4);
 
 		if (is_null($msg))
 		{
@@ -585,7 +586,7 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
 
 		// get opbject
         $mod = new X3form_builder_model();
-		$item = $mod->get_by_id($id_form, 'x3_forms', 'id, name');
+		$item = $mod->get_by_id($id_form, 'x3_forms', 'id, id_area, name');
 
 		// build the form
 		$fields = array();
@@ -783,8 +784,8 @@ function checkRule(item) {
 		$msg = null;
 		// check permission
 		$msg = ($_post['id'])
-			? AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'x3_forms_fields', $_post['id'], 3)
-			: AdmUtils_helper::chk_priv_level($_SESSION['xuid'], '_x3form_field_creation', 0, 4);
+			? AdmUtils_helper::chk_priv_level($_post['id_area'], $_SESSION['xuid'], 'x3_forms_fields', $_post['id'], 3)
+			: AdmUtils_helper::chk_priv_level($_post['id_area'], $_SESSION['xuid'], '_x3form_field_creation', 0, 4);
 
 		if (is_null($msg))
 		{
@@ -853,7 +854,7 @@ function checkRule(item) {
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'x3_forms', $id_form, 3);
+		$msg = AdmUtils_helper::chk_priv_level($id_area, $_SESSION['xuid'], 'x3_forms', $id_form, 3);
 		if (is_null($msg) && X4Route_core::$input)
 		{
 			// handle post
@@ -902,7 +903,7 @@ function checkRule(item) {
 
 		// get object
         $mod = new X3form_builder_model();
-		$item = $mod->get_by_id($id_field, 'x3_forms_fields', 'id, name');
+		$item = $mod->get_by_id($id_field, 'x3_forms_fields', 'id, id_area, name');
 
 		// build the form
 		$fields = array();
@@ -945,7 +946,7 @@ function checkRule(item) {
 	public function export(int $id_area, string $lang, int $id_form)
 	{
         // check permission
-        $level = AdmUtils_helper::get_priv_level($_SESSION['xuid'], 'x3_forms', 0);
+        $level = AdmUtils_helper::get_priv_level($id_area, $_SESSION['xuid'], 'x3_forms', 0);
 		if ($level == 4)
         {
             // get form
@@ -1021,7 +1022,7 @@ function checkRule(item) {
 
 		// get object
         $mod = new X3form_builder_model();
-		$item = $mod->get_by_id($id, 'x3_forms_results', 'id, updated');
+		$item = $mod->get_by_id($id, 'x3_forms_results', 'id, id_area, updated');
 
 		// build the form
 		$fields = array();
@@ -1071,7 +1072,7 @@ function checkRule(item) {
             $result = [0, 1];
             foreach ($_post['bulk'] as $i)
             {
-                $msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'x3_forms_results', $i, 4);
+                $msg = AdmUtils_helper::chk_priv_level($id_area, $_SESSION['xuid'], 'x3_forms_results', $i, 4);
                 if (is_null($msg))
                 {
                     $result = $mod->delete($i, 'x3_forms_results');
@@ -1170,8 +1171,8 @@ function checkRule(item) {
 		$msg = null;
 		// check permission
 		$msg = ($_post['id'])
-			? AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'x3_forms_blacklist', $_post['id'], 3)
-			: AdmUtils_helper::chk_priv_level($_SESSION['xuid'], '_x3form_blacklist_creation', 0, 4);
+			? AdmUtils_helper::chk_priv_level($_post['id_area'], $_SESSION['xuid'], 'x3_forms_blacklist', $_post['id'], 3)
+			: AdmUtils_helper::chk_priv_level($_post['id_area'], $_SESSION['xuid'], '_x3form_blacklist_creation', 0, 4);
 
 		if (is_null($msg))
 		{
@@ -1238,7 +1239,51 @@ function checkRule(item) {
 		$this->response($msg);
 	}
 
-	// form, field or result
+    /**
+	 * Delete blacklist item
+	 *
+     * @param   integer $id_area
+	 * @param   integer $id Result ID
+	 * @return  void
+	 */
+	public function delete_blaclist(int $id_area, int $id)
+	{
+		// load dictionaries
+		$this->dict->get_wordarray(array('form', 'x3form_builder'));
+
+		// get object
+        $mod = new X3form_builder_model();
+		$item = $mod->get_by_id($id, 'x3_forms_blacklist', 'id, id_area, name');
+
+		// build the form
+		$fields = array();
+		$fields[] = array(
+			'label' => null,
+			'type' => 'hidden',
+			'value' => $id,
+			'name' => 'id'
+		);
+
+		// if submitted
+		if (X4Route_core::$post)
+		{
+			$this->deleting('blacklist', $item);
+			die;
+		}
+        $view = new X4View_core('modal');
+        $view->title = _X3FB_BLACKLIST_DELETE;
+		// contents
+		$view->content = new X4View_core('delete');
+
+		$view->content->item = $item->name;
+
+		// form builder
+		$view->content->form = X4Form_helper::doform('delete', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
+            '@click="submitForm(\'delete\')"');
+		$view->render(true);
+	}
+
+	// form, field, result or blacklist item
 
 	/**
 	 * Deleting item
@@ -1255,12 +1300,12 @@ function checkRule(item) {
             ? ''
             : '_'.$table;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'x3_forms_'.$table, $item->id, 4);
+		$msg = AdmUtils_helper::chk_priv_level($item->id_area, $_SESSION['xuid'], 'x3_forms'.$table, $item->id, 4);
 		if (is_null($msg))
 		{
 			// do action
 			$mod = new X3form_builder_model();
-			$result = $mod->delete($item->id, 'x3_forms_'.$table);
+			$result = $mod->delete($item->id, 'x3_forms'.$table);
 
 			// set message
 			$msg = AdmUtils_helper::set_msg($result);
@@ -1269,7 +1314,7 @@ function checkRule(item) {
 			if ($result[1])
 			{
 				$perm = new Permission_model();
-				$perm->deleting_by_what('x3_forms_'.$table, $item->id);
+				$perm->deleting_by_what('x3_forms'.$table, $item->id);
 
 				// set what update
 				$msg->update = array(

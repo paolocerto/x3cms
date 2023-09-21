@@ -105,18 +105,19 @@ class X3banners_controller extends X3ui_controller implements X3plugin_controlle
 	 * Change status
 	 *
 	 * @param   string	$what field to change
+     * @param   integer $id_area
 	 * @param   integer $id ID of the item to change
 	 * @param   integer $value value to set (0 = off, 1 = on)
 	 * @return  void
 	 */
-	public function set(string $what, int $id, int $value = 0)
+	public function set(string $what, int $id_area, int $id, int $value = 0)
 	{
 		$msg = null;
 		// check permission
 		$val = ($what == 'xlock')
 			? 4
 			: 3;
-		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'x3_banners', $id, $val);
+		$msg = AdmUtils_helper::chk_priv_level($id_area, $_SESSION['xuid'], 'x3_banners', $id, $val);
 		if (is_null($msg))
 		{
 			// do action
@@ -208,8 +209,8 @@ class X3banners_controller extends X3ui_controller implements X3plugin_controlle
 		$msg = null;
 		// check permission
 		$msg = ($_post['id'])
-			? AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'x3_banners', $_post['id'], 2)
-			: AdmUtils_helper::chk_priv_level($_SESSION['xuid'], '_x3banners_creation', 0, 4);
+			? AdmUtils_helper::chk_priv_level($_post['id_area'], $_SESSION['xuid'], 'x3_banners', $_post['id'], 2)
+			: AdmUtils_helper::chk_priv_level($_post['id_area'], $_SESSION['xuid'], '_x3banners_creation', 0, 4);
 		if (is_null($msg))
 		{
 			// handle _post
@@ -267,7 +268,7 @@ class X3banners_controller extends X3ui_controller implements X3plugin_controlle
 
 		// get object
 		$mod = new X3banners_model();
-		$item = $mod->get_by_id($id, 'x3_banners', 'id, title');
+		$item = $mod->get_by_id($id, 'x3_banners', 'id, id_area, title');
 		// build the form
 		$fields = array();
 		$fields[] = array(
@@ -307,7 +308,7 @@ class X3banners_controller extends X3ui_controller implements X3plugin_controlle
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level($_SESSION['xuid'], 'x3_banners', $item->id, 4);
+		$msg = AdmUtils_helper::chk_priv_level($item->id_area, $_SESSION['xuid'], 'x3_banners', $item->id, 4);
 		if (is_null($msg))
 		{
 			// action

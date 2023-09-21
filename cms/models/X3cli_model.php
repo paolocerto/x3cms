@@ -375,18 +375,19 @@ If you want to fully use this method you have to create:</p>
 	 * This method is used to change the xon and xlock fields in the table '.$name.'
 	 *
 	 * @param   string	$what field to change
+     * @param   integer $id_area
 	 * @param   integer $id ID of the item to change
 	 * @param   integer $value value to set (0 = off, 1 = on)
 	 * @return  void
 	 */
-	public function set(string $what, int $id, int $value = 0)
+	public function set(string $what, int $id_area, int $id, int $value = 0)
 	{
 		$msg = null;
 		// check permissions
 		$val = ($what == \'xlock\')
 			? 4
 			: 3;
-		$msg = AdmUtils_helper::chk_priv_level($_SESSION[\'xuid\'], \''.$name.'\', $id, $val);
+		$msg = AdmUtils_helper::chk_priv_level($id_area, $_SESSION[\'xuid\'], \''.$name.'\', $id, $val);
 		if (is_null($msg))
 		{
 			// do action
@@ -507,8 +508,8 @@ If you want to fully use this method you have to create:</p>
 		$msg = null;
 		// check permission
 		$msg = ($id)
-		    ? AdmUtils_helper::chk_priv_level($_SESSION[\'xuid\'], \''.$name.'\', $id, 2)
-		    : AdmUtils_helper::chk_priv_level($_SESSION[\'xuid\'], \'_'.$name.'_creation\', 0, 4);
+		    ? AdmUtils_helper::chk_priv_level($_post[\'id_area\'], $_SESSION[\'xuid\'], \''.$name.'\', $id, 2)
+		    : AdmUtils_helper::chk_priv_level($_post[\'id_area\'], $_SESSION[\'xuid\'], \'_'.$name.'_creation\', 0, 4);
 
 		if (is_null($msg))
 		{
@@ -572,7 +573,7 @@ If you want to fully use this method you have to create:</p>
 
 		// get object
 		$mod = new '.$uname.'_model();
-		$item = $mod->get_by_id($id, \''.$name.'\', \'id, title\');
+		$item = $mod->get_by_id($id, \''.$name.'\', \'id, id_area, title\');
 
 		// build the form
 		$fields = array();
@@ -617,13 +618,13 @@ If you want to fully use this method you have to create:</p>
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level($_SESSION[\'xuid\'], \''.$name.'\', $item->id, 4);
+		$msg = AdmUtils_helper::chk_priv_level($item->id_area, $_SESSION[\'xuid\'], \''.$name.'\', $item->id, 4);
 
 		if (is_null($msg))
 		{
 			// action
 			$mod = new '.$uname.'_model();
-			$result = $mod->delete($itemj->id);
+			$result = $mod->delete($item->id);
 
 			// set message
 			$msg = AdmUtils_helper::set_msg($result);
