@@ -131,15 +131,11 @@ if (!empty($pages))
                         </a>';
                     }
 
-					// admin user
-					if ($i->level >= 4)
-					{
-						$actions .= AdmUtils_helper::link('xlock', 'pages/set/xlock/'.$page->id_area.'/'.$i->id.'/'.(($i->xlock+1)%2), $statuses);
+                    $actions .= AdmUtils_helper::link('xlock', 'pages/set/xlock/'.$page->id_area.'/'.$i->id.'/'.(($i->xlock+1)%2), $statuses);
 
-						$actions .= (!in_array($i->url, $no_del))
-						    ? AdmUtils_helper::link('delete', 'pages/delete/'.$i->id)
-                            : '<a><i class="fa-solid fa-lg fa-trash off"></i></a>';
-					}
+                    $actions .= (!in_array($i->url, $no_del))
+                        ? AdmUtils_helper::link('delete', 'pages/delete/'.$i->id)
+                        : '<a><i class="fa-solid fa-lg fa-trash off"></i></a>';
 				}
 			}
 
