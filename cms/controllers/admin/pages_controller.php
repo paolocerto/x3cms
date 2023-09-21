@@ -133,7 +133,14 @@ class Pages_controller extends X3ui_controller
 		{
 			// do action
 			$mod = new Page_model(2, X4Route_core::$lang, $id);
-			$result = $mod->update($id, array($what => $value));
+
+            $conditions = [];
+            if ($what == 'xon')
+            {
+                $conditions['xlock' => ['relation' => '=', 'value' => '0']];
+            }
+
+			$result = $mod->update($id, array($what => $value), 'pages', $conditions);
 
 			// set message
 			$this->dict->get_words();
