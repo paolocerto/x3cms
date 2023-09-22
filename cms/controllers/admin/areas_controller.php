@@ -182,7 +182,7 @@ class Areas_controller extends X3ui_controller
 		// check permissions
 		$msg = ($id_area)
 			? AdmUtils_helper::chk_priv_level($id_area, 'areas', $id_area, 'edit')
-			: AdmUtils_helper::chk_priv_level($id_area, '_area_creation', 0, 'create');
+			: AdmUtils_helper::chk_priv_level(1, '_area_creation', 0, 'create');
 		if (is_null($msg))
 		{
 			// handle _post
