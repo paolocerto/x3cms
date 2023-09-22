@@ -52,7 +52,7 @@ class Article_model extends X4Model_core
 	 */
 	public function get_by_bid(int $id_area, string $lang, string $bid)
 	{
-        return $this->db->query_row('SELECT id, id_area, lang, name, bid
+        return $this->db->query_row('SELECT *
 			FROM articles
 			WHERE
                 id_area = '.$id_area.' AND
