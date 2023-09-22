@@ -239,7 +239,7 @@ class Areas_controller extends X3ui_controller
 						$domain[] = $id_area;
 						$perm->set_aprivs($_SESSION['xuid'], $domain);
 						// uprivs premissions
-						$perm->set_uprivs($_SESSION['xuid'], $id_area, 'areas', 4);
+                        $perm->refactory($_SESSION['xuid']);
 					}
 				}
 
