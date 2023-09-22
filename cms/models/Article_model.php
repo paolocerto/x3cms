@@ -52,7 +52,7 @@ class Article_model extends X4Model_core
 	 */
 	public function get_by_bid(int $id_area, string $lang, string $bid)
 	{
-		return $this->db->query_row('SELECT *
+        return $this->db->query_row('SELECT id, id_area, lang, name, bid
 			FROM articles
 			WHERE
                 id_area = '.$id_area.' AND
@@ -431,16 +431,17 @@ class Article_model extends X4Model_core
 	 * Get article history by bid (unique ID for articles)
 	 *
 	 * @param   integer	$id_area Area ID
+     * @param   string 	$lang
 	 * @param   string 	$bid, article unique ID
 	 * @return  array 	array of article objects
 	 */
-	public function get_history(int $id_area, string $bid)
+	public function get_history(int $id_area, string $lang, string $bid)
 	{
 		return $this->db->query('SELECT a.*, IF(p.id IS NULL, u.level, p.level) AS level
 			FROM articles a
 			JOIN uprivs u ON u.id_area = a.id_area AND u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('articles').'
 			LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = a.id
-			WHERE a.id_area = '.$id_area.' AND a.bid = '.$this->db->escape($bid).'
+			WHERE a.id_area = '.$id_area.' AND a.lang = '.$this->db->escape($lang).' AND a.bid = '.$this->db->escape($bid).'
 			GROUP BY a.id
 			ORDER BY a.id DESC');
 	}

@@ -715,7 +715,7 @@ class Articles_controller extends X3ui_controller
 		// left
 		$mod = new Article_model();
 		$view->content->art = $mod->get_by_bid($id_area, $lang, $bid);
-		$view->content->history = $mod->get_history($id_area, $bid);
+		$view->content->history = $mod->get_history($id_area, $lang, $bid);
 		$view->render(true);
 	}
 
@@ -980,7 +980,7 @@ class Articles_controller extends X3ui_controller
 			{
 				$msg->update = array(
 					'element' => 'page',
-					$_SERVER['HTTP_REFERER']
+					'url' => $_SERVER['HTTP_REFERER']
 				);
 			}
 		}
