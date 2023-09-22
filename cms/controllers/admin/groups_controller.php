@@ -40,10 +40,7 @@ class Groups_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$val = ($what == 'xlock')
-			? 4
-			: 3;
-		$msg = AdmUtils_helper::chk_priv_level($id_area, $_SESSION['xuid'], 'xgroups', $id, $val);
+		$msg = AdmUtils_helper::chk_priv_level($id_area, 'xgroups', $id, $what);
 		if (is_null($msg))
 		{
 			// do action
@@ -132,8 +129,8 @@ class Groups_controller extends X3ui_controller
 		$msg = null;
 		// check permission
 		$msg = ($_post['id'])
-			? AdmUtils_helper::chk_priv_level($_post['id_area'], $_SESSION['xuid'], 'menus', $_post['id'], 2)
-			: AdmUtils_helper::chk_priv_level($_post['id_area'], $_SESSION['xuid'], '_group_creation', 0, 4);
+			? AdmUtils_helper::chk_priv_level($_post['id_area'], 'menus', $_post['id'], 'edit')
+			: AdmUtils_helper::chk_priv_level($_post['id_area'], '_group_creation', 0, 'create');
 
 		if (is_null($msg))
 		{
@@ -247,7 +244,7 @@ class Groups_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level($id_area, $_SESSION['xuid'], 'xgroups', $_post['id'], 4);
+		$msg = AdmUtils_helper::chk_priv_level($id_area, 'xgroups', $_post['id'], 'edit');
 
 		if (is_null($msg))
 		{
@@ -352,7 +349,7 @@ class Groups_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permissions
-		$msg = AdmUtils_helper::chk_priv_level($item->id_area, $_SESSION['xuid'], 'xgroups', $item->id, 4);
+		$msg = AdmUtils_helper::chk_priv_level($item->id_area, 'xgroups', $item->id, 'delete');
 
 		if (is_null($msg))
 		{

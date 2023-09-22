@@ -114,10 +114,7 @@ class X3banners_controller extends X3ui_controller implements X3plugin_controlle
 	{
 		$msg = null;
 		// check permission
-		$val = ($what == 'xlock')
-			? 4
-			: 3;
-		$msg = AdmUtils_helper::chk_priv_level($id_area, $_SESSION['xuid'], 'x3_banners', $id, $val);
+		$msg = AdmUtils_helper::chk_priv_level($id_area, 'x3_banners', $id, $what);
 		if (is_null($msg))
 		{
 			// do action
@@ -209,8 +206,8 @@ class X3banners_controller extends X3ui_controller implements X3plugin_controlle
 		$msg = null;
 		// check permission
 		$msg = ($_post['id'])
-			? AdmUtils_helper::chk_priv_level($_post['id_area'], $_SESSION['xuid'], 'x3_banners', $_post['id'], 2)
-			: AdmUtils_helper::chk_priv_level($_post['id_area'], $_SESSION['xuid'], '_x3banners_creation', 0, 4);
+			? AdmUtils_helper::chk_priv_level($_post['id_area'], 'x3_banners', $_post['id'], 'edit')
+			: AdmUtils_helper::chk_priv_level($_post['id_area'], '_x3banners_creation', 0, 'create');
 		if (is_null($msg))
 		{
 			// handle _post
@@ -321,7 +318,7 @@ class X3banners_controller extends X3ui_controller implements X3plugin_controlle
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level($item->id_area, $_SESSION['xuid'], 'x3_banners', $item->id, 4);
+		$msg = AdmUtils_helper::chk_priv_level($item->id_area, 'x3_banners', $item->id, 'delete');
 		if (is_null($msg))
 		{
 			// action

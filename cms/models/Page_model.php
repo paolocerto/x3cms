@@ -351,6 +351,24 @@ class Page_model extends X4Model_core
 
 			// insert empty article
 			$res_article = $this->insert($data, 'articles');
+
+            if ($res_article[1])
+            {
+                // add permission over article
+                $perm = new Permission_model();
+                $array[] = array(
+                    'action' => 'insert',
+                    'id_what' => $res_article[0],
+                    'id_user' => $_SESSION['xuid'],
+                    'level' => 4
+                );
+                $perm->pexec('articles', $array, $this->id_area);
+            }
+
+            // create sections
+            $mod = new Section_model();
+            $mod->initialize($this->id_area, $res[0]);
+
 		}
 
 		// refresh ordinal
@@ -400,7 +418,10 @@ class Page_model extends X4Model_core
 		}
 
 		// performs insertion of articles
-		if (!empty($sql)) $res = $this->db->multi_exec($sql);
+		if (!empty($sql))
+        {
+            $res = $this->db->multi_exec($sql);
+        }
 		return $res;
 	}
 
@@ -418,7 +439,7 @@ class Page_model extends X4Model_core
 		$sql[] = 'INSERT INTO contexts (updated, id_area, lang, xkey, name, code, xlock, xon) VALUES (NOW(), '.$id_area.', '.$this->db->escape($lang).', \'drafts\', \'drafts\', 0, 0, 1)';
 		$sql[] = 'INSERT INTO contexts (updated, id_area, lang, xkey, name, code, xlock, xon) VALUES (NOW(), '.$id_area.', '.$this->db->escape($lang).', \'pages\', \'pages\', 1, 0, 1)';
 		$sql[] = 'INSERT INTO contexts (updated, id_area, lang, xkey, name, code, xlock, xon) VALUES (NOW(), '.$id_area.', '.$this->db->escape($lang).', \'multi\', \'multipages\', 2, 0, 1)';
-		$res = $this->db->multi_exec($sql);
+		$this->db->multi_exec($sql);
 	}
 
 	/**

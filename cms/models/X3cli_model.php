@@ -384,10 +384,7 @@ If you want to fully use this method you have to create:</p>
 	{
 		$msg = null;
 		// check permissions
-		$val = ($what == \'xlock\')
-			? 4
-			: 3;
-		$msg = AdmUtils_helper::chk_priv_level($id_area, $_SESSION[\'xuid\'], \''.$name.'\', $id, $val);
+		$msg = AdmUtils_helper::chk_priv_level($id_area, \''.$name.'\', $id, $what);
 		if (is_null($msg))
 		{
 			// do action
@@ -508,8 +505,8 @@ If you want to fully use this method you have to create:</p>
 		$msg = null;
 		// check permission
 		$msg = ($id)
-		    ? AdmUtils_helper::chk_priv_level($_post[\'id_area\'], $_SESSION[\'xuid\'], \''.$name.'\', $id, 2)
-		    : AdmUtils_helper::chk_priv_level($_post[\'id_area\'], $_SESSION[\'xuid\'], \'_'.$name.'_creation\', 0, 4);
+		    ? AdmUtils_helper::chk_priv_level($_post[\'id_area\'], \''.$name.'\', $id, \'edit\')
+		    : AdmUtils_helper::chk_priv_level($_post[\'id_area\'], \'_'.$name.'_creation\', 0, \'create\');
 
 		if (is_null($msg))
 		{
@@ -618,7 +615,7 @@ If you want to fully use this method you have to create:</p>
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level($item->id_area, $_SESSION[\'xuid\'], \''.$name.'\', $item->id, 4);
+		$msg = AdmUtils_helper::chk_priv_level($item->id_area, \''.$name.'\', $item->id, \'delete\');
 
 		if (is_null($msg))
 		{

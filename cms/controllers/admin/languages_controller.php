@@ -77,11 +77,7 @@ class Languages_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$val = ($what == 'xlock')
-			? 4
-			: 3;
-
-		$msg = AdmUtils_helper::chk_priv_level(1, $_SESSION['xuid'], 'languages', $id, $val);
+		$msg = AdmUtils_helper::chk_priv_level(1, 'languages', $id, $what);
 		if (is_null($msg))
 		{
 			// do action
@@ -170,8 +166,8 @@ class Languages_controller extends X3ui_controller
 		$msg = null;
 		// check permission
 		$msg = ($id)
-            ? AdmUtils_helper::chk_priv_level(1, $_SESSION['xuid'], 'languages', $_post['id'], 3)
-            : AdmUtils_helper::chk_priv_level(1, $_SESSION['xuid'], '_language_creation', 0, 4);
+            ? AdmUtils_helper::chk_priv_level(1, 'languages', $_post['id'], 'edit')
+            : AdmUtils_helper::chk_priv_level(1, '_language_creation', 0, 'create');
 
 		if (is_null($msg))
 		{
@@ -281,8 +277,7 @@ class Languages_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level(1, $_SESSION['xuid'], 'languages', $_post['id'], 4);
-
+		$msg = AdmUtils_helper::chk_priv_level(1, 'languages', $_post['id'], 'delete');
 		if (is_null($msg))
 		{
 			// action

@@ -106,10 +106,20 @@ class Permission_model extends X4Model_core
             ? 'u.id_area = '.$id_area.' AND'
             : '';
 
-		return (int) $this->db->query_var('SELECT IF(p.id IS NULL, u.level, p.level) AS level
-			FROM uprivs u
-			LEFT JOIN privs p ON p.id_who = u.id_user AND p.id_area = u.id_area AND p.what = u.privtype AND p.id_what = '.$id_what.'
-			WHERE '.$where.' u.id_user = '.$id_user.' AND u.privtype = '.$this->db->escape($what));
+        if ($id_what)
+        {
+            return (int) $this->db->query_var('SELECT IF(p.id IS NULL, u.level, p.level) AS level
+                FROM uprivs u
+                LEFT JOIN privs p ON p.id_who = u.id_user AND p.id_area = u.id_area AND p.what = u.privtype AND p.id_what = '.$id_what.'
+                WHERE '.$where.' u.id_user = '.$id_user.' AND u.privtype = '.$this->db->escape($what));
+        }
+        else
+        {
+            // for new items we check only on user privs
+            return (int) $this->db->query_var('SELECT level
+                FROM uprivs
+                WHERE id_area = '.$id_area.' AND id_user = '.$id_user.' AND privtype = '.$this->db->escape($what));
+        }
 	}
 
 	/**

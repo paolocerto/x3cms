@@ -152,7 +152,7 @@ class Articles_controller extends X3ui_controller
             // NOTE: we here have only bulk_action = delete
             foreach ($_post['bulk'] as $i)
             {
-                $msg = AdmUtils_helper::chk_priv_level($id_area, $_SESSION['xuid'], 'articles', $i, 4);
+                $msg = AdmUtils_helper::chk_priv_level($id_area, 'articles', $i, 'delete');
                 if (is_null($msg))
                 {
                     $result = $mod->delete($i);
@@ -191,10 +191,7 @@ class Articles_controller extends X3ui_controller
 	public function set(string $what, int $id_area, int $id, int $value = 0)
 	{
 		// check permissions
-		$val = ($what == 'xlock')
-			? 4
-			: 3;
-		$msg = AdmUtils_helper::chk_priv_level($id_area, $_SESSION['xuid'], 'articles', $id, $val);
+		$msg = AdmUtils_helper::chk_priv_level($id_area, 'articles', $id, $what);
 		if (is_null($msg))
 		{
 			// do action
@@ -230,10 +227,7 @@ class Articles_controller extends X3ui_controller
 	public function set_by_bid(string $what, int $id_area, int $id, int $value = 0)
 	{
 		// check permissions
-		$val = ($what == 'xlock')
-			? 4
-			: 3;
-		$msg = AdmUtils_helper::chk_priv_level($id_area, $_SESSION['xuid'], 'articles', $id, $val);
+		$msg = AdmUtils_helper::chk_priv_level($id_area, 'articles', $id, $what);
 		if (is_null($msg))
 		{
 			// do action
@@ -565,7 +559,7 @@ class Articles_controller extends X3ui_controller
 		// check permission
 		if ($item->id)
 		{
-			$msg = AdmUtils_helper::chk_priv_level($item->id_area, $_SESSION['xuid'], 'articles', $item->id, 2);
+			$msg = AdmUtils_helper::chk_priv_level($item->id_area, 'articles', $item->id, 'edit');
 		}
 
 		if (is_null($msg))
@@ -785,7 +779,7 @@ class Articles_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permissions
-		$msg = AdmUtils_helper::chk_priv_level($_post['id_area'], $_SESSION['xuid'], 'articles', $_post['id'], 2);
+		$msg = AdmUtils_helper::chk_priv_level($_post['id_area'], 'articles', $_post['id'], 'edit');
 		if (is_null($msg))
 		{
 			// handle _post
@@ -874,7 +868,7 @@ class Articles_controller extends X3ui_controller
 		{
 			if (is_null($msg))
             {
-				$msg = AdmUtils_helper::chk_priv_level($item->id_area, $_SESSION['xuid'], 'articles', $i->id, 4);
+				$msg = AdmUtils_helper::chk_priv_level($item->id_area, 'articles', $i->id, 'delete');
             }
 		}
 
@@ -885,7 +879,7 @@ class Articles_controller extends X3ui_controller
 		{
 			if (is_null($msg))
             {
-				$msg = AdmUtils_helper::chk_priv_level($item->id_area, $_SESSION['xuid'], 'pages', $i->id, 3);
+				$msg = AdmUtils_helper::chk_priv_level($item->id_area, 'pages', $i->id, 'xon');
             }
 		}
 
@@ -963,7 +957,7 @@ class Articles_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permissions
-		$msg = AdmUtils_helper::chk_priv_level($item->id_area, $_SESSION['xuid'], 'articles', $item->id, 4);
+		$msg = AdmUtils_helper::chk_priv_level($item->id_area, 'articles', $item->id, 'delete');
 
 		if (is_null($msg))
 		{

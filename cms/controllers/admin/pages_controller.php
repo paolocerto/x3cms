@@ -125,10 +125,7 @@ class Pages_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$val = ($what == 'xlock')
-			? 4
-			: 3;
-		$msg = AdmUtils_helper::chk_priv_level($id_area, $_SESSION['xuid'], 'pages', $id, $val);
+		$msg = AdmUtils_helper::chk_priv_level($id_area, 'pages', $id, $what);
 		if (is_null($msg))
 		{
 			// do action
@@ -209,8 +206,7 @@ class Pages_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permissions
-		$msg = AdmUtils_helper::chk_priv_level($_post['id_area'], $_SESSION['xuid'], '_page_creation', 0, 4);
-
+		$msg = AdmUtils_helper::chk_priv_level($_post['id_area'], '_page_creation', 0, 'create');
 		if (is_null($msg))
 		{
 			// remove slash from url
@@ -381,8 +377,7 @@ class Pages_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permissions
-		$msg = AdmUtils_helper::chk_priv_level($_post['id_area'], $_SESSION['xuid'], 'pages', $_post['id'], 2);
-
+		$msg = AdmUtils_helper::chk_priv_level($_post['id_area'], 'pages', $_post['id'], 'edit');
 		if (is_null($msg))
 		{
 			// get object
@@ -498,7 +493,7 @@ class Pages_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permissions
-		$msg = AdmUtils_helper::chk_priv_level($_post['id_area'], $_SESSION['xuid'], 'pages', $_post['id'], 2);
+		$msg = AdmUtils_helper::chk_priv_level($_post['id_area'], 'pages', $_post['id'], 'edit');
 
 		if (is_null($msg))
 		{
@@ -625,7 +620,7 @@ class Pages_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permissions
-		$msg = AdmUtils_helper::chk_priv_level($item->id_area, $_SESSION['xuid'], 'pages', $item->id, 4);
+		$msg = AdmUtils_helper::chk_priv_level($item->id_area, 'pages', $item->id, 'delete');
 		if (is_null($msg))
 		{
 			// action
@@ -665,7 +660,7 @@ class Pages_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permissions
-		$msg = AdmUtils_helper::chklevel($id_area, $_SESSION['xuid'], '_page_creation', 0, 4);
+		$msg = AdmUtils_helper::chk_priv_level($id_area, '_page_creation', 0, 'create');
 
 		if (is_null($msg))
 		{
@@ -717,10 +712,6 @@ class Pages_controller extends X3ui_controller
 				$post[] = array('home', array('lang' => $lang,'id_area' => $id_area,'xid' => 'pages','url' => 'home','name' => 'Home page',
 					'title' => 'Home page',	'description' => 'Home page','xfrom' => 'home','tpl' => 'base', 'css' => 'base',
 					'id_menu' => 0, 'xpos' => 0, 'deep' => 0, 'ordinal' => 'A', 'xon' => 1));
-				// x3admin
-				$post[] = array('x3admin', array('lang' => $lang,'id_area' => $id_area,'xid' => 'pages','url' => 'x3admin','name' => 'Editor',
-					'title' => 'Editor', 'description' => 'Editor','xfrom' => 'home','tpl' => 'base', 'css' => 'base',
-					'id_menu' => 0, 'xpos' => 1, 'deep' => 1, 'ordinal' => 'A0000001', 'hidden' => 1, 'xlock' => 1, 'xon' => 1));
 				// msg
 				$post[] = array('comunication', array('lang' => $lang,'id_area' => $id_area,'xid' => 'pages','url' => 'msg','name' => 'Communication',
 					'title' => 'Communication','description' => 'Communication','xfrom' => 'home','tpl' => 'base', 'css' => 'base',
@@ -740,7 +731,7 @@ class Pages_controller extends X3ui_controller
 				}
 			}
 
-			// action
+			// create default articles
 			$result = $mod->initialize_area($id_area, $lang, $post);
 
 			// set message

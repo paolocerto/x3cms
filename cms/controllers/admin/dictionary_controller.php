@@ -154,11 +154,7 @@ class Dictionary_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$val = ($what == 'xlock')
-			? 4
-			: 3;
-
-		$msg = AdmUtils_helper::chk_priv_level($id_area, $_SESSION['xuid'], 'dictionary', $id, $val);
+		$msg = AdmUtils_helper::chk_priv_level($id_area, 'dictionary', $id, $what);
 		if (is_null($msg))
 		{
 			// do action
@@ -251,8 +247,8 @@ class Dictionary_controller extends X3ui_controller
         // check permissions
         $id_area = X4Route_core::get_id_area($_post['area']);
 		$msg = ($id)
-            ? AdmUtils_helper::chk_priv_level($id_area, $_SESSION['xuid'], 'dictionary', $id_area, 2)
-            : AdmUtils_helper::chk_priv_level($id_area, $_SESSION['xuid'], '_word_creation', 0, 4);
+            ? AdmUtils_helper::chk_priv_level($id_area, 'dictionary', $id_area, 'edit')
+            : AdmUtils_helper::chk_priv_level($id_area, '_word_creation', 0, 'create');
 
 		if (is_null($msg))
 		{
@@ -382,7 +378,7 @@ class Dictionary_controller extends X3ui_controller
 		$msg = null;
 		// check permission
         $id_area = X4Route_core::get_id_area($item->area);
-		$msg = AdmUtils_helper::chk_priv_level($id_area, $_SESSION['xuid'], 'dictionary', $item->id, 4);
+		$msg = AdmUtils_helper::chk_priv_level($id_area, 'dictionary', $item->id, 'delete');
 
 		if (is_null($msg))
 		{
@@ -461,7 +457,7 @@ class Dictionary_controller extends X3ui_controller
 		$msg = null;
 		// check permission
         $id_area = X4Route_core::get_id_area($area);
-		$msg = AdmUtils_helper::chk_priv_level($id_area, $_SESSION['xuid'], '_word_creation', 0, 4);
+		$msg = AdmUtils_helper::chk_priv_level($id_area, '_word_creation', 0, 'create');
 
 		if (is_null($msg))
 		{
@@ -548,7 +544,7 @@ class Dictionary_controller extends X3ui_controller
 		$msg = null;
 		// check permission
         $id_area = X4Route_core::get_id_area($_post['area']);
-		$msg = AdmUtils_helper::chk_priv_level($id_area, $_SESSION['xuid'], '_key_import', 0, 4);
+		$msg = AdmUtils_helper::chk_priv_level($id_area, '_key_import', 0, 'create');
 
 		if (is_null($msg))
 		{

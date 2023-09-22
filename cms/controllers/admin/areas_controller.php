@@ -90,11 +90,7 @@ class Areas_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permissions
-		$val = ($what == 'xlock')
-			? 4
-			: 3;
-
-		$msg = AdmUtils_helper::chk_priv_level($id, $_SESSION['xuid'], 'areas', $id, $val);
+		$msg = AdmUtils_helper::chk_priv_level($id, 'areas', $id, $what);
 		if (is_null($msg))
 		{
 			// do action
@@ -185,9 +181,8 @@ class Areas_controller extends X3ui_controller
 		$msg = null;
 		// check permissions
 		$msg = ($id_area)
-			? AdmUtils_helper::chk_priv_level($id_area, $_SESSION['xuid'], 'areas', $id_area, 2)
-			: AdmUtils_helper::chk_priv_level($id_area, $_SESSION['xuid'], '_area_creation', 0, 4);
-
+			? AdmUtils_helper::chk_priv_level($id_area, 'areas', $id_area, 'edit')
+			: AdmUtils_helper::chk_priv_level($id_area, '_area_creation', 0, 'create');
 		if (is_null($msg))
 		{
 			// handle _post
@@ -366,7 +361,7 @@ class Areas_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level($id_area, $_SESSION['xuid'], 'areas', $id_area, 2);
+		$msg = AdmUtils_helper::chk_priv_level($id_area, 'areas', $id_area, 'edit');
 
 		if (is_null($msg))
 		{
@@ -460,8 +455,7 @@ class Areas_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permissions
-		$msg = AdmUtils_helper::chk_priv_level($item->id, $_SESSION['xuid'], 'areas', $item->id, 4);
-
+		$msg = AdmUtils_helper::chk_priv_level($item->id, 'areas', $item->id, 'delete');
 		if (is_null($msg))
 		{
 			// action

@@ -94,10 +94,7 @@ class Modules_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$val = ($what == 'xlock')
-			? 4
-			: 3;
-		$msg = AdmUtils_helper::chk_priv_level($id_area, $_SESSION['xuid'], 'modules', $id, $val);
+		$msg = AdmUtils_helper::chk_priv_level($id_area, 'modules', $id, $what);
 		if (is_null($msg))
 		{
 			$qs = X4Route_core::get_query_string();
@@ -191,9 +188,9 @@ class Modules_controller extends X3ui_controller
 		// check permission
 		$msg = AdmUtils_helper::chk_priv_level(
             $item->id_area,
-            $_SESSION['xuid'],
             str_replace(array('x3', 'x4'), array('x3_', 'x4_'), $_post['xrif']),
-            $_post['id'], 3
+            $_post['id'],
+            'configure'
         );	// 'modules'
 
 		if (is_null($msg))
@@ -263,7 +260,7 @@ class Modules_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level($id_area, $_SESSION['xuid'], '_module_install', 0, 4);
+		$msg = AdmUtils_helper::chk_priv_level($id_area, '_module_install', 0, 'create');
 		if (is_null($msg))
 		{
 			// load global dictionary
@@ -367,7 +364,7 @@ class Modules_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level($item->id_area, $_SESSION['xuid'], 'modules', $item->id, 4);
+		$msg = AdmUtils_helper::chk_priv_level($item->id_area, 'modules', $item->id, 'delete');
 		if (is_null($msg))
 		{
 			// do action

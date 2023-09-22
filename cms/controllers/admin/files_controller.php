@@ -145,7 +145,7 @@ class Files_controller extends X3ui_controller
             // NOTE: we here have only bulk_action = delete
             foreach ($_post['bulk'] as $i)
             {
-                $msg = AdmUtils_helper::chk_priv_level($id_area, $_SESSION['xuid'], 'files', $i, 4);
+                $msg = AdmUtils_helper::chk_priv_level($id_area, 'files', $i, 'delete');
                 if (is_null($msg))
                 {
                     $result = $mod->delete_file($i);
@@ -185,10 +185,7 @@ class Files_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$val = ($what == 'xlock')
-			? 4
-			: 3;
-		$msg = AdmUtils_helper::chk_priv_level($id_area, $_SESSION['xuid'], 'files', $id, $val);
+		$msg = AdmUtils_helper::chk_priv_level($id_area, 'files', $id, $what);
 		if (is_null($msg))
 		{
 			// do action
@@ -280,7 +277,7 @@ class Files_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level($_post['id_area'][0], $_SESSION['xuid'], '_file_upload', 0, 4);
+		$msg = AdmUtils_helper::chk_priv_level($_post['id_area'][0], '_file_upload', 0, 'create');
 		if (is_null($msg))
 		{
             $mod = new File_model();
@@ -299,7 +296,6 @@ class Files_controller extends X3ui_controller
                 {
                     if (isset($_post['namef_'.$i]))
                     {
-                        //$tmpname = X4Utils_helper::slugify(strtolower($_post['namef_'.$i]));
                         $alt[$i] = empty($_post['altf_'.$i])
                             ? $_post['namef_'.$i]
                             : strip_tags($_post['altf_'.$i]);
@@ -467,7 +463,7 @@ class Files_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level($_post['id_area'], $_SESSION['xuid'], 'files', $_post['id'], 2);
+		$msg = AdmUtils_helper::chk_priv_level($_post['id_area'], 'files', $_post['id'], 'edit');
 		if (is_null($msg))
 		{
 			// handle _post
@@ -556,7 +552,7 @@ class Files_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level($item->id_area, $_SESSION['xuid'], 'files', $item->id, 4);
+		$msg = AdmUtils_helper::chk_priv_level($item->id_area, 'files', $item->id, 'delete');
 		if (is_null($msg))
 		{
 			// action
@@ -979,7 +975,7 @@ class Files_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permissions
-		$msg = AdmUtils_helper::chk_priv_level($_post['id_area'], $_SESSION['xuid'], 'files', $id_file, 2);
+		$msg = AdmUtils_helper::chk_priv_level($_post['id_area'], 'files', $id_file, 'edit');
 
 		if (is_null($msg))
 		{
@@ -993,7 +989,7 @@ class Files_controller extends X3ui_controller
 
 			if ($file)
 			{
-				switch($file->xtype)
+				switch ($file->xtype)
 				{
 				case 0:
 					// images
@@ -1007,7 +1003,6 @@ class Files_controller extends X3ui_controller
 					if ($asnew)
 					{
 						// save a new file
-
 						// set the new name
 						$final_name = X4Files_helper::get_final_name($path, $file->name);
 						$chk = X4Files_helper::create_cropped($path.$file->name, $path.$final_name, array($_post['width'], $_post['height']), array($_post['xcoord'], $_post['ycoord']), true);

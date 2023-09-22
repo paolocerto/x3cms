@@ -116,7 +116,7 @@ class Sites_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permissions
-		$msg = AdmUtils_helper::chk_priv_level(1, $_SESSION['xuid'], 'sites', $this->site->site->id, 4);
+		$msg = AdmUtils_helper::chk_priv_level(1, 'sites', $this->site->site->id, 'xlock');
 		if (is_null($msg))
 		{
 			// do action
@@ -152,7 +152,7 @@ class Sites_controller extends X3ui_controller
 
 		$msg = null;
 		// check permissions
-		$msg = AdmUtils_helper::chk_priv_level(1, $_SESSION['xuid'], 'sites', $id, 4);
+		$msg = AdmUtils_helper::chk_priv_level(1, 'sites', $id, 'xlock');
 		if (is_null($msg))
 		{
 			// do action
@@ -244,7 +244,7 @@ class Sites_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level(1, $_SESSION['xuid'], 'sites', $_post['id'], 3);
+		$msg = AdmUtils_helper::chk_priv_level(1, 'sites', $_post['id'], 'edit');
 		if (is_null($msg))
 		{
             $mod = new Site_model();
@@ -361,8 +361,8 @@ class Sites_controller extends X3ui_controller
 		$msg = null;
 		// check permission
 		$msg = $_post['id']
-		    ? AdmUtils_helper::chk_priv_level(1, $_SESSION['xuid'], 'sites', $_post['id'], 4)
-		    : null;
+		    ? AdmUtils_helper::chk_priv_level(1, 'sites', $_post['id'], 'edit')
+		    : AdmUtils_helper::chk_priv_level(1, '_site_creation', $_post['id'], 'create');
 
 		if (is_null($msg))
 		{

@@ -13,7 +13,7 @@ defined('ROOT') or die('No direct script access.');
 ?>
 <div class="flex">
     <div class="flex-auto px-4 py-3 text-sm text-gray-600">
-        <?php echo AdmUtils_helper::navbar($breadcrumb, ' . ') ?>
+        <?php echo X4Theme_helper::navbar($breadcrumb, ' . ') ?>
     </div>
 
     <div class="flex-auto px-6 py-3 text-sm text-gray-600 ">

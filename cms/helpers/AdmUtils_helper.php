@@ -70,22 +70,6 @@ class AdmUtils_helper
 	}
 
 	/**
-	 * Get User permission level on a record of a table
-	 *
-	 * @static
-	 * @param   integer	$id_who User ID
-	 * @param   string	$what Privilege type
-	 * @param   integer	$id_what Item ID
-     * @param   integer	$id_area
-	 * @return  integer	Permission level
-	 */
-	public static function get_priv_level(int $id_who, string $what, int $id_what, int $id_area = 0)
-	{
-		$mod = new Permission_model();
-		return $mod->check_priv($id_who, $what, $id_what, $id_area);
-	}
-
-	/**
 	 * Get User permission level on a table
 	 *
 	 * @static
@@ -105,48 +89,19 @@ class AdmUtils_helper
 	 *
 	 * @static
      * @param   integer	$id_area
-	 * @param   integer	$id_who User ID
 	 * @param   string	$what Privilege type
 	 * @param   integer	$id_what Item ID
-	 * @param   integer	$value Privilege value
-	 * @param   boolean	$force Enable check even if User is an administrator
-	 * @return  void
+	 * @param   string  $action
+	 * @return  mixed null or object
 	 */
-	public static function chklevel(int $id_area, int $id_who, string $what, int $id_what, int $value, bool $force = false)
-	{
-		// if not administrator with god permission
-		if ($_SESSION['level'] < 4 || $force)
-		{
-			// get level
-			$level = self::get_priv_level($id_who, $what, $id_what, $id_area);
-
-			// if level lower than required redirect
-			if ($level < $value)
-			{
-				header('Location: '.ROOT.X4Route_core::$area.'/msg/message/_msg_error');
-				die;
-			}
-		}
-	}
-
-	/**
-	 * Check User permission level on a record of a table
-	 *
-	 * @static
-     * @param   integer	$id_area
-	 * @param   integer	$id_who User ID
-	 * @param   string	$what Privilege type
-	 * @param   integer	$id_what Item ID
-	 * @param   integer	$value Privilege value
-	 * @return  null or object
-	 */
-	public static function chk_priv_level(int $id_area, int $id_who, string $what, int $id_what, int $value)
+	public static function chk_priv_level(int $id_area, string $what, int $id_what, string $action)
 	{
 		// get level
-		$level = self::get_priv_level($id_who, $what, $id_what, $id_area);
+        $mod = new Permission_model();
+		$level = $mod->check_priv($_SESSION['xuid'], $what, $id_what, $id_area);
 
 		// if level lower than required redirect
-		if ($level < $value)
+		if ($level < self::action2level($action))
 		{
 			$dict = new X4Dict_model(X4Route_core::$folder, X4Route_core::$lang);
 			$msg = $dict->get_word('_NOT_PERMITTED', 'msg');
@@ -158,33 +113,37 @@ class AdmUtils_helper
 		}
 	}
 
-	/**
-	 * Check User permission level on a record of a table
+    /**
+	 * Get the required level for each action
 	 *
 	 * @static
-	 * @param   integer	$id_area Area ID
-	 * @param   integer	$id_who User ID
-	 * @param   string	$what Privilege type
-	 * @param   integer	$value Privilege value
-	 * @return  null or object
+     * @param   string  $action
+     * @return  integer
 	 */
-	public static function chk_upriv_level(int $id_area, int $id_who, string $what, int $value)
-	{
-		// get level
-		$level = self::get_ulevel($id_area, $id_who, $what);
-
-		// if level lower than required redirect
-		if ($level < $value)
-		{
-			$dict = new X4Dict_model(X4Route_core::$folder, X4Route_core::$lang);
-			$msg = $dict->get_word('_NOT_PERMITTED', 'msg');
-			return self::set_msg(false, '', $msg);
-		}
-		else
-		{
-			return null;
-		}
-	}
+    public static function action2level(string $action)
+    {
+        // default level for unexpected actions
+        $level = 3;
+        switch ($action)
+        {
+            case 'read':
+                $level = 1;
+                break;
+            case 'edit':
+                $level = 2;
+                break;
+            case 'manage':
+            case 'xon':
+                $level = 3;
+                break;
+            case 'create':
+            case 'xlock':
+            case 'delete':
+                $level = 4;
+                break;
+        }
+        return $level;
+    }
 
 	/**
 	 * Check if a file or a directory is writable
@@ -206,55 +165,6 @@ class AdmUtils_helper
 		{
 			return null;
 		}
-	}
-
-    /**
-	 * Build a simple breadcrumb
-	 *
-	 * @static
-	 * @param array		$array array of pages
-	 * @param string	$sep separator
-	 * @param boolean	$home show the home page link in navbar
-	 * @return string
-	 */
-	public static function navbar($array, $sep = ' > ', $home = true)
-	{
-		$str = '';
-		if (!empty($array))
-		{
-			// chain of pages
-			$item = array_pop($array[0]);
-
-			// additional URL params
-			$url_params = (isset($array[1]))
-				? $array[1]
-				: array();
-
-			foreach ($array[0] as $i)
-			{
-				// handle params
-				$param = (isset($url_params[$i->url]))
-					? '/'.$url_params[$i->url]
-					: '';
-
-                // is the URL the home page?
-				$url = ($i->url == 'home')
-					? 'home/dashboard'
-					: $i->url;
-
-				// add a crumb
-				if ($home || $i->url != 'home')
-				{
-					$str .= '<a @click="pager(\''.BASE_URL.$url.$param.'\')" title="'.stripslashes($i->description).'">'.stripslashes($i->name).'</a><span>'.$sep.'</span>';
-				}
-			}
-			// do we have to show home?
-			if ($home || $item->url != 'home')
-			{
-				$str .= '<span>'.stripslashes($item->name).'</span>';
-			}
-		}
-		return $str.'&nbsp;';
 	}
 
     /**

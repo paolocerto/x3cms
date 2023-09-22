@@ -71,10 +71,7 @@ class Templates_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$val = ($what == 'xlock')
-			? 4
-			: 3;
-		$msg = AdmUtils_helper::chk_priv_level(1, $_SESSION['xuid'], 'templates', $id, $val);
+		$msg = AdmUtils_helper::chk_priv_level(1, 'templates', $id, $what);
 		if (is_null($msg))
 		{
 			// do action
@@ -167,7 +164,7 @@ class Templates_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level(1, $_SESSION['xuid'], '_template_install', 0, 4);
+		$msg = AdmUtils_helper::chk_priv_level(1, '_template_install', 0, 'create');
 
 		if (is_null($msg))
 		{
@@ -274,7 +271,7 @@ class Templates_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level(1, $_SESSION['xuid'], 'templates', $item->id, 4);
+		$msg = AdmUtils_helper::chk_priv_level(1, 'templates', $item->id, 'delete');
 
 		if (is_null($msg))
 		{
@@ -417,7 +414,7 @@ class Templates_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level(1, $_SESSION['xuid'], 'templates', $_post['id'], 3);
+		$msg = AdmUtils_helper::chk_priv_level(1, 'templates', $_post['id'], 'edit');
 
 		if (is_null($msg))
 		{

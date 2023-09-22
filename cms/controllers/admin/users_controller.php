@@ -159,10 +159,7 @@ class Users_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$val = ($what == 'xlock')
-			? 4
-			: 3;
-		$msg = AdmUtils_helper::chk_priv_level(1, $_SESSION['xuid'], 'users', $id, $val);
+		$msg = AdmUtils_helper::chk_priv_level(1, 'users', $id, $what);
 		if (is_null($msg))
 		{
 			// do action
@@ -197,7 +194,7 @@ class Users_controller extends X3ui_controller
 		$this->dict->get_wordarray(array('users', 'form', 'login'));
 
 		// check permission
-		AdmUtils_helper::chk_priv_level(1, $_SESSION['xuid'], 'users', $id, 3);
+		AdmUtils_helper::chk_priv_level(1, 'users', $id, 'read');
 
         // get user data
         $mod = new User_model();
@@ -300,8 +297,8 @@ class Users_controller extends X3ui_controller
 		$msg = null;
 		// check permission
 		$msg = ($id)
-			? AdmUtils_helper::chk_priv_level(1, $_SESSION['xuid'], 'users', $id, 2)
-			: AdmUtils_helper::chk_priv_level(1, $_SESSION['xuid'], '_user_creation', 0, 4);
+			? AdmUtils_helper::chk_priv_level(1, 'users', $id, 'edit')
+			: AdmUtils_helper::chk_priv_level(1, '_user_creation', 0, 'create');
 
 		if (is_null($msg))
 		{
@@ -464,7 +461,7 @@ class Users_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level(1, $_SESSION['xuid'], 'users', $_post['id'], 3);
+		$msg = AdmUtils_helper::chk_priv_level(1, 'users', $_post['id'], 'manage');
 
 		if (is_null($msg))
 		{
@@ -534,7 +531,7 @@ class Users_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level(1, $_SESSION['xuid'], 'users', $id_user, 3);
+		$msg = AdmUtils_helper::chk_priv_level(1, 'users', $id_user, 'manage');
 		if (is_null($msg))
 		{
 			// do action
@@ -568,7 +565,7 @@ class Users_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level(1, $_SESSION['xuid'], 'users', $id_user, 3);
+		$msg = AdmUtils_helper::chk_priv_level(1, 'users', $id_user, 'manage');
 		if (is_null($msg))
 		{
 			// do action
@@ -684,7 +681,7 @@ function setForAll(val) {
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level(1, $_SESSION['xuid'], 'users', $_post['id_user'], 3);
+		$msg = AdmUtils_helper::chk_priv_level(1, 'users', $_post['id_user'], 'manage');
 
 		if (is_null($msg))
 		{
@@ -783,7 +780,7 @@ function setForAll(val) {
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level(1, $_SESSION['xuid'], 'users', $item->id, 4);
+		$msg = AdmUtils_helper::chk_priv_level(1, 'users', $item->id, 'delete');
         // check user level
         if (!is_null($msg) || $_SESSION['level'] < $item->level)
         {

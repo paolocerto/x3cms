@@ -80,28 +80,6 @@ class X4Utils_helper
 	}
 
 	/**
-	 * Check permissions over a record
-	 * use X3privs_model
-	 *
-	 * @static
-	 * @param integer	$id_who ID user
-	 * @param string	$what table
-	 * @param integer	$id_what ID record
-	 * @param integer	$value permission level
-	 * @return void
-	 */
-	public static function chklevel($id_who, $what, $id_what, $value)
-	{
-		$priv = new X3privs_model();
-		$level = $priv->check_priv($id_who, $what, $id_what);
-		if ($level < $value)
-		{
-			header('Location: '.BASE_URL.'msg/message/_not_permitted');
-			die;
-		}
-	}
-
-	/**
 	 * Check if site is offline
 	 *
 	 * @static
@@ -137,7 +115,6 @@ class X4Utils_helper
 	{
 		define('MYBASE_URL', $base_url);
 	}
-
 
 	/**
 	 * Put the message into a session variable
@@ -222,7 +199,6 @@ class X4Utils_helper
 					}
 					else
 					{
-
 						$msg .= '<br /><u>'.$label.'</u> '.$dict->get_word($e['msg'], 'form');
 					}
 

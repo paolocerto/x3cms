@@ -80,10 +80,7 @@ class Menus_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$val = ($what == 'xlock')
-			? 4
-			: 3;
-		$msg = AdmUtils_helper::chk_priv_level(1, $_SESSION['xuid'], 'menus', $id, $val);
+		$msg = AdmUtils_helper::chk_priv_level(1, 'menus', $id, $what);
 		if (is_null($msg))
 		{
 			// do action
@@ -172,8 +169,8 @@ class Menus_controller extends X3ui_controller
 		$msg = null;
 		// check permission
 		$msg = ($_post['id'])
-		    ? AdmUtils_helper::chk_priv_level(1, $_SESSION['xuid'], 'menus', $_post['id'], 2)
-            : AdmUtils_helper::chk_priv_level(1, $_SESSION['xuid'], '_menu_creation', 0, 4);
+		    ? AdmUtils_helper::chk_priv_level(1, 'menus', $_post['id'], 'edit')
+            : AdmUtils_helper::chk_priv_level(1, '_menu_creation', 0, 'create');
 
 		if (is_null($msg))
 		{
@@ -275,7 +272,7 @@ class Menus_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level(1, $_SESSION['xuid'], 'menus', $item->id, 4);
+		$msg = AdmUtils_helper::chk_priv_level(1, 'menus', $item->id, 'delete');
 		if (is_null($msg))
 		{
 			// action
@@ -316,7 +313,7 @@ class Menus_controller extends X3ui_controller
 		if (!is_null($id_page) && is_numeric($id_page))
 		{
 		    // check permission
-		    $msg = AdmUtils_helper::chk_priv_level(1, $_SESSION['xuid'], 'pages', $id_page, 3);
+		    $msg = AdmUtils_helper::chk_priv_level(1, 'pages', $id_page, 'order');
 
 		    if (is_null($msg))
 		    {

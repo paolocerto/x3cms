@@ -69,10 +69,7 @@ class Themes_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$val = ($what == 'xlock')
-			? 4
-			: 3;
-		$msg = AdmUtils_helper::chk_priv_level(1, $_SESSION['xuid'], 'themes', $id, $val);
+		$msg = AdmUtils_helper::chk_priv_level(1, 'themes', $id, $what);
 		if (is_null($msg))
 		{
 			// do action
@@ -104,7 +101,7 @@ class Themes_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level(1, $_SESSION['xuid'], '_theme_install', 0, 4);
+		$msg = AdmUtils_helper::chk_priv_level(1, '_theme_install', 0, 'create');
 		if (is_null($msg))
 		{
 			// perform the install
@@ -232,7 +229,7 @@ class Themes_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level(1, $_SESSION['xuid'], 'themes', $id, 3);
+		$msg = AdmUtils_helper::chk_priv_level(1, 'themes', $id, 'edit');
 		if (is_null($msg))
 		{
 			// handle _post
@@ -315,8 +312,7 @@ class Themes_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level(1, $_SESSION['xuid'], 'themes', $item->id, 4);
-
+		$msg = AdmUtils_helper::chk_priv_level(1, 'themes', $item->id, 'delete');
 		if (is_null($msg))
 		{
 			// do action
@@ -363,7 +359,7 @@ class Themes_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level(1, $_SESSION['xuid'], 'themes', $id_theme, 4);
+		$msg = AdmUtils_helper::chk_priv_level(1, 'themes', $id_theme, 'xlock');
 		if (is_null($msg))
 		{
 			// do action

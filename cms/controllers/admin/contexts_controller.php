@@ -104,10 +104,7 @@ class Contexts_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$val = ($what == 'xlock')
-			? 4
-			: 3;
-		$msg = AdmUtils_helper::chk_priv_level($id_area, $_SESSION['xuid'], 'contexts', $id, $val);
+		$msg = AdmUtils_helper::chk_priv_level($id_area, 'contexts', $id, $what);
 		if (is_null($msg))
 		{
 			// do action
@@ -207,8 +204,8 @@ class Contexts_controller extends X3ui_controller
 		$msg = null;
 		// check permission
 		$msg = ($id)
-			? AdmUtils_helper::chk_priv_level($_post['id_area'], $_SESSION['xuid'], 'contexts', $id, 3)
-			: AdmUtils_helper::chk_priv_level($_post['id_area'], $_SESSION['xuid'], '_context_creation', 0, 4);
+			? AdmUtils_helper::chk_priv_level($_post['id_area'], 'contexts', $id, 'edit')
+			: AdmUtils_helper::chk_priv_level($_post['id_area'], '_context_creation', 0, 'create');
 
 		if (is_null($msg))
 		{
@@ -341,7 +338,7 @@ class Contexts_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permissions
-		$msg = AdmUtils_helper::chk_priv_level($item->id_area, $_SESSION['xuid'], 'contexts', $item->id, 4);
+		$msg = AdmUtils_helper::chk_priv_level($item->id_area, 'contexts', $item->id, 'delete');
 		if (is_null($msg))
 		{
 			// do action

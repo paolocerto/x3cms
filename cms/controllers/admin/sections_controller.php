@@ -113,16 +113,11 @@ class Sections_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$val = ($what == 'xlock')
-			? 4
-			: 3;
-		$msg = AdmUtils_helper::chk_priv_level($id_area, $_SESSION['xuid'], 'sections', $id, $val);
+		$msg = AdmUtils_helper::chk_priv_level($id_area, 'sections', $id, $what);
 		if (is_null($msg))
 		{
 			// do action
 			$mod = new Section_model();
-			$obj = $mod->get_by_id($id);
-
 			$result = $mod->update($id, array($what => $value));
 
 			// set message
@@ -252,9 +247,8 @@ class Sections_controller extends X3ui_controller
 		$msg = null;
 		// check permission
 		$msg = ($id)
-			? AdmUtils_helper::chk_priv_level($_post['id_area'], $_SESSION['xuid'], 'sections', $id, 3)
-			: AdmUtils_helper::chk_priv_level($_post['id_area'], $_SESSION['xuid'], '_section_creation', 0, 4);
-
+			? AdmUtils_helper::chk_priv_level($_post['id_area'], 'sections', $id, 'edit')
+			: AdmUtils_helper::chk_priv_level($_post['id_area'], '_section_creation', 0, 'create');
 		if (is_null($msg))
 		{
 			// handle _post
@@ -514,7 +508,7 @@ class Sections_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permissions
-		$msg = AdmUtils_helper::chk_priv_level($item->id_area, $_SESSION['xuid'], 'sections', $item->id, 4);
+		$msg = AdmUtils_helper::chk_priv_level($item->id_area, 'sections', $item->id, 'delete');
 
 		if (is_null($msg))
 		{
@@ -551,7 +545,7 @@ class Sections_controller extends X3ui_controller
 	public function ordering(int $id_area, int $id_page)
 	{
 		$msg = null;
-        $msg = AdmUtils_helper::chk_priv_level($id_area, $_SESSION['xuid'], 'pages', $id_page, 3);
+        $msg = AdmUtils_helper::chk_priv_level($id_area, 'pages', $id_page, 'order');
 		if (is_null($msg) && X4Route_core::$input)
 		{
             // handle post
@@ -712,7 +706,7 @@ class Sections_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level($_POST['id_area'], $_SESSION['xuid'], 'pages', $_POST['id_page'], 3);
+		$msg = AdmUtils_helper::chk_priv_level($_POST['id_area'], 'pages', $_POST['id_page'], 'edit');
 
 		if (is_null($msg) && X4Route_core::$post)
 		{

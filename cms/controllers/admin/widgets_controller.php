@@ -193,8 +193,7 @@ class Widgets_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permissions
-		$msg = AdmUtils_helper::chk_priv_level(1, $_SESSION['xuid'], 'modules', $_post['id'], 1);
-
+		$msg = AdmUtils_helper::chk_priv_level(1, 'modules', $_post['id'], 'edit');
 		if (is_null($msg))
 		{
 			// get obj
@@ -335,7 +334,7 @@ class Widgets_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permissions
-		$msg = AdmUtils_helper::chk_priv_level(1, $_SESSION['xuid'], 'widgets', $_post['id'], 4);
+		$msg = AdmUtils_helper::chk_priv_level(1, 'widgets', $_post['id'], 'delete');
 
 		if (is_null($msg))
 		{

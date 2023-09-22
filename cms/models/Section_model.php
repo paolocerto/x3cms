@@ -191,6 +191,8 @@ class Section_model extends X4Model_core
 			// get template settings
 			$settings = json_decode($tpl->settings, true);
 
+            // for permission
+            $perm = new Permission_model();
 			for ($i = 1; $i <= sizeof($settings); $i++)
 			{
                 if (isset($settings['s'.$i]))
@@ -217,7 +219,19 @@ class Section_model extends X4Model_core
                             'settings' => json_encode($settings['s'.$i]),
                             'xon' => 1
                         );
-                        $this->insert($post);
+                        $res = $this->insert($post);
+
+                        if ($res[1])
+                        {
+                            // add permission over section
+                            $array[] = array(
+                                'action' => 'insert',
+                                'id_what' => $res[0],
+                                'id_user' => $_SESSION['xuid'],
+                                'level' => 4
+                            );
+                            $perm->pexec('sections', $array, $id_area);
+                        }
                     }
                 }
 			}
