@@ -94,11 +94,12 @@ foreach ($menus['sidebar'] as $k => $v)
                 }
                 break;
             case 'login/logout':
+                // if someone move the item
                 $icon = isset($icons[$v->url])
                      ? $icons[$v->url]
                      : $icons['fake'];
-                     
-                echo '<a href=\''.BASE_URL.'login/logout" title="'.$v->name.'">'.$icon.' <span x-show="open">'.$v->name.'</span></a><br>';
+
+                echo '<a href="'.BASE_URL.'login/logout" title="'.$v->name.'">'.$icon.' <span x-show="open">'.$v->name.'</span></a><br>';
                 break;
             default:
                 $icon = isset($icons[$v->url])
@@ -129,7 +130,11 @@ foreach ($menus['user_menu'] as $k => $v)
         ? $icons[$v->url]
         : $icons['fake'];
 
-    echo '<a @click="$dispatch(\'pager\', \''.BASE_URL.$v->url.'\')"
+    $action = ($v->url == 'login/logout')
+        ? 'href="'.BASE_URL.'login/logout"'
+        : '@click="$dispatch(\'pager\', \''.BASE_URL.$v->url.'\')"';
+
+    echo '<a '.$action.'
         title="'.$v->name.'">'.$icon.' <span x-show="open">'.$v->name.'</span></a><br>';
 }
 ?>
