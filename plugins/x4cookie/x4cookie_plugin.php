@@ -163,6 +163,9 @@ class X4cookie_plugin extends X4Plugin_core implements X3plugin
 	 */
 	private function cookie_alert(stdClass $page)
 	{
+        // disable cache
+        X4Utils_helper::nocache();
+        
 	    // load dictionary
 		$this->dict->get_wordarray(array('x4cookie'));
 
