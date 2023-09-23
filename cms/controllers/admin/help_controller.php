@@ -101,10 +101,10 @@ class Help_controller extends X3ui_controller
 		$view = new X4View_core('container_two');
 
 		// get left content
-		$lcontent = @file_get_contents('http://www.x3cms.net/'.$lang.'/help/home/'.$this->remotize());
+		$lcontent = @file_get_contents('https://www.x3cms.net/'.$lang.'/help2/home/'.$this->remotize());
 
 		// get right data: the index of the help on line
-		$rcontent = @file_get_contents('http://www.x3cms.net/'.$lang.'/help/index/'.$this->remotize());
+		$rcontent = @file_get_contents('https://www.x3cms.net/'.$lang.'/help2/index/'.$this->remotize());
 
 		// return contents or error message
 		$view->right = (empty($rcontent))
@@ -112,7 +112,7 @@ class Help_controller extends X3ui_controller
 			: '<div id="index">'.$rcontent.'</div>';
 
 		$src = array('src="/cms');
-		$rpl = array('src="http://www.x3cms.net/cms');
+		$rpl = array('src="https://www.x3cms.net/cms');
 
 		$view->left = (empty($lcontent))
 			? '<p>'._UNABLE_TO_CONNECT.'</p>'
