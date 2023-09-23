@@ -155,6 +155,11 @@ class Area_model extends X4Model_core
 		}
 
 		$file = json_encode($a);
+        // create dir if not exists
+        if (!is_dir(APATH.'files/'.SECRET))
+        {
+            mkdir(APATH.'files/'.SECRET, 0777);
+        }
 		file_put_contents(APATH.'files/'.SECRET.'/'.SECRET.'.txt', $file);
 	}
 

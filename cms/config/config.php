@@ -33,16 +33,18 @@ if (!isset($_SESSION['ffprefix']) || $_SESSION['ffprefix'] != SPREFIX)
     $_SESSION['ffprefix'] = SPREFIX;
 }
 
-// default items
 $default = array();
-$default['x3default_route'] = 'public/home';
+// extra config file
+// here we store info about extra areas
+define('SECRET', md5($_SERVER['DOCUMENT_ROOT']));
+if (file_exists(APATH.'files/'.SECRET.'/'.SECRET.'.txt'))
+{
 
-// here you can set association by extra areas and existent folders
-// >>>> WARNING: REMEMBER TO UPDATE X4Auth_model <<<<
-//$default['foo'] = 'public';
-//$default['foo_id'] = 4;
-//$default['bar'] = 'private';
-//$default['bar_id'] = 5;
+    $default = json_decode(file_get_contents(APATH.'files/'.SECRET.'/'.SECRET.'.txt'), true);
+}
+
+// default items
+$default['x3default_route'] = 'public/home';
 
 // global items
 define('EXT', '.php');

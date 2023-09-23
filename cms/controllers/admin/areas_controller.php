@@ -108,6 +108,8 @@ class Areas_controller extends X3ui_controller
 					'element' => 'page',
 					'url' => $_SERVER['HTTP_REFERER']
 				);
+                // update tmp file with extra areas
+				$mod->extra_areas();
 			}
 		}
 		$this->response($msg);
