@@ -93,6 +93,13 @@ foreach ($menus['sidebar'] as $k => $v)
                         $open = true;
                 }
                 break;
+            case 'login/logout':
+                $icon = isset($icons[$v->url])
+                     ? $icons[$v->url]
+                     : $icons['fake'];
+                     
+                echo '<a href=\''.BASE_URL.'login/logout" title="'.$v->name.'">'.$icon.' <span x-show="open">'.$v->name.'</span></a><br>';
+                break;
             default:
                 $icon = isset($icons[$v->url])
                      ? $icons[$v->url]
