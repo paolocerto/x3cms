@@ -111,8 +111,10 @@ class Groups_controller extends X3ui_controller
 
 		// contents
 		$view->content = new X4View_core('editor');
+        // can user edit?
+        $submit = AdmUtils_helper::submit_btn($item->id_area, 'xgroups', $id, $item->xlock);
 		// form builder
-		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
+		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, $submit, 'buttons'), 'post', '',
             '@click="submitForm(\'editor\')"');
 		$view->render(true);
 	}
@@ -129,7 +131,7 @@ class Groups_controller extends X3ui_controller
 		$msg = null;
 		// check permission
 		$msg = ($_post['id'])
-			? AdmUtils_helper::chk_priv_level($_post['id_area'], 'menus', $_post['id'], 'edit')
+			? AdmUtils_helper::chk_priv_level($_post['id_area'], 'groups', $_post['id'], 'edit')
 			: AdmUtils_helper::chk_priv_level($_post['id_area'], '_group_creation', 0, 'create');
 
 		if (is_null($msg))

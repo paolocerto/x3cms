@@ -436,9 +436,12 @@ class Page_model extends X4Model_core
 	public function initialize_context(int $id_area, string $lang)
 	{
 		$sql = array();
-		$sql[] = 'INSERT INTO contexts (updated, id_area, lang, xkey, name, code, xlock, xon) VALUES (NOW(), '.$id_area.', '.$this->db->escape($lang).', \'drafts\', \'drafts\', 0, 0, 1)';
-		$sql[] = 'INSERT INTO contexts (updated, id_area, lang, xkey, name, code, xlock, xon) VALUES (NOW(), '.$id_area.', '.$this->db->escape($lang).', \'pages\', \'pages\', 1, 0, 1)';
-		$sql[] = 'INSERT INTO contexts (updated, id_area, lang, xkey, name, code, xlock, xon) VALUES (NOW(), '.$id_area.', '.$this->db->escape($lang).', \'multi\', \'multipages\', 2, 0, 1)';
+		$sql[] = 'INSERT INTO contexts (updated, id_area, lang, xkey, name, code, xlock, xon)
+                    VALUES (NOW(), '.$id_area.', '.$this->db->escape($lang).', \'drafts\', \'drafts\', 0, 0, 1)';
+		$sql[] = 'INSERT INTO contexts (updated, id_area, lang, xkey, name, code, xlock, xon)
+                    VALUES (NOW(), '.$id_area.', '.$this->db->escape($lang).', \'pages\', \'pages\', 1, 0, 1)';
+		$sql[] = 'INSERT INTO contexts (updated, id_area, lang, xkey, name, code, xlock, xon)
+                    VALUES (NOW(), '.$id_area.', '.$this->db->escape($lang).', \'multi\', \'multipages\', 2, 0, 1)';
 		$this->db->multi_exec($sql);
 	}
 
@@ -466,7 +469,8 @@ class Page_model extends X4Model_core
 		$sql[] = 'DELETE FROM pages WHERE id = '.$id;
 
 		// move up subpages
-		$sql[] = 'UPDATE pages SET xfrom = '.$this->db->escape($page->xfrom).', deep = '.$page->deep.', xpos = 0 WHERE id_area = '.$page->id_area.' AND id_area = '.$this->db->escape($page->lang);
+		$sql[] = 'UPDATE pages SET xfrom = '.$this->db->escape($page->xfrom).', deep = '.$page->deep.', xpos = 0
+                     WHERE id_area = '.$page->id_area.' AND id_area = '.$this->db->escape($page->lang);
 
 		$res = $this->db->multi_exec($sql);
 
@@ -496,9 +500,12 @@ class Page_model extends X4Model_core
 			// get many rows (advanced editing)
 			return $this->db->query('SELECT a.*, IF(p.id IS NULL, u.level, p.level) AS level
 				FROM articles a
-				JOIN uprivs u ON u.id_area = a.id_area AND u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('articles').'
+				JOIN uprivs u ON u.id_area = a.id_area
 				LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = a.id
-				WHERE a.id_page = '.$id.'
+				WHERE
+                    a.id_page = '.$id.' AND
+                    u.id_user = '.intval($_SESSION['xuid']).' AND
+                    u.privtype = '.$this->db->escape('articles').'
 				GROUP BY a.id
 				ORDER BY a.id DESC');
 		}
@@ -527,7 +534,11 @@ class Page_model extends X4Model_core
 			ORDER BY p.lang ASC, p.ordinal ASC, a.updated DESC');
 
 		// build xml
-		$head = '<?xml version="1.0" encoding="utf-8"?><urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'.NL;
+		$head = '<?xml version="1.0" encoding="utf-8"?>
+                    <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+                        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd"
+                        xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'.NL;
 
 		$body = '';
 		if ($pages) {
@@ -793,6 +804,7 @@ class Page_obj
 	public $robot = '';
 	public $redirect_code = 0;
 	public $redirect = '';
+    public $xlock = 0;
 
 	/**
 	 * Constructor

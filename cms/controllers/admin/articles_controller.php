@@ -452,8 +452,10 @@ class Articles_controller extends X3ui_controller
 			}
 		}
 
+        // can user edit?
+        $submit = AdmUtils_helper::submit_btn($item->id_area, 'articles', $item->id, $item->xlock);
 		// form builder
-		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
+		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, $submit, 'buttons'), 'post', '',
             '@click="submitForm(\'editor\')"');
 
 		// rtl

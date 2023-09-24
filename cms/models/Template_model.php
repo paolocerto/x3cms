@@ -88,8 +88,10 @@ class Template_model extends X4Model_core
 
 		// check if already installed
 		if ($this->exists($id_theme, $name))
+        {
 			$error[] = array('error' => '_ALREADY_INSTALLED', 'label' => $name);
-		else
+        }
+        else
 		{
 			// check if template file exists
 			if (file_exists('themes/'.$name.'_install.php'))
@@ -104,10 +106,14 @@ class Template_model extends X4Model_core
 					return $result[0];
 				}
 				else
+                {
 					$error[] = array('error' => '_TEMPLATE_NOT_INSTALLED', 'label' => $name);
+                }
 			}
 			else
+            {
 				$error[] = array('error' => '_TEMPLATE_INSTALLER_NOT_FOUND', 'label' => $name);
+            }
 		}
 
 		return $error;

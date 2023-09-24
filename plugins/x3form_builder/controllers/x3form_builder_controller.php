@@ -338,9 +338,10 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
 			: _X3FB_NEW_FORM;
 		// contents
 		$view->content = new X4View_core('editor');
-
+        // can user edit?
+        $submit = AdmUtils_helper::submit_btn($item->id_area, 'x3_forms', $id, $item->xlock);
 		// form builder
-		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
+		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, $submit, 'buttons'), 'post', '',
             '@click="submitForm(\'editor\')"');
 
 		$view->render(true);
@@ -708,9 +709,10 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
 		$view->content = new X4View_core('editor');
 
 		$view->content->id = $id;
-
+        // can user edit?
+        $submit = AdmUtils_helper::submit_btn($item->id_area, 'x3_forms_fields', $id, $item->xlock);
 		// form builder
-		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
+		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, $submit, 'buttons'), 'post', '',
             '@click="submitForm(\'editor\')"');
 
 		$view->render(true);
@@ -1179,10 +1181,10 @@ function checkRule(item) {
 
 		// contents
 		$view->content = new X4View_core('editor');
-		//$view->content->id = $id;
-
+		// can user edit?
+        $submit = AdmUtils_helper::submit_btn($item->id_area, 'x3_forms_blacklist', $id, $item->xlock);
 		// form builder
-		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
+		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, $submit, 'buttons'), 'post', '',
             '@click="submitForm(\'editor\')"');
 
 		$view->render(true);

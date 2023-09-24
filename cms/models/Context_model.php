@@ -167,6 +167,7 @@ class Context_obj
 	public $id_area = 0;
 	public $lang = '';
 	public $name;
+    public $xlock = 0;
 
 	/**
 	 * Constructor

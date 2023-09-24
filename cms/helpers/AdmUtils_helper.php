@@ -84,6 +84,21 @@ class AdmUtils_helper
 		return $mod->get_upriv($id_area, $id_who, $what);
 	}
 
+    /**
+	 * Get User permission level on an item
+	 *
+	 * @static
+     * @param   integer	$id_area
+	 * @param   string	$what Privilege type
+	 * @param   integer	$id_what Item ID
+	 * @return  integer	Permission level
+	 */
+	public static function get_priv_level(int $id_area, string $what, int $id_what)
+	{
+		$mod = new Permission_model();
+		return $mod->check_priv($_SESSION['xuid'], $what, $id_what, $id_area);
+	}
+
 	/**
 	 * Check User permission level on a record of a table
 	 *
@@ -96,9 +111,8 @@ class AdmUtils_helper
 	 */
 	public static function chk_priv_level(int $id_area, string $what, int $id_what, string $action)
 	{
-		// get level
-        $mod = new Permission_model();
-		$level = $mod->check_priv($_SESSION['xuid'], $what, $id_what, $id_area);
+		// get priv level on the item
+		$level = self::get_priv_level($id_area, $what, $id_what);
 
 		// if level lower than required redirect
 		if ($level < self::action2level($action))
@@ -144,6 +158,35 @@ class AdmUtils_helper
         }
         return $level;
     }
+
+    /**
+	 * Get value to set submit button over edit item
+     * Check if the user can edit it
+	 *
+	 * @static
+     * @param   integer	$id_area
+	 * @param   string	$what Privilege type
+	 * @param   integer	$id_what Item ID
+     * @param   integer	$xlock
+	 * @return  mixed
+	 */
+	public static function submit_btn(int $id_area, string $what, int $id_what, int $xlock)
+	{
+		// get priv level on the item
+		$level = self::get_priv_level($id_area, $what, $id_what);
+
+        // expected results
+        // xlock == 0 and level < 2 => false
+        // xlock == 1 and level < 3 => false
+        $chk = $xlock
+            ? ($level >= 3)
+            : ($level >= 2);
+
+        // form dictionary should be already loaded
+        return ($chk)
+            ? _SUBMIT
+            : null;
+	}
 
 	/**
 	 * Check if a file or a directory is writable

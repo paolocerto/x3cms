@@ -331,6 +331,7 @@ class Menu_obj
 	public $id_theme;
 	public $name;
 	public $description;
+    public $xlock = 0;
 
 	/**
 	 * Constructor

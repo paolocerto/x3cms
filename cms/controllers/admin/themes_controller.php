@@ -177,8 +177,10 @@ class Themes_controller extends X3ui_controller
 		// content
 		$view->content = new X4View_core('editor');
         $view->content->msg = _THEME_EDIT_MSG;
+        // can user edit?
+        $submit = AdmUtils_helper::submit_btn(1, 'themes', $id, $item->xlock);
 		// form builder
-		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', 'enctype="multipart/form-data"',
+		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, $submit, 'buttons'), 'post', 'enctype="multipart/form-data"',
             '@click="submitForm(\'editor\')"');
         $view->render(true);
 	}

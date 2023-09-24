@@ -453,6 +453,7 @@ class Section_obj
 	public $name;
 	public $progressive = 1;
 	public $settings = '';
+    public $xlock = 0;
 
 	/**
 	 * Constructor

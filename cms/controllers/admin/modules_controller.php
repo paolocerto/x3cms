@@ -166,7 +166,6 @@ class Modules_controller extends X3ui_controller
 		// contents
 		$view->content = new X4View_core('editor');
 
-
 		// form builder
 		$view->content->form = X4Form_helper::doform('configure', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
             '@click="submitForm(\'configure\')"');

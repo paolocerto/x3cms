@@ -320,7 +320,7 @@ class Templates_controller extends X3ui_controller
 
 		// get object
 		$mod = new Template_model();
-		$item = $mod->get_by_id($id, 'templates', 'id_theme, name, css');
+		$item = $mod->get_by_id($id, 'templates', 'id_theme, name, css, xlock');
 
 		// path to file
 		$file = ($what == 'template')
@@ -357,9 +357,10 @@ class Templates_controller extends X3ui_controller
 
 		// contents
 		$view->content = new X4View_core('editor');
-
+        // can user edit?
+        $submit = AdmUtils_helper::submit_btn(1, 'templates', $id, $item->xlock);
 		// form builder
-		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
+		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, $submit, 'buttons'), 'post', '',
         '@click="submitForm(\'editor\')"');
 
 		$view->render(true);

@@ -278,4 +278,5 @@ class Lang_obj
 	public $language;
 	public $code;
 	public $rtl = 0;
+    public $xlock = 0;
 }

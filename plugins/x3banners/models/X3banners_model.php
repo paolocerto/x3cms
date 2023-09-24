@@ -238,6 +238,7 @@ class Obj_x3banners
 	public $fg_color = '';
 	public $link_color = '';
 	public $auto_hide = 0;
+    public $xlock = 0;
 
 	public function __construct($id_area, $lang)
 	{

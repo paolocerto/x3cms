@@ -334,8 +334,10 @@ class Pages_controller extends X3ui_controller
         $view->content->page = $page;
         $view->content->from = $from;
 
+        // can user edit?
+        $submit = AdmUtils_helper::submit_btn($page->id_area, 'pages', $id, $page->xlock);
 		// form builder
-		$view->content->form = X4Form_helper::doform('editor', BASE_URL.'pages/move/'.$id, $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
+		$view->content->form = X4Form_helper::doform('editor', BASE_URL.'pages/move/'.$id, $fields, array(_RESET, $submit, 'buttons'), 'post', '',
             '@click="submitForm(\'editor\')"');
 
 		$view->render(true);
@@ -474,9 +476,10 @@ class Pages_controller extends X3ui_controller
 
 		// contents
 		$view->content = new X4View_core('editor');
-
+        // can user edit?
+        $submit = AdmUtils_helper::submit_btn($page->id_area, 'pages', $id, $page->xlock);
 		// form builder
-		$view->content->form = X4Form_helper::doform('editor', BASE_URL.'pages/seo/'.$id, $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
+		$view->content->form = X4Form_helper::doform('editor', BASE_URL.'pages/seo/'.$id, $fields, array(_RESET, $submit, 'buttons'), 'post', '',
             '@click="submitForm(\'editor\')"');
 
 		$view->render(true);

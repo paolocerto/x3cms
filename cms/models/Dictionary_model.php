@@ -241,6 +241,7 @@ class Word_obj
 	public $what = '';
 	public $xkey = '';
 	public $xval = '';
+    public $xlock = 0;
 
     public function __construct(string $what = '')
 	{

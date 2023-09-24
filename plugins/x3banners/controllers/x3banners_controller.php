@@ -186,9 +186,10 @@ class X3banners_controller extends X3ui_controller implements X3plugin_controlle
 			: _X3BANNERS_ADD;
 		// content
 		$view->content = new X4View_core('editor');
-
+        // can user edit?
+        $submit = AdmUtils_helper::submit_btn($item->id_area, 'x3_banners', $id, $item->xlock);
 		// form builder
-		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
+		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, $submit, 'buttons'), 'post', '',
             '@click="submitForm(\'editor\')"');
 
 		$view->render(true);

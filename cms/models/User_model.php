@@ -112,6 +112,7 @@ class User_obj
 	public $mail;
 	public $phone;
 	public $level = 0;
+    public $xlock = 0;
 
 	/**
 	 * Constructor

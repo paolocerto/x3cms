@@ -481,8 +481,10 @@ If you want to fully use this method you have to create:</p>
 
 		// contents
 		$view->content = new X4View_core(\'editor\');
+        // can user edit?
+        $submit = AdmUtils_helper::submit_btn($item->id_area, \'x3_plugins\', $id, $item->xlock);
 		// form builder
-		$view->content->form = X4Form_helper::doform(\'editor\', BASE_URL.\''.$name.'/edit/\'.$id_area.\'/\'.$lang.\'/\'.$id, $fields, array(_RESET, _SUBMIT, \'buttons\'), \'post\', \'\',
+		$view->content->form = X4Form_helper::doform(\'editor\', BASE_URL.\''.$name.'/edit/\'.$id_area.\'/\'.$lang.\'/\'.$id, $fields, array(_RESET, $submit, \'buttons\'), \'post\', \'\',
             \'@click="submitForm(\\\'editor\\\')"\');
 
 		$view->render(true);
@@ -1148,6 +1150,7 @@ class '.ucfirst($name).'_obj
 	public $title;
 	public $description;
 	public $xpos = 0;
+    public $xlock = 0;
 
 	/**
 	 * Constructor
@@ -1246,7 +1249,7 @@ if (MULTIAREA)
             $on = ($i->id == $id_area)
                 ? \'class="link"\'
                 : \'class="dark"\';
-            echo\ '<a \'.$on.\' @click="pager(\\\'\'.BASE_URL.$name.\'/index/\'.$i->id.\'/\'.$lang.\'\\\')" title="\'._SWITCH_AREA.\'">\'.ucfirst($i->name).\'</a>\';
+            echo \'<a \'.$on.\' @click="pager(\\\'\'.BASE_URL.$name.\'/index/\'.$i->id.\'/\'.$lang.\'\\\')" title="\'._SWITCH_AREA.\'">\'.ucfirst($i->name).\'</a>\';
         }
 	}
 	echo \'</div>\';

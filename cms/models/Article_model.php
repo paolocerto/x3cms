@@ -782,6 +782,8 @@ class Article_obj
 	public $show_tags;
 	public $show_actions;
 
+    public $xlock = 0;
+
 // TODO: maybe in the future public $xschema;
 
 	/**

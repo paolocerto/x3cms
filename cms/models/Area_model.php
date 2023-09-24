@@ -351,6 +351,7 @@ class Area_obj
 	public $id_theme = 0;
 	public $private = 0;
 	public $folder = '';
+    public $xlock = 0;
 
     public function __construct(string $folder = '')
 	{

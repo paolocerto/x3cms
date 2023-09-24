@@ -207,13 +207,15 @@ class Dictionary_controller extends X3ui_controller
 		// get the fields array
 		$fields = $form_fields->render();
 
+        $id_area = X4Route_core::get_id_area($area);
+
 		// if submitted
 		if (X4Route_core::$post)
 		{
 			$e = X4Validation_helper::form($fields, 'editor');
 			if ($e)
 			{
-				$this->editing($id, $_POST);
+				$this->editing($id, $id_area, $_POST);
 			}
 			else
 			{
@@ -226,9 +228,10 @@ class Dictionary_controller extends X3ui_controller
         $view->title = _EDIT_WORD;
 		// content
 		$view->content = new X4View_core('editor');
-
+        // can user edit?
+        $submit = AdmUtils_helper::submit_btn($id_area, 'dictionary', $id, $item->xlock);
 		// form builder
-		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
+		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, $submit, 'buttons'), 'post', '',
             '@click="submitForm(\'editor\')"');
 		$view->render(true);
 	}
@@ -238,15 +241,15 @@ class Dictionary_controller extends X3ui_controller
 	 *
 	 * @access	private
      * @param   integer     $id
+     * @param   integer     $id_area
 	 * @param   array       $_post _POST array
 	 * @return  void
 	 */
-	private function editing(int $id, array $_post)
+	private function editing(int $id, int $id_area, array $_post)
 	{
 		$msg = null;
         // check permissions
-        $id_area = X4Route_core::get_id_area($_post['area']);
-		$msg = ($id)
+        $msg = ($id)
             ? AdmUtils_helper::chk_priv_level($id_area, 'dictionary', $id_area, 'edit')
             : AdmUtils_helper::chk_priv_level($id_area, '_word_creation', 0, 'create');
 

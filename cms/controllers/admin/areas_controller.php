@@ -163,8 +163,11 @@ class Areas_controller extends X3ui_controller
 
 		// contents
 		$view->content = new X4View_core('editor');
-		// form builder
-		$view->content->form = X4Form_helper::doform('editor', BASE_URL.'areas/edit/'.$id, $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
+
+        // can user edit?
+        $submit = AdmUtils_helper::submit_btn($id, 'areas', $id, $item->xlock);
+        // form builder
+		$view->content->form = X4Form_helper::doform('editor', BASE_URL.'areas/edit/'.$id, $fields, array(_RESET, $submit, 'buttons'), 'post', '',
 			'@click="submitForm(\'editor\')"');
 
 		$view->render(true);

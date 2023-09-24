@@ -69,4 +69,5 @@ class Group_obj
 	public $id_area = 0;
 	public $name;
 	public $description;
+    public $xlock = 0;
 }

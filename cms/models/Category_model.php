@@ -109,7 +109,8 @@ class Category_obj
 	public $name;
 	public $title;
 	public $tag;
-
+    public $xlock = 0;
+    
 	/**
 	 * Constructor
 	 * Initialize the new category

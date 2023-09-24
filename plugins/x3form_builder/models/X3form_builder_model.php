@@ -608,6 +608,7 @@ class Obj_form {
 	public $msg_failed = '';
 	public $submit_button;
 	public $reset_button;
+    public $xlock = 0;
 
 	public function __construct($id_area, $lang)
 	{
@@ -627,6 +628,7 @@ class Obj_field {
 	public $suggestion;
 	public $rule = '';
 	public $extra = '';
+    public $xlock = 0;
 
 	public function __construct($id_area, $lang, $id_form)
 	{
@@ -641,6 +643,7 @@ class Obj_blackitem {
 	public $id_area;
 	public $lang;
     public $name;
+    public $xlock = 0;
 
 	public function __construct($id_area, $lang)
 	{
