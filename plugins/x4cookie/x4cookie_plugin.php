@@ -145,7 +145,7 @@ class X4cookie_plugin extends X4Plugin_core implements X3plugin
         x-cloak
     >
         <div
-            class="fixed max-h-full overflow-y-auto inset-x-2 md:inset-x-6 lg:w-2/3 xl:w-1/3 mx-auto rounded-xl shadow-2xl xmodal"
+            class="fixed max-h-full overflow-y-auto inset-x-2 md:inset-x-6 lg:w-2/3 xl:w-1/3 mx-auto"
         >
             <div x-html="modal_html" class="pt-8 md:pt-16"></div>
         </div>
@@ -165,7 +165,7 @@ class X4cookie_plugin extends X4Plugin_core implements X3plugin
 	{
         // disable cache
         X4Utils_helper::nocache();
-        
+
 	    // load dictionary
 		$this->dict->get_wordarray(array('x4cookie'));
 
@@ -243,7 +243,7 @@ class X4cookie_plugin extends X4Plugin_core implements X3plugin
 >
     <div id="x4cookie" class="pt-8 md:pt-16">
         <div
-            class="fixed max-h-full overflow-y-auto inset-x-2 md:inset-x-6 lg:w-2/3 xl:w-1/3 mx-auto rounded-xl shadow-2xl xmodal"
+            class="fixed max-h-full overflow-y-auto inset-x-2 md:inset-x-6 lg:w-2/3 xl:w-1/3 mx-auto"
         >
             <div x-html="modal_html"></div>
         </div>
@@ -314,7 +314,7 @@ class X4cookie_plugin extends X4Plugin_core implements X3plugin
             $edit = _X4COOKIE_EDIT;
         }
 
-        echo '<div class="bg-white text-gray-700 md:px-8 px-4 py-10">
+        echo '<div class="bg-white rounded-xl shadow-2xl xmodal text-gray-700 md:px-8 px-4 py-10">
             <div class="flex flex-row items-center justify-between">
                 <h3 class="mpt0 mb-0 pb-0 font-bold tracking-tight">'._X4COOKIE_SETUP.'</h3>
                 <a class="link" @click="close()">
@@ -367,7 +367,7 @@ class X4cookie_plugin extends X4Plugin_core implements X3plugin
                 : 'checked';
         }
 
-        echo '<div class="bg-white text-gray-700 md:px-8 px-4 py-10">
+        echo '<div class="bg-white rounded-xl shadow-2xl xmodal text-gray-700 md:px-8 px-4 py-10">
             <div class="flex flex-row items-center justify-between">
                 <h3 class="mpt0 mb-0 pb-0 font-bold tracking-tight">'.$title.'</h3>
                 <a class="link" @click="close()">
