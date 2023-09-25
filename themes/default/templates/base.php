@@ -267,6 +267,11 @@ if (!DEBUG)
 
 // check cookie policy
 echo stripslashes(X4Theme_helper::module($this->site, $page, [], 'x4cookie', 'alert'));
+
+// script view
+$view = new X4View_core('script');
+echo $view->render(false);
+
 ?>
 </body>
 </html>
