@@ -274,7 +274,7 @@ class X3form_builder_plugin extends X4Plugin_core implements X3plugin
 				}
 
 				// we send email only if not spam
-				$msg = $mod->messagize($form->name, $_post, $_files);
+				$msg = $mod->messagize($id_area, $form->name, $_post, $_files);
 				if (!empty($msg))
 				{
                     // send
