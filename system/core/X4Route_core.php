@@ -191,6 +191,11 @@ final class X4Route_core
 		if (!empty(self::$args))
 		{
 			self::$control = array_shift(self::$args);
+            // fix for call_plugin
+            if (self::$control == 'call_plugin')
+            {
+                self::$control = 'plugin';
+            }
 		}
 
 		// method
