@@ -33,7 +33,7 @@ class X4Mailer_helper
 	public static function mailto($from, $html, $subject, $body, $to, $attached = array(), $cc = array(), $bcc = array(), $replyto = array())
 	{
 		//X4Core_core::auto_load('swiftmailer_library');
-        require_once PATH . '/vendor/autoload.php';
+        require_once PATH . 'vendor/autoload.php';
 		// Create the Transport
 
 		/*
