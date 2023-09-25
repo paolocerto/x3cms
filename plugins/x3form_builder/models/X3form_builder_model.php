@@ -487,7 +487,7 @@ class X3form_builder_model extends X4Model_core
 				else
 				{
 				    // blacklist
-				    if ($this->spam_check($v))
+				    if ($this->spam_check($id_area, $v))
 				    {
 				        return '';
 				    }
