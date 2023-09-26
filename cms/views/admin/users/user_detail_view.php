@@ -42,6 +42,10 @@ echo '<table>
         <tr>
             <td class="font-bold">'._LEVEL.'</td>
             <td colspan="2">'.$user->level.'</td>
+        </tr>
+        <tr>
+            <td class="w-56 font-bold">'._LAST_LOGIN.'</td>
+            <td colspan="2">'.$user->last_in.'</td>
         </tr>';
 
 if ($user->plevel > 2)
