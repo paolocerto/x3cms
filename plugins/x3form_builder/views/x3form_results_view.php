@@ -54,7 +54,7 @@ if (!empty($items[0]))
 		}
 
 		echo '<tr>
-				<td class="font-sm">'.$i->updated.'</td>
+				<td class="text-sm">'.$i->updated.'</td>
                 <td>'.$mod->show_message($i->result).'</td>
 				<td class="space-x-2 text-right">'.$actions.'</td>
                 <td class="text-center"><input type="checkbox" class="bulkable" x-model="bulk" value="'.$i->id.'" /></td>
