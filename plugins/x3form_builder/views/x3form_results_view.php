@@ -30,7 +30,7 @@ if (!empty($items[0]))
     echo '<table>
         <thead>
             <tr>
-                <th class="w-28"></th>
+                <th class="w-48"></th>
                 <th>'._X3FB_RESULTS.'</th>
                 <th class="w-40">'._ACTIONS.'</th>
                 <th class="w-8 text-center"><input type="checkbox" @click="toggle()" /></th>
