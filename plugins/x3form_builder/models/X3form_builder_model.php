@@ -163,7 +163,7 @@ class X3form_builder_model extends X4Model_core
 			LEFT JOIN privs pr ON pr.id_who = u.id_user AND pr.what = u.privtype AND pr.id_what = x.id
 			WHERE x.id_area = '.$id_area.' AND x.lang = '.$this->db->escape($lang).'
 			GROUP BY x.id
-			ORDER BY x.id DESC');
+			ORDER BY x.name ASC');
 	}
 
 	/**
@@ -193,7 +193,6 @@ class X3form_builder_model extends X4Model_core
 
 	/**
 	 * Check if a form already exists
-	 * Join with privs table
 	 *
 	 * @param   integer $id_area Area ID
 	 * @param   string	$lang Language code
@@ -217,7 +216,6 @@ class X3form_builder_model extends X4Model_core
 
 	/**
 	 * Check if a field in a form already exists
-	 * Join with privs table
 	 *
 	 * @param   integer $id_form Area ID
 	 * @param   string	$name Form name
