@@ -875,8 +875,16 @@ function bulkable() {
         bulk: [],
         xurl: "",
         xaction: document.getElementById("bulk_action").value,
-        setup(url) {
+        xparams: [],
+        setup(url, parameters) {
             this.xurl = url;
+            let tmp = [];
+            if (parameters != null) {
+                parameters.forEach(function(val) {
+                    tmp.push(val);
+                });
+            }
+            this.xparams = tmp;
         },
         toggle() {
             this.selectAll = !this.selectAll;
@@ -891,11 +899,20 @@ function bulkable() {
         setAction(action) {
             this.xaction = action;
         },
+        getData() {
+            let data = {action: this.xaction, bulk: this.bulk};
+            // convert proxy in array
+            let tmp = JSON.parse(JSON.stringify(this.xparams));
+            tmp.forEach(function(val) {
+                data[val] = document.getElementById(val).value;
+            });
+            return data;
+        },
         execute() {
             fetch(root + this.xurl, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({action: this.xaction, bulk: this.bulk})
+                body: JSON.stringify(this.getData())
             })
             .then(res => res.json())
             .then(json => {
