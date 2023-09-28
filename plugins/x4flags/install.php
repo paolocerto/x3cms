@@ -11,7 +11,7 @@
 // X4flags module installer
 
 // plugin version
-$version = '1';
+$version = '1.0';
 
 // compatibility
 $compatibility = '0.9.99 STABLE';
