@@ -30,6 +30,7 @@ $sql0[] = "INSERT INTO privtypes (updated, xrif, name, description, xon) VALUES 
 $sql0[] = "INSERT INTO gprivs (updated, id_group, what, level, xon) VALUES (NOW(), 1, 'x4_cookie', 4, 1)";
 
 $sql0[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'it', 'admin', 'groups', 'X4_COOKIE', 'Gestione cookies', 0, 1)";
+$sql0[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'en', 'admin', 'groups', 'X4_COOKIE', 'Cookie manage', 0, 1)";
 
 // dictionary
 
