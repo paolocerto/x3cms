@@ -223,7 +223,6 @@ class Areas_controller extends X3ui_controller
 				if ($id_area)
 				{
 					$result = $mod->update($id_area, $post);
-
 					if ($_post['id'] == 1 && X4Route_core::$lang != $post['lang'])
 					{
 						$redirect = true;
@@ -232,45 +231,16 @@ class Areas_controller extends X3ui_controller
 				else
 				{
 					$result = $mod->insert($post);
-
-					// create permissions
 					if ($result[1])
 					{
-						$id_area = $result[0];
-						$perm = new Permission_model();
-
-						// aprivs permissions
-						$domain = X4Array_helper::obj2array($perm->get_aprivs($_SESSION['xuid']), null, 'id_area');
-						$domain[] = $id_area;
-						$perm->set_aprivs($_SESSION['xuid'], $domain);
-						// uprivs premissions
-                        $perm->refactory($_SESSION['xuid']);
+                        $this->permission_on_area($result[0]);
 					}
 				}
 
 				if ($result[1])
 				{
-					// refresh languages related to area
-					$lang = new Language_model();
-					$lang->set_alang($id_area, $_post['languages'], $_post['lang']);
-
-					// update theme settings
-					if ($_post['id'] && $_post['id_theme'] != $_post['old_id_theme'])
-					{
-						$menu = new Menu_model();
-						// reset tpl, css, id_menu, ordinal
-						$result = $menu->reset($_post['id']);
-						$langs = $lang->get_languages();
-						// restore ordinal
-						foreach ($langs as $i)
-						{
-							$menu->ordinal($_post['id'], $i->code, 'home', 'A');
-						}
-						// reset section settings
-						$section = new Section_model();
-						// reset section settings
-						$section->reset($_post['id']);
-					}
+					// update lang and  theme settings
+                    $this->update_lang_and_theme_settings($_post);
 
                     // clear cache
 					APC && apcu_clear_cache();
@@ -284,6 +254,7 @@ class Areas_controller extends X3ui_controller
 				{
 					if ($redirect)
 					{
+                        // reload
 						$msg->update = array(
 							'element' => 'page',
 							'url' => BASE_URL.'home/start'
@@ -291,6 +262,7 @@ class Areas_controller extends X3ui_controller
 					}
 					else
 					{
+                        // come back
 						$msg->update = array(
 							'element' => 'page',
 							'url' => BASE_URL.'areas',
@@ -301,6 +273,54 @@ class Areas_controller extends X3ui_controller
 		}
 		$this->response($msg);
 	}
+
+    /**
+	 * Set permission on new area
+	 *
+	 * @param   integer $id_area area ID
+	 * @return  void
+	 */
+    private function permission_on_area(int $id_area)
+    {
+        $perm = new Permission_model();
+
+        // aprivs permissions
+        $domain = X4Array_helper::obj2array($perm->get_aprivs($_SESSION['xuid']), null, 'id_area');
+        $domain[] = $id_area;
+        $perm->set_aprivs($_SESSION['xuid'], $domain);
+        // uprivs premissions
+        $perm->refactory($_SESSION['xuid']);
+    }
+
+    /**
+	 * Update lang and theme settings
+	 *
+	 * @param   array   $_post
+	 * @return  void
+	 */
+    private function update_lang_and_theme_settings(array $_post)
+    {
+        // refresh languages related to area
+        $lang = new Language_model();
+        $lang->set_alang($id_area, $_post['languages'], $_post['lang']);
+
+        if ($_post['id'] && $_post['id_theme'] != $_post['old_id_theme'])
+        {
+            $menu = new Menu_model();
+            // reset tpl, css, id_menu, ordinal
+            $menu->reset($_post['id']);
+            $langs = $lang->get_languages();
+            // restore ordinal
+            foreach ($langs as $i)
+            {
+                $menu->ordinal($_post['id'], $i->code, 'home', 'A');
+            }
+            // reset section settings
+            $section = new Section_model();
+            // reset section settings
+            $section->reset($_post['id']);
+        }
+    }
 
 	/**
 	 * SEO form data (use Ajax)
@@ -385,11 +405,11 @@ class Areas_controller extends X3ui_controller
 
 			// areas data relating to SEO are stored in 'alang'
 			$mod = new Language_model();
-
 			// enable logs
 			if (LOGS && DEVEL)
+            {
 				$mod->set_log(true);
-
+            }
 			$result = $mod->update_seo_data($post);
 
 			$msg = AdmUtils_helper::set_msg($result);

@@ -189,8 +189,15 @@ class Pages_controller extends X3ui_controller
 		// contents
 		$view->content = new X4View_core('editor');
 		// form builder
-		$view->content->form = X4Form_helper::doform('editor', BASE_URL.'pages/add/'.$id_area.'/'.$lang.'/'.$xfrom, $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
-            '@click="submitForm(\'editor\')"');
+		$view->content->form = X4Form_helper::doform(
+            'editor',
+            BASE_URL.'pages/add/'.$id_area.'/'.$lang.'/'.$xfrom,
+            $fields,
+            array(_RESET, _SUBMIT, 'buttons'),
+            'post',
+            '',
+            '@click="submitForm(\'editor\')"'
+        );
 
 		$view->render(true);
 	}
@@ -233,7 +240,11 @@ class Pages_controller extends X3ui_controller
 			$check = (boolean) $mod->exists($post['url']);
 			if ($check)
 			{
-				$msg = AdmUtils_helper::set_msg(false, '', $this->dict->get_word('_PAGE_ALREADY_EXISTS', 'msg'));
+				$msg = AdmUtils_helper::set_msg(
+                    false,
+                    '',
+                    $this->dict->get_word('_PAGE_ALREADY_EXISTS', 'msg')
+                );
 			}
 			else
 			{
@@ -272,7 +283,7 @@ class Pages_controller extends X3ui_controller
 
 					$msg->update = array(
 						'element' => 'page',
-						'url' => $_SERVER['HTTP_REFERER']   //BASE_URL.'pages/index/'.$post['id_area'].'/'.$post['lang'].'/'.str_replace('/', '-', $post['xfrom'])
+						'url' => $_SERVER['HTTP_REFERER']
 					);
 				}
 			}
@@ -306,7 +317,13 @@ class Pages_controller extends X3ui_controller
 
         $items = $mod->get_subpages($page->xfrom, $page->id_menu);
 
-        $form_fields->siblings = X4Form_helper::get_options($items, 'xpos', 'name', $page->xpos, [1, 'As first']);
+        $form_fields->siblings = X4Form_helper::get_options(
+            $items,
+            'xpos',
+            'name',
+            $page->xpos,
+            [1, 'As first']
+        );
 
 		// get the fields array
 		$fields = $form_fields->render();
@@ -337,8 +354,15 @@ class Pages_controller extends X3ui_controller
         // can user edit?
         $submit = AdmUtils_helper::submit_btn($page->id_area, 'pages', $id, $page->xlock);
 		// form builder
-		$view->content->form = X4Form_helper::doform('editor', BASE_URL.'pages/move/'.$id, $fields, array(_RESET, $submit, 'buttons'), 'post', '',
-            '@click="submitForm(\'editor\')"');
+		$view->content->form = X4Form_helper::doform(
+            'editor',
+            BASE_URL.'pages/move/'.$id,
+            $fields,
+            array(_RESET, $submit, 'buttons'),
+            'post',
+            '',
+            '@click="submitForm(\'editor\')"'
+        );
 
 		$view->render(true);
 	}
@@ -362,7 +386,13 @@ class Pages_controller extends X3ui_controller
 
         $a = [
             'from_menu' => $parent->id_menu,
-            'subpages' => X4Form_helper::get_options($items, 'xpos', 'name', '', [1, 'As first'])
+            'subpages' => X4Form_helper::get_options(
+                $items,
+                'xpos',
+                'name',
+                '',
+                [1, 'As first']
+            )
         ];
         header('Content-type: application/json');
 		echo json_encode($a);
@@ -384,7 +414,11 @@ class Pages_controller extends X3ui_controller
 		{
 			// get object
 			$mod = new Page_model(2, X4Route_core::$lang, $_post['id']);
-			$page = $mod->get_by_id($_post['id'], 'pages', 'id, id_area, lang, url, xfrom, id_menu, xpos, deep');
+			$page = $mod->get_by_id(
+                $_post['id'],
+                'pages',
+                'id, id_area, lang, url, xfrom, id_menu, xpos, deep'
+            );
 
 			// this pages cannot be changed
 			$no_change = array('home', 'msg', 'search');
@@ -424,7 +458,7 @@ class Pages_controller extends X3ui_controller
             {
                 $msg->update = array(
                     'element' => 'page',
-                    'url' => $_SERVER['HTTP_REFERER']   //BASE_URL.'pages/index/'.$page->id_area.'/'.$page->lang.'/'.str_replace('/', '-', $page->xfrom)
+                    'url' => $_SERVER['HTTP_REFERER']
                 );
             }
 		}
@@ -479,7 +513,13 @@ class Pages_controller extends X3ui_controller
         // can user edit?
         $submit = AdmUtils_helper::submit_btn($page->id_area, 'pages', $id, $page->xlock);
 		// form builder
-		$view->content->form = X4Form_helper::doform('editor', BASE_URL.'pages/seo/'.$id, $fields, array(_RESET, $submit, 'buttons'), 'post', '',
+		$view->content->form = X4Form_helper::doform(
+            'editor',
+            BASE_URL.'pages/seo/'.$id,
+            $fields,
+            array(_RESET, $submit, 'buttons'),
+            'post',
+            '',
             '@click="submitForm(\'editor\')"');
 
 		$view->render(true);
@@ -515,7 +555,9 @@ class Pages_controller extends X3ui_controller
 
 			// handle _post
 			$post = array(
-				'url' => (!in_array($page->url, $no_change)) ? X4Utils_helper::slugify($_post['url']) : $page->url,
+				'url' => (!in_array($page->url, $no_change))
+                    ? X4Utils_helper::slugify($_post['url'])
+                    : $page->url,
 				'name' => $_post['name'],
 				'title' => $_post['title'],
 				'description' => $_post['description'],
@@ -524,13 +566,17 @@ class Pages_controller extends X3ui_controller
 				'redirect_code' => $_post['redirect_code'],
 				'redirect' => $_post['redirect'],
 				'tpl' => $_post['tpl']
-				);
+			);
 
 			// check if a page with the same URL already exists
 			$check = (boolean) $mod->exists($post['url'], $_post['id']);
 			if ($check)
 			{
-				$msg = AdmUtils_helper::set_msg(false, '', $this->dict->get_word('_PAGE_ALREADY_EXISTS', 'msg'));
+				$msg = AdmUtils_helper::set_msg(
+                    false,
+                    '',
+                    $this->dict->get_word('_PAGE_ALREADY_EXISTS', 'msg')
+                );
 			}
 			else
 			{
@@ -559,7 +605,7 @@ class Pages_controller extends X3ui_controller
 				{
 					$msg->update = array(
 						'element' => 'page',
-						'url' => $_SERVER['HTTP_REFERER']   // BASE_URL.'pages/index/'.$page->id_area.'/'.$page->lang.'/'.str_replace('/', '-', $page->xfrom)
+						'url' => $_SERVER['HTTP_REFERER']
 					);
 				}
 			}
@@ -607,8 +653,15 @@ class Pages_controller extends X3ui_controller
 		$view->content->item = $item->name;
 
 		// form builder
-		$view->content->form = X4Form_helper::doform('delete', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
-            '@click="submitForm(\'delete\')"');
+		$view->content->form = X4Form_helper::doform(
+            'delete',
+            $_SERVER["REQUEST_URI"],
+            $fields,
+            array(null, _YES, 'buttons'),
+            'post',
+            '',
+            '@click="submitForm(\'delete\')"'
+        );
 		$view->render(true);
 	}
 
