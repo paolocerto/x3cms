@@ -11,7 +11,7 @@ defined('ROOT') or die('No direct script access.');
 
 // page view
 ?>
-<div class="flex">
+<div id="actions-bar" class="flex">
     <div class="flex-auto px-4 py-3 text-sm text-gray-600">
         <?php echo X4Theme_helper::navbar($breadcrumb, ' . ') ?>
     </div>
@@ -41,7 +41,9 @@ if (DEBUG || DEVEL)
 /* BASIC JS to handle back and reload actions */
 if (document.getElementById('main') == undefined)
 {
-  var url = window.location.href.split('/admin/');
-  window.location.href = url[0]+'/admin/home/start/'+ url[1].replace(/\//g, '§');
+    document.getElementById('actions-bar').style.display = 'none';
+    document.getElementById("topic").innerHTML = '<div style="text-align:center;padding:20rem"><img src="<?php echo ROOT ?>files/files/orange-spinner.gif" style="margin 0 auto" /></div>';
+    var url = window.location.href.split('/admin/');
+    window.location.href = url[0]+'/admin/home/start/'+ url[1].replace(/\//g, '§');
 }
 </script>
