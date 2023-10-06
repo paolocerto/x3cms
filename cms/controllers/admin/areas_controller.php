@@ -439,7 +439,7 @@ class Areas_controller extends X3ui_controller
 
 		// get object
 		$area = new Area_model();
-		$item = $area->get_by_id($id, 'areas', 'id, id_area, name');
+		$item = $area->get_by_id($id, 'areas', 'id, name');
 
 		// build the form
 		$fields = array();
