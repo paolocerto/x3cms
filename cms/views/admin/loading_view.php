@@ -8,13 +8,15 @@
  * @package		X3CMS
  */
 ?>
-<i class="fas fa-refresh fa-spin fa-3x" aria-hidden="true"></i>
+<div class="w-full p-20 text-center">
+    <i class="fas fa-refresh fa-spin fa-3x" aria-hidden="true"></i>
+</div>
 <script>
 <?php
 if (isset($location))
 {
 	// set redirect
-	echo 'location.href="'.$location.'";';
+	echo 'location.href=domain+"'.$location.'";
 }
 else
 {
