@@ -61,9 +61,8 @@ class X4Utils_helper
 
 			if (!$chk)
 			{
-
-				header('Location: '.ROOT.$location);
-				die;
+                header('Location: '.ROOT.$location);
+                die;
 			}
 		}
 	}

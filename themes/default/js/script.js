@@ -84,7 +84,6 @@ function getFormData(formName, files) {
     return formData;
 }
 
-
 var modal_ok = ' \
 <div id="modal" class="px-2 pt-16 md:pt-28"> \
 <div @click.away="modal = false" \

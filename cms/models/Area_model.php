@@ -121,7 +121,7 @@ class Area_model extends X4Model_core
 
 	    if ($id_group > 1 && isset($items[1]))
 	    {
-		// remove admin area
+		    // remove admin area
 	        unset($items[1]);
 	    }
 

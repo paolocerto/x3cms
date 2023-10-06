@@ -778,7 +778,7 @@ abstract class X4Model_core
      * @param   string  $extra      Additional data
 	 * @return  array
 	 */
-    public function logger($who, $id_what, $what, $action, $memo = '', $xon = 1, $extra = '')
+    public function logger(int $who, int $id_what, string $what, string $action, string $memo = '', int $xon = 1, string $extra = '')
 	{
 		// default result
 		$res = array(0, 0);
