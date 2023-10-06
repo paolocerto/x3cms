@@ -12,7 +12,6 @@
 header('Content-Type: text/html; charset=utf-8');
 header('X-UA-Compatible: IE=edge,chrome=1');
 
-
 $title = $xkeys = $css = '';
 $description = stripslashes($this->site->site->description);
 if (isset($page)) {
@@ -40,7 +39,6 @@ if (isset($page)) {
         <link rel="apple-touch-icon" sizes="180x180" href="<?php echo ROOT ?>apple-touch-icon.png">
         <link rel="icon" type="image/png" sizes="32x32" href="<?php echo ROOT ?>favicon-32x32.png">
         <link rel="icon" type="image/png" sizes="16x16" href="<?php echo ROOT ?>favicon-16x16.png">
-        <link rel="manifest" href="<?php echo ROOT ?>site.webmanifest">
 
         <link rel="stylesheet" href="<?php echo THEME_URL ?>css/fontawesome-all.min.css">
 
@@ -139,7 +137,7 @@ else
 			</div>
 		</div>
 	</div>
-	<footer class="bg  text-center text-xs py-6">
+	<footer class="text-white text-center text-xs py-6">
 	    <a href="https://www.x3cms.net" title="X3 your next Content Management System">X3 CMS</a> &copy; <a href="https://www.cblu.net" title="CBlu.net - Freelance PHP Developer">CBlu.net</a>
     </footer>
 
