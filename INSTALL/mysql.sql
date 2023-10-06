@@ -328,7 +328,6 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'admin', 'global', '_VISIBLE', 'Elemento visibile', 0, 1),
 (NOW(), 'it', 'admin', 'global', '_ENTER_TO_FILTER', 'premi invio per filtrare', 0, 1),
 
-
 (NOW(), 'it', 'admin', 'home', '_HOME_PAGE', 'Home page', 0, 1),
 (NOW(), 'it', 'admin', 'home', '_PUBLIC_SIDE', 'Sito pubblico', 0, 1),
 (NOW(), 'it', 'admin', 'home', '_LOGGED_AS', 'Loggato come', 0, 1),
@@ -1619,9 +1618,8 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'public', 'global', '_EDIT_ARTICLE', 'Modifica articolo', 0, 1),
 (NOW(), 'it', 'public', 'global', '_PRINTFRIENDLY', 'Stampa una versione ottimizzata di questa pagina o genera un PDF', 0, 1),
 
-(NOW(), 'it', 'public', 'global', '_INLINE_EDITING_MODE', 'Editor inline', 0, 1),
-(NOW(), 'it', 'public', 'global', '_INLINE_EDITING_MODE_MSG', '<p>Attiva l\'editor clickando sulle sezioni bordate di rosso.<br />Click fuori dalla sezione per salvare le modifiche.</p>', 0, 1),
-
+(NOW(), 'it', 'public', 'global', '_X3CMS_PWA_INSTALL', 'Installa', 0, 1),
+(NOW(), 'it', 'public', 'global', '_X3CMS_PWA_OFFLINE_MSG', 'Sei Offline', 0, 1),
 
 (NOW(), 'it', 'public', 'msg', '_UNKNOW_ERROR', 'Si &egrave; verificato un errore.', 0, 1),
 (NOW(), 'it', 'public', 'msg', '_PAGE_NOT_FOUND', 'La pagina richiesta non &egrave; disponibile.', 0, 1),
@@ -1798,8 +1796,8 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'public', 'global', '_EDIT_ARTICLE', 'Edit article', 0, 1),
 (NOW(), 'en', 'public', 'global', '_PRINTFRIENDLY', 'Print an optimized version of this web page or generate PDF', 0, 1),
 
-(NOW(), 'en', 'public', 'global', '_INLINE_EDITING_MODE', 'Inline editing mode', 0, 1),
-(NOW(), 'en', 'public', 'global', '_INLINE_EDITING_MODE_MSG', '<p>Enable the editor clicking on red bordered sections in the page.<br />Click out of the section to save the changes.</p>', 0, 1),
+(NOW(), 'en', 'public', 'global', '_X3CMS_PWA_INSTALL', 'Install', 0, 1),
+(NOW(), 'en', 'public', 'global', '_X3CMS_PWA_OFFLINE_MSG', 'You are Offline', 0, 1),
 
 (NOW(), 'en', 'public', 'msg', '_UNKNOW_ERROR', 'An error occurred', 0, 1),
 (NOW(), 'en', 'public', 'msg', '_PAGE_NOT_FOUND', 'This page is not available', 0, 1),
