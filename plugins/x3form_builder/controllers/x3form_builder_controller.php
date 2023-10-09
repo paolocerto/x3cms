@@ -977,7 +977,7 @@ function checkRule(item) {
 	public function export(int $id_area, string $lang, int $id_form)
 	{
         // check permission
-        $level = AdmUtils_helper::chk_priv_level($id_area, 'x3_forms', 'manage');
+        $level = AdmUtils_helper::chk_priv_level($id_area, 'x3_forms', $id_form, 'manage');
 		if ($level == 4)
         {
             // get form
