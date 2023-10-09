@@ -256,6 +256,7 @@ class X3form_builder_plugin extends X4Plugin_core implements X3plugin
             unset($_post['x4token']);
 
 		    // send mail
+            $xlock = 0;
 		    if (!empty($form->mailto))
 		    {
 		        $mails = explode('|', $form->mailto);
@@ -280,6 +281,11 @@ class X3form_builder_plugin extends X4Plugin_core implements X3plugin
                     // send
                     X4Mailer_helper::mailto($from, true, $form->title, $msg, $to, $attachments, [], [], $replyto);
                 }
+                else
+                {
+                    // is SPAM
+                    $xlock = 1;
+                }
 		    }
 
             // checkbox checking
@@ -290,7 +296,8 @@ class X3form_builder_plugin extends X4Plugin_core implements X3plugin
                 'id_area' => $id_area,
                 'lang' => $lang,
                 'id_form' => $form->id,
-                'result' => json_encode($_post + $_files)
+                'result' => json_encode($_post + $_files),
+                'xlock' => $xlock
             );
             $result = $mod->insert($post, 'x3_forms_results');
 
@@ -300,7 +307,7 @@ class X3form_builder_plugin extends X4Plugin_core implements X3plugin
                 : $form->msg_failed;
 
 			// delete file sfrom the server
-			if (!empty($attachments) && $check && $conf['delete'])
+			if (!empty($attachments) && $conf['delete'])
 			{
 				$this->delete_files($id_area, $attachments);
 			}
