@@ -976,9 +976,10 @@ function checkRule(item) {
 	 */
 	public function export(int $id_area, string $lang, int $id_form)
 	{
+        $this->dict->get_wordarray(array('x3form_builder'));
         // check permission
-        $level = AdmUtils_helper::chk_priv_level($id_area, 'x3_forms', $id_form, 'manage');
-		if ($level == 4)
+        $level = AdmUtils_helper::chk_priv_level($id_area, 'x3_forms', $id_form, 'delete');
+		if (is_null($level))
         {
             // get form
             $mod = new X3form_builder_model();
