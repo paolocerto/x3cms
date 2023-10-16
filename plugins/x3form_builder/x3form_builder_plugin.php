@@ -257,7 +257,16 @@ class X3form_builder_plugin extends X4Plugin_core implements X3plugin
 
 		    // send mail
             $xlock = 0;
-		    if (!empty($form->mailto))
+		    if (empty($form->mailto))
+            {
+                $msg_spam = $mod->messagize($id_area, $form->name, $_post, $_files);
+				if (empty($msg_spam))
+				{
+                    // is SPAM
+                    $xlock = 1;
+                }
+            }
+            else
 		    {
 		        $mails = explode('|', $form->mailto);
 		        $to = array();
