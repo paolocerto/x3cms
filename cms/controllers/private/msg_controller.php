@@ -81,6 +81,9 @@ class Msg_controller extends X4Cms_controller
 		{
 		    switch($qs['ok'])
 		    {
+            case 0:
+                $title = _WARNING;
+                break;
 		    case 1:
 		        $title = _CONGRATULATIONS;
 		        break;

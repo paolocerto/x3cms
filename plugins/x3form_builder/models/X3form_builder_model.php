@@ -533,7 +533,7 @@ class X3form_builder_model extends X4Model_core
 
         $matches = array();
         $match_found = preg_match_all(
-                        "/\b(" . $bad_words . ")\b/i",
+                        "/(" . $bad_words . ")/i",
                         $string,
                         $matches
                     );

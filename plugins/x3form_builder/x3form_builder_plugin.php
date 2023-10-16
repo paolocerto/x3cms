@@ -275,16 +275,16 @@ class X3form_builder_plugin extends X4Plugin_core implements X3plugin
 				}
 
 				// we send email only if not spam
-				$msg = $mod->messagize($id_area, $form->name, $_post, $_files);
-				if (!empty($msg))
+				$msg_spam = $mod->messagize($id_area, $form->name, $_post, $_files);
+				if (empty($msg_spam))
 				{
-                    // send
-                    X4Mailer_helper::mailto($from, true, $form->title, $msg, $to, $attachments, [], [], $replyto);
+                    // is SPAM
+                    $xlock = 1;
                 }
                 else
                 {
-                    // is SPAM
-                    $xlock = 1;
+                    // send
+                    X4Mailer_helper::mailto($from, true, $form->title, $msg_spam, $to, $attachments, [], [], $replyto);
                 }
 		    }
 
@@ -302,7 +302,7 @@ class X3form_builder_plugin extends X4Plugin_core implements X3plugin
             $result = $mod->insert($post, 'x3_forms_results');
 
             // return msg
-            $msg = ($result[1])
+            $msg = ($result[1] && !empty($msg_spam))
                 ? $form->msg_ok
                 : $form->msg_failed;
 
@@ -329,7 +329,7 @@ class X3form_builder_plugin extends X4Plugin_core implements X3plugin
             return 1;
         }
 
-		header('Location: '.BASE_URL.'msg/message/'.urlencode($form->title).'/'.urlencode($msg).'?ok='.$result[1]);
+		header('Location: '.BASE_URL.'msg/message/'.urlencode($form->title).'/'.urlencode($msg).'?ok='.intval($result[1] && !empty($msg_spam)));
 		die;
 	}
 
