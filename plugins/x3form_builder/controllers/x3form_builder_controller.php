@@ -1278,7 +1278,7 @@ function checkRule(item) {
 	 * @param   integer $id Result ID
 	 * @return  void
 	 */
-	public function delete_blaclist(int $id_area, int $id)
+	public function delete_blacklist(int $id_area, int $id)
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'x3form_builder'));
