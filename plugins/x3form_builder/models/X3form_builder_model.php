@@ -527,7 +527,7 @@ class X3form_builder_model extends X4Model_core
 	{
         $string = strtolower($string);
         // get a string of all blacklist items
-		$bad_words = $this->db->query_var('SELECT CONCAT(\'|\', name) AS s
+		$bad_words = $this->db->query_var('SELECT GROUP_CONCAT(name SEPARATOR \'|\') AS s
 			FROM x3_forms_blacklist
             WHERE id_area = '.$id_area.' AND xon = 1');
 
