@@ -169,7 +169,7 @@ class Login_controller extends X4Cms_controller
 				if (LOGS)
 				{
 					$mod = new X4Auth_model('users');
-					$mod->logger($_SESSION['xuid'], 1, 'users', 'log in');
+					$mod->logger($_SESSION['xuid'], 1, 'users', 'log in', X4Utils_helper::get_ip());
 				}
 
 				// redirect
@@ -184,7 +184,7 @@ class Login_controller extends X4Cms_controller
 				if (LOGS)
 				{
 					$mod = new X4Auth_model('users');
-					$mod->logger(0, 1, 'users', 'log in failed for '.$_post['username']);
+					$mod->logger(0, 1, 'users', 'log in failed for '.$_post['username'], X4Utils_helper::get_ip());
 				}
 			}
 		}
