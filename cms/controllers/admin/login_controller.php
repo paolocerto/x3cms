@@ -184,7 +184,7 @@ class Login_controller extends X4Cms_controller
 				if (LOGS)
 				{
 					$mod = new X4Auth_model('users');
-					$mod->logger(0, 1, 'users', 'log in failed for '.$_post['username'], X4Utils_helper::get_ip());
+					$mod->logger(0, 1, 'users', 'log in failed for '.$_post['username'], '', 1, X4Utils_helper::get_ip());
 				}
 			}
 		}
