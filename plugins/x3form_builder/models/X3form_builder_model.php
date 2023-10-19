@@ -485,9 +485,10 @@ class X3form_builder_model extends X4Model_core
 				else
 				{
 				    // blacklist
-				    if ($this->spam_check($id_area, $v))
+				    $chk = $this->spam_check($id_area, $v);
+                    if ($chk > 0)
 				    {
-				        return '';
+				        return -$chk;
 				    }
 
                     // remove token
@@ -521,19 +522,23 @@ class X3form_builder_model extends X4Model_core
 	 *
 	 * @param	integer $id_area Area ID
 	 * @param	string	$string to check
-	 * @return	boolean
+	 * @return	integer
 	 */
 	public function spam_check(int $id_area, string $string)
 	{
         $string = strtolower($string);
         // get a string of all blacklist items
-		$bad_words = $this->db->query_var('SELECT GROUP_CONCAT(name SEPARATOR \'|\') AS s
-			FROM x3_forms_blacklist
-            WHERE id_area = '.$id_area.' AND xon = 1');
+		$bad_words = X4Array_helper::indicize(
+            $this->db->query('SELECT name, xlock
+                FROM x3_forms_blacklist
+                WHERE id_area = '.$id_area.' AND xon = 1')
+            , 'name'
+        );
 
+        $words = implode('|', array_keys($bad_words));
         $matches = array();
         $match_found = preg_match_all(
-                        "/(" . $bad_words . ")/i",
+                        "/(" . $words . ")/i",
                         $string,
                         $matches
                     );
@@ -541,9 +546,16 @@ class X3form_builder_model extends X4Model_core
         if ($match_found)
         {
             // spam found
-            return true;
+            foreach ($matches[0] as $i)
+            {
+                if (isset($bad_words[$i]) && $bad_words[$i]->xlock)
+                {
+                    return 2;
+                }
+            }
+            return 1;
         }
-        return false;
+        return 0;
 	}
 
     /**

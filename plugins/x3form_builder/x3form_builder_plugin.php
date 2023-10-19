@@ -245,6 +245,7 @@ class X3form_builder_plugin extends X4Plugin_core implements X3plugin
 
 		if (empty($error))
         {
+            $result = [0, 0];
 		    $from = MAIL;
 
             $replyto = (isset($_post['email']) && !empty($_post['email']))
@@ -258,16 +259,9 @@ class X3form_builder_plugin extends X4Plugin_core implements X3plugin
 		    // send mail
             $xlock = 0;
             $msg_spam = $mod->messagize($id_area, $form->name, $_post, $_files);
-		    if (empty($form->mailto))
+            // send email
+		    if (!empty($form->mailto) && $msg_spam == 0)
             {
-				if (empty($msg_spam))
-				{
-                    // is SPAM
-                    $xlock = 1;
-                }
-            }
-            else
-		    {
 		        $mails = explode('|', $form->mailto);
 		        $to = array();
 				$attachments = array();
@@ -284,33 +278,28 @@ class X3form_builder_plugin extends X4Plugin_core implements X3plugin
 				}
 
 				// we send email only if not spam
-				if (empty($msg_spam))
-				{
-                    // is SPAM
-                    $xlock = 1;
-                }
-                else
-                {
-                    // send
-                    X4Mailer_helper::mailto($from, true, $form->title, $msg_spam, $to, $attachments, [], [], $replyto);
-                }
+				X4Mailer_helper::mailto($from, true, $form->title, $msg_spam, $to, $attachments, [], [], $replyto);
 		    }
 
-            // checkbox checking
-            $this->checkbox_checking($_post, $fields);
+            // it seems spam but we are unsure
+            if ($msg_spam > -2)
+            {
+                // checkbox checking
+                $this->checkbox_checking($_post, $fields);
 
-            // register data
-            $post = array(
-                'id_area' => $id_area,
-                'lang' => $lang,
-                'id_form' => $form->id,
-                'result' => json_encode($_post + $_files),
-                'xlock' => $xlock
-            );
-            $result = $mod->insert($post, 'x3_forms_results');
+                // register data
+                $post = array(
+                    'id_area' => $id_area,
+                    'lang' => $lang,
+                    'id_form' => $form->id,
+                    'result' => json_encode($_post + $_files),
+                    'xlock' => is_numeric($msg_spam) ? 1 : 0
+                );
+                $result = $mod->insert($post, 'x3_forms_results');
+            }
 
             // return msg
-            $msg = ($result[1] && !empty($msg_spam))
+            $msg = ($result[1] && $msg_spam == 0)
                 ? $form->msg_ok
                 : $form->msg_failed;
 
@@ -337,7 +326,7 @@ class X3form_builder_plugin extends X4Plugin_core implements X3plugin
             return 1;
         }
 
-		header('Location: '.BASE_URL.'msg/message/'.urlencode($form->title).'/'.urlencode($msg).'?ok='.intval($result[1] && !empty($msg_spam)));
+		header('Location: '.BASE_URL.'msg/message/'.urlencode($form->title).'/'.urlencode($msg).'?ok='.intval($result[1] && $msg_spam == 0));
 		die;
 	}
 
