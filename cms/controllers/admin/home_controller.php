@@ -148,7 +148,7 @@ class Home_controller extends X3ui_controller
 		];
 		$context = stream_context_create($contextOptions);
 
-		$url = 'https://x3cms.net/plugin/x3notices/2/notices/'.urlencode($this->site->data->version).'/'.md5($this->site->data->xcode).'/'.$lang;
+		$url = 'https://x3cms.net/plugin/x3notices/notices/'.urlencode($this->site->data->version).'/'.md5($this->site->data->xcode).'/'.$lang;
 
 		// get remote contents
 		$content = @file_get_contents($url, false, $context);

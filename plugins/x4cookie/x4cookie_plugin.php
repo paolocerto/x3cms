@@ -100,7 +100,7 @@ class X4cookie_plugin extends X4Plugin_core implements X3plugin
                 this.html_modal = "";
                 this.error_msg = "";
                 this.modal = true;
-                fetch(root + "plugin/x4cookie/"+area_id+"/settings", {
+                fetch(root + "plugin/x4cookie/settings", {
                     method: "GET",
                     headers: { "Content-Type": "text/html" }
                 })
@@ -191,7 +191,7 @@ class X4cookie_plugin extends X4Plugin_core implements X3plugin
             init() {
                 this.html_modal = "";
                 this.error_msg = "";
-                fetch(root + "plugin/x4cookie/"+area_id+"/default", {
+                fetch(root + "plugin/x4cookie/default", {
                     method: "GET",
                     headers: { "Content-Type": "text/html" }
                 })
@@ -208,7 +208,7 @@ class X4cookie_plugin extends X4Plugin_core implements X3plugin
             settings() {
                 this.html_modal = "";
                 this.error_msg = "";
-                fetch(root + "plugin/x4cookie/"+area_id+"/settings", {
+                fetch(root + "plugin/x4cookie/settings", {
                     method: "GET",
                     headers: { "Content-Type": "text/html" }
                 })
