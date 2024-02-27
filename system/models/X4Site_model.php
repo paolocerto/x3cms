@@ -86,10 +86,12 @@ class X4Site_model extends X4Model_core
 
 		if (empty($c))
 		{
-            $sql = 'SELECT t.name AS theme, a.id, a.id_theme, a.folder, a.private, l.code AS lang
+            $sql = 'SELECT t.name AS theme, a.id, a.id_theme, a.folder, a.private,
+                IF (l2.id IS NULL, l.code, l2.code) AS lang
                 FROM themes t
                 JOIN areas a ON a.id_theme = t.id
-                JOIN alang l ON l.id_area = a.id AND (l.code = '.$this->db->escape($lang).' OR l.xdefault = 1)
+                JOIN alang l ON l.id_area = a.id AND l.xdefault = 1
+                LEFT JOIN alang l2 ON l2.id_area = a.id AND l2.code = '.$this->db->escape($lang).'
                 WHERE a.name = '.$this->db->escape(X4Route_core::$area).' AND a.xon = 1';
 
             $c = $this->db->query_row($sql);
