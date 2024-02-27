@@ -21,7 +21,7 @@ class X4get_by_key_plugin extends X4Plugin_core implements X3plugin
 	 * @param	object	$site, site object
 	 * @return	void
 	 */
-	public function __construct($site)
+	public function __construct(X4Site_model $site)
 	{
 		parent::__construct($site);
         $this->dict = new X4Dict_model(X4Route_core::$area, X4Route_core::$lang);
@@ -137,7 +137,6 @@ class X4get_by_key_plugin extends X4Plugin_core implements X3plugin
 	/**
 	 * call plugin actions
 	 *
-	 * @param   integer $id_area Area ID
 	 * @param   string	$control action name
 	 * @param   mixed	$a
 	 * @param   mixed	$b
@@ -145,7 +144,7 @@ class X4get_by_key_plugin extends X4Plugin_core implements X3plugin
 	 * @param   mixed	$d
 	 * @return  void
 	 */
-	public function plugin(int $id_area, string $control, string $a, string $b, string $c, string $d)
+	public function plugin(string $control, string $a, string $b, string $c, string $d)
 	{
 		// none
 	}

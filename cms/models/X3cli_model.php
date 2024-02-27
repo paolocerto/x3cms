@@ -762,7 +762,7 @@ class '.$uname.'_controller extends X4Cms_controller
 	public function __construct()
 	{
 		parent::__construct();
-		X4Utils_helper::offline($this->site->site->xon, BASE_URL.\'msg/message/offline\');
+		X4Utils_helper::offline($this->site->data->xon, BASE_URL.\'msg/message/offline\');
 	}
 
 	// put here other methods you need

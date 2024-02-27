@@ -26,7 +26,7 @@ $fields[] = array(
     'value' => '<div class="bg-white text-gray-700 md:px-8 md:pb-8 px-4 pb-4" style="border:1px solid white">'
 );
 $fields[] = array(
-    'label' => _X3CMS.' '._VERSION,
+    'label' => _VERSION,
     'type' => 'text',
     'value' => $site->version,
     'name' => 'version',
@@ -46,6 +46,16 @@ $fields[] = array(
     'name' => 'domain',
     'rule' => 'required|url',
     'extra' => 'class="w-full"'
+);
+
+$fields[] = array(
+    'label' => _DATABASE,
+    'type' => 'text',
+    'value' => $site->xdatabase,
+    'name' => 'xdatabase',
+    'rule' => 'required',
+    'extra' => 'class="w-full"',
+    'suggestion' => _DATABASE_MSG
 );
 
 $fields[] = array(

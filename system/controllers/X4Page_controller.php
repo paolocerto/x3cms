@@ -36,7 +36,7 @@ class X4Page_controller extends X4Cms_controller
 		    $url = str_replace('offline', 'logout', $url);
 		}
 
-		X4Utils_helper::offline($this->site->site->xon, BASE_URL.$url);
+		X4Utils_helper::offline($this->site->data->xon, BASE_URL.$url);
 	}
 
 	/**
@@ -61,15 +61,15 @@ class X4Page_controller extends X4Cms_controller
 	 * @param mixed		$d unspecified variable
 	 * @return void
 	 */
-	public function plugin($module, $id_area = '', $control = '', $a = '', $b = '', $c = '', $d = '')
+	public function plugin($module, $control = '', $a = '', $b = '', $c = '', $d = '')
 	{
 		$mod = new X4Plugin_model();
-		if ($mod->exists($module, $id_area) && file_exists(PATH.'plugins/'.$module.'/'.$module.'_plugin.php'))
+		if ($mod->exists($module, $this->site->area->id) && file_exists(PATH.'plugins/'.$module.'/'.$module.'_plugin.php'))
 		{
 			X4Core_core::auto_load($module.'/'.$module.'_plugin');
 			$plugin = ucfirst($module.'_plugin');
 			$m = new $plugin($this->site);
-			$m->plugin($id_area, $control, $a, $b, $c, $d);
+			$m->plugin($control, $a, $b, $c, $d);
 		}
 		else
 		{
@@ -132,7 +132,7 @@ class X4Page_controller extends X4Cms_controller
 			$view->args = $args;
 
 			// get menus
-			$view->menus = $this->site->get_menus($page->id_area);
+			$view->menus = $this->site->get_menus();
 			$view->navbar = array($this->site->get_bredcrumb($page));
 
 			// get sections

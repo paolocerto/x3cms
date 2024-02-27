@@ -91,7 +91,7 @@ class User_model extends X4Model_core
 
 		return $this->db->query_var('SELECT COUNT(id)
 			FROM users
-			WHERE username = '.$this->db->escape($username).' AND mail = '.$this->db->escape($mail).' '.$where);
+			WHERE username = '.$this->db->escape($username).' OR mail = '.$this->db->escape($mail).' '.$where);
 	}
 
 }

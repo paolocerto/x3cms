@@ -43,7 +43,7 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
 		$this->dict->get_wordarray(array('x3form_builder'));
 
         $mod = new Area_model();
-		list($id_area, $areas) = $mod->get_my_areas($id_area);
+		list($id_area, $areas) = $mod->get_my_areas($this->site->data->id, $id_area);
 
 		// initialize lang
 		$lang = (empty($lang))
@@ -61,7 +61,7 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
 		$view->content = new X4View_core('x3form_list', 'x3form_builder');
 		$view->pp = $pp;
 
-        $mod = new X3form_builder_model();
+        $mod = new X3form_builder_model($this->site->data->xdatabase);
 		$view->content->items = X4Pagination_helper::paginate($mod->get_forms($id_area, $lang, 2), $pp);
 
 		// area switcher
@@ -107,7 +107,7 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
                 break;
             default:
                 $url = BASE_URL.'x3form_builder/edit_field/'.$id_area.'/'.$lang.'/'.$id_form;
-                $js_url = $this->site->site->domain.'/admin/x3form_builder/encoded_rules';
+                $js_url = $this->site->data->domain.'/admin/x3form_builder/encoded_rules';
 
                 return '<a class="link"
                     @click="popup({url: \''.$url.'\', js: \''.$js_url.'\'})" title="'._X3FB_NEW_FIELD.'">
@@ -147,9 +147,9 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
 		$view->content->id_area = $id_area;
 		$view->content->lang = $lang;
 		$view->content->id_form = $id_form;
-        $view->content->domain = $this->site->site->domain;
+        $view->content->domain = $this->site->data->domain;
 
-		$mod = new X3form_builder_model();
+		$mod = new X3form_builder_model($this->site->data->xdatabase);
 
 		$view->content->form = $mod->get_by_id($id_form);
 		$view->content->items = $mod->get_form_fields($id_area, $lang, $id_form);
@@ -183,7 +183,7 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
         $view->breadcrumb = array($this->site->get_bredcrumb($page), array('modules' => 'index/'.$id_area, 'x3form-builder/mod' => $id_area.'/'.$lang));
 		$view->actions = $this->actions($id_area, $lang);
 
-        $mod = new X3form_builder_model();
+        $mod = new X3form_builder_model($this->site->data->xdatabase);
 		$form = $mod->get_by_id($id_form, 'x3_forms', 'name');
 
 		// content
@@ -227,7 +227,7 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
         $view->breadcrumb = array($this->site->get_bredcrumb($page), array('modules' => 'index/'.$id_area, 'x3form-builder/mod' => $id_area.'/'.$lang));
 		$view->actions = $this->actions($id_area, $lang, -1);
 
-        $mod = new X3form_builder_model();
+        $mod = new X3form_builder_model($this->site->data->xdatabase);
 
 		// content
 		$view->content = new X4View_core('x3form_blacklist', 'x3form_builder');
@@ -269,7 +269,7 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
 		if (is_null($msg))
 		{
 			// do action
-            $mod = new X3form_builder_model();
+            $mod = new X3form_builder_model($this->site->data->xdatabase);
 			$result = $mod->update($id, array($what => $value), 'x3_forms'.$table);
 
 			// set message
@@ -304,7 +304,7 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
 		$this->dict->get_wordarray(array('form', 'x3form_builder'));
 
 		// get object
-		$mod = new X3form_builder_model();
+		$mod = new X3form_builder_model($this->site->data->xdatabase);
 		$item = ($id)
 			? $mod->get_by_id($id)
 			: new Obj_form($id_area, $lang);
@@ -388,7 +388,7 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
 			}
 			$post['mailto'] = implode('|', $mailto);
 
-			$mod = new X3form_builder_model();
+			$mod = new X3form_builder_model($this->site->data->xdatabase);
 
 			// check if exists
 			$check = (boolean) $mod->form_exists($post['id_area'], $post['lang'], $post['name'], $_post['id']);
@@ -416,7 +416,7 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
                     if (!$_post['id'])
                     {
                         // permissions
-                        $perm = new Permission_model();
+                        $perm = new Permission_model($this->site->data->xdatabase);
                         $array[] = array(
                             'action' => 'insert',
                             'id_what' => $result[0],
@@ -451,7 +451,7 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
 		$this->dict->get_wordarray(array('form', 'x3form_builder'));
 
 		// get object
-		$mod = new X3form_builder_model();
+		$mod = new X3form_builder_model($this->site->data->xdatabase);
 		$item = $mod->get_by_id($id_form);
 
 		// build the form
@@ -504,7 +504,7 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
 		$msg = AdmUtils_helper::chk_priv_level($_post['id_area'], '_x3form_creation', 0, 'create');
 		if (is_null($msg))
 		{
-			$mod = new X3form_builder_model();
+			$mod = new X3form_builder_model($this->site->data->xdatabase);
 			// get the original
 			$item = $mod->get_by_id($_post['id_form']);
 
@@ -539,7 +539,7 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
 					if ($result[1])
 					{
                         // permissions
-                        $perm = new Permission_model();
+                        $perm = new Permission_model($this->site->data->xdatabase);
                         $array[] = array(
                             'action' => 'insert',
                             'id_what' => $result[0],
@@ -615,7 +615,7 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
 		$this->dict->get_wordarray(array('form', 'x3form_builder'));
 
 		// get opbject
-        $mod = new X3form_builder_model();
+        $mod = new X3form_builder_model($this->site->data->xdatabase);
 		$item = $mod->get_by_id($id_form, 'x3_forms', 'id, id_area, name');
 
 		// build the form
@@ -664,7 +664,7 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
 		$this->dict->get_wordarray(array('form', 'x3form_builder'));
 
 		// get object
-        $mod = new X3form_builder_model();
+        $mod = new X3form_builder_model($this->site->data->xdatabase);
 		$item =  ($id)
 			? $mod->get_by_id($id, 'x3_forms_fields')
 			: new Obj_field($id_area, $lang, $id_form);
@@ -834,7 +834,7 @@ function checkRule(item) {
 				'extra' => htmlspecialchars_decode(stripslashes($_post['extra']))
             );
 
-			$mod = new X3form_builder_model();
+			$mod = new X3form_builder_model($this->site->data->xdatabase);
 
 			// check if already exists
 			$check = (boolean) $mod->field_exists($post['id_form'], $post['name'], $_post['id']);
@@ -893,7 +893,7 @@ function checkRule(item) {
 			$elements = $_post['sort_order'];
 
 			// do action
-            $mod = new X3form_builder_model();
+            $mod = new X3form_builder_model($this->site->data->xdatabase);
 			$items = $mod->get_form_fields($id_area, $lang, $id_form);
 
 			$result = array(0, 1);
@@ -933,7 +933,7 @@ function checkRule(item) {
 		$this->dict->get_wordarray(array('form', 'x3form_builder', 'msg'));
 
 		// get object
-        $mod = new X3form_builder_model();
+        $mod = new X3form_builder_model($this->site->data->xdatabase);
 		$item = $mod->get_by_id($id_field, 'x3_forms_fields', 'id, id_area, name');
 
 		// build the form
@@ -982,7 +982,7 @@ function checkRule(item) {
 		if (is_null($level))
         {
             // get form
-            $mod = new X3form_builder_model();
+            $mod = new X3form_builder_model($this->site->data->xdatabase);
             $form = $mod->get_by_id($id_form, 'x3_forms', 'name');
 
             // get submissions
@@ -1010,7 +1010,7 @@ function checkRule(item) {
                             $str[] = $o;
                         }
                     }
-                    else if ($k != 'x4token')
+                    elseif ($k != 'x4token')
                     {
                         $str[] = $v;
                     }
@@ -1053,7 +1053,7 @@ function checkRule(item) {
 		$this->dict->get_wordarray(array('form', 'x3form_builder'));
 
 		// get object
-        $mod = new X3form_builder_model();
+        $mod = new X3form_builder_model($this->site->data->xdatabase);
 		$item = $mod->get_by_id($id, 'x3_forms_results', 'id, id_area, updated');
 
 		// build the form
@@ -1097,8 +1097,8 @@ function checkRule(item) {
         $_post = X4Route_core::$input;
 		if (!empty($_post) && isset($_post['bulk']) && is_array($_post['bulk']) && !empty($_post['bulk']))
 		{
-            $mod = new X3form_builder_model();
-            $perm = new Permission_model();
+            $mod = new X3form_builder_model($this->site->data->xdatabase);
+            $perm = new Permission_model($this->site->data->xdatabase);
 
             // NOTE: we here have only bulk_action = delete
             $result = [0, 1];
@@ -1147,7 +1147,7 @@ function checkRule(item) {
 		$this->dict->get_wordarray(array('form', 'x3form_builder'));
 
 		// get object
-        $mod = new X3form_builder_model();
+        $mod = new X3form_builder_model($this->site->data->xdatabase);
 		$item =  ($id)
 			? $mod->get_by_id($id, 'x3_forms_blacklist')
 			: new Obj_blackitem($id_area, $lang);
@@ -1219,7 +1219,7 @@ function checkRule(item) {
             // we could have more than one word to add to the blacklist separated new lines
             $items = explode(NL, str_replace("\r", '', $_post['name']));
 
-			$mod = new X3form_builder_model();
+			$mod = new X3form_builder_model($this->site->data->xdatabase);
 
             $n = sizeof($items);
             $counter = 0;
@@ -1284,7 +1284,7 @@ function checkRule(item) {
 		$this->dict->get_wordarray(array('form', 'x3form_builder'));
 
 		// get object
-        $mod = new X3form_builder_model();
+        $mod = new X3form_builder_model($this->site->data->xdatabase);
 		$item = $mod->get_by_id($id, 'x3_forms_blacklist', 'id, id_area, name');
 
 		// build the form
@@ -1336,7 +1336,7 @@ function checkRule(item) {
 		if (is_null($msg))
 		{
 			// do action
-			$mod = new X3form_builder_model();
+			$mod = new X3form_builder_model($this->site->data->xdatabase);
 			$result = $mod->delete($item->id, 'x3_forms'.$table);
 
 			// set message
@@ -1345,7 +1345,7 @@ function checkRule(item) {
 			// clear useless permissions
 			if ($result[1])
 			{
-				$perm = new Permission_model();
+				$perm = new Permission_model($this->site->data->xdatabase);
 				$perm->deleting_by_what('x3_forms'.$table, $item->id);
 
 				// set what update
@@ -1384,7 +1384,7 @@ function checkRule(item) {
 	 */
 	public function rewidget(string $title, int $id_area, string $area)
 	{
-        $mod = new X3form_builder_model();
+        $mod = new X3form_builder_model($this->site->data->xdatabase);
 		echo $mod->get_widget(urldecode($title), $id_area, urldecode($area), false);
 	}
 

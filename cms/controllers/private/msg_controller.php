@@ -67,7 +67,7 @@ class Msg_controller extends X4Cms_controller
 
 		// get menus
 		$view->navbar = array($this->site->get_bredcrumb($page));
-		$view->menus = $this->site->get_menus($page->id_area);
+		$view->menus = $this->site->get_menus();
 
 		// content
 		$view->args = X4Route_core::$args;

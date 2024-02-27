@@ -50,7 +50,7 @@ class Home_controller extends X3ui_controller
 		$view->page = $page;
 
 		$view = new X4View_core('loading');
-		$view->location = urldecode($this->site->site->domain.'/'.$url);
+		$view->location = urldecode($this->site->data->domain.'/'.$url);
 		$view->render(true);
 	}
 
@@ -72,7 +72,7 @@ class Home_controller extends X3ui_controller
 		$view = new X4View_core(X4Theme_helper::set_tpl('x3ui'));
 		$view->page = $page;
 
-        $view->menus = $this->site->get_menus(1);
+        $view->menus = $this->site->get_menus();
 
         $view->start_page = BASE_URL.str_replace('§', '/', urldecode($start_page)).'?'.http_build_query($qs);
 
@@ -118,9 +118,17 @@ class Home_controller extends X3ui_controller
 	 */
 	public function menu()
 	{
+        $this->dict->get_wordarray(array('menus'));
+
+        $view = new X4View_core('modal');
+        $view->title = _MENUS;
+        $view->wide = 'md:inset-x-6 lg:w-2/3 xl:w-2/3';
+        $view->away = true;
+
 		// content
-		$view = new X4View_core('menu');
-		$view->menus = $this->site->get_menus(1);
+		$view->content = new X4View_core('menu');
+		$view->content->menus = $this->site->get_menus();
+        $view->content->bookmarks = $this->site->get_bookmarks($_SESSION['xuid'], $this->site->area->lang);
 		$view->render(true);
 	}
 
@@ -140,7 +148,7 @@ class Home_controller extends X3ui_controller
 		];
 		$context = stream_context_create($contextOptions);
 
-		$url = 'https://x3cms.net/plugin/x3notices/2/notices/'.urlencode($this->site->site->version).'/'.md5($this->site->site->xcode).'/'.$lang;
+		$url = 'https://x3cms.net/plugin/x3notices/2/notices/'.urlencode($this->site->data->version).'/'.md5($this->site->data->xcode).'/'.$lang;
 
 		// get remote contents
 		$content = @file_get_contents($url, false, $context);

@@ -59,7 +59,7 @@ class X4Form_helper
         {
 			$extra .= ' onsubmit="return false"';
         }
-        
+
 		// sanitize action
 		$action = htmlentities(strip_tags($action), ENT_QUOTES, 'UTF-8', false);
 
@@ -486,7 +486,7 @@ class X4Form_helper
 				? 'class="xinline error"'
 				: 'class="xinline"';
 
-			$tmp = '<label '.$label_class.' for="'.$e['name'].'"><input type="checkbox" '.$class.' name="'.$e['name'].'" id="'.$e['name'].'" value="'.$e['value'].'" '.$checked.' /> &nbsp;&nbsp;<span>'.stripslashes($e['suggestion']).'</span></label>';
+			$tmp = '<div class="check"><label '.$label_class.' for="'.$e['name'].'"><input type="checkbox" '.$class.' name="'.$e['name'].'" id="'.$e['name'].'" value="'.$e['value'].'" '.$checked.' /> &nbsp;&nbsp;<span>'.stripslashes($e['suggestion']).'</span></label></div>';
 		}
 		else
 		{
@@ -543,7 +543,7 @@ class X4Form_helper
 				}
 				else
 				{
-					$tmp .= '<div class="checkbox"><label '.$error.' for="'.$e['name'].'_'.$c.'"><input type="checkbox" '.$class.' name="'.$e['name'].'[]" id="'.$e['name'].'_'.$c.'" value="'.$i->$v.'" '.$checked.' />'.stripslashes($i->$v).'</label></div>';
+					$tmp .= '<div class="check"><label '.$error.' for="'.$e['name'].'_'.$c.'"><input type="checkbox" '.$class.' name="'.$e['name'].'[]" id="'.$e['name'].'_'.$c.'" value="'.$i->$v.'" '.$checked.' />'.stripslashes($i->$o).'</label></div>';
 				}
 				$c++;
 			}
@@ -747,7 +747,7 @@ class X4Form_helper
                 $e['options'][2],
                 $e['value'],
                 $empty,
-                isset($i['multiple']),
+                isset($e['multiple']),
                 $disabled,
                 $disabled2,
                 $disabled3
@@ -920,7 +920,7 @@ class X4Form_helper
 		{
 			case 'submit':
 				$buttons[1] = null;
-				$btn_name = strrev($name);
+				$btn_name = strrev($e['name']);
 				break;
 			case 'reset':
 				$buttons[0] = null;
@@ -977,6 +977,9 @@ class X4Form_helper
                         break;
                     case 'page':
                         $click = '@click="pager(\''.$buttons[3]['url'].'\')"';
+                        break;
+                    case 'call':
+                        $click = '@click="'.$buttons[3]['function'].'"';
                         break;
                     default:
                         $click = 'onclick="location.href=\''.$buttons[3]['url'].'\')"';

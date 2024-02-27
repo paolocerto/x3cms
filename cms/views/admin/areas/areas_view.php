@@ -7,7 +7,24 @@
  * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
+
+if (sizeof($sites) > 1)
+{
+    echo '<div class="switcher">';
+
+	echo '<div class="text-sm flex justify-end py-1 space-x-4 border-b border-gray-200">';
+	foreach ($sites as $i)
+	{
+        if ($i->plevel)
+        {
+            $on = ($i->id == $id_site) ? 'class="link"' : 'class="dark"';
+            echo '<a '.$on.' @click="pager(\''.BASE_URL.'areas/index/'.$i->id.'\')" title="">'.ucfirst($i->domain).'</a>';
+        }
+	}
+	echo '</div></div>';
+}
 ?>
+
 <h1><?php echo _AREA_LIST ?></h1>
 
 <table>

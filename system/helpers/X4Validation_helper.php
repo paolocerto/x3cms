@@ -190,11 +190,18 @@ class X4Validation_helper
 
 		$e = true;
 		// check x4token
-		if (!empty($form_name) && (!isset(self::$data['x4token']) || self::$data['x4token'] != md5($_SESSION['token'].$form_name)))
+		if (!isset(self::$data['x4token']) || self::$data['x4token'] != md5($_SESSION['token'].$form_name))
 		{
 			$e = false;
-			$fields[0]['error'][] = array('msg' => '_session_expired');
-			$_SESSION['token'] = uniqid(rand(),TRUE);
+            //$fields[0]['error'][] = array('msg' => '_session_expired');
+            $fields[] = [
+                'label' => '',
+                'name' => ' ',
+                'type' => 'html',
+                'value' => '',
+                'error' => [['msg' => '_session_expired']]
+            ];
+            $_SESSION['token'] = uniqid(rand(), true);
 		}
 		else
 		{
@@ -1017,7 +1024,10 @@ class X4Validation_helper
         elseif (
                 !isset($tok[2]) &&
                 isset(self::$data[$tok[1]]) &&
-                !in_array($_post[$field['name']], self::$data[$tok[1]])
+                (
+                    !is_array(self::$data[$tok[1]]) ||
+                    !in_array($_post[$field['name']], self::$data[$tok[1]])
+                )
             )
         {
             $field['error'][] = array('msg' => '_inarray');
@@ -1193,7 +1203,6 @@ class X4Validation_helper
 			$e = false;
 		}
 	}
-
 
 	/**
 	 * Password rule

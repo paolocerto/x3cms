@@ -16,8 +16,8 @@ header('X-UA-Compatible: IE=edge');
 
 $title = $css = '';
 $robots = 'index,follow';
-$xkeys = $this->site->site->keywords;
-$description = stripslashes($this->site->site->description);
+$xkeys = $this->site->data->keywords;
+$description = stripslashes($this->site->data->description);
 if (isset($page))
 {
 	$title = stripslashes($page->title).' | ';
@@ -52,7 +52,7 @@ if (!is_array($flags) || !isset($flags['mobile']) || !isset($flags['screen']))
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
-    <title><?php echo $title.$this->site->site->title ?></title>
+    <title><?php echo $title.$this->site->data->title ?></title>
     <meta name="description" content="<?php echo $description ?>">
     <meta name="robots" content="<?php echo $robots ?>">
 <?php
@@ -61,7 +61,7 @@ if (!empty($xkeys))
     echo '<meta name="keywords" content="'.$xkeys.'">';
 }
 ?>
-    <link rel="canonical" href="<?php echo $this->site->site->domain ?>">
+    <link rel="canonical" href="<?php echo $this->site->data->domain ?>">
     <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml">
 
     <link rel="shortcut icon" href="<?php echo THEME_URL ?>favicon.ico" type="images/x-icon">
@@ -94,7 +94,7 @@ if (RTL)
     <script defer src="<?php echo THEME_URL ?>js/alpine.min.js"></script>
 
     <script>
-        var domain = "<?php echo $this->site->site->domain ?>",
+        var domain = "<?php echo $this->site->data->domain ?>",
             root = "<?php echo BASE_URL ?>",
             theme = "<?php echo $this->site->area->theme ?>",
             area_id = <?php echo $page->id_area ?>,

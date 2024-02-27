@@ -91,12 +91,36 @@ class AdmUtils_helper
      * @param   integer	$id_area
 	 * @param   string	$what Privilege type
 	 * @param   integer	$id_what Item ID
+     * @param   string  $action
 	 * @return  integer	Permission level
 	 */
-	public static function get_priv_level(int $id_area, string $what, int $id_what)
+	public static function get_priv_level(int $id_area, string $what, int $id_what, string $action = '')
 	{
+        if ($_SESSION['level'] == 5)
+        {
+            return 5;
+        }
+
 		$mod = new Permission_model();
-		return $mod->check_priv($_SESSION['xuid'], $what, $id_what, $id_area);
+
+        $priv = $mod->check_priv($_SESSION['xuid'], $what, $id_what, $id_area);
+
+        // limited actions for not superadmins
+        $limited = ['create', 'delete'];
+
+        if (
+            $priv > 3 &&
+            in_array($what, $mod->superadmin_privtypes) &&
+            !empty($action) &&
+            in_array($action, $limited)
+        )
+        {
+            return 3;
+        }
+        else
+        {
+            return $priv;
+        }
 	}
 
 	/**
@@ -112,7 +136,7 @@ class AdmUtils_helper
 	public static function chk_priv_level(int $id_area, string $what, int $id_what, string $action)
 	{
 		// get priv level on the item
-		$level = self::get_priv_level($id_area, $what, $id_what);
+		$level = self::get_priv_level($id_area, $what, $id_what, $action);
 
 		// if level lower than required redirect
 		if ($level < self::action2level($action))

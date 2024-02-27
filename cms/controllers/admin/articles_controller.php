@@ -68,7 +68,7 @@ class Articles_controller extends X3ui_controller
         $qs = X4Route_core::get_query_string();
 
 		$area = new Area_model();
-	    list($id_area, $areas) = $area->get_my_areas($id_area);
+	    list($id_area, $areas) = $area->get_my_areas(0, $id_area);
 
 		// get page
 		$page = $this->get_page('articles');

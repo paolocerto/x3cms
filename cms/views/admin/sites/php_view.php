@@ -11,11 +11,12 @@
 // site/php info
 
 $modules = get_loaded_extensions();
+$version = phpversion();
 
 echo '<table>
 <thead>
     <tr>
-        <th>'._INFO_PHP.'</th>
+        <th>PHP '.$version.' - '._INFO_PHP.'</th>
     </tr>
 </thead>
 <tbody>';

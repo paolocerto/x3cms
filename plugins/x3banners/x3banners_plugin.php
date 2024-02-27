@@ -22,7 +22,7 @@ class X3banners_plugin extends X4Plugin_core implements X3plugin
 	 * @param	object	$site, site object
 	 * @return	void
 	 */
-	public function __construct($site)
+	public function __construct(X4Site_model $site)
 	{
 		parent::__construct($site);
         $this->dict = new X4Dict_model(X4Route_core::$area, X4Route_core::$lang);
@@ -38,7 +38,7 @@ class X3banners_plugin extends X4Plugin_core implements X3plugin
 	 */
 	public function get_module(stdClass $page, array $args, string $param = '')
 	{
-		// if param can be exploded
+        // if param can be exploded
 		$p = explode('|', $param);
 
 		switch($p[0])
@@ -62,7 +62,7 @@ class X3banners_plugin extends X4Plugin_core implements X3plugin
 	private function banner_top($page, $args)
 	{
 		// get banner
-        $mod = new X3banners_model();
+        $mod = new X3banners_model($this->site->data->xdatabase);
 		$banner = $mod->get_banner_by_id_page($page->id);
 
 		if ($banner)
@@ -106,7 +106,6 @@ class X3banners_plugin extends X4Plugin_core implements X3plugin
 	/**
 	 * call plugin actions
 	 *
-	 * @param   integer $id_area Area ID
 	 * @param   string	$control action name
 	 * @param   mixed	$a
 	 * @param   mixed	$b
@@ -114,7 +113,7 @@ class X3banners_plugin extends X4Plugin_core implements X3plugin
 	 * @param   mixed	$d
 	 * @return  void
 	 */
-	public function plugin(int $id_area, string $control, string $a, string $b, string $c, string $d)
+	public function plugin(string $control, string $a, string $b, string $c, string $d)
 	{
 	 	switch ($control)
 		{
@@ -124,7 +123,7 @@ class X3banners_plugin extends X4Plugin_core implements X3plugin
 		/* SAMPLE
 		// call private method
 		case 'test':
-			$this->test($id_area, $a, $b);
+			$this->test($a, $b);
 			break;
 		*/
 
@@ -142,7 +141,7 @@ class X3banners_plugin extends X4Plugin_core implements X3plugin
 	 * @param   mixed	$b
 	 * @return  mixed
 	 */
-	private function test(int $id_area, $a, $b)
+	private function test($a, $b)
 	{
 		// TO DO
 		/*

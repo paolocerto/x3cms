@@ -36,7 +36,7 @@ class Login_controller extends X4Cms_controller
 			$ip = $this->getRealIpAddr();
 			if (ROOT == '/' && !in_array($ip, $this->admitted))
 			{
-				header('Location: '.$this->site->site->domain);
+				header('Location: '.$this->site->data->domain);
 				die;
 			}
 		}
@@ -74,7 +74,7 @@ class Login_controller extends X4Cms_controller
 			$view->content = new X4View_core('login');
 
 			$form_fields = new X4Form_core('login');
-            $form_fields->site = $this->site->site;
+            $form_fields->site = $this->site->data;
 
             // get the fields array
             $fields = $form_fields->render();
@@ -173,7 +173,7 @@ class Login_controller extends X4Cms_controller
 				}
 
 				// redirect
-				header('Location: '.$this->site->site->domain.'/'.$_SESSION['lang'].'/admin');
+				header('Location: '.$this->site->data->domain.'/'.$_SESSION['lang'].'/admin');
 				die;
 			}
 			else
@@ -319,11 +319,11 @@ class Login_controller extends X4Cms_controller
 
 				// create resetting key
 				$md5 = md5($user->last_in.SITE.$user->password);
-				$link = $this->site->site->domain.'/admin/login/reset/'.$user->id.'/'.$md5;
+				$link = $this->site->data->domain.'/admin/login/reset/'.$user->id.'/'.$md5;
 
 				// send a resetting mail
 				$src = array('XXXLINKXXX', 'XXXDOMAINXXX');
-				$rpl = array($link, $this->site->site->domain);
+				$rpl = array($link, $this->site->data->domain);
 
 				$view = new X4View_core(X4Theme_helper::set_tpl('mail'));
 				$view->subject = SERVICE.' - '._RECOVERY_SUBJECT;

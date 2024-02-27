@@ -16,7 +16,7 @@
 if (isset($location))
 {
 	// set redirect
-	echo 'location.href=domain+"'.$location.'";
+	echo 'location.href=domain+"'.$location.'"';
 }
 else
 {

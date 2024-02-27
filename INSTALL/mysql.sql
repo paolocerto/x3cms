@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS `alang` (
   `title` varchar(255) NOT NULL,
   `description` text NOT NULL,
   `keywords` text NOT NULL,
-  `predefined` tinyint(1) NOT NULL,
+  `xdefault` tinyint(1) NOT NULL,
   `rtl` tinyint(1) NOT NULL,
   `xlock` tinyint(1) NOT NULL,
   `xon` tinyint(1) NOT NULL,
@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS `alang` (
 -- Dumping data for table `alang`
 --
 
-INSERT INTO `alang` (`updated`, `id_area`, `language`, `code`, `title`, `description`, `keywords`, `predefined`, `rtl`, `xlock`, `xon`) VALUES
+INSERT INTO `alang` (`updated`, `id_area`, `language`, `code`, `title`, `description`, `keywords`, `xdefault`, `rtl`, `xlock`, `xon`) VALUES
 (NOW(), 1, 'english', 'en', 'X3 CMS Admin area', 'X3 CMS Administration area', 'x3 cms, x4 webapp, cblu.net', 1, 0, 0, 1),
 (NOW(), 1, 'italiano', 'it', 'X3 CMS Area di amministrazione', 'X3 CMS Area di amministrazione', 'x3 cms, x4 webapp, cblu.net', 0, 0, 0, 1),
 (NOW(), 2, 'english', 'en', 'Site title', 'Site description', 'some keywords', 1, 0, 0, 1),
@@ -69,7 +69,9 @@ CREATE TABLE IF NOT EXISTS `areas` (
   `title` varchar(128) NOT NULL,
   `description` varchar(255) NOT NULL,
   `folder` varchar(128) NOT NULL,
+  `id_site` int(11) NOT NULL,
   `id_theme` int(11) NOT NULL,
+  `xdefault` tinyint(1) NOT NULL,
   `private` tinyint(1) NOT NULL,
   `xlock` tinyint(1) NOT NULL,
   `xon` tinyint(1) NOT NULL,
@@ -80,10 +82,10 @@ CREATE TABLE IF NOT EXISTS `areas` (
 -- Dumping data for table `areas`
 --
 
-INSERT INTO `areas` (`id`, `updated`, `lang`, `name`, `title`, `description`, `folder`, `id_theme`, `private`, `xlock`, `xon`) VALUES
-(1, NOW(), 'it', 'admin', 'Administration', 'Control panel', 'admin', 1, 1, 0, 1),
-(2, NOW(), 'it', 'public', 'Public area', 'Web site', 'public', 2, 0, 0, 1),
-(3, NOW(), 'it', 'private', 'Private area', 'Web private area', 'private', 2, 1, 0, 1);
+INSERT INTO `areas` (`id`, `updated`, `lang`, `name`, `title`, `description`, `folder`, `id_theme`, `xdefault`, `private`,`xlock`, `xon`) VALUES
+(1, NOW(), 'it', 'admin', 'Administration', 'Control panel', 'admin', 1, 1, 0, 1, 0, 1),
+(2, NOW(), 'it', 'public', 'Public area', 'Web site', 'public', 1, 2, 1, 0, 0, 1),
+(3, NOW(), 'it', 'private', 'Private area', 'Web private area', 'private', 1, 2, 0, 1, 0, 1);
 
 -- --------------------------------------------------------
 
@@ -167,6 +169,26 @@ INSERT INTO `articles` (`updated`, `bid`, `id_area`, `lang`, `code_context`, `na
 (NOW(),	'3bc2a89cfa5e040e14adfeae19aa5891',	2,	'it',	2,	'temi',	0,	1,	UNIX_TIMESTAMP(),	0,	'cosa_fare',	'',	'',	'<h3>Temi grafici</h3>\r\n<p>Ottenere un sito gradevole senza avere particolari conoscenze tecniche &egrave; il problema di chi si affida a un CMS.</p>\r\n<p>X3 offre due strade:</p>\r\n<ul>\r\n<li><strong>Simple Editing</strong>: una pagina -&gt; una sezione (un contenitore per articoli) -&gt; un articolo (con eventualmente un modulo come in questa pagina)</li>\r\n<li><strong>Advanced Editing</strong>: una pagina -&gt; una o pi&ugrave; sezioni -&gt; uno o pi&ugrave; articoli in ogni sezione</li>\r\n</ul>\r\n<p>Con la prima soluzione &egrave; tutto nelle vostre mani: siete voi a comporre l\'articolo con una formattazione gradevole e eventuali immagini.</p>\r\n<p>Con l\'altra soluzione potete impostare una collezione di stili da usare per strutturare la pagina differenziando le sezioni o anche i singoli articoli con: colori, sfondi, bordi, angoli arrotondati, padding e altro.</p>',	'temi Temi grafici\r\nOttenere un sito gradevole senza avere particolari conoscenze tecniche &egrave; il problema di chi si affida a un CMS.\r\nX3 offre due strade:\r\n\r\nSimple Editing: una paagina -&gt; una sezione (un contenitore per articoli) -&gt; un articolo (con eventualmente un modulo come in questa pagina)\r\nAdvanced Editing: una pagina -&gt; una o pi&ugrave; sezioni -&gt; uno o pi&ugrave; articoli in ogni sezione\r\n\r\nCon la prima soluzione &egrave; tutto nelle vostre mani: siete voi a comporre l\'articolo con una formattazione gradevole e eventuali immagini.\r\nCon l\'altra soluzione potete impostare una collezione di stili da usare per strutturare la pagina differenziando le sezioni o anche i singoli articoli con: colori, sfondi, bordi, angoli arrotondati, padding e altro.',	'',	0,	'web@cblu.net',	'',	'',	0,	0,	0,	0,	'',	0,	1),
 (NOW(),	'95164450d481097e6ff1e0dcf52b4fe4',	2,	'it',	2,	'plugins',	0,	1,	UNIX_TIMESTAMP(),	0,	'cosa_fare',	'',	'',	'<h3>Nuovi moduli</h3>\r\n<p>questa nuova versione di X3 arriva con nuovi interessanti moduli:</p>\r\n<ul>\r\n<li><strong>x3banners</strong> mostra un banner in cima a determinate pagine con una specifica finestra temporale</li>\r\n<li><strong>x3form_builder</strong> costruisce form da inserire dentro agli articoli</li>\r\n</ul>\r\n<p>Giocando con questi moduli scoprirete il potenziale di X3 CMS</p>',	'plugins Nuovi moduli\r\nquesta nuova versione di X3 arriva con nuovi interessanti moduli:\r\n\r\nx3banners mostra un banner in cima a determinate pagine con una specifica finestra temporale\r\nx3form_builder costruisce form da inserire dentro agli articoli\r\n\r\nGiocando con questi moduli scoprirete il potenziale di X3 CMS',	'',	0,	'web@cblu.net',	'',	'',	0,	0,	0,	0,	'',	0,	1),
 (NOW(),	'8f580c24fa4808221cde4d13b5bb049e',	2,	'it',	2,	'esplora admin',	0,	1,	UNIX_TIMESTAMP(),	0,	'cosa_fare',	'',	'',	'<h3>Esplora il pannello di controllo</h3>\r\n<p>Il nuovo pannello di controllo &egrave; ancora pi&ugrave; ordinato e intuitivo.<br>Tutto funziona come sempre:</p>\r\n<ul>\r\n<li>il PIU\' in alto a destra permette di creare nuovi elementi</li>\r\n<li>la MATITA permette di modificarli</li>\r\n<li>la LAMPADINA attiva o disattiva un elemento (elemento spento non si vede nel sito)</li>\r\n<li>il CESTINO permette di eliminare</li>\r\n</ul>\r\n<p>Eliminazione &egrave; irreversibile. Se non siete sicuri meglio spegnere la lampadina.</p>\r\n<p>Come primo utente voi siete un SUPERADMIN, ricordate: da un grande potere derivano grandi responsabilit&agrave;.<br>Buon divertimento</p>',	'esplora admin Esplora il pannello di controllo\r\nIl nuovo pannello di controllo &egrave; ancora pi&ugrave; ordinato e intuitivo.Tutto funziona come sempre:\r\n\r\nil PIU\' in alto a destra permette di creare nuovi elementi\r\nla MATITA permette di modificarli\r\nla LAMPADINA attiva o disattiva un elemento (elemento spento non si vede nel sito)\r\nil CESTINO permette di eliminare\r\n\r\nEliminazione &egrave; irreversibile. Se non siete sicuri meglio spegnere la lampadina.\r\nCome primo utente voi siete un SUPERADMIN, ricordate: da un grande potere derivano grandi responsabilit&agrave;.Buon divertimento',	'',	0,	'web@cblu.net',	'',	'',	0,	0,	0,	0,	'',	0,	1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `bookmarks`
+--
+
+CREATE TABLE IF NOT EXISTS `bookmarks` (
+  `id` int(10) NOT NULL auto_increment,
+  `updated` datetime NOT NULL,
+  `id_area` int(11) NOT NULL,
+  `lang` char(2) NOT NULL,
+  `id_user` varchar(128) NOT NULL,
+  `name` varchar(128) NOT NULL,
+  `url` varchar(255) NOT NULL,
+  `xlock` tinyint(1) NOT NULL,
+  `xon` tinyint(1) NOT NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 -- --------------------------------------------------------
 
@@ -327,6 +349,12 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'admin', 'global', '_HIDDEN', 'Elemento nascosto', 0, 1),
 (NOW(), 'it', 'admin', 'global', '_VISIBLE', 'Elemento visibile', 0, 1),
 (NOW(), 'it', 'admin', 'global', '_ENTER_TO_FILTER', 'premi invio per filtrare', 0, 1),
+
+(NOW(), 'it', 'admin', 'global', '_FILTER', 'Filtra', 0, 1),
+(NOW(), 'it', 'admin', 'global', '_FILTER_MSG', 'Inserisci un testo per filtrare', 0, 1),
+
+(NOW(), 'it', 'admin', 'global', '_SET_ALL', 'Imposta per tutti', 0, 1),
+(NOW(), 'it', 'admin', 'global', '_SET_ALL_MSG', 'Azione sarà eseguita solo sugli elementi visibili', 0, 1),
 
 (NOW(), 'it', 'admin', 'home', '_HOME_PAGE', 'Home page', 0, 1),
 (NOW(), 'it', 'admin', 'home', '_PUBLIC_SIDE', 'Sito pubblico', 0, 1),
@@ -532,11 +560,13 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'admin', 'sites', '_OFFLINE', 'Off Line', 0, 1),
 (NOW(), 'it', 'admin', 'sites', '_KEYCODE', 'Codice licenza', 0, 1),
 (NOW(), 'it', 'admin', 'sites', '_DOMAIN', 'Dominio', 0, 1),
+(NOW(), 'it', 'admin', 'sites', '_DATABASE', 'Database', 0, 1),
+(NOW(), 'it', 'admin', 'sites', '_DATABASE_MSG', 'Per dominii alternativi', 0, 1),
 (NOW(), 'it', 'admin', 'sites', '_SITE_CONFIG', 'Configurazione sito', 0, 1),
 (NOW(), 'it', 'admin', 'sites', '_ADD_SITE', 'Aggiungi un nuovo sito', 0, 1),
 (NOW(), 'it', 'admin', 'sites', '_EDIT_SITE', 'Modifica sito', 0, 1),
 (NOW(), 'it', 'admin', 'sites', '_CLEAR_CACHE', 'Svuota la cache', 0, 1),
-(NOW(), 'it', 'admin', 'sites', '_VERSION', 'versione', 0, 1),
+(NOW(), 'it', 'admin', 'sites', '_VERSION', 'versione X3CMS', 0, 1),
 
 
 (NOW(), 'it', 'admin', 'info', '_SITE_INFO', 'Informazioni', 0, 1),
@@ -600,6 +630,12 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'admin', 'menus', '_NEW_MENU', 'Nuovo men&ugrave;', 0, 1),
 (NOW(), 'it', 'admin', 'menus', '_EDIT_MENU', 'Modifica un men&ugrave;', 0, 1),
 (NOW(), 'it', 'admin', 'menus', '_DELETE_MENU', 'Elimina men&ugrave;', 0, 1),
+
+(NOW(), 'it', 'admin', 'menus', '_BOOKMARKS', 'Segnalibro', 0, 1),
+(NOW(), 'it', 'admin', 'menus', '_BOOKMARKS_NAME', 'Nome segnalibro', 0, 1),
+(NOW(), 'it', 'admin', 'menus', '_BOOKMARKS_ADD', 'Aggiungi pagina corrente', 0, 1),
+(NOW(), 'it', 'admin', 'menus', '_BOOKMARKS_DELETE', 'Elimina segnalibro', 0, 1),
+(NOW(), 'it', 'admin', 'menus', '_BOOKMARKS_ALREADY_EXISTS', 'Segnalibro già registrato', 0, 1),
 
 
 (NOW(), 'it', 'admin', 'pages', '_PAGE_LIST', 'Pagine - elenco pagine area', 0, 1),
@@ -760,6 +796,9 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'admin', 'areas', '_SEO_DATA', 'Dati SEO', 0, 1),
 (NOW(), 'it', 'admin', 'areas', '_PRIVATE', 'Area privata', 0, 1),
 (NOW(), 'it', 'admin', 'areas', '_FOLDER', 'Cartella', 0, 1),
+(NOW(), 'it', 'admin', 'areas', '_DOMAIN', 'Dominio', 0, 1),
+(NOW(), 'it', 'admin', 'areas', '_DEFAULT_AREA', 'Default area per plugin', 0, 1),
+(NOW(), 'it', 'admin', 'areas', '_DEFAULT_AREA_MSG', 'E\' utile tenere tutti i plugin collegati tra loro in una sola area', 0, 1),
 
 
 (NOW(), 'it', 'admin', 'dictionary', '_KEY', 'Chiave', 0, 1),
@@ -990,6 +1029,12 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'admin', 'global', '_VISIBLE', 'Visible element', 0, 1),
 (NOW(), 'en', 'admin', 'global', '_ENTER_TO_FILTER', 'hit enter to filter', 0, 1),
 
+(NOW(), 'en', 'admin', 'global', '_FILTER', 'Filter', 0, 1),
+(NOW(), 'en', 'admin', 'global', '_FILTER_MSG', 'Insert a text to filter', 0, 1),
+
+(NOW(), 'en', 'admin', 'global', '_SET_ALL', 'Set for all', 0, 1),
+(NOW(), 'en', 'admin', 'global', '_SET_ALL_MSG', 'This action will be applied only to visible items', 0, 1),
+
 (NOW(), 'en', 'admin', 'home', '_HOME_PAGE', 'Home page', 0, 1),
 (NOW(), 'en', 'admin', 'home', '_PUBLIC_SIDE', 'Public side', 0, 1),
 (NOW(), 'en', 'admin', 'home', '_LOGGED_AS', 'Logged as', 0, 1),
@@ -1192,11 +1237,13 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'admin', 'sites', '_OFFLINE', 'Off Line', 0, 1),
 (NOW(), 'en', 'admin', 'sites', '_KEYCODE', 'License code', 0, 1),
 (NOW(), 'en', 'admin', 'sites', '_DOMAIN', 'Domain', 0, 1),
+(NOW(), 'en', 'admin', 'sites', '_DATABASE', 'Database', 0, 1),
+(NOW(), 'en', 'admin', 'sites', '_DATABASE_MSG', 'For alternative domains', 0, 1),
 (NOW(), 'en', 'admin', 'sites', '_SITE_CONFIG', 'Site config', 0, 1),
 (NOW(), 'en', 'admin', 'sites', '_ADD_SITE', 'Add a new site', 0, 1),
 (NOW(), 'en', 'admin', 'sites', '_EDIT_SITE', 'Edit site', 0, 1),
 (NOW(), 'en', 'admin', 'sites', '_CLEAR_CACHE', 'Clear your cache', 0, 1),
-(NOW(), 'en', 'admin', 'sites', '_VERSION', 'version', 0, 1),
+(NOW(), 'en', 'admin', 'sites', '_VERSION', 'X3CMS version', 0, 1),
 
 (NOW(), 'en', 'admin', 'info', '_SITE_INFO', 'Informations', 0, 1),
 (NOW(), 'en', 'admin', 'info', '_INFO_SERVER', 'Server', 0, 1),
@@ -1259,6 +1306,13 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'admin', 'menus', '_NEW_MENU', 'New menu', 0, 1),
 (NOW(), 'en', 'admin', 'menus', '_EDIT_MENU', 'Edit menu', 0, 1),
 (NOW(), 'en', 'admin', 'menus', '_DELETE_MENU', 'Delete menu', 0, 1),
+
+
+(NOW(), 'en', 'admin', 'menus', '_BOOKMARKS', 'Bookmarks', 0, 1),
+(NOW(), 'en', 'admin', 'menus', '_BOOKMARKS_NAME', 'Bookmark name', 0, 1),
+(NOW(), 'en', 'admin', 'menus', '_BOOKMARKS_ADD', 'Add the current page', 0, 1),
+(NOW(), 'en', 'admin', 'menus', '_BOOKMARKS_DELETE', 'Delete bookmark', 0, 1),
+(NOW(), 'en', 'admin', 'menus', '_BOOKMARKS_ALREADY_EXISTS', 'Bookmark already in', 0, 1),
 
 
 (NOW(), 'en', 'admin', 'pages', '_PAGE_LIST', 'Pages list', 0, 1),
@@ -1416,7 +1470,9 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'admin', 'areas', '_SEO_DATA', 'SEO data', 0, 1),
 (NOW(), 'en', 'admin', 'areas', '_PRIVATE', 'Private area', 0, 1),
 (NOW(), 'en', 'admin', 'areas', '_FOLDER', 'Folder', 0, 1),
-
+(NOW(), 'en', 'admin', 'areas', '_DOMAIN', 'Domain', 0, 1),
+(NOW(), 'en', 'admin', 'areas', '_DEFAULT_AREA', 'Default area for plugins', 0, 1),
+(NOW(), 'en', 'admin', 'areas', '_DEFAULT_AREA_MSG', 'Is useful to keep all plugins linked each other in one area', 0, 1),
 
 (NOW(), 'en', 'admin', 'dictionary', '_KEY', 'Key', 0, 1),
 (NOW(), 'en', 'admin', 'dictionary', '_KEYS_LIST', 'Keys list', 0, 1),
@@ -1644,6 +1700,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'public', 'form', '_FORM_NOT_VALID', 'Uno o pi&ugrave; campi del form non sono compilati correttamente:', 0, 1),
 (NOW(), 'it', 'public', 'form', '_FORM_DUPLICATE', 'Questo form &egrave; gi&agrave; stato registrato.', 0, 1),
 
+(NOW(), 'it', 'public', 'form', '_SESSION_EXPIRED', 'La sessione per la compilazione di questo modulo è scaduta.<br>Ricaricate la pagina e riprovate.', 0, 1),
 (NOW(), 'it', 'public', 'form', '_REQUIRED', '&egrave; un campo obbligatorio.', 0, 1),
 (NOW(), 'it', 'public', 'form', '_REQUIREDIF', '&egrave; obbligatorio se impostate "XXXRELATEDXXX" a "XXXVALUEXXX".', 0, 1),
 (NOW(), 'it', 'public', 'form', '_INVALID_VALUE', 'non &egrave; un valore ammesso.', 0, 1),
@@ -1817,7 +1874,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'public', 'search', '_SEARCH_ITEMS', 'items', 0, 1),
 (NOW(), 'en', 'public', 'search', '_SEARCH_PAGES', 'Found in pages:', 0, 1),
 
-
+(NOW(), 'en', 'public', 'form', '_SESSION_EXPIRED', 'The session for filling out this form has expired.<br>Please reload the page and try again.', 0, 1),
 (NOW(), 'en', 'public', 'form', '_CHECKED', 'checked="checked"', 0, 1),
 (NOW(), 'en', 'public', 'form', '_FORM_NOT_VALID', 'One or more fields are wrong:', 0, 1),
 (NOW(), 'en', 'public', 'form', '_FORM_DUPLICATE', 'This form was already submitted.', 0, 1),
@@ -1997,7 +2054,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'private', 'login', '_PASSWORD', 'Password', 0, 1),
 (NOW(), 'it', 'private', 'login', '_REMEMBER_ME', 'Ricordami su questo computer', 0, 1),
 
-
+(NOW(), 'it', 'private', 'form', '_SESSION_EXPIRED', 'La sessione per la compilazione di questo modulo è scaduta.<br>Ricaricate la pagina e riprovate.', 0, 1),
 (NOW(), 'it', 'private', 'form', '_FORM_NOT_VALID', 'Uno o pi&ugrave; campi del form non sono compilati correttamente:', 0, 1),
 (NOW(), 'it', 'private', 'form', '_FORM_DUPLICATE', 'Questo form &egrave; gi&agrave; stato registrato.', 0, 1),
 (NOW(), 'it', 'private', 'form', '_REQUIRED', '&egrave; un campo obbligatorio.', 0, 1),
@@ -2142,6 +2199,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'private', 'login', '_PASSWORD', 'Password', 0, 1),
 (NOW(), 'en', 'private', 'login', '_REMEMBER_ME', 'Remember me on this computer', 0, 1),
 
+(NOW(), 'en', 'private', 'form', '_SESSION_EXPIRED', 'The session for filling out this form has expired.<br>Please reload the page and try again.', 0, 1),
 (NOW(), 'en', 'private', 'form', '_FORM_NOT_VALID', 'One or more fields are wrong:', 0, 1),
 (NOW(), 'en', 'private', 'form', '_FORM_DUPLICATE', 'This form was already submitted.', 0, 1),
 (NOW(), 'en', 'private', 'form', '_REQUIRED', 'is required.', 0, 1),
@@ -2829,6 +2887,9 @@ CREATE TABLE IF NOT EXISTS `sites` (
   `updated` datetime NOT NULL,
   `xcode` char(32) NOT NULL,
   `domain` varchar(128) NOT NULL,
+  'xdatabase' varchar(32) NOT NULL,
+  'areas' varchar(255) NOT NULL,
+  `xon` tinyint(1) NOT NULL,
   `version` varchar(16) NOT NULL,
   `xon` tinyint(1) NOT NULL,
   PRIMARY KEY  (`id`)

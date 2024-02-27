@@ -21,7 +21,7 @@ class X3form_builder_plugin extends X4Plugin_core implements X3plugin
 	 * @param   object Site
 	 * @return  void
 	 */
-	public function __construct($site)
+	public function __construct(X4Site_model $site)
 	{
 		parent::__construct($site);
 		$this->dict = new X4Dict_model(X4Route_core::$area, X4Route_core::$lang);
@@ -41,7 +41,7 @@ class X3form_builder_plugin extends X4Plugin_core implements X3plugin
 		if (!empty($param))
 		{
 		    $this->dict->get_wordarray(array('form', 'x3form_builder'));
-			$mod = new X3form_builder_model();
+			$mod = new X3form_builder_model($this->site->data->xdatabase);
 			// get fields
 			$items = $mod->get_fields_by_form($page->id_area, $page->lang, $param);
 
@@ -239,7 +239,7 @@ class X3form_builder_plugin extends X4Plugin_core implements X3plugin
 	private function form_result(int $id_area, string $lang, stdClass $form, array $_post, array $fields, array $file_array)
 	{
 		// get data
-		$mod = new X3form_builder_model();
+		$mod = new X3form_builder_model($this->site->data->xdatabase);
 
 		list($_files, $error) = $this->upload_files($id_area, $fields);
 
@@ -443,7 +443,7 @@ class X3form_builder_plugin extends X4Plugin_core implements X3plugin
                     }
                     else
                     {
-                        $files[$k] = $this->site->site->domain.'/cms/files/'.$path.'/'.$name;
+                        $files[$k] = $this->site->data->domain.'/cms/files/'.$path.'/'.$name;
                     }
                 }
 			}
@@ -454,7 +454,6 @@ class X3form_builder_plugin extends X4Plugin_core implements X3plugin
 	/**
 	 * call plugin actions
 	 *
-	 * @param   integer $id_area Area ID
 	 * @param   string	$control action name
 	 * @param   mixed	$a
 	 * @param   mixed	$b
@@ -462,7 +461,7 @@ class X3form_builder_plugin extends X4Plugin_core implements X3plugin
 	 * @param   mixed	$d
 	 * @return  void
 	 */
-	public function plugin(int $id_area, string $control, string $a, string $b, string $c, string $d)
+	public function plugin(string $control, string $a, string $b, string $c, string $d)
 	{
 		switch ($control)
 		{

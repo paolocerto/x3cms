@@ -131,7 +131,7 @@ class Profile_controller extends X3ui_controller
 			{
 				// build subject and message
 				$s = array('DOMAIN', 'USERNAME', 'PASSWORD');
-				$r = array($this->site->site->domain, $_post['username'], $_post['password']);
+				$r = array($this->site->data->domain, $_post['username'], $_post['password']);
 				$subject = str_replace($s, $r, _SUBJECT_PROFILE);
 				$msg = str_replace($s, $r, _MSG_PROFILE);
 				$to = array(array('mail' => $_post['mail'], 'name' => $_post['username']));

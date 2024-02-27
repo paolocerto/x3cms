@@ -67,7 +67,7 @@ class X3banners_controller extends X3ui_controller implements X3plugin_controlle
 		$view->content->pp = $pp;
         $view->content->qs = $qs;
 
-		$mod = new X3banners_model();
+		$mod = new X3banners_model($this->site->data->xdatabase);
 
 		$view->content->items = X4Pagination_helper::paginate($mod->get_items($id_area, $lang, $qs), $pp);
         $view->content->pages = $mod->get_pages($id_area, $lang);
@@ -118,7 +118,7 @@ class X3banners_controller extends X3ui_controller implements X3plugin_controlle
 		if (is_null($msg))
 		{
 			// do action
-			$mod = new X3banners_model();
+			$mod = new X3banners_model($this->site->data->xdatabase);
 			$result = $mod->update($id, array($what => $value));
 
 			// set message
@@ -151,7 +151,7 @@ class X3banners_controller extends X3ui_controller implements X3plugin_controlle
 		$this->dict->get_wordarray(array('form', 'x3banners'));
 
 		// get object
-		$mod = new X3banners_model();
+		$mod = new X3banners_model($this->site->data->xdatabase);
 		$item = ($id)
 			? $mod->get_by_id($id)
 			: new Obj_x3banners($id_area, $lang);
@@ -168,7 +168,7 @@ class X3banners_controller extends X3ui_controller implements X3plugin_controlle
 		// if submitted
 		if (X4Route_core::$post)
 		{
-			$e = X4Validation_helper::form($fields);
+			$e = X4Validation_helper::form($fields, 'editor');
 			if ($e)
 			{
 				$this->editing($_POST);
@@ -226,7 +226,7 @@ class X3banners_controller extends X3ui_controller implements X3plugin_controlle
                 'auto_hide' => $_post['auto_hide']
 			);
 
-            $mod = new X3banners_model();
+            $mod = new X3banners_model($this->site->data->xdatabase);
 
             // update or insert
             if ($_post['id'])
@@ -247,7 +247,7 @@ class X3banners_controller extends X3ui_controller implements X3plugin_controlle
                 if (!$_post['id'])
                 {
                     // permissions
-                    $perm = new Permission_model();
+                    $perm = new Permission_model($this->site->data->xdatabase);
                     $array[] = array(
                         'action' => 'insert',
                         'id_what' => $result[0],
@@ -278,7 +278,7 @@ class X3banners_controller extends X3ui_controller implements X3plugin_controlle
 		$this->dict->get_wordarray(array('form', 'x3banners'));
 
 		// get object
-		$mod = new X3banners_model();
+		$mod = new X3banners_model($this->site->data->xdatabase);
 		$item = $mod->get_by_id($id, 'x3_banners', 'id, id_area, title');
 		// build the form
 		$fields = array();
@@ -323,7 +323,7 @@ class X3banners_controller extends X3ui_controller implements X3plugin_controlle
 		if (is_null($msg))
 		{
 			// action
-			$mod = new X3banners_model();
+			$mod = new X3banners_model($this->site->data->xdatabase);
 			$result = $mod->delete($item->id, 'x3_banners');
 
 			// set message
@@ -332,7 +332,7 @@ class X3banners_controller extends X3ui_controller implements X3plugin_controlle
 			// clear useless permissions
 			if ($result[1])
 			{
-				$perm = new Permission_model();
+				$perm = new Permission_model($this->site->data->xdatabase);
 				$perm->deleting_by_what('x3_banners', $item->id);
 
 				// set what update

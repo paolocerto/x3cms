@@ -69,7 +69,6 @@ interface X3plugin
 	/**
 	 * call plugin actions
 	 *
-	 * @param   integer $id_area Area ID
 	 * @param   string	$control action name
 	 * @param   string	$a
 	 * @param   string	$b
@@ -77,5 +76,5 @@ interface X3plugin
 	 * @param   string	$d
 	 * @return  void
 	 */
-	 public function plugin(int $id_area, string $control, string $a, string $b, string $c, string $d);
+	 public function plugin(string $control, string $a, string $b, string $c, string $d);
 }

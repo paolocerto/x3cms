@@ -23,7 +23,7 @@ class Error_controller extends X4Cms_controller
 	public function __construct()
 	{
 		parent::__construct();
-		X4Utils_helper::offline($this->site->site->xon, BASE_URL.'msg/message/offline');
+		X4Utils_helper::offline($this->site->data->xon, BASE_URL.'msg/message/offline');
 	}
 
 	/**
@@ -47,7 +47,7 @@ class Error_controller extends X4Cms_controller
 		X4Utils_helper::set_base_url(ROOT.LL.X4Route_core::$area.'/'.DC);
 
 		// get menu
-		$view->menus = $this->site->get_menus($page->id_area);
+		$view->menus = $this->site->get_menus();
 
 		// get message
 		$view->sections = array($this->dict->get_message(_WARNING, strtoupper($what), 'msg'));

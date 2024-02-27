@@ -116,7 +116,7 @@ class Sites_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permissions
-		$msg = AdmUtils_helper::chk_priv_level(1, 'sites', $this->site->site->id, 'xlock');
+		$msg = AdmUtils_helper::chk_priv_level(1, 'sites', $this->site->data->id, 'xlock');
 		if (is_null($msg))
 		{
 			// do action
@@ -370,7 +370,8 @@ class Sites_controller extends X3ui_controller
 			// handle _post
 			$post = array(
 				'xcode' => X4Utils_helper::slugify($_post['xcode']),
-				'domain' => $_post['domain']
+				'domain' => $_post['domain'],
+                'xdatabase' => $_post['xdatabase']
 			);
 
             $result = ($_post['id'])

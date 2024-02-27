@@ -22,7 +22,6 @@ $icons = [
     'help' => '<i class="fa-solid fa-lg fa-fw fa-circle-question"></i>',
     'info' => '<i class="fa-solid fa-lg fa-fw fa-circle-info"></i>',
     'login/logout' => '<i class="fa-solid fa-lg fa-fw fa-power-off"></i>'
-
 ];
 
 $xdata = '{
@@ -83,7 +82,13 @@ foreach ($menus['sidebar'] as $k => $v)
                 if (!isset($menus['sidebar'][$k+1]) || $menus['sidebar'][$k+1]->xfrom == 'home')
                 {
                     // link to all plugins
-                    echo '<a @click="$dispatch(\'pager\', \''.BASE_URL.'modules\')" title="'._PLUGINS.'"><i class="fa-solid fa-lg fa-fw fa-plug"></i> <span x-show="open">'._PLUGINS.'</span></a><br>';
+                    echo '<a
+                        @click="$dispatch(\'pager\', \''.BASE_URL.'modules\')"
+                        @contextmenu="$dispatch(\'blank\', \''.BASE_URL.'modules\')"
+                        title="'._PLUGINS.'"
+                    >
+                        <i class="fa-solid fa-lg fa-fw fa-plug"></i> <span x-show="open">'._PLUGINS.'</span>
+                    </a><br>';
                 }
                 else
                 {
@@ -106,13 +111,22 @@ foreach ($menus['sidebar'] as $k => $v)
                      ? $icons[$v->url]
                      : $icons['fake'];
 
-                echo '<a @click="$dispatch(\'pager\', \''.BASE_URL.$v->url.'\')" title="'.$v->name.'">'.$icon.' <span x-show="open">'.$v->name.'</span></a><br>';
+                echo '<a
+                    @click="$dispatch(\'pager\', \''.BASE_URL.$v->url.'\')"
+                    @contextmenu="$dispatch(\'blank\', \''.BASE_URL.$v->url.'\')"
+                    title="'.$v->name.'"
+                >
+                    '.$icon.' <span x-show="open">'.$v->name.'</span>
+                </a><br>';
                 break;
         }
     }
     else
     {
-        echo '<li><a @click="$dispatch(\'pager\', \''.BASE_URL.$v->url.'\');" title="'.$v->name.'">'.$v->name.'</a></li>';
+        echo '<li><a
+            @click="$dispatch(\'pager\', \''.BASE_URL.$v->url.'\');"
+            @contextmenu="$dispatch(\'blank\', \''.BASE_URL.$v->url.'\')"
+            title="'.$v->name.'">'.$v->name.'</a></li>';
     }
 }
 
@@ -132,7 +146,7 @@ foreach ($menus['user_menu'] as $k => $v)
 
     $action = ($v->url == 'login/logout')
         ? 'href="'.BASE_URL.'login/logout"'
-        : '@click="$dispatch(\'pager\', \''.BASE_URL.$v->url.'\')"';
+        : '@click="$dispatch(\'pager\', \''.BASE_URL.$v->url.'\')" @contextmenu="$dispatch(\'blank\', \''.BASE_URL.$v->url.'\')"';
 
     echo '<a '.$action.'
         title="'.$v->name.'">'.$icon.' <span x-show="open">'.$v->name.'</span></a><br>';
@@ -151,7 +165,7 @@ if ($_SESSION['level'] > 4)
         ? 'on'
         : '';
 ?>
-    <a @click="$dispatch('pager', '<?php echo BASE_URL ?>info')"
+    <a @click="$dispatch('pager', '<?php echo BASE_URL ?>info')" @contextmenu="$dispatch('blank', '<?php echo BASE_URL ?>info')"
         title="<?php echo _ABOUT ?>"><i class="fa-solid fa-lg fa-fw fa-circle-info"></i> <span x-show="open"><?php echo _ABOUT ?></span></a><br>
 
     <a @click="$dispatch('setter', '<?php echo BASE_URL.'sites/set/debug/'.((DEBUG+1)%2) ?>')" title="<?php echo _DEBUG_MODE ?>">

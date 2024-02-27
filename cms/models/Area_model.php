@@ -27,7 +27,7 @@ class Area_model extends X4Model_core
 	}
 
 	/**
-	 * Get area data and predefined language code
+	 * Get area data and default language code
 	 * Join with alang
 	 *
 	 * @param   integer $id_area Area ID
@@ -37,7 +37,7 @@ class Area_model extends X4Model_core
 	{
 		return $this->db->query_row('SELECT a.*, l.code
 			FROM areas a
-			JOIN alang l ON a.id = l.id_area AND l.predefined = 1
+			JOIN alang l ON a.id = l.id_area AND l.xdefault = 1
 			WHERE a.id = '.$id_area);
 	}
 
@@ -56,14 +56,20 @@ class Area_model extends X4Model_core
 	 * Get areas data as an array
 	 * Join with privs table
 	 *
+     * @param   integer $id_site    Site ID
 	 * @param   integer $id_area Area ID
 	 * @param	string	$which  empty is the default, other options are public|private
 	 * @return  array	array of area objects
 	 */
-	public function get_areas(int $id_area = 1, string $which = '')
+	public function get_areas(int $id_site = 1, int $id_area = 1, string $which = '')
 	{
+        // condition to get all areas or only one
+		$where = ($id_site)
+            ? ' AND (a.id_site = 0 OR a.id_site = '.$id_site.')'
+            : '';
+
 		// condition to get all areas or only one
-		$where = (empty($which) || $id_area == 1)
+		$where .= (empty($which) || $id_area == 1)
 				? ''
 				: ' AND a.id = '.$id_area;
 
@@ -88,6 +94,32 @@ class Area_model extends X4Model_core
 		return $this->db->query($sql);
 	}
 
+    /**
+	 * Get domains
+	 *
+	 * @return  array
+	 */
+	public function get_domains()
+	{
+		return $this->db->query('SELECT id, domain FROM sites ORDER BY domain ASC');
+	}
+
+    /**
+	 * Reset xdefault
+	 *
+     * @param   integer $id_site
+     * @param   integer $id_area
+	 * @return  array
+	 */
+	public function reset_xdefault(int $id_site, int $id_area)
+	{
+		$sql = 'UPDATE areas
+            SET xdefault = 0
+            WHERE id_site = '.$id_site.' AND id != '.$id_area;
+
+		return $this->db->single_exec($sql);
+	}
+
 	/**
 	 * Get areas data as an array
 	 * Join with privs table
@@ -104,17 +136,37 @@ class Area_model extends X4Model_core
 		return $this->db->query($sql);
 	}
 
+    /**
+	 * Get sites
+	 * Join with privs table
+	 *
+     * @return  array	array
+	 */
+	public function get_my_sites()
+	{
+	    $sql = 'SELECT s.*, IF(p.id IS NULL, u.level, p.level) AS plevel
+            FROM sites s
+			JOIN uprivs u ON u.privtype = '.$this->db->escape('sites').'
+            LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = u.id
+			WHERE u.id_user = '.intval($_SESSION['xuid']).'
+			GROUP BY s.id
+            ORDER BY s.id ASC';
+
+		return $this->db->query($sql);
+	}
+
 	/**
 	 * Get areas data as an array
 	 * Join with privs table
 	 *
+     * @param   integer $id_site Site ID
 	 * @param   integer $id_area Area ID
 	 * @param	string	$which  empty is the default, other options are public|private
 	 * @return  array	array
 	 */
-	public function get_my_areas(int $id_area = 0, string $which = '')
+	public function get_my_areas(int $id_site, int $id_area = 0, string $which = '')
 	{
-	    $items = X4Array_helper::indicize($this->get_areas(1, $which), 'id');
+	    $items = X4Array_helper::indicize($this->get_areas($id_site, 1, $which), 'id');
 
 	    // check user group
 	    $id_group = $this->get_var($_SESSION['xuid'], 'users', 'id_group');
@@ -142,7 +194,7 @@ class Area_model extends X4Model_core
 	 */
 	public function extra_areas()
 	{
-		$items = $this->db->query('SELECT id, name, private FROM areas WHERE id > 3  AND xon = 1 ORDER BY id ASC');
+		$items = $this->db->query('SELECT id, name, private FROM areas WHERE id > 3 AND xon = 1 ORDER BY id ASC');
 
 		$a = array();
 		foreach ($items as $i)
@@ -348,8 +400,10 @@ class Area_obj
 	public $lang = '';
 	public $code = '';
 	public $old_id_theme = 0;
+    public $id_site = 0;
 	public $id_theme = 0;
 	public $private = 0;
+    public $xdefault = 0;
 	public $folder = '';
     public $xlock = 0;
 

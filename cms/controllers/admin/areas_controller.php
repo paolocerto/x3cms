@@ -42,7 +42,7 @@ class Areas_controller extends X3ui_controller
 	 *
 	 * @return  void
 	 */
-	public function index()
+	public function index($id_site = 0)
 	{
 		// load the dictionary
 		$this->dict->get_wordarray(array('areas'));
@@ -59,7 +59,16 @@ class Areas_controller extends X3ui_controller
 		$view->content->page = $page;
 
 		$mod = new Area_model();
-		list($id_area, $areas) = $mod->get_my_areas();
+        // sites
+        $sites = $mod->get_my_sites();
+        $view->content->sites = $sites;
+        if ($id_site == 0)
+        {
+            $id_site = $sites[0]->id;
+        }
+        $view->content->id_site = $id_site;
+        // areas
+		list($id_area, $areas) = $mod->get_my_areas($id_site);
 		$view->content->areas = $areas;
 
 		$view->render(true);
@@ -196,9 +205,11 @@ class Areas_controller extends X3ui_controller
 				'name' => X4Utils_helper::slugify($_post['name']),
 				'title' => $_post['title'],
 				'description' => $_post['description'],
+                'id_site' => $_post['id_site'],
 				'id_theme' => $_post['id_theme'],
-				'private' => intval(isset($_post['private'])) && $_post['private'],
-				'folder' => $_post['folder']
+				'private' => intval(isset($_post['private']) && $_post['private']),
+				'folder' => $_post['folder'],
+                'xdefault' => intval(isset($_post['xdefault']) && $_post['xdefault']),
 			);
 
 			$mod = new Area_model();
@@ -252,6 +263,12 @@ class Areas_controller extends X3ui_controller
 				// set what update
 				if ($result[1])
 				{
+                    // reset xdefault for other areas
+                    if ($post['xdefault'])
+                    {
+                        $mod->reset_xdefault($post['id_site'], $id_area);
+                    }
+
 					if ($redirect)
 					{
                         // reload
@@ -302,7 +319,7 @@ class Areas_controller extends X3ui_controller
     {
         // refresh languages related to area
         $lang = new Language_model();
-        $lang->set_alang($id_area, $_post['languages'], $_post['lang']);
+        $lang->set_alang($_post['id'], $_post['languages'], $_post['lang']);
 
         if ($_post['id'] && $_post['id_theme'] != $_post['old_id_theme'])
         {

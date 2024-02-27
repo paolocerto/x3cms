@@ -19,17 +19,11 @@ class Permission_model extends X4Model_core
 	 * @var array	admin related privtypes
 	 */
 	protected $admin_privtypes = array(
-		'_area_creation',
 		'_group_creation',
-		'_language_creation',
-		'_menu_creation',
-		//'_module_install',
-		//'_module_uninstall',
-		'_template_install',
-		'_theme_install',
 		'_user_creation',
 		'xgroups',
-		//'languages',
+		'areas',
+        'languages',
 		'menus',
 		'privs',
 		'sites',
@@ -38,13 +32,34 @@ class Permission_model extends X4Model_core
 		'users',
 	);
 
+    /**
+	 * @var array	super admin related privtypes
+     *  Set restricted access for creation and deletion
+	 */
+	protected $superadmin_privtypes = array(
+		'_area_creation',
+		'_language_creation',
+		'_menu_creation',
+		'_module_install',
+        '_site_creation',
+		'_template_install',
+        '_theme_install',
+        'areas',
+        'languages',
+        'menus',
+        'module',
+        'sites',
+        'templates',
+        'themes',
+	);
+
 	/**
 	 * @var array	tables to not set privs
 	 */
 	protected $no_privs = array(
-		'privs',
+        'debug',
 		'logs',
-		'x3_answer_code',
+        'privs',
 	);
 
 	/**
@@ -52,10 +67,10 @@ class Permission_model extends X4Model_core
 	 *
 	 * @return  void
 	 */
-	public function __construct()
+	public function __construct(string $db = 'default')
 	{
 		// set default table
-		parent::__construct('privs');
+		parent::__construct('privs', $db);
 	}
 
 	/**
@@ -143,7 +158,11 @@ class Permission_model extends X4Model_core
 	 */
 	public function get_levels()
 	{
-		return $this->db->query('SELECT * FROM levels ORDER BY id ASC');
+        $max_level = isset($_SESSION['level'])
+            ? $_SESSION['level']
+            : 4;
+
+		return $this->db->query('SELECT * FROM levels WHERE id <= '.intval($max_level).' ORDER BY id ASC');
 	}
 
 	/**

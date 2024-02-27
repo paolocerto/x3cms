@@ -93,6 +93,7 @@ class Obj_site
 {
 	public $domain = '';
     public $xcode = '';
+    public $xdatabase = '';
     public $version = '';
 
 	public function __construct()

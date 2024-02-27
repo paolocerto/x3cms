@@ -142,6 +142,10 @@ final class X4Route_core
                 self::$input = $tmp;
             }
         }
+        elseif (is_array($_POST))
+        {
+            self::$input = $_POST;
+        }
 
 		// uri segments array
 		self::$args = explode('/', $us[0]);

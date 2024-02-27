@@ -252,7 +252,7 @@ class Users_controller extends X3ui_controller
         $mod = new Permission_model();
         $form_fields->aprivs = $mod->get_aprivs($id);
 		$mod = new Area_model();
-        $form_fields->areas = $mod->get_areas($group->id_area);
+        $form_fields->areas = $mod->get_areas($this->site->data->id, $group->id_area);
 
         // get the fields array
 		$fields = $form_fields->render();
@@ -415,7 +415,7 @@ class Users_controller extends X3ui_controller
         // permission level
         $form_fields->levels = $mod->get_levels();
         // url for external script
-        $form_fields->js_url = $this->site->site->domain.'/admin/users/set_for_all';
+        $form_fields->js_url = $this->site->data->domain.'/admin/users/set_for_all';
         // user permission
 		$form_fields->what = $mod->get_uprivs($id_user, $id_area);
 

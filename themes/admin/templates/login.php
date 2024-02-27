@@ -13,7 +13,7 @@ header('Content-Type: text/html; charset=utf-8');
 header('X-UA-Compatible: IE=edge,chrome=1');
 
 $title = $xkeys = $css = '';
-$description = stripslashes($this->site->site->description);
+$description = stripslashes($this->site->data->description);
 if (isset($page)) {
 	$title = stripslashes($page->title).' | ';
 	$description = (empty($page->description)) ? $description : stripslashes($page->description);
@@ -30,9 +30,9 @@ if (isset($page)) {
         <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
         <meta http-equiv="Pragma" content="no-cache" />
         <meta http-equiv="Expires" content="0" />
-        <title><?php echo $title.$this->site->site->title ?></title>
+        <title><?php echo $title.$this->site->data->title ?></title>
         <meta name="description" content="<?php echo $description ?>">
-        <meta name="keywords" content="<?php echo $this->site->site->keywords.','.$xkeys ?>">
+        <meta name="keywords" content="<?php echo $this->site->data->keywords.','.$xkeys ?>">
         <meta name="author" content="cblu.net">
         <meta name="robots" content="all">
 
@@ -59,7 +59,7 @@ if (RTL)
         <script defer src="<?php echo THEME_URL ?>js/alpine.min.js"></script>
         <script src="<?php echo THEME_URL ?>js/x3ui.js"></script>
 
-        <script>var root = "<?php echo $this->site->site->domain ?>";</script>
+        <script>var root = "<?php echo $this->site->data->domain ?>";</script>
 </head>
 
 <body>
@@ -141,5 +141,12 @@ else
 	    <a href="https://www.x3cms.net" title="X3 your next Content Management System">X3 CMS</a> &copy; <a href="https://www.cblu.net" title="CBlu.net - Freelance PHP Developer">CBlu.net</a>
     </footer>
 
+    <script>
+    /* BASIC JS to handle back and reload actions */
+    if (document.getElementById('main') != undefined)
+    {
+        window.location.href = root+'/admin/login';
+    }
+    </script>
 </body>
 </html>

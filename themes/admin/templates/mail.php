@@ -27,7 +27,7 @@ echo file_get_contents(PATH.'themes/default/css/mail.css');
 			<tr>
 				<td>
 					<h1>
-						<a href="<?php echo $this->site->site->domain ?>" title="<?php echo SERVICE ?>">X<span>3</span>CMS</a>
+						<a href="<?php echo $this->site->data->domain ?>" title="<?php echo SERVICE ?>">X<span>3</span>CMS</a>
 					</h1>
 				</td>
 			</tr>
@@ -39,7 +39,7 @@ echo file_get_contents(PATH.'themes/default/css/mail.css');
 			</tr>
 			<tr>
 				<td id="foot">
-					<p><br /><a href="<?php echo $this->site->site->domain ?>" title="<?php echo SERVICE ?>"><?php echo SERVICE ?></a></p>
+					<p><br /><a href="<?php echo $this->site->data->domain ?>" title="<?php echo SERVICE ?>"><?php echo SERVICE ?></a></p>
 				</td>
 			</tr>
 		</table>

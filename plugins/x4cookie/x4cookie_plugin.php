@@ -22,7 +22,7 @@ class X4cookie_plugin extends X4Plugin_core implements X3plugin
 	 * @param	object	$site, site object
 	 * @return  void
 	 */
-	public function __construct($site)
+	public function __construct(X4Site_model $site)
 	{
 		parent::__construct($site);
 		$this->dict = new X4Dict_model(X4Route_core::$area, X4Route_core::$lang);
@@ -118,7 +118,7 @@ class X4cookie_plugin extends X4Plugin_core implements X3plugin
                 let str = JSON.stringify({tech: true, thirdy: this.thirdy});
                 console.log(str);
                 console.log(btoa(str));
-                document.cookie="'.COOKIE.'_policy="+btoa(str)+";expires='.gmdate(DATE_COOKIE, strtotime('next year')).';path='.$this->site->site->domain.BASE_URL.';SameSite=Strict";
+                document.cookie="'.COOKIE.'_policy="+btoa(str)+";expires='.gmdate(DATE_COOKIE, strtotime('next year')).';path='.$this->site->data->domain.BASE_URL.';SameSite=Strict";
             },
             close() {
                 this.setup();
@@ -224,7 +224,7 @@ class X4cookie_plugin extends X4Plugin_core implements X3plugin
             },
             setup() {
                 let str = JSON.stringify({tech: true, thirdy: this.thirdy, profile: this.profile});
-                document.cookie="'.COOKIE.'_policy="+btoa(str)+";expires='.gmdate(DATE_COOKIE, strtotime('next year')).';path='.$this->site->site->domain.BASE_URL.';SameSite=Lax";
+                document.cookie="'.COOKIE.'_policy="+btoa(str)+";expires='.gmdate(DATE_COOKIE, strtotime('next year')).';path='.$this->site->data->domain.BASE_URL.';SameSite=Lax";
             },
             close() {
                 this.setup();
@@ -256,15 +256,14 @@ class X4cookie_plugin extends X4Plugin_core implements X3plugin
 	/**
 	 * call plugin actions
 	 *
-	 * @param   integer $id_area Area ID
-	 * @param   string	$control action name
+	 *@param   string	$control action name
 	 * @param   mixed	$a
 	 * @param   mixed	$b
 	 * @param   mixed	$c
 	 * @param   mixed	$d
 	 * @return  void
 	 */
-	public function plugin($id_area, $control, $a, $b, $c, $d)
+	public function plugin(string $control, $a, $b, $c, $d)
 	{
 		switch ($control)
 		{
@@ -272,11 +271,11 @@ class X4cookie_plugin extends X4Plugin_core implements X3plugin
 		// call private method
 		case 'default':
             // the content of the dialog for the first time
-			$this->default($id_area);
+			$this->default();
 			break;
 
 		case 'settings':
-			$this->settings($id_area);
+			$this->settings();
 			break;
 
 		default:
@@ -289,22 +288,21 @@ class X4cookie_plugin extends X4Plugin_core implements X3plugin
 	 * default
      * is the content of the dialogo for the first time
 	 *
-	 * @param   integer $id_area Area ID
 	 * @return  mixed
 	 */
-	private function default($id_area)
+	private function default()
 	{
         // load dictionary
 		$this->dict->get_wordarray(array('x4cookie'));
 
         // get conf
-		$conf = $this->site->get_module_param('x4cookie', $id_area);
+		$conf = $this->site->get_module_param('x4cookie', $this->site->area->id);
 
         $more = '';
 
         if (!empty($conf['url']))
         {
-            $more = '<button type="button" class="btn gray" onclick="window.location.href=\''.$this->site->site->domain.BASE_URL.$conf['url'].'\'">'._X4COOKIE_MORE_INFO.'</button>';
+            $more = '<button type="button" class="btn gray" onclick="window.location.href=\''.$this->site->data->domain.BASE_URL.$conf['url'].'\'">'._X4COOKIE_MORE_INFO.'</button>';
         }
 
         // edit
@@ -334,21 +332,20 @@ class X4cookie_plugin extends X4Plugin_core implements X3plugin
 	 * Settings
      * is the content of the dialog to change previous choices
 	 *
-	 * @param   integer $id_area Area ID
 	 * @return  mixed
 	 */
-	private function settings($id_area)
+	private function settings()
 	{
         // load dictionary
 		$this->dict->get_wordarray(array('x4cookie'));
 
         // get conf
-		$conf = $this->site->get_module_param('x4cookie', $id_area);
+		$conf = $this->site->get_module_param('x4cookie', $this->site->area->id);
 
         $more = '';
         if (!empty($conf['url']))
         {
-            $more = '<button type="button" class="btn gray" onclick="window.location.href=\''.$this->site->site->domain.BASE_URL.$conf['url'].'\'">'._X4COOKIE_MORE_INFO.'</button>';
+            $more = '<button type="button" class="btn gray" onclick="window.location.href=\''.$this->site->data->domain.BASE_URL.$conf['url'].'\'">'._X4COOKIE_MORE_INFO.'</button>';
         }
 
         $title =  _X4COOKIE_SETUP;
@@ -419,12 +416,11 @@ class X4cookie_plugin extends X4Plugin_core implements X3plugin
 	/**
 	 * SAMPLE method
 	 *
-	 * @param   integer $id_area Area ID
 	 * @param   mixed	$a
 	 * @param   mixed	$b
 	 * @return  mixed
 	 */
-	private function test($id_area, $a, $b)
+	private function test($a, $b)
 	{
 		// TO DO
 		/*

@@ -50,7 +50,7 @@ class Modules_controller extends X3ui_controller
 		$this->dict->get_wordarray(array('modules'));
 
 		$amod = new Area_model();
-	    list($id_area, $areas) = $amod->get_my_areas($id_area);
+	    list($id_area, $areas) = $amod->get_my_areas($this->site->data->id, $id_area);
 
 		// get page
 		$page = $this->get_page('modules');

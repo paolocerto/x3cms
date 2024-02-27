@@ -13,7 +13,7 @@ header('Content-Type: text/html; charset=utf-8');
 header('X-UA-Compatible: IE=edge');
 
 $title = $xkeys = $css = '';
-$description = stripslashes($this->site->site->description);
+$description = stripslashes($this->site->data->description);
 if (isset($page)) {
 	$title = stripslashes($page->title).' | ';
 	$description = (empty($page->description)) ? $description : stripslashes($page->description);
@@ -30,9 +30,9 @@ if (isset($page)) {
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
 
-    <title><?php echo $title.$this->site->site->title ?></title>
+    <title><?php echo $title.$this->site->data->title ?></title>
     <meta name="description" content="<?php echo $description ?>">
-    <meta name="keywords" content="<?php echo $this->site->site->keywords.','.$xkeys ?>">
+    <meta name="keywords" content="<?php echo $this->site->data->keywords.','.$xkeys ?>">
     <meta name="robots" content="all">
 
     <link rel="apple-touch-icon" sizes="180x180" href="<?php echo ROOT ?>apple-touch-icon.png">
@@ -70,7 +70,7 @@ if (RTL)
     <script defer src="<?php echo ROOT ?>files/js/jscolor.js"></script>
 
     <script>
-    var domain = "<?php echo $this->site->site->domain ?>",
+    var domain = "<?php echo $this->site->data->domain ?>",
         root = "<?php echo BASE_URL ?>",
         theme = "<?php echo $this->site->area->theme ?>",
         area_id = <?php echo $page->id_area ?>,
@@ -94,7 +94,7 @@ echo (!DEVEL && file_exists(PATH.'themes/'.$this->site->area->theme.'/js/x3ui.mi
 </head>
 <body class="w-full h-screen">
 
-    <div id="working" x-data="spinner_box()" class="py-3">
+    <div id="working" x-data="spinner_box()" @mouseover="menu()" class="py-3">
         <i
             class="fa-solid fa-lg fa-slash text-gray-600"
             :class="{'fa-spin text-amber-500': working}"
@@ -111,12 +111,12 @@ echo (!DEVEL && file_exists(PATH.'themes/'.$this->site->area->theme.'/js/x3ui.mi
         </div>
 
         <div class="flex-auto text-right text-gray-100 text-xs pr-4">
-            <?php echo _PUBLIC_SIDE ?>: <a class="link" href="<?php echo $this->site->site->domain ?>" title="<?php echo _PUBLIC_SIDE ?>"><?php echo $this->site->site->domain ?></a><br />
+            <?php echo _PUBLIC_SIDE ?>: <a class="link" target="_blank" href="<?php echo $this->site->data->domain ?>" title="<?php echo _PUBLIC_SIDE ?>"><?php echo $this->site->data->domain ?></a><br />
             <?php echo _LOGGED_AS ?>: <b><?php echo $_SESSION['username'] ?></b>
         </div>
     </header>
 <?php
-if (!$this->site->site->xon)
+if (!$this->site->data->xon)
 {
     // maintenance alert
     echo '<div x-data="{
@@ -149,6 +149,7 @@ echo $view->render(false);
             x-data="page_box()"
             x-init="pager(start_page)"
             x-on:pager.window="pager($event.detail)"
+            x-on:blank.window="blank($event.detail)"
             x-on:setter.window="setter($event.detail)"
             x-html="content"
             x-cloak

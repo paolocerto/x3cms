@@ -17,36 +17,15 @@
  */
 class X3banners_model extends X4Model_core
 {
-    /*
-	// uncomment if you need to personalize search inside this plugin
-	// this module require a personalized url for internal search engine
-	public $personalized_url = true;
-
-	// here you can define the param to use for get_page_to
-	public $search_param;
-	*/
-
-	/**
-	 * Get url for search
-	 * if you need a special URL with search
-	 *
-	 * @param object	Project obj
-	 * @return string
-	 */
-	public function get_url(stdClass $obj, string $topage)
-	{
-		return $topage.'/'.$obj->id.'/'.$obj->url;
-	}
-
 	/**
 	 * Constructor
 	 * set the default table
 	 *
 	 * @return  void
 	 */
-	public function __construct()
+	public function __construct(string $db = 'default')
 	{
-		parent::__construct('x3_banners', 'default');
+		parent::__construct('x3_banners', $db);
 	}
 
     /**** THIS IS THE DEFAULT CONFIGURATOR ****/
@@ -72,16 +51,6 @@ class X3banners_model extends X4Model_core
 			'type' => 'html',
 			'value' => '<p>'._ARTICLE_PARAM_SETTING_NOT_REQUIRED.'</p>'
 		);
-
-		// comment this if you have options for param
-        /*
-		$fields[] = array(
-			'label' => null,
-			'type' => 'hidden',
-			'value' => 1,
-			'name' => 'no_options'
-		);
-        */
 
 		// options field store all possible cases and parts
 		// cases are separated by §

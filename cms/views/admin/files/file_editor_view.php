@@ -188,7 +188,7 @@ var params_9330 = {
 	bgcolor: "#333333",
 	allowScriptAccess: "always",
 	allowFullScreen: "true",
-	flashvars: "fichier='.$this->site->site->domain.'/cms/files/'.SPREFIX.'/filemanager/media/'.$file->name.'"
+	flashvars: "fichier='.$this->site->data->domain.'/cms/files/'.SPREFIX.'/filemanager/media/'.$file->name.'"
 };
 var attributes_9330 = {};
 var video_editor_width = windowWidth();
@@ -198,7 +198,7 @@ if (video_editor_width - 590 < '.$width.') {
 	w = '.$width.';
 }
 
-flashObject("'.$this->site->site->domain.'/files/js/flv_player.swf", "player_9330", w, "'.$height.'", "8", false, flashvars_9330, params_9330, attributes_9330);
+flashObject("'.$this->site->data->domain.'/files/js/flv_player.swf", "player_9330", w, "'.$height.'", "8", false, flashvars_9330, params_9330, attributes_9330);
 </script>';
 			break;
 
@@ -222,7 +222,7 @@ var params = {
 };
 var attributes = {};
 attributes.styleclass="playerBox";
-swfobject.embedSWF("'.$this->site->site->domain.'/cms/files/'.SPREFIX.'/filemanager/media/'.$file->name.'", "video_editor", "'.$width.'", "'.$height.'", "9", "expressInstall.swf", flashvars, params, attributes);
+swfobject.embedSWF("'.$this->site->data->domain.'/cms/files/'.SPREFIX.'/filemanager/media/'.$file->name.'", "video_editor", "'.$width.'", "'.$height.'", "9", "expressInstall.swf", flashvars, params, attributes);
 </script>';
 			break;
 

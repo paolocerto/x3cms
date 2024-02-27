@@ -239,6 +239,10 @@ function spinner_box() {
         working:false,
         run(status) {
             this.working = status;
+        },
+        menu() {
+            let event = new CustomEvent("popup", {detail: root + "home/menu"});
+            window.dispatchEvent(event);
         }
     }
 }
@@ -442,6 +446,9 @@ function page_box() {
         content:"",
         error_msg: "",
         files: {} ,
+        blank(url) {
+            window.open(url, "_blank");
+        },
         pager(url) {
             this.status(true);
             fetch(url, {
@@ -803,7 +810,11 @@ function configurator() {
                         // nothing
                         break;
                     default:
-                        document.getElementById(e.name).value = "";
+                        if (e.value == null) {
+                            document.getElementById(e.name).value = "";
+                        } else {
+                            document.getElementById(e.name).value = e.value;
+                        }
                     break;
                 }
             });

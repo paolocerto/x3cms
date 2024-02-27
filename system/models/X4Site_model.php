@@ -18,7 +18,7 @@ class X4Site_model extends X4Model_core
 	/**
 	 * @var object	Site object
 	 */
-	public $site;
+	public $data;
 
 	/**
 	 * @var object	Area object
@@ -47,25 +47,20 @@ class X4Site_model extends X4Model_core
 	{
 		parent::__construct('sites');
 
-        	// get area
-		$this->area = $this->set_data();
-
-		// if no language is set by route set area predefined language
-		$this->lang = (empty(X4Route_core::$lang))
-			? $this->area->lang
-			: X4Route_core::$lang;
+        // get area
+		$this->area = $this->get_area(X4Route_core::$lang);
 
 		// set language
-		X4Route_core::set_lang($this->lang);
+		X4Route_core::set_lang($this->area->lang);
 
 		// get site
-		$this->site = X4Route_core::$area != 'x3cli'
-                   ? $this->get_site($this->area->id)
-                   : $this->get_site(1, false);
+		$this->data = X4Route_core::$area != 'x3cli'
+                   ? $this->get_site_data($this->area->id)
+                   : $this->get_site_data(1, false);
 
-		if (!is_object($this->area) || !is_object($this->site))
+		if (!is_object($this->area) || !is_object($this->data))
 		{
-			header('Location: '.ROOT.'public/msg/message/_page_not_found');
+            header('Location: '.ROOT.'public/msg/message/_page_not_found');
 			die;
 		}
 
@@ -73,33 +68,34 @@ class X4Site_model extends X4Model_core
 		$this->now = time();
 
 		// Load site parameters
-		$this->to_define($this->site->id);
+		$this->to_define($this->data->id);
 	}
 
 	/**
 	 * Get area related object
 	 *
+     * @param   string  $lang
 	 * @return array
 	 */
-	private function set_data()
+	private function get_area(string $lang = '')
 	{
         // check APC
 		$c = (APC)
-            ? apcu_fetch(SITE.'sitedata'.X4Route_core::$area)
+            ? apcu_fetch(SITE.'sitedata'.X4Route_core::$area.'-'.$lang)
             : array();
 
 		if (empty($c))
 		{
-            $sql = 'SELECT  t.name AS theme, a.id, a.id_theme, a.folder, a.private, l.code AS lang
+            $sql = 'SELECT t.name AS theme, a.id, a.id_theme, a.folder, a.private, l.code AS lang
                 FROM themes t
                 JOIN areas a ON a.id_theme = t.id
-                JOIN alang l ON l.id_area = a.id AND l.predefined = 1
+                JOIN alang l ON l.id_area = a.id AND (l.code = '.$this->db->escape($lang).' OR l.xdefault = 1)
                 WHERE a.name = '.$this->db->escape(X4Route_core::$area).' AND a.xon = 1';
 
             $c = $this->db->query_row($sql);
             if (APC)
             {
-                apcu_store(SITE.'sitedata'.X4Route_core::$area, $c);
+                apcu_store(SITE.'sitedata'.X4Route_core::$area.'-'.$lang, $c);
             }
         }
         return $c;
@@ -108,10 +104,10 @@ class X4Site_model extends X4Model_core
 	/**
 	 * Get site related object
 	 *
-	 * @param integer	area ID
+	 * @param boolean   $domain (to exclude domain check for X3Cli)
 	 * @return array
 	 */
-	public function get_site($id_area, $domain = true)
+	public function get_site_data(int $id_area, bool $domain = true)
 	{
 		// check APC
 		$c = (APC)
@@ -120,14 +116,23 @@ class X4Site_model extends X4Model_core
 
 		if (empty($c))
 		{
-                   // X3 cli doesn't have domain
-                   $where = $domain
-                       ? ' s.domain LIKE '.$this->db->escape('%'._DOMAIN_).' AND '
-                       : '';
+            // X3 cli doesn't have domain
+            $where = $domain
+                ? ' s.domain LIKE '.$this->db->escape('%'._DOMAIN_).' AND '
+                : '';
 
-			$c = $this->db->query_row('SELECT s.*, l.code, l.title, l.description, l.keywords, l.rtl
+            $select = $join = '';
+            // to get default area for plugins
+            if ($id_area > 1)
+            {
+                $select = ', a.id AS default_area';
+                $join = 'JOIN areas a ON a.id_site = s.id AND a.xdefault = 1';
+            }
+
+			$c = $this->db->query_row('SELECT s.*, l.code, l.title, l.description, l.keywords, l.rtl '.$select.'
 				FROM sites s
-				JOIN alang l ON l.code = '.$this->db->escape($this->lang).'
+				JOIN alang l ON l.code = '.$this->db->escape($this->area->lang).'
+                '.$join.'
 				WHERE '.$where.' l.id_area = '.intval($id_area));
 
 			if (APC)
@@ -196,7 +201,7 @@ class X4Site_model extends X4Model_core
 			FROM pages p
 			JOIN areas a ON a.id = p.id_area
 			WHERE a.id = '.intval($this->area->id).' AND
-				p.lang = '.$this->db->escape($this->lang).' AND
+				p.lang = '.$this->db->escape($this->area->lang).' AND
 				p.url = '.$this->db->escape($method).' AND
 				p.xon = 1');
 	}
@@ -468,20 +473,19 @@ class X4Site_model extends X4Model_core
 	/**
 	 * Get menus by area ID
 	 *
-	 * @param integer	area ID
 	 * @return array	associative array of array of objects
 	 */
-	public function get_menus($id_area, $maxdeep = MAX_MENU_DEEP)
+	public function get_menus($maxdeep = MAX_MENU_DEEP)
 	{
 		// check APC
-		$c = ($id_area > 1 && APC)
-			? apcu_fetch(SITE.'menu'.$id_area)
+		$c = ($this->area->id > 1 && APC)
+			? apcu_fetch(SITE.'menu'.$this->area->id.$this->area->lang)
 			: array();
 
 		if (empty($c))
 		{
 			// privs
-			if ($id_area == 1)
+			if ($this->area->id == 1)
 			{
 				$level = ', IF (p.id IS NULL, u.level, p.level) AS level';
 				$page_privs = 'JOIN uprivs u ON u.id_area = pa.id_area AND u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('menus').'
@@ -507,8 +511,8 @@ class X4Site_model extends X4Model_core
 					FROM pages pa
 					'.$page_privs.'
 					WHERE
-						pa.id_area = '.intval($id_area).' AND
-						pa.lang = '.$this->db->escape($this->lang).' AND
+						pa.id_area = '.$this->area->id.' AND
+						pa.lang = '.$this->db->escape($this->area->lang).' AND
 						pa.id_menu = '.intval($i->id).' AND
 						pa.xpos > 0 AND
 						pa.xon = 1 AND
@@ -520,7 +524,7 @@ class X4Site_model extends X4Model_core
 
 			if (APC)
 			{
-				apcu_store(SITE.'menu'.$id_area, $c);
+				apcu_store(SITE.'menu'.$this->area->id.$this->area->lang, $c);
 			}
 		}
 		return $c;
@@ -604,6 +608,23 @@ class X4Site_model extends X4Model_core
 			}
 		}
 		return $c;
+	}
+
+    /**
+	 * Get bookmarks
+	 *
+     * @param integer   id_user
+	 * @param object	page object
+	 * @return array	array of objects
+	 */
+	public function get_bookmarks(int $id_user, string $lang)
+	{
+		return $this->db->query('SELECT id, url, name
+				FROM bookmarks
+				WHERE id_user = '.$id_user.' AND
+					lang = '.$this->db->escape($lang).' AND
+					xon = 1
+				ORDER BY name ASC');
 	}
 
 	/**
@@ -855,6 +876,6 @@ class X4Site_model extends X4Model_core
 	 */
 	public function get_alang()
 	{
-		return $this->db->query('SELECT * FROM alang WHERE id_area = '.intval($this->area->id).' AND xon = 1 ORDER BY language ASC');
+		return $this->db->query('SELECT * FROM alang WHERE id_area = '.$this->area->id.' AND xon = 1 ORDER BY language ASC');
 	}
 }

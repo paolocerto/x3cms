@@ -51,7 +51,7 @@ class Pages_controller extends X3ui_controller
 	public function index(int $id_area, string $lang = '', string $xfrom = 'home')
 	{
 	    $area = new Area_model();
-	    list($id_area, $areas) = $area->get_my_areas($id_area);
+	    list($id_area, $areas) = $area->get_my_areas(0, $id_area);
 
 		// initialize parameters
 		$lang = (empty($lang))
@@ -263,7 +263,7 @@ class Pages_controller extends X3ui_controller
 					 : '';
 
 				// insert the new page
-				$result = $mod->insert_page($post, $this->site->site->domain);
+				$result = $mod->insert_page($post, $this->site->data->domain);
 
 				// set message
 				$msg = AdmUtils_helper::set_msg($result);
@@ -445,7 +445,7 @@ class Pages_controller extends X3ui_controller
 			);
 
             // update page data
-            $result = $mod->update_page($page, $post, $this->site->site->domain);
+            $result = $mod->update_page($page, $post, $this->site->data->domain);
 
             // clear cache
             APC && apcu_clear_cache();
@@ -592,7 +592,7 @@ class Pages_controller extends X3ui_controller
 				}
 
 				// update page data
-				$result = $mod->update_page($page, $post, $this->site->site->domain);
+				$result = $mod->update_page($page, $post, $this->site->data->domain);
 
 				// clear cache
 				APC && apcu_clear_cache();
@@ -681,7 +681,7 @@ class Pages_controller extends X3ui_controller
 		{
 			// action
 			$mod = new Page_model($item->id_area, $item->lang, $item->id);
-			$result = $mod->delete_page($item->id, $this->site->site->domain);
+			$result = $mod->delete_page($item->id, $this->site->data->domain);
 
 			// clear useless permissions
 			if ($result[1])

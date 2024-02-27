@@ -10,6 +10,25 @@
 
 // user privs form
 
+$xdata = '{
+    xfilter: "",
+    xsetter: -1,
+    filter(str) {
+        return (this.xfilter == "" || str.includes(this.xfilter));
+    },
+    setter() {
+        if (this.xsetter != -1) {
+            let elements = document.forms["editor"].getElementsByTagName("select");
+            for (i = 0; i < elements.length; i++) {
+                if (this.xfilter == "" || elements[i].name.includes(this.xfilter)) {
+                    elements[i].value = this.xsetter;
+                }
+            }
+            this.xsetter = -1;
+        }
+    }
+}';
+
 // build the form
 $fields = array();
 $fields[] = array(
@@ -40,7 +59,7 @@ $fields[] = array(
 $fields[] = array(
     'label' => null,
     'type' => 'html',
-    'value' => '<div class="bg-white text-gray-700 md:px-8 md:pb-8 px-4 pb-4" style="border:1px solid white">'
+    'value' => '<div x-data=\''.$xdata.'\' class="bg-white text-gray-700 md:px-8 md:pb-8 px-4 pb-4" style="border:1px solid white">'
 );
 
 // tables without items
@@ -57,7 +76,37 @@ $exclude = (ADVANCED_EDITING)
 $fields[] = array(
     'label' => null,
     'type' => 'html',
-    'value' => '<div class="grid grid-cols-1 md:grid-cols-2 gap-4">'
+    'value' => '<div class="grid grid-cols-1 md:grid-cols-2 gap-4"><div>'
+);
+
+
+$fields[] = array(
+    'label' => _FILTER,
+    'type' => 'text',
+    'value' => '',
+    'name' => 'xfilter',
+    'extra' => 'class="w-full" x-model="xfilter" placeholder="'._FILTER_MSG.'"'
+);
+
+$fields[] = array(
+    'label' => null,
+    'type' => 'html',
+    'value' => '</div><div>'
+);
+
+$fields[] = array(
+    'label' => _SET_ALL,
+    'type' => 'select',
+    'value' => '',
+    'name' => 'xsetter',
+    'options' => array($levels, 'id', 'name', [-1, '']),
+    'extra' => 'class="w-full" x-model="xsetter" @change="setter()"'
+);
+
+$fields[] = array(
+    'label' => null,
+    'type' => 'html',
+    'value' => '</div>'
 );
 
 foreach ($what as $t)
@@ -70,7 +119,7 @@ foreach ($what as $t)
             $fields[] = array(
                 'label' => null,
                 'type' => 'html',
-                'value' => '<div class="col-span-2">'
+                'value' => '<div x-show="filter(\''.$t->privtype.'\')">'
             );
 
             $fields[] = array(
@@ -108,7 +157,7 @@ foreach ($what as $t)
                     $fields[] = array(
                         'label' => null,
                         'type' => 'html',
-                        'value' => '<div>'
+                        'value' => '<div x-show="filter(\''.$t->privtype.'\')">'
                     );
 
                     $fields[] = array(
@@ -136,7 +185,7 @@ foreach ($what as $t)
                     $fields[] = array(
                         'label' => null,
                         'type' => 'html',
-                        'value' => '<div class="col-span-2">'
+                        'value' => '<div class="col-span-2" x-show="filter(\''.$t->privtype.'\')">'
                     );
 
                     $fields[] = array(

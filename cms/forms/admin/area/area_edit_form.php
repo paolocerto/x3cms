@@ -78,6 +78,16 @@ $fields[] = array(
 // admin area can't change theme
 if ($id != 1)
 {
+    $fields[] = array(
+        'label' => _DOMAIN,
+        'type' => 'select',
+        'value' => $item->id_site,
+        'name' => 'id_site',
+        'rule' => 'required',
+        'options' => array($mod->get_domains(), 'id', 'domain'),
+        'extra' => 'class="w-full"'
+    );
+
     $theme = new Theme_model();
     $fields[] = array(
         'label' => _THEME,
@@ -89,6 +99,13 @@ if ($id != 1)
     );
 }
 else {
+    $fields[] = array(
+        'label' => null,
+        'type' => 'hidden',
+        'value' => $item->id_site,
+        'name' => 'id_site'
+    );
+
     $fields[] = array(
         'label' => null,
         'type' => 'hidden',
@@ -156,21 +173,24 @@ else
 $fields[] = array(
     'label' => null,
     'type' => 'html',
-    'value' => '<div class="grid grid-cols-1 md:grid-cols-2 gap-4"><div>'
+    'value' => '<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <div>'
 );
 
     // languages section
     $lang = new Language_model();
+    $langs = $lang->get_languages();
+
     $fields[] = array(
         'label' => _ENABLED_LANGUAGES,
-        'type' => 'select',
+        'type' => 'mcheckbox',
         'value' => $lang->get_alang_array($id),
-        'options' => array($lang->get_languages(), 'code', 'language'),
+        'options' => array($langs, 'code', 'language'),
         'name' => 'languages',
         'rule' => 'required',
-        'extra' => 'class="w-full"',
-        'multiple' => 4
+        'checked' => $lang->get_alang_array($id),
     );
+
 
 $fields[] = array(
     'label' => null,
@@ -182,7 +202,7 @@ $fields[] = array(
         'label' => _DEFAULT_LANG,
         'type' => 'select',
         'value' => $item->code,
-        'options' => array($lang->get_languages(), 'code', 'language'),
+        'options' => array($langs, 'code', 'language'),
         'name' => 'lang',
         'rule' => 'inarray§languages',
         'extra' => 'class="w-full"'
@@ -191,5 +211,21 @@ $fields[] = array(
 $fields[] = array(
     'label' => null,
     'type' => 'html',
-    'value' => '</div></div></div>'
+    'value' => '</div></div>'
+);
+
+$fields[] = array(
+    'label' => null,
+    'type' => 'checkbox',
+    'value' => 1,
+    'name' => 'xdefault',
+    'checked' => $item->xdefault,
+    'extra' => 'class="xinline"',
+    'suggestion' => _DEFAULT_AREA.': '._DEFAULT_AREA_MSG
+);
+
+$fields[] = array(
+    'label' => null,
+    'type' => 'html',
+    'value' => '</div>'
 );
