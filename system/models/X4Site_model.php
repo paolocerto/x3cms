@@ -81,23 +81,24 @@ class X4Site_model extends X4Model_core
 	{
         // check APC
 		$c = (APC)
-            ? apcu_fetch(SITE.'sitedata'.X4Route_core::$area.'-'.$lang)
+            ? apcu_fetch(SITE.'sitearea'.X4Route_core::$area.'-'.$lang)
             : array();
 
 		if (empty($c))
 		{
-            $sql = 'SELECT t.name AS theme, a.id, a.id_theme, a.folder, a.private,
+            // we get the area even if not enabled
+            $sql = 'SELECT t.name AS theme, a.id, a.id_theme, a.folder, a.private, a.xon,
                 IF (l2.id IS NULL, l.code, l2.code) AS lang
                 FROM themes t
                 JOIN areas a ON a.id_theme = t.id
                 JOIN alang l ON l.id_area = a.id AND l.xdefault = 1
                 LEFT JOIN alang l2 ON l2.id_area = a.id AND l2.code = '.$this->db->escape($lang).'
-                WHERE a.name = '.$this->db->escape(X4Route_core::$area).' AND a.xon = 1';
+                WHERE a.name = '.$this->db->escape(X4Route_core::$area);
 
             $c = $this->db->query_row($sql);
             if (APC)
             {
-                apcu_store(SITE.'sitedata'.X4Route_core::$area.'-'.$lang, $c);
+                apcu_store(SITE.'sitearea'.X4Route_core::$area.'-'.$lang, $c);
             }
         }
         return $c;
@@ -113,7 +114,7 @@ class X4Site_model extends X4Model_core
 	{
 		// check APC
 		$c = (APC)
-			? apcu_fetch(SITE.'site'.$id_area)
+			? apcu_fetch(SITE.'sitedata'.$id_area)
 			: array();
 
 		if (empty($c))
@@ -139,7 +140,7 @@ class X4Site_model extends X4Model_core
 
 			if (APC)
 			{
-				apcu_store(SITE.'site'.$id_area, $c);
+				apcu_store(SITE.'sitedata'.$id_area, $c);
 			}
 		}
 		return $c;

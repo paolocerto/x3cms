@@ -37,6 +37,12 @@ class X4Cms_controller extends X4Controller_core
 		$this->site = new X4Site_model();
 		$this->dict = new X4Dict_model(X4Route_core::$area, X4Route_core::$lang);
 
+        if (!$this->site->area->xon)
+        {
+            // redirect to public
+            header('Location: /'.$this->site->area->lang.'/public/home');
+        }
+
 		// set the lang if required
 		$lang = (MULTILANGUAGE)
 		    ? X4Route_core::$lang.'/'

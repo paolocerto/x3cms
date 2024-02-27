@@ -98,6 +98,12 @@ class X4Page_controller extends X4Cms_controller
 	 */
 	public function __call(string $method, array $args)
 	{
+        // is the area active?
+        if (!$this->site->area->xon)
+        {
+            // redirect to public
+            header('Location: /'.$this->site->area->lang.'/public/home');
+        }
 		// dict
 		$this->dict->get_words();
 		// get page data
