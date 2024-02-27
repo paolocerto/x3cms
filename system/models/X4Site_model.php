@@ -131,11 +131,11 @@ class X4Site_model extends X4Model_core
                 $join = 'JOIN areas a ON a.id_site = s.id AND a.xdefault = 1';
             }
 
-			$c = $this->db->query_row('SELECT s.*, l.code, l.title, l.description, l.keywords, l.rtl '.$select.'
+			$c = $this->db->query_row('SELECT s.*, l.title, l.description, l.keywords, l.rtl '.$select.'
 				FROM sites s
 				JOIN alang l ON l.code = '.$this->db->escape($this->area->lang).'
                 '.$join.'
-				WHERE '.$where.' l.id_area = '.intval($id_area));
+				WHERE '.$where.' l.id_area = '.$id_area);
 
 			if (APC)
 			{
