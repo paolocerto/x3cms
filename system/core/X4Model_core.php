@@ -35,12 +35,6 @@ abstract class X4Model_core
 	protected $table;
 
 	/**
-	 * @var mongo ID switcher
-	 * if true uses the default Mongo ID object
-	 */
-	protected $mongo_id = true;
-
-	/**
 	 * @var logs are disabled as default
 	 */
 	protected $log = false;
@@ -177,40 +171,23 @@ abstract class X4Model_core
             ? $this->table
             : $table;
 
-		if ($this->db->sql)
-		{
-			// Relational DB
-			$w = '';
-			if (!empty($criteria))
-			{
-				$c = array();
-				foreach ($criteria as $k => $v)
-				{
-					$c[] = addslashes($k).' = '.$this->db->escape($v);
-				}
-				$w = ' WHERE '.implode(' AND ', $c);
-			}
+        // Relational DB
+        $w = '';
+        if (!empty($criteria))
+        {
+            $c = array();
+            foreach ($criteria as $k => $v)
+            {
+                $c[] = addslashes($k).' = '.$this->db->escape($v);
+            }
+            $w = ' WHERE '.implode(' AND ', $c);
+        }
 
-			if (!empty($sort))
-			{
-				$sort = ' ORDER BY '.$sort;
-			}
-			return $this->db->query('SELECT '.$fields.' FROM '.$t.$w.$sort);
-		}
-		else
-		{
-			// Mongo DB
-			if (!is_array($fields))
-			{
-				$fields = array();
-			}
-
-			if (!is_array($sort))
-			{
-				$sort = array();
-			}
-			return $this->db->query($criteria, $t, $fields, $sort);
-		}
+        if (!empty($sort))
+        {
+            $sort = ' ORDER BY '.$sort;
+        }
+        return $this->db->query('SELECT '.$fields.' FROM '.$t.$w.$sort);
 	}
 
 	/**
@@ -230,106 +207,30 @@ abstract class X4Model_core
             ? $this->table
             : $table;
 
-		if ($this->db->sql)
-		{
-			// Relational DB
-			$w = '';
-			if (!empty($criteria))
-			{
-				$c = array();
-				foreach ($criteria as $k => $v)
-				{
-					$c[] = addslashes($k).' = '.$this->db->escape($v);
-				}
-				$w = ' WHERE '.implode(' AND ', $c);
-			}
+		// Relational DB
+        $w = '';
+        if (!empty($criteria))
+        {
+            $c = array();
+            foreach ($criteria as $k => $v)
+            {
+                $c[] = addslashes($k).' = '.$this->db->escape($v);
+            }
+            $w = ' WHERE '.implode(' AND ', $c);
+        }
 
-			if (!empty($sort))
-			{
-				$sort = ' ORDER BY '.$sort;
-			}
-			if ($fields == '*' || sizeof(explode(',', $fields)) > 1)
-			{
-			    return $this->db->query_row('SELECT '.$fields.' FROM '.$t.$w.$sort.' LIMIT 0, 1');
-			}
-			else
-			{
-			    return $this->db->query_var('SELECT '.$fields.' FROM '.$t.$w.$sort.' LIMIT 0, 1');
-			}
-		}
-		else
-		{
-			// Mongo DB
-			if (!is_array($fields))
-			{
-				$fields = array();
-			}
-
-			if (!is_array($sort))
-			{
-				$sort = array();
-			}
-			return $this->db->query_row($criteria, $t, $fields, $sort);
-		}
-	}
-
-	/**
-	 * Set the autoincrement ID, only for Mongo DB
-	 *
-	 * @final
-	 * @param   integer	id value
-	 * @param   mixed	Mongo ID switcher (null => default settings in X4Model_core, true => Mongo ID, false => autoincrement ID)
-	 * @return  mixed
-	 */
-	final public function set_mid(int $id, mixed $mongo_id)
-	{
-		if (!$this->db->sql)
-		{
-			// set which type of ID to use
-			if (is_null($mongo_id))
-			{
-				$mid = $this->mongo_id
-					? new MongoId($id)
-					: $id;
-			}
-			else
-			{
-				$mid = $mongo_id
-					? new MongoId($id)
-					: $id;
-			}
-			return $mid;
-		}
-	}
-
-	/**
-	 * Get the autoincrement ID, only for Mongo DB
-	 *
-	 * @final
-	 * @param   string	table name
-	 * @return  integer
-	 */
-	final public function get_mid(string $table)
-	{
-		if (!$this->db->sql)
-		{
-			$res = $this->modify(
-				'indexes',
-				array('_id' => $table),
-				array('$inc' => array('seq' => 1)),
-				array('seq' => true)
-			);
-
-			if ($res[1])
-			{
-				return $res[0]['seq'];
-			}
-			else
-			{
-				// a temporary solution to avoid duplicates
-				return time();
-			}
-		}
+        if (!empty($sort))
+        {
+            $sort = ' ORDER BY '.$sort;
+        }
+        if ($fields == '*' || sizeof(explode(',', $fields)) > 1)
+        {
+            return $this->db->query_row('SELECT '.$fields.' FROM '.$t.$w.$sort.' LIMIT 0, 1');
+        }
+        else
+        {
+            return $this->db->query_var('SELECT '.$fields.' FROM '.$t.$w.$sort.' LIMIT 0, 1');
+        }
 	}
 
 	/**
@@ -340,32 +241,16 @@ abstract class X4Model_core
 	 * @param   integer	record ID
 	 * @param   string	table name
 	 * @param   string	field list
-	 * @param   boolean	Mongo ID switcher
 	 * @return  array
 	 */
-	final public function get_by_id(int $id, string $table = '', string $fields = '*', mixed $mongo_id = null)
+	final public function get_by_id(int $id, string $table = '', string $fields = '*')
 	{
 		$t = empty($table)
             ? $this->table
             : $table;
 
-		if ($this->db->sql)
-		{
-			// Relational DB
-			return $this->db->query_row('SELECT '.$fields.' FROM '.$t.' WHERE id = '.$id);
-		}
-		else
-		{
-			// Mongo DB
-			if (!is_array($fields))
-			{
-				$fields = array();
-			}
-
-			$mid = $this->set_mid($id, $mongo_id);
-
-			return $this->db->query_row(array('_id' => $mid), $t, $fields);
-		}
+		// Relational DB
+		return $this->db->query_row('SELECT '.$fields.' FROM '.$t.' WHERE id = '.$id);
 	}
 
 	/**
@@ -376,52 +261,30 @@ abstract class X4Model_core
 	 * @param   integer	record ID
 	 * @param   string	table name
 	 * @param   string	field name
-	 * @param   array	sort array for Mongo DB
-	 * @param   mixed	Mongo ID switcher
 	 * @return  array
 	 */
-	final public function get_var(int $id, string $table = '', string $field = '', array $sort = [], mixed $mongo_id = null)
+	final public function get_var(int $id, string $table = '', string $field = '')
 	{
 		$t = empty($table)
             ? $this->table
             : $table;
 
-		if ($this->db->sql)
-		{
-            // Relational DB
-			return $this->db->query_var('SELECT '.$field.' FROM '.$t.' WHERE id = '.$id);
-		}
-		else
-		{
-			// Mongo DB
-
-			// set which type of ID to use
-			$mid = $this->set_mid($id, $mongo_id);
-
-			return $this->db->query_var(array('_id' => $mid), $t, $field, $sort);
-		}
+		// Relational DB
+		return $this->db->query_var('SELECT '.$field.' FROM '.$t.' WHERE id = '.$id);
 	}
 
     /**
-	 * Get a var from a table
-	 * to prevent the loading of different models to make base calls and to optimize queries you can set table and fields
+	 * Get DB version
 	 *
 	 * @final
 	 * @return  string
 	 */
 	final public function get_version()
 	{
-		if ($this->db->sql)
-		{
-            // Relational DB
-			return $this->db->query_var('SELECT version()');
-		}
-		else
-		{
-			// Mongo DB
-            // TODO
-        }
+		// Relational DB
+		return $this->db->query_var('SELECT version()');
 	}
+
 	/**
 	 * Insert a row in a table
 	 * to prevent the loading of different models to make base calls you can set table
@@ -429,55 +292,36 @@ abstract class X4Model_core
 	 * @final
 	 * @param   array	data to insert
 	 * @param   string	table name
-	 * @param   array   array of floats    //boolean	Mongo ID switcher
+	 * @param   array   array of floats
 	 * @return  array	(id row, success)
 	 */
-	final public function insert(array $data, string $table = '', array $floats = [])    //$mongo_id = null)
+	final public function insert(array $data, string $table = '', array $floats = [])
 	{
 		$t = empty($table)
             ? $this->table
             : $table;
 
-		if ($this->db->sql)
-		{
-			// Relational DB
-			$field = $insert = [];
-			foreach ($data as $k => $v)
-			{
-				$field[] = $k;
-                $insert[] = (in_array($k, $floats))
-				    ? str_replace(',', '.', floatval($v))
-                    : $this->db->escape($v);
-			}
+        // Relational DB
+        $field = $insert = [];
+        foreach ($data as $k => $v)
+        {
+            $field[] = $k;
+            $insert[] = (in_array($k, $floats))
+                ? str_replace(',', '.', floatval($v))
+                : $this->db->escape($v);
+        }
 
-            $sql = (in_array('updated', $field))
-                ? 'INSERT INTO '.$t.' ('.implode(',', $field).') VALUES ('.implode(',', $insert).')'
-                : 'INSERT INTO '.$t.' (updated, '.implode(',', $field).') VALUES (\''.$this->now().'\', '.implode(',', $insert).')';
+        $sql = (in_array('updated', $field))
+            ? 'INSERT INTO '.$t.' ('.implode(',', $field).') VALUES ('.implode(',', $insert).')'
+            : 'INSERT INTO '.$t.' (updated, '.implode(',', $field).') VALUES (\''.$this->now().'\', '.implode(',', $insert).')';
 
-            $res = $this->db->single_exec($sql, 'insert');
+        $res = $this->db->single_exec($sql, 'insert');
 
-			if ($this->log && $res[1])
-			{
-				$uid = $this->get_who();
-				$this->logger($uid, $res[0], $t, 'insert');
-			}
-		}
-		else
-		{
-			// Mongo DB
-
-			// add the updated value
-			$data['updated'] = $this->now();
-
-			$sql = array(
-				'action' => 'insert',
-				'data' => $data,
-				'id' => (is_null($mongo_id))
-						? $this->mongo_id
-						: $mongo_id
-			);
-			$res = $this->db->single_exec($sql, $t);
-		}
+        if ($this->log && $res[1])
+        {
+            $uid = $this->get_who();
+            $this->logger($uid, $res[0], $t, 'insert');
+        }
 		return $res;
 	}
 
@@ -519,62 +363,44 @@ abstract class X4Model_core
             ? $this->table
             : $table;
 
-		if ($this->db->sql)
-		{
-			// Relational DB
-			$update = '';
-			foreach ($data as $k => $v)
-			{
-			    if (in_array($k, $floats))
-				{
-				    $update .= ', '.addslashes($k).' = '.str_replace(',', '.', floatval($v));
-				}
-				elseif (in_array($k, $concat))
-				{
-				    $update .= ', '.addslashes($k).' = CONCAT('.addslashes($k).', '.$v.')';
-				}
-				else
-				{
-				    $update .= ', '.addslashes($k).' = '.$this->db->escape($v);
-				}
-			}
-
-            $where = '';
-            if (!empty($conditions))
+		// Relational DB
+        $update = '';
+        foreach ($data as $k => $v)
+        {
+            if (in_array($k, $floats))
             {
-                foreach($conditions as $k => $v)
-                {
-                    $where .= ' AND '.addslashes($k).' '.$v['relation'].' '.$this->db->escape($v['value']);
-                }
-
+                $update .= ', '.addslashes($k).' = '.str_replace(',', '.', floatval($v));
             }
+            elseif (in_array($k, $concat))
+            {
+                $update .= ', '.addslashes($k).' = CONCAT('.addslashes($k).', '.$v.')';
+            }
+            else
+            {
+                $update .= ', '.addslashes($k).' = '.$this->db->escape($v);
+            }
+        }
 
-			$res = $this->db->single_exec('UPDATE '.$t.' SET updated = \''.$this->now().'\' '.$update.' WHERE id = '.$id.$where, 'update');
-			$res = array($id, $res[1]);
+        $where = '';
+        if (!empty($conditions))
+        {
+            foreach($conditions as $k => $v)
+            {
+                $where .= ' AND '.addslashes($k).' '.$v['relation'].' '.$this->db->escape($v['value']);
+            }
+        }
 
-			if ($this->log && $res[1])
-			{
-				$uid = $this->get_who();
-				$this->logger($uid, $id, $t, 'update');
-			}
-		}
-		else
-		{
-			// Mongo DB
+        $res = $this->db->single_exec('UPDATE '.$t.'
+            SET updated = \''.$this->now().'\' '.$update.'
+            WHERE id = '.$id.$where, 'update');
 
-			// set which type of ID to use
-			$mid = $this->set_mid($id, $mongo_id);
+        $res = array($id, $res[1]);
 
-			// add the updated value
-			$data['updated'] = $this->now();
-
-			$sql = array(
-				'action' => 'update',
-				'criteria' => array('_id' => $mid),
-				'data' => $data
-			);
-			$res = $this->db->single_exec($sql, $t);
-		}
+        if ($this->log && $res[1])
+        {
+            $uid = $this->get_who();
+            $this->logger($uid, $id, $t, 'update');
+        }
 		return $res;
 	}
 
@@ -594,158 +420,16 @@ abstract class X4Model_core
             ? $this->table
             : $table;
 
-		if ($this->db->sql)
-		{
-			// Relational DB
-			$res = $this->db->single_exec('DELETE FROM '.$t.' WHERE id = '.$id, 'delete');
-			$res = array($id, $res[1]);
+        // Relational DB
+        $res = $this->db->single_exec('DELETE FROM '.$t.' WHERE id = '.$id, 'delete');
+        $res = array($id, $res[1]);
 
-			if ($this->log && $res[1])
-			{
-				$uid = $this->get_who();
-				$this->logger($uid, $id, $t, 'delete');
-			}
-			return $res;
-		}
-		else
-		{
-			// Mongo DB
-
-			// set which type of ID to use
-			$mid = $this->set_mid($id, $mongo_id);
-
-			$sql = array(
-				'action' => 'delete',
-				'criteria' => array('_id' => $mid),
-			);
-
-			return $this->db->single_exec($sql, $t);
-		}
-	}
-
-	/**
-	 * Multiple delete, only for Mongo DB
-	 * to prevent the loading of different models to make base calls you can set table
-	 *
-	 * @final
-	 * @param   string	table name
-	 * @param   array	array of criteria
-	 * @return  array
-	 */
-	final public function multiple_delete(string $table = '', array $criteria = [])
-	{
-		if (!$this->db->sql)
-		{
-			// Mongo DB
-			$sql = array(
-				'action' => 'multiple_delete',
-				'criteria' => $criteria
-			);
-			return $this->db->single_exec($sql, $table);
-		}
-	}
-
-	/**
-	 * Multiple delete, only for Mongo DB
-	 * to prevent the loading of different models to make base calls you can set table
-	 *
-	 * @final
-	 * @param   string	table name
-	 * @return  array
-	 */
-	final public function drop(string $table = '')
-	{
-		if (!$this->db->sql)
-		{
-			$t = empty($table)
-            ? $this->table
-            : $table;
-
-			// Mongo DB
-			$sql = array(
-				'action' => 'drop'
-			);
-			return $this->db->single_exec($sql, $t);
-		}
-	}
-
-	/**
-	 * List collections, only for Mongo DB
-	 *
-	 * @final
-	 * @return  array
-	 */
-	final public function lister()
-	{
-		if (!$this->db->sql)
-		{
-			// Mongo DB
-			$sql = array(
-				'action' => 'list'
-			);
-			$res = $this->db->single_exec($sql);
-			return $res[0];
-		}
-	}
-
-	/**
-	 * Find and Modify a row in a table, only for Mongo DB
-	 * to prevent the loading of different models to make base calls you can set table
-	 *
-	 * @final
-	 * @param   string	table name
-	 * @param   array	array of criteria
-	 * @param   array	(data to update)
-	 * @param   array	fields to return
-	 * @param   array	sort rules
-	 * @return  array
-	 */
-	final public function modify(string $table = '', array $criteria = [], array $data = [], array $fields = [], array $sort = [])
-	{
-		if (!$this->db->sql)
-		{
-			// Mongo DB
-			$t = empty($table)
-            ? $this->table
-            : $table;
-
-			$sql = array(
-				'action' => 'modify',
-				'criteria' => $criteria,
-				'data' => $data,
-				'fields' => $fields,
-				'sort' => $sort
-			);
-			return $this->db->single_exec($sql, $t);
-		}
-	}
-
-	/**
-	 * Count items in a collection filtered with criteria, only for Mongo DB
-	 * to prevent the loading of different models to make base calls you can set table
-	 *
-	 * @final
-	 * @param   string	table name
-	 * @param   array	array of criteria
-	 * @return  integer
-	 */
-	final public function count(string $table = '', array $criteria = [], array $data = [],array $fields = [], array $sort =[])
-	{
-		if (!$this->db->sql)
-		{
-			// Mongo DB
-			$t = empty($table)
-            ? $this->table
-            : $table;
-
-			$sql = array(
-				'action' => 'count',
-				'criteria' => $criteria
-			);
-			$res = $this->db->single_exec($sql, $t);
-
-			return $res[0];
-		}
+        if ($this->log && $res[1])
+        {
+            $uid = $this->get_who();
+            $this->logger($uid, $id, $t, 'delete');
+        }
+        return $res;
 	}
 
 	/**
@@ -817,14 +501,7 @@ abstract class X4Model_core
 	 */
 	public function get_attribute(string $attr)
 	{
-		if ($this->db->sql)
-		{
-			return $this->db->get_attribute($attr);
-		}
-		else
-		{
-			return '';
-		}
+		return $this->db->get_attribute($attr);
 	}
 
 }

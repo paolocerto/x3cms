@@ -181,4 +181,4 @@ class X4Form_core
 		}
 	}
 
-} // End View_core
+}

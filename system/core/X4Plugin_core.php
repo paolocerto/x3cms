@@ -46,7 +46,9 @@ class X4Plugin_core
 		for ($i = 0; $i < $n; $i++)
 		{
 			if (!isset($args[$i]) || empty($args[$i]))
+            {
 				$args[$i] = $values[$i];
+            }
 		}
 	}
 }

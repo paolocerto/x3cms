@@ -27,7 +27,6 @@ class AdmUtils_helper
 	public static function set_msg($res, string $ok = _MSG_OK, string $ko = _MSG_ERROR)
 	{
 		$msg = new Msg();
-		//$close = '<div id="close-modal" class="zerom double-gap-top white" title="'._CLOSE.'"><i class="fas fa-times fa-lg"></i></div>';
 		switch(gettype($res))
 		{
 			case 'boolean':
@@ -35,13 +34,11 @@ class AdmUtils_helper
 				{
 					$msg->message_type = 'success';
 					$msg->message = $ok;
-					//$msg->message_close = '';
 				}
 				else
 				{
 					$msg->message_type = 'error';
 					$msg->message = $ko;
-					//$msg->message_close = $close;
 				}
 				break;
 			case 'array':
@@ -50,12 +47,10 @@ class AdmUtils_helper
 				case 0:
 					$msg->message_type = 'error';
 					$msg->message = $ko;
-					//$msg->message_close = $close;
 					break;
 				default:
 					$msg->message_type = 'success';
 					$msg->message = $ok;
-					//$msg->message_close = '';
 					break;
 				}
 				break;
@@ -63,7 +58,6 @@ class AdmUtils_helper
 				// is a string so is an error
 				$msg->message_type = 'error';
 				$msg->message = $ko;
-				//$msg->message_close = $close;
 				break;
 		}
 		return $msg;
@@ -408,9 +402,7 @@ class AdmUtils_helper
  */
 class Msg
 {
-	//public $id;
 	public $message_type = 'error';
-	//public $message_close = '';
 	public $message = '';
 	public $command = array();
 	public $update = array();

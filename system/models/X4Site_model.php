@@ -86,7 +86,7 @@ class X4Site_model extends X4Model_core
 
 		if (empty($c))
 		{
-            // we get the area even if not enabled
+            // we get the area even if not enabled     // .' AND a.xon = 1'
             $sql = 'SELECT t.name AS theme, a.id, a.id_theme, a.folder, a.private, a.xon,
                 IF (l2.id IS NULL, l.code, l2.code) AS lang
                 FROM themes t

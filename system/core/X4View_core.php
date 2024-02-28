@@ -152,4 +152,4 @@ class X4View_core
 		}
 	}
 
-} // End View_core
+}

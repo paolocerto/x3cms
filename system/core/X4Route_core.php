@@ -325,7 +325,6 @@ final class X4Route_core
 				self::$args = explode('/', $v);
 				break;
 			default:
-				//$what = $$k;
 				self::$$k = $v;
 				break;
 			}
@@ -410,4 +409,4 @@ final class X4Route_core
             : self::$default[$area.'_id'];
 	}
 
-}	// End X4Route class
+}

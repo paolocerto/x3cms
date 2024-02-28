@@ -84,7 +84,7 @@ final class X4Core_core
 		{
 			// Include the Controller file
 
-			require self::$controller;
+			require_once self::$controller;
 
 			// Make sure the controller class exists
 			try
@@ -102,26 +102,7 @@ final class X4Core_core
 			$controller = $class->newInstance();
 
 			// caching
-			// only if area is public and _POST is empty
-			if (CACHE && X4Route_core::$folder == 'public' && !X4Route_core::$post)
-			{
-				X4Cache_core::setPrefix(COOKIE);
-				X4Cache_core::setStore(APATH.'files/tmp/');
-
-				// if no cache to read
-				if (!X4Cache_core::Start($_SERVER['REQUEST_URI'], CACHE_TIME))
-				{
-					self::$caching = true;
-				}
-				else
-				{
-					self::$inst = false;
-					if (DEBUG)
-					{
-						echo X4Bench_core::info('<p class="text-center pt-4 text-xs">X4WebApp v. {x4wa_version} - execution time: {execution_time} - memory usage: {memory_usage} - queries: {queries} - included files: {included_files}</p>');
-					}
-				}
-			}
+            self::caching();
 
 			if (self::$inst)
 			{
@@ -150,6 +131,37 @@ final class X4Core_core
 		}
 		return self::$insta;
 	}
+
+    /**
+	 * caching
+	 *
+	 * @static
+	 * @param   string  current output buffer
+	 * @return  string
+	*/
+	final public static function caching()
+	{
+        // only if area is public and _POST is empty
+        if (CACHE && X4Route_core::$folder == 'public' && !X4Route_core::$post)
+        {
+            X4Cache_core::setPrefix(COOKIE);
+            X4Cache_core::setStore(APATH.'files/tmp/');
+
+            // if no cache to read
+            if (!X4Cache_core::Start($_SERVER['REQUEST_URI'], CACHE_TIME))
+            {
+                self::$caching = true;
+            }
+            else
+            {
+                self::$inst = false;
+                if (DEBUG)
+                {
+                    echo X4Bench_core::info('<p class="text-center pt-4 text-xs">X4WebApp v. {x4wa_version} - execution time: {execution_time} - memory usage: {memory_usage} - queries: {queries} - included files: {included_files}</p>');
+                }
+            }
+        }
+    }
 
 	/**
 	 * output handler.

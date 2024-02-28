@@ -435,10 +435,11 @@ function save_article(bid, content) {
 					: $i->url;
 
 				// add a crumb
-				if ($home || $i->url != 'home')
-				{
-					$str .= '<a href="'.BASE_URL.$url.$param.'" title="'.stripslashes($i->description).'">'.stripslashes($i->name).'</a><span>'.$sep.'</span>';
-				}
+				$str .= (($home || $i->url != 'home') && !$i->fake)
+                    ? '<a href="'.BASE_URL.$url.$param.'" title="'.stripslashes($i->description).'">'.stripslashes($i->name).'</a><span>'.$sep.'</span>'
+                    : stripslashes($i->name).'<span>'.$sep.'</span>';
+
+
 			}
 			// do we have to show home?
 			if ($home || $item->url != 'home')
