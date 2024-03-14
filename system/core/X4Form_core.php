@@ -23,33 +23,26 @@ class X4Form_core
 	protected $local_data = array();
 
 	/**
-	 * Attempts to load a view and pre-load view data.
-	 *
-	 * @throws  Kohana_Exception  if the requested view cannot be found
-	 * @param   string  $name   form name
-     * @param   string  $module Mudule name
-	 * @param   array   $data   array of pre-load data
-	 * @param   string  $type   type of file: html, css, js, etc.
-	 * @return  void
+	 * Attempts to load a view and pre-load view data
 	 */
-	public function __construct(string $name, string $module = '', array $data = [], string $type = EXT)
+	public function __construct(string $name, string $module = '', array $data = [])
 	{
         if (!empty($name))
 		{
 			// Set the filename
 
             // plugin
-            if (!empty($module) && file_exists(PATH.'plugins/'.$module.'/forms/'.$name.'_form'.$type))
+            if (!empty($module) && file_exists(PATH.'plugins/'.$module.'/forms/'.$name.'_form.php'))
             {
-                $this->filename = PATH.'plugins/'.$module.'/forms/'.$name.'_form'.$type;
+                $this->filename = PATH.'plugins/'.$module.'/forms/'.$name.'_form.php';
             }
-            elseif (file_exists(APATH.'forms/'.X4Route_core::$folder.'/'.$name.'_form'.$type))
+            elseif (file_exists(APATH.'forms/'.X4Route_core::$folder.'/'.$name.'_form.php'))
             {
-                $this->filename = APATH.'forms/'.X4Route_core::$folder.'/'.$name.'_form'.$type;
+                $this->filename = APATH.'forms/'.X4Route_core::$folder.'/'.$name.'_form.php';
             }
-            elseif (file_exists(APATH.'forms/'.$name.'_form'.$type))
+            elseif (file_exists(APATH.'forms/'.$name.'_form.php'))
             {
-                $this->filename = APATH.'forms/'.$name.'_form'.$type;
+                $this->filename = APATH.'forms/'.$name.'_form.php';
             }
 		}
 
@@ -61,13 +54,9 @@ class X4Form_core
 	}
 
 	/**
-	 * Magically sets a form variable.
-	 *
-	 * @param   string  variable key
-	 * @param   mixed   variable value
-	 * @return  void
+	 * Magically sets a form variable
 	 */
-	public function __set(string $key, $value)
+	public function __set(string $key, mixed $value) : void
 	{
 		if (!isset($this->$key))
 		{
@@ -76,12 +65,9 @@ class X4Form_core
 	}
 
 	/**
-	 * Magically gets a form variable.
-	 *
-	 * @param  string  variable key
-	 * @return mixed   variable value if the key is found
+	 * Magically gets a form variable
 	 */
-	public function __get(string $key)
+	public function __get(string $key) : mixed
 	{
 		if (isset($this->local_data[$key]))
 		{
@@ -95,22 +81,17 @@ class X4Form_core
 	}
 
 	/**
-	 * Magically converts form object to string.
-	 *
-	 * @return  string
+	 * Magically converts form object to string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		return $this->render(true);
 	}
 
 	/**
 	 * Refresh variable inside local_data
-	 *
-	 * @param	array	$vars	New vars created by the included file
-	 * @return  void
 	 */
-	private function refresh(array $vars)
+	private function refresh(array $vars) : void
 	{
 		// refresh local_data
 		foreach ($this->local_data as $k => $v)
@@ -136,11 +117,8 @@ class X4Form_core
 
 	/**
 	 * Renders a form
-	 *
-	 * @param   boolean   set to TRUE to return the form as a section of a form instead of returning an array
-	 * @return  mixed     array if print is FALSE string if print is TRUE
 	 */
-	public function render(bool $print = FALSE)
+	public function render(bool $print = false) : mixed
 	{
 		// Import the view variables to local namespace
 		extract($this->local_data, EXTR_SKIP);
@@ -169,6 +147,7 @@ class X4Form_core
 		// update local_data
 		$this->refresh($vars);
 
+        // if true return the form as a section of a form instead of returning an array
 		if ($print)
 		{
 			// return form section

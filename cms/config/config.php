@@ -39,7 +39,6 @@ $default = array();
 define('SECRET', md5($_SERVER['DOCUMENT_ROOT']));
 if (file_exists(APATH.'files/'.SECRET.'/'.SECRET.'.txt'))
 {
-
     $default = json_decode(file_get_contents(APATH.'files/'.SECRET.'/'.SECRET.'.txt'), true);
 }
 
@@ -47,8 +46,6 @@ if (file_exists(APATH.'files/'.SECRET.'/'.SECRET.'.txt'))
 $default['x3default_route'] = 'public/home';
 
 // global items
-define('EXT', '.php');
-define('SEP', '/');					// URL separator (not used)
 define('_TRAIT_', ' - ');				// text separator
 define('BR', '<br />');
 define('NL', "\n");

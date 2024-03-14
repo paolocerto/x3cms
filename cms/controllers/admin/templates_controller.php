@@ -18,8 +18,6 @@ class Templates_controller extends X3ui_controller
 	/**
 	 * Constructor
 	 * check if user is logged
-	 *
-	 * @return  void
 	 */
 	public function __construct()
 	{
@@ -29,12 +27,8 @@ class Templates_controller extends X3ui_controller
 
 	/**
 	 * Show template list by theme
-	 *
-	 * @param   integer $id_theme Theme ID
-	 * @param   string  $theme_name Theme name
-	 * @return  void
 	 */
-	public function index(int $id_theme, string $theme_name)
+	public function index(int $id_theme, string $theme_name) : void
 	{
 		// load dictionary
 		$this->dict->get_wordarray(array('templates'));
@@ -61,13 +55,8 @@ class Templates_controller extends X3ui_controller
 
 	/**
 	 * Change status
-	 *
-	 * @param   string  $what field to change
-	 * @param   integer $id ID of the item to change
-	 * @param   integer $value value to set (0 = off, 1 = on)
-	 * @return  void
 	 */
-	public function set(string $what, int $id, int $value = 0)
+	public function set(string $what, int $id, int $value = 0) : void
 	{
 		$msg = null;
 		// check permission
@@ -95,13 +84,9 @@ class Templates_controller extends X3ui_controller
 	}
 
 	/**
-	 * Install a new template (use Ajax)
-	 *
-	 * @param   integer $id_theme Theme ID
-	 * @param   string	$template_name Template name
-	 * @return  void
+	 * Install a new template
 	 */
-	public function install(int $id_theme, string $template_name)
+	public function install(int $id_theme, string $template_name) : void
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'templates', 'sections'));
@@ -155,12 +140,8 @@ class Templates_controller extends X3ui_controller
 
 	/**
 	 * Perform template install
-	 *
-	 * @access	private
-	 * @param   array 	$_post _POST array
-	 * @return  void
 	 */
-	private function installing(array $_post)
+	private function installing(array $_post) : void
 	{
 		$msg = null;
 		// check permission
@@ -198,11 +179,8 @@ class Templates_controller extends X3ui_controller
 
 	/**
 	 * Return an array of CSS files by theme
-	 *
-	 * @param   string	$theme Theme name
-	 * @return  array	Array of objects
 	 */
-	private function get_css(string $theme)
+	private function get_css(string $theme) : array
 	{
 		// css file list
 		$css = array();
@@ -217,12 +195,9 @@ class Templates_controller extends X3ui_controller
 	}
 
 	/**
-	 * Uninstall template form (use Ajax)
-	 *
-	 * @param   integer $id Template ID
-	 * @return  void
+	 * Uninstall template form
 	 */
-	public function uninstall(int $id)
+	public function uninstall(int $id) : void
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'templates'));
@@ -262,12 +237,8 @@ class Templates_controller extends X3ui_controller
 
 	/**
 	 * Uninstalling template
-	 *
-	 * @access	private
-	 * @param   object  $item
-	 * @return  void
 	 */
-	private function uninstalling(stdClass $item)
+	private function uninstalling(stdClass $item) : void
 	{
 		$msg = null;
 		// check permission
@@ -306,14 +277,9 @@ class Templates_controller extends X3ui_controller
 	}
 
 	/**
-	 * Edit template/css form (use Ajax)
-	 *
-	 * @param   string	$what case (template|css)
-	 * @param   string	$theme Theme name
-	 * @param   integer $id Template ID
-	 * @return  void
+	 * Edit template/css form
 	 */
-	public function edit(string $what, string $theme, int $id)
+	public function edit(string $what, string $theme, int $id) : void
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'template'));
@@ -368,13 +334,8 @@ class Templates_controller extends X3ui_controller
 
 	/**
 	 * Clean/restore template file
-	 *
-	 * @access	private
-	 * @param   integer	$in_out Action switcher
-	 * @param   string	$str File text
-	 * @return  string
 	 */
-	private function replace(int $in_out, string $str)
+	private function replace(int $in_out, string $str) : string
 	{
 		// final version of strings (as they appear into template)
 		$final = array (
@@ -405,13 +366,8 @@ class Templates_controller extends X3ui_controller
 
 	/**
 	 * Register edited file
-	 *
-	 * @access	private
-	 * @param   array 	$_post _POST array
-	 * @param   string	$file File path
-	 * @return  void
 	 */
-	private function editing(array $_post, string $file)
+	private function editing(array $_post, string $file) : void
 	{
 		$msg = null;
 		// check permission

@@ -18,8 +18,6 @@ class Menu_model extends X4Model_core
 	/**
 	 * Constructor
 	 * set the default table
-	 *
-	 * @return  void
 	 */
 	public function __construct()
 	{
@@ -28,16 +26,10 @@ class Menu_model extends X4Model_core
 
 	/**
 	 * Get menus
-	 * Join with themes, areas and privs tables
 	 * Each area have an associate theme
 	 * Each theme have a set of menus
-	 *
-	 * @param   integer $id_area Area ID
-	 * @param   string	$area Area name
-	 * @param   string	$order sort order
-	 * @return  array	array of objects
 	 */
-	public function get_menus(int $id_area = 0, string $area = '', string $order = 'name')
+	public function get_menus(int $id_area = 0, string $area = '', string $order = 'name') : array
 	{
 		// condition
 		$where = '';
@@ -58,12 +50,9 @@ class Menu_model extends X4Model_core
 
 	/**
 	 * Get menus by themes
-	 * Join with themes and privs tables
-	 *
-	 * @param   integer $id_theme Theme ID
-	 * @return  array	array of objects
 	 */
-	public function get_menus_by_theme(int $id_theme) {
+	public function get_menus_by_theme(int $id_theme) : array
+    {
 		$sql = 'SELECT DISTINCT m.*, t.name AS theme, IF(p.id IS NULL, u.level, p.level) AS level
 				FROM menus m
 				JOIN themes t ON t.id = m.id_theme
@@ -75,67 +64,10 @@ class Menu_model extends X4Model_core
 	}
 
 	/**
-	 * Update references to the menu in the table pages
-	 * Use pages table
-	 *
-	 * @param   integer $id Page ID
-	 * @param   integer $holder Menu ID
-	 * @param   string	$orders Encoded string, for each menu you have a section, each section contains the list of Page ID in menu
-	 * @return  array	array of objects
-	 */
-	public function menu(int $id, int $holder, string $orders)
-	{
-		// get page data
-		$page = $this->get_by_id($id, 'pages', 'id_area, lang, id_menu');
-
-		$sql = array();
-
-		// check  holder
-		if ($page->id_menu != $holder)
-        {
-			$sql[] = 'UPDATE pages SET id_menu = '.$holder.' WHERE id = '.$id;
-        }
-
-		// refresh order
-		$menus = explode('_', $orders);
-		foreach ($menus as $i)
-		{
-			$c = 1;
-			if (!empty($i))
-			{
-				$el = explode('-', $i);
-				// get array of Page ID in the menu
-				$items = explode(',', $el[1]);
-				if (!empty($items))
-				{
-					foreach ($items as $ii)
-					{
-						$sql[] = 'UPDATE pages SET xpos = '.$c.' WHERE id = '.intval($ii);
-						$c++;
-					}
-				}
-			}
-		}
-
-		// perform the update
-		$result = $this->db->multi_exec($sql);
-		APC && apcu_delete(SITE.'menu'.$page->id_area);
-
-		// refresh ordinals
-		$this->ordinal($page->id_area, $page->lang, 'home', 'A');
-
-		return $result;
-	}
-
-	/**
 	 * Reset pages data: tpl, css, ordinal, id_menu
-	 * Use pages table
 	 * Called when you change the theme of an area
-	 *
-	 * @param   integer $id_area Area ID
-	 * @return  array
 	 */
-	public function reset(int $id_area)
+	public function reset(int $id_area) : array
 	{
 		$sql = 'UPDATE pages
 			SET tpl = \'base\', css = \'base\', ordinal = \'A\', id_menu = 0
@@ -146,17 +78,15 @@ class Menu_model extends X4Model_core
 
 	/**
 	 * Ordinalize pages (recursive)
-	 * Use pages table
 	 * to accelerate recovery when data needs to build structured items (like menu, breadcrumbs, site map)
 	 * X3 use the ordinal field that consists of a string that identifies the location of a page in a given area and language
-	 *
-	 * @param   integer $id_area Area ID
-	 * @param   string	$lang Language code
-	 * @param   string	$xfrom Parent URL
-	 * @param   string	$base The ordinal of the parent URL
-	 * @return  array
 	 */
-	public function ordinal(int $id_area, string $lang, string $xfrom, string $base)
+	public function ordinal(
+        int $id_area,
+        string $lang,
+        string $xfrom,      // Parent URL
+        string $base        // The ordinal of the parent URL
+    ) : void
 	{
 		// get page children of xfrom
 		$pages = $this->db->query('SELECT * FROM pages
@@ -204,15 +134,8 @@ class Menu_model extends X4Model_core
 
 	/**
 	 * Refresh recursively deep and xpos value
-	 * Use pages table
-	 *
-	 * @param   integer $id_area Area ID
-	 * @param   string	$lang Language code
-	 * @param   string	$xfrom Page URL
-	 * @param   integer $deep Page depth in the area tree
-	 * @return  array
 	 */
-	private function deeper(int $id_area, string $lang, string $xfrom, int $deep)
+	private function deeper(int $id_area, string $lang, string $xfrom, int $deep) : void
 	{
 		// get pages children of xfrom with the same Area ID and Language code
 		$pages = $this->db->query('SELECT id, url, id_menu, xpos
@@ -255,20 +178,13 @@ class Menu_model extends X4Model_core
 				$sql[] = 'UPDATE pages SET deep = '.$deep.', xpos = '.$xpos.' WHERE id = '.$i->id;
 			}
 		}
-
 		$this->db->multi_exec($sql);
 	}
 
 	/**
 	 * Get subpages as a menu
-	 *
-	 * @param integer	$id_area
-	 * @param string	$ordinal
-     * @param integer   $maxdeep
-     * @param integer   $home
-	 * @return array	associative array of array of objects
 	 */
-	public function get_subpages(int $id_area, string $ordinal, int $maxdeep = MAX_MENU_DEEP, int $home = 0)
+	public function get_subpages(int $id_area, string $ordinal, int $maxdeep = MAX_MENU_DEEP, int $home = 0) : array
 	{
 		$where = ($home)
 			? ''
@@ -288,11 +204,8 @@ class Menu_model extends X4Model_core
 
     /**
 	 * Get languages in area
-	 *
-	 * @param integer	$id_area
-	 * @return array	array
 	 */
-	public function get_languages(int $id_area)
+	public function get_languages(int $id_area) : array
 	{
 		return $this->db->query('SELECT code
             FROM alang
@@ -301,15 +214,10 @@ class Menu_model extends X4Model_core
 
 	/**
 	 * Get ordinal of a page by url
-	 *
-	 * @param integer	area ID
-     * @param string    lang
-	 * @param string	url
-	 * @return string
 	 */
-	public function get_ordinal_by_url(int $id_area, string $lang, string $url)
+	public function get_ordinal_by_url(int $id_area, string $lang, string $url) : string
 	{
-		return $this->db->query_var('SELECT ordinal
+		return (string) $this->db->query_var('SELECT ordinal
             FROM pages
             WHERE
                 id_area = '.$id_area.' AND
@@ -335,9 +243,6 @@ class Menu_obj
 
 	/**
 	 * Constructor
-	 *
-	 * @param   integer	$id_theme Theme ID
-	 * @return  void
 	 */
 	public function __construct(int $id_theme)
 	{

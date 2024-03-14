@@ -18,8 +18,6 @@ class Languages_controller extends X3ui_controller
 	/**
 	 * Constructor
 	 * check if user is logged
-	 *
-	 * @return  void
 	 */
 	public function __construct()
 	{
@@ -29,10 +27,8 @@ class Languages_controller extends X3ui_controller
 
 	/**
 	 * Show languages
-	 *
-	 * @return  void
 	 */
-	public function _default()
+	public function _default() : void
 	{
 		// load the dictionary
 		$this->dict->get_wordarray(array('languages', 'msg'));
@@ -54,11 +50,8 @@ class Languages_controller extends X3ui_controller
 
 	/**
 	 * Actions
-	 *
-     * @access	private
-	 * @return  void
 	 */
-	private function actions()
+	private function actions() : string
 	{
 		return '<a class="link" @click="popup(\''.BASE_URL.'languages/edit\')" title="'._NEW_LANG.'">
             <i class="fa-solid fa-lg fa-circle-plus"></i>
@@ -67,13 +60,8 @@ class Languages_controller extends X3ui_controller
 
 	/**
 	 * Change status
-	 *
-	 * @param   string  $what field to change
-	 * @param   integer $id ID of the item to change
-	 * @param   integer $value value to set (0 = off, 1 = on)
-	 * @return  void
 	 */
-	public function set(string $what, int $id, int $value = 0)
+	public function set(string $what, int $id, int $value = 0) : void
 	{
 		$msg = null;
 		// check permission
@@ -101,17 +89,12 @@ class Languages_controller extends X3ui_controller
 	}
 
 	/**
-	 * New / Edit language form (use Ajax)
-	 *
-	 * @param   integer  $id item id (if 0 then is a new item)
-	 * @return  void
+	 * New / Edit language form
 	 */
-	public function edit(int $id = 0)
+	public function edit(int $id = 0) : void
 	{
-		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'languages'));
 
-		// get object
 		$mod = new Language_model();
 		$item = ($id)
 			? $mod->get_by_id($id)
@@ -122,10 +105,8 @@ class Languages_controller extends X3ui_controller
 		$form_fields->id = $id;
 		$form_fields->item = $item;
 
-		// get the fields array
 		$fields = $form_fields->render();
 
-		// if submitted
 		if (X4Route_core::$post)
 		{
 			$e = X4Validation_helper::form($fields, 'editor');
@@ -145,11 +126,8 @@ class Languages_controller extends X3ui_controller
         	? _EDIT_LANG
 			: _ADD_LANG;
 
-        // contents
-		$view->content = new X4View_core('editor');
-        // can user edit?
+        $view->content = new X4View_core('editor');
         $submit = AdmUtils_helper::submit_btn(1, 'languages', $id, $item->xlock);
-		// form builder
 		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, $submit, 'buttons'), 'post', '',
             '@click="submitForm(\'editor\')"');
 		$view->render(true);
@@ -157,13 +135,8 @@ class Languages_controller extends X3ui_controller
 
 	/**
 	 * Register Edit / New language data
-	 *
-	 * @access	private
-	 * @param   integer $id item ID (if 0 then is a new item)
-	 * @param   array 	$_post _POST array
-	 * @return  void
 	 */
-	private function editing(int $id, array $_post)
+	private function editing(int $id, array $_post) : void
 	{
 		$msg = null;
 		// check permission
@@ -225,12 +198,9 @@ class Languages_controller extends X3ui_controller
 	}
 
 	/**
-	 * Delete Language form (use Ajax)
-	 *
-	 * @param   integer $id Language ID
-	 * @return  void
+	 * Delete Language form
 	 */
-	public function delete(int $id)
+	public function delete(int $id) : void
 	{
 		// load dictionary
 		$this->dict->get_wordarray(array('form', 'languages'));
@@ -270,12 +240,8 @@ class Languages_controller extends X3ui_controller
 
 	/**
 	 * Delete language
-	 *
-	 * @access	private
-	 * @param   array 	$_post _POST array
-	 * @return  void
 	 */
-	private function deleting(array $_post)
+	private function deleting(array $_post) : void
 	{
 		$msg = null;
 		// check permission
@@ -307,10 +273,8 @@ class Languages_controller extends X3ui_controller
 
     /**
 	 * Change admin language
-	 *
-	 * @return  void
 	 */
-	public function selector()
+	public function selector() : void
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'lang'));
@@ -372,12 +336,8 @@ class Languages_controller extends X3ui_controller
 
     /**
 	 * Selecting
-	 *
-	 * @access	private
-	 * @param   array 	$_post _POST array
-	 * @return  void
 	 */
-	private function selecting(array $_post)
+	private function selecting(array $_post) : void
 	{
 		$old_lang = X4Route_core::$lang;
         $new_lang = $_post['code'];
@@ -399,12 +359,8 @@ class Languages_controller extends X3ui_controller
 	 * If for whatever reason you need to exchange two languages you can call this script
 	 * Both languages have to been set in the system
 	 * /admin/languages/switch_languages/OLD_LANG/NEW_LANG
-	 *
-	 * @param   string	$old_lang Language code you want to replace
-	 * @param   string  $new_lang Language code you want to set
-	 * @return  string
 	 */
-	public function switch_languages(string $old_lang, string $new_lang)
+	public function switch_languages(string $old_lang, string $new_lang) : void
 	{
 		// Comment the next row to enable the method
 		die('Operation disabled!');
@@ -434,8 +390,6 @@ class Languages_controller extends X3ui_controller
 				$areas = $mod->get_all('areas');
 
 				echo '<h1>START SWITCHING LANUAGES FROM '.$old_lang.' TO '.$new_lang.'!</h1>';
-
-				$opt = array('FAILED', 'DONE');
 
 				foreach ($areas as $a)
 				{

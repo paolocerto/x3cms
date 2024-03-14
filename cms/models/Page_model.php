@@ -17,33 +17,27 @@
 class Page_model extends X4Model_core
 {
 	/**
-	 * @var integer Area ID
+	 * Area ID
 	 */
 	protected $id_area;
 
 	/**
-	 * @var string	Language code
+	 * Language code
 	 */
 	protected $lang;
 
 	/**
-	 * @var string	URL of parent page
+	 * URL of parent page
 	 */
 	protected $xfrom;
 
 	/**
-	 * @var object	Menu model
+	 * Menu model
 	 */
 	protected $menu;
 
 	/**
 	 * Constructor
-	 *
-	 * @param integer	$id_area Area ID
-	 * @param string	$lang Language code
-	 * @param integer	$id_page Page ID
-	 * @param string	$from Parent page URL
-	 * @return  void
 	 */
 	public function __construct(int $id_area = 0, string $lang = '', int $id_page = 0, string $from = '')
 	{
@@ -73,19 +67,15 @@ class Page_model extends X4Model_core
 
 	/**
 	 * Check if a page with the same URL already exists
-	 *
-	 * @param   string	$url URL to check
-	 * @param   integer $id Page ID, if the page already exists
-	 * @return  integer	the number of pages with the searched URL
 	 */
-	public function exists(string $url, int $id = 0)
+	public function exists(string $url, int $id = 0) : int
 	{
 		// condition
 		$where = ($id)
 			? ' AND id <> '.$id
 			: '';
 
-		return $this->db->query_var('SELECT COUNT(id)
+		return (int) $this->db->query_var('SELECT COUNT(*)
 			FROM pages
 			WHERE
 				id_area = '.$this->id_area.' AND
@@ -95,11 +85,8 @@ class Page_model extends X4Model_core
 
 	/**
 	 * Get Page by URL
-	 *
-	 * @param   string	$url Page URL
-	 * @return  object
 	 */
-	public function get_page(string $url)
+	public function get_page(string $url) : stdClass
 	{
         return $this->db->query_row('SELECT p.*, a.name AS area
 			FROM pages p
@@ -112,11 +99,8 @@ class Page_model extends X4Model_core
 
 	/**
 	 * Get Page by ID
-	 *
-	 * @param   integer	$id Page ID
-	 * @return  object
 	 */
-	public function get_page_by_id(int $id)
+	public function get_page_by_id(int $id) : stdClass
 	{
 		return $this->db->query_row('SELECT p.*, a.name AS area
 			FROM pages p
@@ -126,11 +110,8 @@ class Page_model extends X4Model_core
 
 	/**
 	 * Get Parent URL by Page URL
-	 *
-	 * @param   string	$url Page URL
-	 * @return  object
 	 */
-	public function get_from(string $url)
+	public function get_from(string $url) :stdClass
 	{
 		return $this->db->query_row('SELECT p.xfrom, p.url, p.name, p.description, p.deep
 			FROM pages p
@@ -146,23 +127,16 @@ class Page_model extends X4Model_core
 	 * The deep indicates the distance from the home page
 	 * A sub page of the homepage has deep = 1
 	 * A sub page of a subpage of the home has deep = 2 and so on
-	 *
-	 * @param   string	$xfrom Parent URL
-	 * @param   integer	$deep Required Deep
-	 * @param   string	$diff Page URL to exclude
-	 * @return  object
 	 */
-	public function get_pages(string $xfrom = '', int $deep = 0, string $diff = '' )
+	public function get_pages(string $xfrom = '', int $deep = 0, string $diff = '' ) : array
 	{
-		// conditions
-
 		// correction for special case
 		// the home have url and xfrom = home
 		if ($xfrom == 'home')
 		{
 			$from = 'AND (p.url = \'home\' OR p.xfrom = \'home\')';
 		}
-		else if($deep)
+		elseif($deep)
 		{
 			$from = 'AND p.deep = '.($deep+1).' AND p.xfrom = '.$this->db->escape($xfrom);
 		}
@@ -193,12 +167,8 @@ class Page_model extends X4Model_core
 
     /**
 	 * Get subpages
-	 *
-	 * @param   string	$xfrom Page URL
-     * @param   integer $id_menu
-	 * @return  object
 	 */
-	public function get_subpages(string $xfrom, int $id_menu)
+	public function get_subpages(string $xfrom, int $id_menu) : array
 	{
 		return $this->db->query('SELECT (xpos+1) AS xpos, name
 			FROM pages
@@ -215,13 +185,8 @@ class Page_model extends X4Model_core
 	 * Update page data
 	 * Updating the page must maintain the consistency of relations with the other pages
 	 * After the update we have to refresh the sitemap.xml file
-	 *
-	 * @param   stdClass $page
-	 * @param   array	$post array
-	 * @param   string	$domain Domain name
-	 * @return  array
 	 */
-	public function update_page(stdClass $page, array $post, string $domain)
+	public function update_page(stdClass $page, array $post, string $domain) : array
 	{
 		// build the update query
 		$update = '';
@@ -320,12 +285,8 @@ class Page_model extends X4Model_core
 	/**
 	 * Insert a new page
 	 * After the insertion we have to update the sitemap.xml file
-	 *
-	 * @param   array	$post array
-	 * @param   string	$domain Domain name
-	 * @return  array
 	 */
-	public function insert_page(array $post, string $domain)
+	public function insert_page(array $post, string $domain) : array
 	{
 		// get deep
 		$array['deep'] = $this->get_deep($post['xfrom']) + 1;
@@ -356,19 +317,17 @@ class Page_model extends X4Model_core
             {
                 // add permission over article
                 $perm = new Permission_model();
-                $array[] = array(
+                $array = array(
                     'action' => 'insert',
                     'id_what' => $res_article[0],
                     'id_user' => $_SESSION['xuid'],
                     'level' => 4
                 );
-                $perm->pexec('articles', $array, $this->id_area);
+                $perm->pexec('articles', [$array], $this->id_area);
             }
-
             // create sections
             $mod = new Section_model();
             $mod->initialize($this->id_area, $res[0]);
-
 		}
 
 		// refresh ordinal
@@ -382,11 +341,8 @@ class Page_model extends X4Model_core
 
 	/**
 	 * Get deep of a page in the site tree by Parent URL
-	 *
-	 * @param   string	$xfrom Parent URL
-	 * @return  integer
 	 */
-	private function get_deep(string $xfrom)
+	private function get_deep(string $xfrom) : int
 	{
 		return (int) $this->db->query_var('SELECT deep FROM pages WHERE id_area = '.$this->id_area.' AND lang = '.$this->db->escape($this->lang).' AND url = '.$this->db->escape($xfrom));
 	}
@@ -395,13 +351,8 @@ class Page_model extends X4Model_core
 	 * Initialize a new area
 	 * Insert default pages (home, msg, x3admin, search and logout if the area is private)
 	 * Insert default articles for each page
-	 *
-	 * @param   integer	$id_area Area ID
-	 * @param   string	$lang Language code
-	 * @param   array	$array Array of insert queries
-	 * @return  array
 	 */
-	public function initialize_area(int $id_area, string $lang, array $array)
+	public function initialize_area(int $id_area, string $lang, array $array) : array
 	{
 		$sql = array();
 		foreach ($array as $i)
@@ -428,12 +379,8 @@ class Page_model extends X4Model_core
 	/**
 	 * Initialize contexts
 	 * When we create a new area we must also create necessary default contexts
-	 *
-	 * @param   integer	$id_area Area ID
-	 * @param   string	$lang Language code
-	 * @return  array
 	 */
-	public function initialize_context(int $id_area, string $lang)
+	public function initialize_context(int $id_area, string $lang) : array
 	{
 		$sql = array();
 		$sql[] = 'INSERT INTO contexts (updated, id_area, lang, xkey, name, code, xlock, xon)
@@ -448,12 +395,8 @@ class Page_model extends X4Model_core
 	/**
 	 * Delete a page
 	 * After the deletion we have to update the sitemap.xml file
-	 *
-	 * @param   integer	$id Page ID
-	 * @param   string	$domain Domain
-	 * @return  array
 	 */
-	public function delete_page(int $id, string $domain)
+	public function delete_page(int $id, string $domain) : array
 	{
 		// get page data
 		$page = $this->get_page_by_id($id);
@@ -482,18 +425,13 @@ class Page_model extends X4Model_core
 			// update sitemap.xml
 			$this->update_sitemap($domain);
 		}
-
 		return $res;
 	}
 
 	/**
 	 * Get articles by Page ID
-	 *
-	 * @param   integer	$id Page ID
-	 * @param   boolean	$rows One or more than one result
-	 * @return  array
 	 */
-	public function get_content_by_id(int $id, int $rows = 0)
+	public function get_content_by_id(int $id, int $rows = 0) : mixed
 	{
 		if ($rows)
 		{
@@ -518,11 +456,8 @@ class Page_model extends X4Model_core
 
 	/**
 	 * Update sitemap.xml
-	 *
-	 * @param   string	$domain Domain name
-	 * @return  void
 	 */
-	private function update_sitemap(string $domain)
+	private function update_sitemap(string $domain) : void
 	{
 		// get pages
 		$pages = $this->db->query('SELECT p.url, p.lang, a.updated
@@ -583,10 +518,8 @@ class Page_model extends X4Model_core
 
 	/**
 	 * Get available templates
-	 *
-	 * @return  array	Array of objects
 	 */
-	public function get_templates()
+	public function get_templates() : array
 	{
 		return $this->db->query('SELECT t.*
 			FROM templates t
@@ -598,10 +531,8 @@ class Page_model extends X4Model_core
 
 	/**
 	 * Get theme by area
-	 *
-	 * @return  object
 	 */
-	public function get_theme(int $id_area)
+	public function get_theme(int $id_area) : stdClass
 	{
 		return $this->db->query_row('SELECT t.name
 			FROM themes t
@@ -611,11 +542,8 @@ class Page_model extends X4Model_core
 
 	/**
 	 * Check for redirects
-	 *
-	 * @param   string	$url Page URL
-	 * @return  object
 	 */
-	public function check_redirect(string $url)
+	public function check_redirect(string $url) : stdClass
 	{
 	    return $this->db->query_row('SELECT p.redirect_code, p.url
 			FROM pages p
@@ -626,13 +554,9 @@ class Page_model extends X4Model_core
 
 	/**
 	 * Duplicate area for another language
-	 *
-     * @param integer   $id_area
-     * @param string    $old_lang
-     * @param string    $new_lang
-	 * @return  array(array_of_installed_modules, res)
+     * return array(array_of_installed_modules, res)
 	 */
-	public function duplicate_area_lang(int $id_area, string $old_lang, string $new_lang)
+	public function duplicate_area_lang(int $id_area, string $old_lang, string $new_lang) : array
 	{
 	    // sync contexts
 	    $old = X4Array_helper::indicize($this->db->query('SELECT *
@@ -808,10 +732,6 @@ class Page_obj
 
 	/**
 	 * Constructor
-	 *
-	 * @param   integer	$id_area Area ID
-	 * @param   string	$lang Language code
-	 * @return  void
 	 */
 	public function __construct(int $id_area, string $lang)
 	{

@@ -17,19 +17,15 @@ class X4getid3_helper
 {
 	/**
 	 * Analize media file
-	 *
-	 * @static
-	 * @param string	File to analyze
-	 * @return array
 	 */
-	public static function analyze($filename)
+	public static function analyze(string $filename) : array
 	{
+        $data = [];
 		if (file_exists($filename))
 		{
 			X4Core_core::auto_load('getid3_library');
 
 			$getID3 = new getID3;
-
 			$data = $getID3->analyze($filename);
 
 /*
@@ -38,11 +34,6 @@ echo("Duration: ".$file['playtime_string'].
 " / Filesize: ".$file['filesize']." bytes<br />");
 */
 		}
-		else
-		{
-			$data = array();
-		}
-
 		return $data;
 	}
 

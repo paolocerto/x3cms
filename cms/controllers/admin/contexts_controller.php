@@ -18,8 +18,6 @@ class Contexts_controller extends X3ui_controller
 	/**
 	 * Constructor
 	 * check if user is logged
-	 *
-	 * @return  void
 	 */
 	public function __construct()
 	{
@@ -29,28 +27,22 @@ class Contexts_controller extends X3ui_controller
 
 	/**
 	 * Show contexts
-	 *
-	 * @return  void
 	 */
-	public function _default()
+	public function _default() : void
 	{
 		$this->index(2, X4Route_core::$lang);
 	}
 
 	/**
 	 * Show contexts
-	 *
-	 * @param   integer $id_area Area ID
-	 * @param   string 	$lang Language code
-	 * @return  void
 	 */
-	public function index(int $id_area, string $lang)
+	public function index(int $id_area, string $lang) : void
 	{
 		// load dictionary
 		$this->dict->get_wordarray(array('contexts', 'articles'));
 
 		$area = new Area_model();
-		list($id_area, $areas) = $area->get_my_areas($id_area);
+		list($id_area, $areas) = $area->get_my_areas($this->site->data->id, $id_area);
 
 		// get page
 		$page = $this->get_page('contexts');
@@ -81,10 +73,8 @@ class Contexts_controller extends X3ui_controller
 
 	/**
 	 * Contexts actions
-	 *
-	 * @return  void
 	 */
-	private function actions(int $id_area, string $lang)
+	private function actions(int $id_area, string $lang) : string
 	{
 		return '<a class="link" @click="popup(\''.BASE_URL.'contexts/edit/'.$id_area.'/'.$lang.'\')" title="'._NEW_CONTEXT.'">
             <i class="fa-solid fa-lg fa-circle-plus"></i>
@@ -93,14 +83,8 @@ class Contexts_controller extends X3ui_controller
 
 	/**
 	 * Change status
-	 *
-	 * @param   string  $what field to change
-     * @param   integer $id_area
-	 * @param   integer $id ID of the item to change
-	 * @param   integer $value value to set (0 = off, 1 = on)
-	 * @return  void
 	 */
-	public function set(string $what, int $id_area, int $id, int $value = 0)
+	public function set(string $what, int $id_area, int $id, int $value = 0) : void
 	{
 		$msg = null;
 		// check permission
@@ -134,13 +118,8 @@ class Contexts_controller extends X3ui_controller
 
 	/**
 	 * New / Edit context form
-	 *
-     * @param   integer $id_area Area ID
-	 * @param   string 	$lang Language code
-	 * @param   integer	$id Context ID
-	 * @return  void
 	 */
-	public function edit(int $id_area, string $lang, int $id = 0)
+	public function edit(int $id_area, string $lang, int $id = 0) : void
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'contexts'));
@@ -194,14 +173,9 @@ class Contexts_controller extends X3ui_controller
 	}
 
 	/**
-	 * Register Edit / New Context form data
-	 *
-	 * @access	private
-	 * @param   integer $id item ID (if 0 then is a new item)
-	 * @param   array 	$_post _POST array
-	 * @return  void
+	 * Register Edit / New Context form
 	 */
-	private function editing(int $id, array $_post)
+	private function editing(int $id, array $_post) : void
 	{
 		$msg = null;
 		// check permission
@@ -283,12 +257,9 @@ class Contexts_controller extends X3ui_controller
 	}
 
 	/**
-	 * Delete context form (use Ajax)
-	 *
-	 * @param   integer $id Context ID
-	 * @return  void
+	 * Delete context form
 	 */
-	public function delete(int $id)
+	public function delete(int $id) : void
 	{
 		// get object
 		$mod = new Context_model();
@@ -331,12 +302,8 @@ class Contexts_controller extends X3ui_controller
 
 	/**
 	 * Delete context
-	 *
-	 * @access	private
-	 * @param   stdClass    $item Context item
-	 * @return  void
 	 */
-	private function deleting(stdClass $item)
+	private function deleting(stdClass $item) : void
 	{
 		$msg = null;
 		// check permissions

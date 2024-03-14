@@ -18,8 +18,6 @@ class Context_model extends X4Model_core
 	/**
 	 * Constructor
 	 * set the default table
-	 *
-	 * @return  void
 	 */
 	public function __construct()
 	{
@@ -28,13 +26,8 @@ class Context_model extends X4Model_core
 
 	/**
 	 * Get context by Context code
-	 *
-	 * @param   integer $id_area Area ID
-	 * @param   string 	$lang Language code
-	 * @param   integer $code Context code
-	 * @return  object	Context object
 	 */
-	public function get_by_code(int $id_area, string $lang, int $code)
+	public function get_by_code(int $id_area, string $lang, int $code) : stdClass
 	{
 		return $this->db->query_row('SELECT *
 			FROM contexts
@@ -43,13 +36,8 @@ class Context_model extends X4Model_core
 
 	/**
 	 * Get contexts by Area ID and Language code
-	 * Join with privs table
-	 *
-	 * @param   integer $id_area Area ID
-	 * @param   string 	$lang Language code
-	 * @return  array	Array of Context objects
 	 */
-	public function get_contexts(int $id_area, string $lang)
+	public function get_contexts(int $id_area, string $lang) : array
 	{
 		return $this->db->query('SELECT c.*, IF(p.id IS NULL, u.level, p.level) AS level
 				FROM contexts c
@@ -62,42 +50,35 @@ class Context_model extends X4Model_core
 
 	/**
 	 * Check if a context already exists
-	 *
-	 * @param   array	$context Context associative array ('id_area' => value, 'lang' => value, 'xkey' => value, 'description' => value)
-	 * @param   integer $id Context ID
-	 * @return  integer	the number of contexts with the searched name
 	 */
-	public function exists(array $context, int $id = 0)
+	public function exists(
+        array $context,         // associative array ('id_area' => value, 'lang' => value, 'xkey' => value, 'description' => value)
+        int $id = 0
+    ) : int
 	{
 		$where = ($id == 0) ? '' : ' AND id <> '.$id;
-		return $this->db->query_var('SELECT COUNT(id)
+		return (int) $this->db->query_var('SELECT COUNT(*)
 			FROM contexts
 			WHERE id_area = '.intval($context['id_area']).' AND lang = '.$this->db->escape($context['lang']).' AND xkey = '.$this->db->escape($context['xkey']).' '.$where);
 	}
 
 	/**
 	 * Get the highest context code relative to an area and a language
-	 *
-	 * @param   integer $id_area Area ID
-	 * @param   string 	$lang Language code
-	 * @return  integer	Context code
 	 */
-	public function get_max_code(int $id_area, string $lang)
+	public function get_max_code(int $id_area, string $lang) : int
 	{
-		return $this->db->query_var('SELECT MAX(code) FROM contexts WHERE id_area = '.$id_area.' AND lang = '.$this->db->escape($lang));
+		return (int) $this->db->query_var('SELECT MAX(code) FROM contexts WHERE id_area = '.$id_area.' AND lang = '.$this->db->escape($lang));
 	}
 
 	/**
 	 * Check if a context name already exists in the admin dictionary
 	 * If not then insert it
-	 *
-	 * @param   array 	$array Associative array ('lang' => 'language code', 'name' => 'context name')
-	 * @param   integer	$xon Context status
-	 * @return  void
 	 */
-	public function check_dictionary(array $array, int $xon = 0)
+	public function check_dictionary(
+        array $array,       // Associative array ('lang' => 'language code', 'name' => 'context name')
+        int $xon = 0
+    ) : void
 	{
-		// prepare post array
 		$post = array(
 			'area' => 'admin',
 			'lang' => $array['lang'],
@@ -107,24 +88,18 @@ class Context_model extends X4Model_core
 			'xon' => $xon
 			);
 
-		// check if context exists
 		$dict = new Dictionary_model();
-		$check = $dict->exists(0, $post);
-
-		// insert
-		if (!$check) $dict->insert($post);
+		if (!$dict->exists(0, $post))
+        {
+            $dict->insert($post);
+        }
 	}
 
 
     /**
 	 * Get contexts codes
-	 * Join with privs table
-	 *
-	 * @param   integer $id_area Area ID
-	 * @param   string 	$lang Language code
-	 * @return  array	Array of Context objects
 	 */
-	public function get_codes(int $id_area, string $lang)
+	public function get_codes(int $id_area, string $lang) : array
 	{
 		return $this->db->query('SELECT c.code, c.name, IF(p.id IS NULL, u.level, p.level) AS level
 				FROM contexts c
@@ -137,12 +112,8 @@ class Context_model extends X4Model_core
 
 	/**
 	 * Get pages for refresh list of pages when change contest
-	 *
-	 * @param   integer	$id_area Area ID
-	 * @param   string 	$lang Language code
-	 * @return  void
 	 */
-	public function get_pages(int $id_area, string $lang)
+	public function get_pages(int $id_area, string $lang) : array
 	{
 		return $this->db->query('SELECT p.id, LPAD(p.name, CHAR_LENGTH(p.name)+p.deep, \'-\') AS name, IF(pr.id IS NULL, u.level, pr.level) AS level
 				FROM pages p
@@ -172,8 +143,6 @@ class Context_obj
 	/**
 	 * Constructor
 	 * Initialize the new context
-	 *
-		 * @return  void
 	 */
 	public function __construct(int $id_area, string $lang)
 	{

@@ -18,8 +18,6 @@ class User_model extends X4Model_core
 	/**
 	 * Constructor
 	 * set the default table
-	 *
-	 * @return  void
 	 */
 	public function __construct()
 	{
@@ -28,23 +26,16 @@ class User_model extends X4Model_core
 
 	/**
 	 * Get permissions levels
-	 * Use levels
-	 *
-	 * @return  array	Array of objects
 	 */
-	public function get_levels()
+	public function get_levels() : array
 	{
 		return $this->db->query('SELECT * FROM levels ORDER BY id ASC');
 	}
 
 	/**
 	 * Get user by ID
-	 * Join with privs and groups tables
-	 *
-	 * @param   integer $id User ID
-	 * @return  object
 	 */
-	public function get_user_by_id(int $id)
+	public function get_user_by_id(int $id) : stdClass
 	{
 		return $this->db->query_row('SELECT u.*, g.name AS groupname, IF(p.id IS NULL, up.level, p.level) AS plevel
             FROM users u
@@ -56,12 +47,8 @@ class User_model extends X4Model_core
 
 	/**
 	 * Get users by Group ID
-	 * Join with privs table
-	 *
-	 * @param   integer $id_group Group ID
-	 * @return  array	Array of objects
 	 */
-	public function get_users(int $id_group)
+	public function get_users(int $id_group) : array
 	{
         return $this->db->query('SELECT u.*, IF(p.id IS NULL, up.level, p.level) AS level
             FROM users u
@@ -76,22 +63,17 @@ class User_model extends X4Model_core
 
 	/**
 	 * Check if username and email address are already used by another user
-	 *
-	 * @param   string	$username
-	 * @param   string	$mail Email address
-	 * @param   integer	$id User ID
-	 * @return  integer
 	 */
-	public function exists(string $username, string $mail, int $id = 0)
+	public function exists(string $username, string $mail, int $id = 0) : int
 	{
 		// condition
 		$where = ($id)
 			? ' AND id <> '.$id
 			: '';
 
-		return $this->db->query_var('SELECT COUNT(id)
+		return (int) $this->db->query_var('SELECT COUNT(*)
 			FROM users
-			WHERE username = '.$this->db->escape($username).' OR mail = '.$this->db->escape($mail).' '.$where);
+			WHERE (username = '.$this->db->escape($username).' OR mail = '.$this->db->escape($mail).') '.$where);
 	}
 
 }
@@ -116,9 +98,6 @@ class User_obj
 
 	/**
 	 * Constructor
-	 *
-	 * @param   integer	$id_group Group ID
-	 * @return  void
 	 */
 	public function __construct(int $id_group, string $lang)
 	{

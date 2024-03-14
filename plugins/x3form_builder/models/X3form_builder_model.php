@@ -20,9 +20,6 @@ class X3form_builder_model extends X4Model_core
 
 	/**
 	 * Constructor
-	 * set the default table
-	 *
-	 * @return  void
 	 */
 	public function __construct(string $db = 'default')
 	{
@@ -32,14 +29,8 @@ class X3form_builder_model extends X4Model_core
 	/**
 	 * Build the form array required to set the parameter
 	 * This method have to be updated with the plugin options
-	 *
-	 * @param	integer $id_area Area ID
-	 * @param	string	$lang Language code
-     * @param	integer $id_page
-	 * @param	string	$param Parameter
-	 * @return	array
 	 */
-	public function configurator(int $id_area, string $lang, int $id_page, string $param)
+	public function configurator(int $id_area, string $lang, int $id_page, string $param) : array
 	{
 	    $fields = array();
 
@@ -88,13 +79,8 @@ class X3form_builder_model extends X4Model_core
 
 	/**
 	 * Get forms
-	 *
-	 * @param   integer $id_area Area ID
-	 * @param   string  $lang Language code
-     * @param   integer $xon
-	 * @return  array   Array of objects
 	 */
-	public function get_forms(int $id_area, string $lang, int $xon = 2)
+	public function get_forms(int $id_area, string $lang, int $xon = 2) : array
 	{
 	    $where = ($xon < 2)
 		    ? ' AND x.xon = 1'
@@ -112,13 +98,8 @@ class X3form_builder_model extends X4Model_core
 
 	/**
 	 * Get fields in a form
-	 *
-	 * @param   integer $id_area Area ID
-	 * @param   string  $lang Language code
-	 * @param   integer $id_form Form ID
-	 * @return  array    Array of objects
 	 */
-	public function get_form_fields(int $id_area, string $lang, int $id_form)
+	public function get_form_fields(int $id_area, string $lang, int $id_form) : array
 	{
 		return $this->db->query('SELECT DISTINCT x.*, IF(pr.id IS NULL, u.level, pr.level) AS level
 			FROM x3_forms_fields x
@@ -131,13 +112,8 @@ class X3form_builder_model extends X4Model_core
 
 	/**
 	 * Get results related to a form
-	 *
-	 * @param   integer $id_area Area ID
-	 * @param   string  $lang Language code
-	 * @param   integer $id_form Form ID
-	 * @return  array    Array of objects
 	 */
-	public function get_form_results(int $id_area, string $lang, int $id_form)
+	public function get_form_results(int $id_area, string $lang, int $id_form) : array
 	{
 		return $this->db->query('SELECT DISTINCT x.*, IF(pr.id IS NULL, u.level, pr.level) AS level
 			FROM x3_forms_results x
@@ -150,12 +126,8 @@ class X3form_builder_model extends X4Model_core
 
     /**
 	 * Get blacklist by area and language
-	 *
-	 * @param   integer $id_area Area ID
-	 * @param   string  $lang Language code
-	 * @return  array    Array of objects
 	 */
-	public function get_blacklist(int $id_area, string $lang)
+	public function get_blacklist(int $id_area, string $lang) : array
 	{
 		return $this->db->query('SELECT DISTINCT x.*, IF(pr.id IS NULL, u.level, pr.level) AS level
 			FROM x3_forms_blacklist x
@@ -168,10 +140,8 @@ class X3form_builder_model extends X4Model_core
 
 	/**
 	 * Get areas
-	 *
-	 * @return  array	array of area objects
 	 */
-	public function get_areas()
+	public function get_areas() : array
 	{
         return $this->db->query('SELECT id, name
 			FROM areas
@@ -181,10 +151,8 @@ class X3form_builder_model extends X4Model_core
 
 	/**
 	 * Get languages
-	 *
-	 * @return  array	array of objects
 	 */
-	public function get_languages()
+	public function get_languages() : array
 	{
         return $this->db->query('SELECT code, language
 				FROM languages
@@ -193,20 +161,14 @@ class X3form_builder_model extends X4Model_core
 
 	/**
 	 * Check if a form already exists
-	 *
-	 * @param   integer $id_area Area ID
-	 * @param   string	$lang Language code
-	 * @param   string	$name Form name
-	 * @param   integer $id Item ID
-	 * @return  integer	Number of found items
 	 */
-	public function form_exists(int $id_area, string $lang, string $name, int $id = 0)
+	public function form_exists(int $id_area, string $lang, string $name, int $id = 0) : int
 	{
 		$where = (!$id)
 		    ? ''
 		    : ' AND id <> '.$id;
 
-		return $this->db->query_var('SELECT COUNT(id)
+		return (int) $this->db->query_var('SELECT COUNT(*)
             FROM x3_forms
 			WHERE
 				id_area = '.$id_area.' AND
@@ -216,19 +178,14 @@ class X3form_builder_model extends X4Model_core
 
 	/**
 	 * Check if a field in a form already exists
-	 *
-	 * @param   integer $id_form Area ID
-	 * @param   string	$name Form name
-	 * @param   integer $id Item ID
-	 * @return  integer	Number of found items
 	 */
-	public function field_exists(int $id_form, string $name, int $id = 0)
+	public function field_exists(int $id_form, string $name, int $id = 0) : int
 	{
 		$where = (!$id)
 		    ? ''
 		    : ' AND id <> '.$id;
 
-		return $this->db->query_var('SELECT COUNT(id)
+		return (int) $this->db->query_var('SELECT COUNT(*)
             FROM x3_forms_fields
 			WHERE
 				id_form = '.$id_form.' AND
@@ -237,43 +194,16 @@ class X3form_builder_model extends X4Model_core
 
 	/**
 	 * Get the position of the last field in a form
-	 *
-	 * @param   string	$table   Table name
-	 * @param   string	$what    Field name
-	 * @param   integer $id_what Item ID
-	 * @return  integer	Number of the last item
 	 */
-	public function get_max_pos(string $table, string $what, int $id_what)
+	public function get_max_pos(string $table, string $what, int $id_what) : int
 	{
 		return (int) $this->db->query_var('SELECT xpos FROM x3_forms_'.$table.' WHERE '.$what.' = '.$id_what.' ORDER BY xpos DESC');
 	}
 
 	/**
-	 * Get data in a table
-	 *
-	 * @param   string	$table   Table name
-	 * @param   integer $id_area Area ID
-	 * @param   integer $id_what Item ID
-	 * @return  integer	Number of the last item
-	 * /
-	public function get_table($table, $id_area, $id_item)
-	{
-		$order = 'x.xpos ASC';
-		return $this->db->query('SELECT DISTINCT x.*
-			FROM x3_'.$table.' x
-			WHERE x.id_area = '.intval($id_area).' AND x.id_item = '.intval($id_item).'
-			GROUP BY x.id
-			ORDER BY '.$order);
-	}
-    */
-
-	/**
 	 * Get related fields name in a form
-	 *
-	 * @param   integer $id_form Form ID
-	 * @return  integer	Number of the last item
 	 */
-	public function get_related(int $id_form)
+	public function get_related(int $id_form) : array
 	{
 		return $this->db->query('SELECT name
 			FROM x3_forms_fields x
@@ -286,19 +216,14 @@ class X3form_builder_model extends X4Model_core
 
     /**
 	 * Check if a blacklist item already exists in the same area and language
-	 *
-	 * @param   string	$name Form name
-     * @param   array   $post
-	 * @param   integer $id Item ID
-	 * @return  integer	Number of found items
 	 */
-	public function blackitem_exists(string $name, array $post, int $id = 0)
+	public function blackitem_exists(string $name, array $post, int $id = 0) : int
 	{
 		$where = (!$id)
 		    ? ''
 		    : ' AND id <> '.$id;
 
-		return $this->db->query_var('SELECT COUNT(id)
+		return (int) $this->db->query_var('SELECT COUNT(*)
             FROM x3_forms_blacklist
 			WHERE
 				id_area = '.$post['id_area'].' AND
@@ -308,11 +233,8 @@ class X3form_builder_model extends X4Model_core
 
     /**
 	 * Handle the result of a form submission for results view
-	 *
-	 * @param	string	$result    Form submission JSON encoded
-	 * @return	string
 	 */
-	public function show_message(string $result)
+	public function show_message(string $result) : string
 	{
 		$array = json_decode($result, true);
 		$str = '';
@@ -327,7 +249,7 @@ class X3form_builder_model extends X4Model_core
 				}
 				$str .= '</ul>';
 			}
-			else if ($k != 'x4token')
+			elseif ($k != 'x4token')
 			{
 				$str .= strtoupper($k).': <strong>'.$v.'</strong>'.BR;
 			}
@@ -337,14 +259,8 @@ class X3form_builder_model extends X4Model_core
 
 	/**
 	 * Build the widget
-	 *
-	 * @param	string	$title Widget title
-	 * @param	integer $id_area Area ID
-	 * @param	string	$area Area name
-     * @param   boolean $container
-	 * @return	array	string
 	 */
-	public function get_widget(string $title, int $id_area, string $area, bool $container = true)
+	public function get_widget(string $title, int $id_area, string $area, bool $container = true) : string
 	{
 		// new submissions
 		$n = (int) $this->db->query_var('SELECT COUNT(x.id) AS n
@@ -382,7 +298,7 @@ class X3form_builder_model extends X4Model_core
                         <a class="link" @click="pager(\''.BASE_URL.'x3form_builder/mod/'.$id_area.'\')" title="'.$title.'"><i class="fa-solid fa-lg fa-chevron-right"></i></a>
                     </div>
                 </div>
-                <div class="bg2 h-full px-4 pt-4 pb-8">
+                <div class="bg2 h-full px-4 pt-4">
                     <table>
                         <tr>
                             <td>'._X3FB_LATEST.'</td>
@@ -404,13 +320,8 @@ class X3form_builder_model extends X4Model_core
 
 	/**
 	 * Get a form by name
-	 *
-	 * @param	integer $id_area Area ID
-	 * @param	string	$lang Language code
-	 * @param	string	$form Form name
-	 * @return	object
 	 */
-	public function get_form_by_name(int $id_area, string $lang, string $form)
+	public function get_form_by_name(int $id_area, string $lang, string $form) : stdClass
 	{
 		return $this->db->query_row('SELECT *
 			FROM x3_forms
@@ -419,13 +330,8 @@ class X3form_builder_model extends X4Model_core
 
 	/**
 	 * Get the fields in a form by name
-	 *
-	 * @param	integer $id_area Area ID
-	 * @param	string	$lang Language code
-	 * @param	string	$form Form name
-	 * @return	array   Array of objects
 	 */
-	public function get_fields_by_form(int $id_area, string $lang, string $form)
+	public function get_fields_by_form(int $id_area, string $lang, string $form) : array
 	{
 		return $this->db->query('SELECT fi.*
 			FROM x3_forms_fields fi
@@ -436,11 +342,8 @@ class X3form_builder_model extends X4Model_core
 
     /**
 	 * Build rule
-	 *
-	 * @param	stdClass    $rule
-	 * @return	string
 	 */
-	public function build_rule(stdClass $rule)
+	public function build_rule(stdClass $rule) : string
 	{
 		$token = [$rule->rule_name];
         if (!empty($rule->field_value))
@@ -456,15 +359,8 @@ class X3form_builder_model extends X4Model_core
 
     /**
 	 * build message
-	 *
-	 * @access private
-     * @param	integer $id_area Area ID
-	 * @param   string	$form Form name
-	 * @param   array	$fields fields array
-	 * @param   array	$files files array
-	 * @return  void
 	 */
-	public function messagize(int $id_area, string $form, array $fields, array $files = array())
+	public function messagize(int $id_area, string $form, array $fields, array $files = []) : string
 	{
 		$str = 'FORM <strong>'.$form.'</strong> '.date('Y-m-d H:i:s').BR.BR;
 
@@ -519,12 +415,8 @@ class X3form_builder_model extends X4Model_core
 
     /**
 	 * Check if a string contains a blacklisted item
-	 *
-	 * @param	integer $id_area Area ID
-	 * @param	string	$string to check
-	 * @return	integer
 	 */
-	public function spam_check(int $id_area, string $string)
+	public function spam_check(int $id_area, string $string) : int
 	{
         $string = strtolower($string);
         // get a string of all blacklist items
@@ -561,14 +453,8 @@ class X3form_builder_model extends X4Model_core
     /**
 	 * build message xml format
      * for special needs but not used here
-	 *
-	 * @access private
-	 * @param   string	$form Form name
-	 * @param   array	$fields fields array
-	 * @param   array	$files files array
-	 * @return  void
 	 */
-	public function messagize_xml($form,  $fields, $files = array())
+	public function messagize_xml($form,  $fields, $files = array()) : string
 	{
 		$str = '<form>'.$form.'</form>
 			<date>'.date('Y-m-d H:i:s').'</date>';
@@ -593,6 +479,7 @@ class X3form_builder_model extends X4Model_core
 				}
 			}
 		}
+
 		// for files
 		if (!empty($files))
 		{
@@ -601,7 +488,6 @@ class X3form_builder_model extends X4Model_core
 				if (!empty($v)) $str .= '<'.strtolower($k).'>'.$v.'</'.strtolower($k).'>';
 			}
 		}
-
 		return mb_convert_encoding($str, 'ISO-8859-1', 'auto');
 	}
 

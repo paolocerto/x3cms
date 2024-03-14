@@ -18,8 +18,6 @@ class Dictionary_model extends X4Model_core
 	/**
 	 * Constructor
 	 * set the default table
-	 *
-	 * @return  void
 	 */
 	public function __construct()
 	{
@@ -28,12 +26,8 @@ class Dictionary_model extends X4Model_core
 
 	/**
 	 * Get dictionary keys by area name and language code
-	 *
-	 * @param   string	$lang Language code
-	 * @param   string	$area Area name
-	 * @return  array	array of objects
 	 */
-	public function get_keys(string $lang, string $area)
+	public function get_keys(string $lang, string $area) : array
 	{
 		return $this->db->query('SELECT DISTINCT what
 				FROM dictionary
@@ -43,25 +37,16 @@ class Dictionary_model extends X4Model_core
 
 	/**
 	 * Get areas by language code
-	 *
-	 * @param   string	$lang Language code
-	 * @return  array	array of objects
 	 */
-	public function get_areas(string $lang)
+	public function get_areas(string $lang) : array
 	{
 		return $this->db->query('SELECT DISTINCT area FROM dictionary WHERE lang = '.$this->db->escape($lang).' ORDER BY area ASC');
 	}
 
 	/**
 	 * Get dictionary words by area name, language code and key
-	 * Join with privs table
-	 *
-	 * @param   string	$lang Language code
-	 * @param   string	$area Area name
-	 * @param   string	$what Dictionary section
-	 * @return  array	array of objects
 	 */
-	public function get_words(string $lang, string $area, string $what)
+	public function get_words(string $lang, string $area_name, string $what) : array
 	{
 		return $this->db->query('SELECT d.*, IF(p.id IS NULL, u.level, p.level) AS level
 			FROM dictionary d
@@ -70,7 +55,7 @@ class Dictionary_model extends X4Model_core
 			LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = d.id
 			WHERE
 				d.lang = '.$this->db->escape($lang).' AND
-				d.area = '.$this->db->escape($area).' AND
+				d.area = '.$this->db->escape($area_name).' AND
 				d.what = '.$this->db->escape($what).'
 			GROUP BY d.xkey
 			ORDER BY d.xkey ASC');
@@ -78,16 +63,8 @@ class Dictionary_model extends X4Model_core
 
 	/**
 	 * Get dictionary words by area name, language code and key avoiding duplicates
-	 * Join with privs table
-	 *
-	 * @param   string	$lang Language code
-	 * @param   string	$area Area name
-	 * @param   string	$what Dictionary section
-	 * @param   string	$new_lang Language code
-	 * @param   string	$new_area Area name
-	 * @return  array	array of objects
 	 */
-	public function get_words_to_import(string $lang, string $area, string $what, string $new_lang, string $new_area)
+	public function get_words_to_import(string $lang, string $area, string $what, string $new_lang, string $new_area) : array
 	{
 		return $this->db->query('SELECT DISTINCT d.*, IF(p.id IS NULL, u.level, p.level) AS level
 			FROM dictionary d
@@ -112,10 +89,8 @@ class Dictionary_model extends X4Model_core
 	/**
 	 * Get dictionary sections
 	 * A section consists of the triad of values language_code-area_name-key_value
-	 *
-	 * @return  array	array of objects
 	 */
-	public function get_section_options()
+	public function get_section_options() : array
 	{
 		// sections
 		$sections = $this->db->query('SELECT DISTINCT CONCAT(lang, \'-\', area, \'-\', what) AS lang_what
@@ -145,12 +120,8 @@ class Dictionary_model extends X4Model_core
 	/**
 	 * Get dictionary sections
 	 * A section consists of the triad of values language_code-area_name-key_value
-	 *
-	 * @param   string	$lang Language code
-	 * @param   string	$area Area name
-	 * @return  array	array of objects
 	 */
-	public function get_sections(string $lang, string $area)
+	public function get_sections(string $lang, string $area) : array
 	{
 		// sections
 		return $this->db->query('SELECT what
@@ -164,18 +135,14 @@ class Dictionary_model extends X4Model_core
 
 	/**
 	 * Check if an dictionary word already exists
-	 *
-     * @param   integer $id
-	 * @param   array	$_post Associative array ('area' => value, 'lang' => value, 'what' =>, 'key' => )
-	 * @return  integer	the number of words with the searched values
 	 */
-	public function exists(int $id, array $post)
+	public function exists(int $id, array $post) : int
 	{
         $where = $id
             ? ' AND id <> '.$id
             : '';
 
-		return (int) $this->db->query_var('SELECT COUNT(id)
+		return (int) $this->db->query_var('SELECT COUNT(*)
 			FROM dictionary
 			WHERE
 				area = '.$this->db->escape($post['area']).' AND
@@ -186,13 +153,8 @@ class Dictionary_model extends X4Model_core
 
 	/**
 	 * Search dictionary words by area name, and string
-	 * Join with privs table
-	 *
-	 * @param   string	$lang Language code
-	 * @param   string	$area Area name
-	 * @return  array	array of objects
 	 */
-	public function search_words(string $area, string $str)
+	public function search_words(string $area, string $str) : array
 	{
 		return $this->db->query('SELECT d.*, IF(p.id IS NULL, u.level, p.level) AS level
 			FROM dictionary d
@@ -209,13 +171,10 @@ class Dictionary_model extends X4Model_core
 			ORDER BY d.xkey ASC, d.lang ASC');
 	}
 
-
     /**
 	 * Remove duplicates from dictionary table
-	 *
-	 * @return array
 	 */
-    public function remove_duplicates()
+    public function remove_duplicates() : array
     {
         $sql = 'DELETE a
                 FROM dictionary as a

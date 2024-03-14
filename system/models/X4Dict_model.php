@@ -28,12 +28,8 @@ class X4Dict_model extends X4Model_core
 
 	/**
 	 * Initialize dictionary model
-	 *
-	 * @param string	area name
-	 * @param string	language code
-	 * @return void
 	 */
-	public function __construct($area, $lang)
+	public function __construct(string $area, string $lang)
 	{
 		parent::__construct('dictionary');
 		$this->area = $area;
@@ -42,33 +38,24 @@ class X4Dict_model extends X4Model_core
 
 	/**
 	 * Set area
-	 *
-	 * @param string	area name
-	 * @return void
 	 */
-	public function __set_area($area)
+	public function __set_area(string $area)
 	{
 		$this->area = $area;
 	}
 
 	/**
 	 * Set lang
-	 *
-	 * @param string	lang
-	 * @return void
 	 */
-	public function __set_lang($lang)
+	public function __set_lang(string $lang)
 	{
 		$this->lang = $lang;
 	}
 
 	/**
 	 * Get a dictionary section and define keys
-	 *
-	 * @param string	dictionary section
-	 * @return void
 	 */
-	public function get_words($what = 'global')
+	public function get_words(string $what = 'global')
 	{
 		// check APC
 		$keys = (APC)
@@ -90,14 +77,11 @@ class X4Dict_model extends X4Model_core
 
 	/**
 	 * Define multiple sections
-	 *
-	 * @param array		array of sections
-	 * @return void
 	 */
-	public function get_wordarray($array)
+	public function get_wordarray(array $sections)
 	{
-		array_unshift($array, 'global');
-		foreach ($array as $i)
+		array_unshift($sections, 'global');
+		foreach ($sections as $i)
 		{
 			$this->get_words($i);
 		}
@@ -105,12 +89,8 @@ class X4Dict_model extends X4Model_core
 
 	/**
 	 * Get a specified key from dictionary
-	 *
-	 * @param string	key dictionary
-	 * @param string	dictionary section name
-	 * @return string
 	 */
-	public function get_word($key, $what = 'global', $lang = '')
+	public function get_word(string $key, string $what = 'global', string $lang = '') : string
 	{
 	    $lang = (empty($lang))
 	        ? $this->lang
@@ -121,14 +101,8 @@ class X4Dict_model extends X4Model_core
 
 	/**
 	 * Get a specified key from dictionary and build a message object
-	 *
-	 * @param string	message title
-	 * @param string	key message
-	 * @param string	dictionary section name
-	 * @param array		$options
-	 * @return object
 	 */
-	public function get_message($title, $key, $what = 'global', $options = array())
+	public function get_message(string $title, string $key, string $what = 'global', array $options = array()) : Obj_msg
 	{
 		$msg = $this->get_word($key, $what);
 		$m = (strstr($msg, '<br />') != '')
@@ -145,13 +119,8 @@ class X4Dict_model extends X4Model_core
 
 	/**
 	 * Build a specified message object
-	 *
-	 * @param string	message title
-	 * @param string	message
-	 * @param array		$options
-	 * @return object
 	 */
-	public function build_message($title, $msg, $options = array())
+	public function build_message(string $title, string $msg, array $options = array()) : Obj_msg
 	{
 		if (isset($_SESSION[$msg.'_msg']))
 		{
@@ -176,6 +145,7 @@ class X4Dict_model extends X4Model_core
 
 /**
  * Message object
+ * Create an pseudo-article object to insert in a section
  *
  * @package X4WEBAPP
  */
@@ -188,38 +158,20 @@ class Obj_msg
 
 	/**
 	 * Constructor
-	 * Set message content
-	 *
-	 * @param   string message title
-	 * @param   string message body
-	 * @param	array  options
-	 * @return  void
+	 * Set message contents
 	 */
-	public function __construct($title, $msg, $options = array())
+	public function __construct(string $title, string $msg, array $options = array())
 	{
-		if (!isset($options['Hn']))
-		{
-			$options['Hn'] = 'h2';
-		}
+        // default options
+        $options['Hn'] = $options['Hn'] ?? 'h2';
+        $options['Hclass'] = $options['Hclass'] ?? '';
+		$options['envelope'] = $options['envelope'] ?? 'XXX';
+		$options['container'] = $options['container'] ?? 'XXX';
 
-		if (!isset($options['Hclass']))
-		{
-			$options['Hclass'] = '';
-		}
-
-		if (!isset($options['envelope']))
-		{
-			$options['envelope'] = 'XXX';
-		}
-
-		if (!isset($options['container']))
-		{
-			$options['container'] = 'XXX';
-		}
-
-		$title = (is_null($title))
-			? ''
-			: '<'.$options['Hn'].' '.$options['Hclass'].'>'.$title.'</'.$options['Hn'].'>';
+        if (!empty($title))
+        {
+            $title = '<'.$options['Hn'].' '.$options['Hclass'].'>'.$title.'</'.$options['Hn'].'>';
+        }
 
 		$msg = str_replace('XXX', $msg, $options['envelope']);
 		$msg = str_replace('XXX', $msg, $options['container']);
@@ -234,50 +186,38 @@ class Obj_msg
 	}
 
 	/**
-	 * Replace message content
-	 *
-	 * @param   string message title
-	 * @param   string message body
-	 * @return  void
+	 * Replace message contents
 	 */
-	public function replace($title = '', $str = '')
+	public function replace(string $title = '', string $str = '')
 	{
-		$title = (is_null($title))
-			? ''
-			: '<h2>'.urldecode($title).'</h2>';
+		if (!empty($title))
+        {
+            $title = '<'.$options['Hn'].' '.$options['Hclass'].'>'.urldecode($title).'</'.$options['Hn'].'>';
+        }
 
 		$this->content = $title.'<p>'.nl2br(urldecode($str)).'</p>';
 	}
 
 	/**
 	 * Replace message content
-	 *
-	 * @param   string message body
-	 * @return  void
 	 */
-	public function replace_html($str = '')
+	public function replace_html(string $str = '')
 	{
 		$this->content = $str;
 	}
 
 	/**
-	 * Replace message content
-	 *
-	 * @param   string message body
-	 * @return  void
+	 * Envelope message content
 	 */
-	public function enclose($before, $after)
+	public function enclose(string $before, string $after)
 	{
 		$this->content = $before.$this->content.$after;
 	}
 
 	/**
 	 * Set module and param
-	 *
-	 * @param   string message body
-	 * @return  void
 	 */
-	public function module($module, $param)
+	public function module(string $module, string $param)
 	{
 		$this->module = $module;
 		$this->param = $param;

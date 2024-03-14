@@ -33,8 +33,14 @@ class X4Files_helper
 
     private static $bad_mimetypes = array('text/x-sh', 'application/x-sh', 'text/javascript', 'text/php', 'application/x-httpd-php', 'text/x-python', 'application/x-python-code');
 
+    /**
+     * Files array
+     */
     private static $file = array();
 
+    /**
+     * Get PHP version
+     */
 	private static function phpv()
 	{
 		$v = explode('.', phpversion());
@@ -46,93 +52,76 @@ class X4Files_helper
 
 	/**
 	 * Get a code related to the file type
-	 *
-	 * @param	string	file with path
-	 * @param	boolean	switch between folder name and X3 CMS file type
-	 * @return	mixed	code type or folder name
 	 */
-	public static function get_type($file, $folder = false)
+	public static function get_type(string $file, $folder = false)
 	{
-		// this require PHP 5.3+
-		if (self::phpv() >= 5.3)
-		{
-			$finfo = @new finfo(FILEINFO_MIME);
-			$info = @$finfo->file($file);
+        $finfo = @new finfo(FILEINFO_MIME);
+        $info = @$finfo->file($file);
 
-			$mime = explode(';', $info);
-			$type = explode('/', $mime[0]);
+        $mime = explode(';', $info);
+        $type = explode('/', $mime[0]);
 
-			switch ($type[0])
-			{
-				case 'img':
-				case 'image':
-					return ($folder)
-						? 'img'
-						: 0;
-					break;
-				case 'video':
-					return ($folder)
-						? 'media'
-						: 2;
-					break;
-				case 'text':
-					switch($type[1])
-					{
-					case 'htm':
-					case 'html':
-						return ($folder)
-							? 'template'
-							: 3;
-						break;
-					default:
-						return ($folder)
-							? 'files'
-							: 1;
-						break;
-					}
-					break;
-                case 'sh':
-                    case 'js':
-                    case 'php':
-                    case 'py':
-                    case 'rb':
-                        return false;
-                        break;
-				case 'xls':
-				case 'xlsx':
-				case 'doc':
-				case 'docx':
-				case 'ppt':
-				case 'pptx':
-				case 'odt':
-				case 'odp':
-				case 'ods':
-				default:
-					return ($folder)
-						? 'files'
-						: 1;
-					break;
-			}
-		}
-		else
-		{
-			// get by name
-			self::get_type_by_name($file, $folder);
-		}
+        switch ($type[0])
+        {
+            case 'img':
+            case 'image':
+                return ($folder)
+                    ? 'img'
+                    : 0;
+                break;
+            case 'video':
+                return ($folder)
+                    ? 'media'
+                    : 2;
+                break;
+            case 'text':
+                switch($type[1])
+                {
+                case 'htm':
+                case 'html':
+                    return ($folder)
+                        ? 'template'
+                        : 3;
+                    break;
+                default:
+                    return ($folder)
+                        ? 'files'
+                        : 1;
+                    break;
+                }
+                break;
+            case 'sh':
+                case 'js':
+                case 'php':
+                case 'py':
+                case 'rb':
+                    return false;
+                    break;
+            case 'xls':
+            case 'xlsx':
+            case 'doc':
+            case 'docx':
+            case 'ppt':
+            case 'pptx':
+            case 'odt':
+            case 'odp':
+            case 'ods':
+            default:
+                return ($folder)
+                    ? 'files'
+                    : 1;
+                break;
+        }
 	}
 
 	/**
 	 * Get a code related to the file type by file name
-	 *
-	 * @param	string	file with path
-	 * @param	boolean	switch between folder name and X3 CMS file type
-	 * @return	mixed	code type or folder name
 	 */
-	public static function get_type_by_name($file, $folder = false)
+	public static function get_type_by_name(string $file, bool $folder = false)
 	{
 		// get extension from file name
 		$ext = pathinfo($file, PATHINFO_EXTENSION);
-		switch($ext)
+		switch ($ext)
 		{
 			case 'jpg':
 			case 'jpeg':
@@ -190,153 +179,24 @@ class X4Files_helper
 
 	/**
 	 * Get the mimetype of a file
-	 *
-	 * @param	string	file with path
-	 * @return	string
 	 */
-	public static function get_mime($file)
+	public static function get_mime(string $file)
 	{
-		// this require PHP 5.3+
-		if (self::phpv() >= 5.3)
-		{
-			$finfo = @new finfo(FILEINFO_MIME);
-			$info = @$finfo->file($file);
+        $finfo = @new finfo(FILEINFO_MIME);
+        $info = @$finfo->file($file);
 
-			$mime = explode(';', $info);
-			return $mime[0];
-		}
-		else
-		{
-			// old way
-			// get mime from file extension
-			$ext = pathinfo($file, PATHINFO_EXTENSION);
-			switch($ext)
-			{
-				case 'jpg':
-				case 'jpeg':
-					return 'image/jpeg';
-					break;
-				case 'gif':
-					return 'image/gif';
-					break;
-				case 'png':
-					return 'image/png';
-					break;
-                case 'svg':
-                    return 'image/svg+xml';
-                    break;
-				case 'swf':
-					return 'application/x-shockwave-flash';
-					break;
-				case 'flv':
-					return 'video/x-flv';
-					break;
-				case 'rm':
-					return 'application/vnd.rn-realmedia';
-					break;
-				case 'wmv':
-					return 'video/x-ms-wmv';
-					break;
-				case 'mov':
-					return 'video/quicktime';
-					break;
-				case 'mp4':
-					return 'video/mp4';
-					break;
-				case 'webm':
-					return 'video/webm';
-					break;
-				case 'ogv':
-					return 'video/ogg';
-					break;
-				case '3gp':
-					return 'video/3gpp';
-					break;
-				case 'mpeg':
-					return 'video/mpeg';
-					break;
-				case 'avi':
-					return 'video/avi';
-					break;
-				case 'htm':
-				case 'html':
-					return 'text/html';
-					break;
-				case 'zip':
-					return 'application/zip';
-					break;
-				case 'rar':
-					return 'application/x-rar';
-					return 'application/x-rar-compressed';
-					break;
-				case 'pdf':
-				    return 'application/pdf';
-				    break;
-                case 'sh':
-                    return 'application/x-sh';
-                    break;
-                case 'js':
-                    return 'text/javascript';
-                    break;
-                case 'php':
-                    return 'application/x-httpd-php';
-                    break;
-                case 'py':
-                    return 'text/x-python';
-                    break;
-				case 'xls':
-				    return 'application/vnd.ms-excel';
-				    break;
-				case 'p7m':
-				    return 'application/pkcs7-mime';
-				default:
-					return 'binary/octet-stream';
-					break;
-			}
-		}
+        $mime = explode(';', $info);
+        return $mime[0];
 	}
 
-	/**
-	 * File upload
-	 * Perform the upload with all required checks: file size, image size form images (crop and resize), check for overwrite and add prefixes, store the file inthe right folder.
-	 *
-	 * @param string	the name of the field
-	 * @param string	the path where to store the file. The standard path is APATH.'files/'.SPREFIX.'/filemanager/ '
-	 * @param string	a prefix for the filename
-	 * @param boolean	zip the file  if it not an image and is set to true
-	 * @param array		the array contains (maximum width, maximum height, action_string, maximum file weight (kBytes) for images, maximum file weight (KBytes) for others documents). Possibles values for the action string are: 'NONE', 'CROP', 'RESIZE'
-	 * @param array		the array contains valid mime types
-	 * @param boolean   force resize for files not stored in canonical places
-	 * @return mixed	the filename string if upload only a file, an array of filename if upload many files
-	 */
-	public static function upload($file, $path, $prefix = '', $zip = 0, $limits = array(MAX_W, MAX_H, 'NONE', MAX_IMG, MAX_DOC), $mimes = array(), $force_resize = false)
-	{
-		if (isset($_GET[$file]))
-		{
-			self::$file = new Upload_file_xhr($file);
-			return X4Files_helper::gupload_file($file, $path, $prefix, $zip, $limits, $mimes);
-		}
-		else if (isset($_FILES[$file]))
-		{
-			return (is_array($_FILES[$file]['name']))
-				? X4Files_helper::upload_files($file, $path, $prefix, $zip, $limits, $mimes)
-				: X4Files_helper::upload_file($file, $path, $prefix, $zip, $limits, $mimes, $force_resize);
-		}
-	}
-
-	/**
+    /**
 	 * filter mimes array with mimes available in X3 CMS and return final file folder
-	 *
-	 * @param array	$mimes		the array contains required mime types
-	 * @param string $file_type	the mime type of the uploaded file
-	 * @return  string
 	 */
-	private static function filter_mime($mimes, $file_type)
+	private static function filter_mime(array $mimes, mixed $file_type)
 	{
-        //is a bad file?
         if (in_array($file_type, self::$bad_mimetypes))
         {
-            return false;
+            return false; // is a bad file
         }
 
 		$mime = array();
@@ -358,49 +218,32 @@ class X4Files_helper
 				$type = $k;
 			}
 		}
-
 		return $type;
 	}
 
 	/**
-	 * Switch by available actions
-	 *
-	 * @param string $action	action to perform
-	 * @param string $source	source file
-	 * @param string $destination	destination file
-	 * @param array	 $limits	data to perform the action
-	 * @return  boolean
+	 * File upload
+	 * Perform the upload with all required checks: file size, image size form images (crop and resize), check for overwrite and add prefixes, store the file inthe right folder
 	 */
-	private static function set_action($action, $source, $destination, $limits)
+	public static function upload(string $file, string $path, string $prefix = '', array $limits = [MAX_W, MAX_H, 'NONE', MAX_IMG, MAX_DOC], array $mimes = [], bool $zip = false, bool $force_resize = false)
 	{
-		// disable action for SVG
-        if (self::get_mime($source) == 'image/svg+xml')
-        {
-            $action = 'NONE';
-        }
-
-        // perform action
-		switch($action)
+		if (isset($_GET[$file]))
 		{
-		case 'CROP':
-			$check = X4Files_helper::create_cropped($source, $destination, $limits);
-			break;
-		case 'RESIZE':
-			$check = X4Files_helper::create_resized($source, $destination, $limits, true, true);
-			break;
-		case 'SCALE':
-			$check = X4Files_helper::create_resized($source, $destination, $limits, false);
-			break;
-		case 'FIT':
-			$check = X4Files_helper::create_fit($source, $destination, $limits, true);
-			break;
-		default:
-			$check = 1;
+			self::$file = new Upload_file_xhr($file);
+			return X4Files_helper::gupload_file($file, $path, $prefix, $zip, $limits, $mimes);
 		}
-		return $check;
+		elseif (isset($_FILES[$file]))
+		{
+			return (is_array($_FILES[$file]['name']))
+				? X4Files_helper::upload_files($file, $path, $prefix, $limits, $mimes)
+				: X4Files_helper::upload_file($file, $path, $prefix, $limits, $mimes, $zip, $force_resize);
+		}
 	}
 
-	private static function gupload_file($file, $path, $prefix, $zip, $limits, $mimes)
+    /**
+     * Upload file trought XHR
+     */
+	private static function gupload_file(string $file, string $path, string $prefix, int $zip, array $limits, array $mimes)
 	{
 		$action = '';
 
@@ -408,16 +251,15 @@ class X4Files_helper
 		$filename = self::$file->get_name($file);
 
 		// mime, prefix and suffix
+        $type = $suffix = '';
 		if ($prefix == '__secret')
 		{
-			$type =  '';
 			$prefix = '';
 			$suffix = '.x4w';
 		}
 		else
 		{
 			$type = self::filter_mime($mimes, X4Files_helper::get_mime($filename));
-			$suffix = '';
 		}
 
 		// check mime and type
@@ -496,122 +338,41 @@ class X4Files_helper
 		die;
 	}
 
-// TODO: merge with upload_files
-	private static function upload_file($file, $path, $prefix, $zip, $limits, $mimes, $force_resize)
+    /**
+     * Upload single file
+     */
+	private static function upload_file(
+        string $file,
+        string $path,
+        string $prefix,
+        array $limits,
+        array $mimes,
+        bool $zip,
+        bool $force_resize
+    )
 	{
 		$errors = array();
-
 		if (is_uploaded_file($_FILES[$file]['tmp_name']))
 		{
-			$type = self::filter_mime($mimes, $_FILES[$file]['type']);
-			if ((!empty($mimes) && empty($type)) || $type === false)
-			{
-				$errors[$file][] = '_bad_mimetype';
-			}
+            list($file_name, $file_path, $error) = self::uploading([$file, 0], $path, $prefix, $limits, $mimes, $zip);
 
-			$action = '';
-			// checks for canonical files
-			if ($path == APATH.self::$file_path || $force_resize)
-			{
-				if ($type == 'img' && $_FILES[$file]['type'] != 'image/svg+xml')
-				{
-					// too big
-					if ($_FILES[$file]['size'] > ($limits[3]*1024))
-					{
-						$errors[$file][] = '_file_size_is_too_big';
-					}
-
-                    // pixel dimensions
-                    $imageinfo = getImageSize($_FILES[$file]['tmp_name']);
-                    if (!X4Files_helper::checkImageSize($imageinfo, $limits))
-                    {
-                        if ($limits[2] == 'NONE')
-                        {
-                            $errors[$file][] = '_image_size_is_too_big';
-                        }
-                        else
-                        {
-                            $action = $limits[2];
-                        }
-                    }
-				}
-				else
-				{
-					// too big
-					if ($_FILES[$file]['size'] > ($limits[4]*1024) )
-					{
-						$errors[$file][] = '_file_size_is_too_big';
-					}
-				}
-			}
-
-			if (empty($errors))
-			{
-				// handle type folder
-				$type = ($path == APATH.self::$file_path)
-					? $type.'/'
-					: '';
-
-				// file name
-				$tmpname = X4Utils_helper::slugify(strtolower($prefix.$_FILES[$file]['name']));
-				// exists? added suffix
-				$name = X4Files_helper::get_final_name($path.$type, $tmpname);
-
-				// copy
-				if (X4Files_helper::copy_file($path.$type, $name, $_FILES[$file]['tmp_name']))
-				{
-					// define the filename with the complete path
-					$filename = $path.$type.$name;
-
-					// switch between actions
-					// NOTE: source and destination are the same
-					if (self::set_action($action, $filename, $filename, $limits))
-					{
-						// handle zip
-						if ($zip && !X4Files_helper::zip_file($filename))
-						{
-                            unlink($filename);
-                            $errors[$file][] = '_zip_error';
-						}
-					}
-					else
-					{
-						// delete the file
-						unlink($filename);
-					}
-				}
-				else
-				{
-					$errors[$file][] = '_upload_error';
-				}
-			}
+            if (!empty($error))
+            {
+                $errors[$file] = $error;
+            }
 		}
 
 		// set return or delete
-		if (!empty($errors))
+		if (empty($errors) && !empty($file_name))
 		{
-			// if errors
-			if (!empty($filename))
-			{
-				// delete the file
-				unlink($filename);
-			}
-			return array($errors, 0);
-		}
-		else if (empty($errors))
-		{
-			// if no errors
-			if (!empty($filename))
-			{
-				// return the file name (only the name, no path)
-				return $name;
-			}
-			else
-			{
-				$errors[$file][] = '_upload_error';
-				return array($errors, 0);
-			}
-		}
+            // return the file name (only the name, no path)
+			return $file_name;
+        }
+        else
+        {
+            unlink($file_path);
+            return array($errors, 0);
+        }
 	}
 
 	/**
@@ -621,131 +382,201 @@ class X4Files_helper
 	 * @param string	the name of the field
 	 * @param string	the path where to store the file. The standard path is APATH.'files/'.SPREFIX.'/filemanager/'
 	 * @param string	a prefix for the filename
-	 * @param boolean	zip the file  if it not an image and is set to true
 	 * @param array		the array contains (maximum width, maximum height, action_string). Possibles values for the action string are: 'NONE', 'CROP', 'RESIZE', 'SCALE'
 	 * @param array		the array contains valid mime types
 	 * @return mixed	the filename string if upload only a file, an array of filename if upload many files
 	 */
-	private static function upload_files($file, $path, $prefix, $zip, $limits, $mimes)
+	private static function upload_files(string $file, string $path, string $prefix, array $limits, array $mimes) : array
 	{
-		$names = $errors = array();
+		$file_names = $errors = array();
 		$n = sizeof($_FILES[$file]['tmp_name']);
 
 		for($i = 0; $i < $n; $i++)
 		{
-			if (is_uploaded_file($_FILES[$file]['tmp_name'][$i]))
-			{
-				// define the final folder
-				$type = self::filter_mime($mimes, $_FILES[$file]['type'][$i]);
-                $action = '';
+            if (is_uploaded_file($_FILES[$file]['tmp_name'][$i]))
+            {
+                list($file_name, $file_path, $error) = self::uploading([$file, $i], $path, $prefix, $limits, $mimes);
 
-				if ((!empty($mimes) && empty($type)) || $type === false)
-				{
-					$errors[$file][] = '_bad_mimetype';
-				}
+                if (!empty($file_path))
+                {
+                    $file_names[$file_name] = $file_path;
+                }
 
-				if ($type == 'img' && $path == APATH.self::$file_path)
-				{
-					// too big
-					if ($_FILES[$file]['size'][$i] > ($limits[3]*1024))
-					{
-						$errors[$file][] = '_file_size_is_too_big';
-					}
-
-					// pixel dimensions
-					$imageinfo = getImageSize($_FILES[$file]['tmp_name'][$i]);
-					if (!X4Files_helper::checkImageSize($imageinfo, $limits))
-					{
-						if ($limits[2] == 'NONE')
-						{
-							$errors[$file][] = '_image_size_is_too_big';
-						}
-						else
-						{
-							$action = $limits[2];
-						}
-					}
-				}
-				else
-				{
-					// too big
-					if ($_FILES[$file]['size'][$i] > ($limits[4]*1024) && $path == APATH.self::$file_path)
-					{
-						$errors[$file][] = '_file_size_is_too_big';
-					}
-				}
-
-				// handle type folder
-				$type = ($path == APATH.self::$file_path)
-					? $type.'/'
-					: '';
-
-				// file name
-				$tmpname = X4Utils_helper::slugify(strtolower($prefix.$_FILES[$file]['name'][$i]));
-				// exists?
-				$name = X4Files_helper::get_final_name($path.$type, $tmpname);
-
-				if (empty($errors))
-				{
-					// copy
-					$check = X4Files_helper::copy_file($path.$type, $name, $_FILES[$file]['tmp_name'][$i]);
-					if ($check)
-					{
-						// define the filename with the complete path
-						$filename = $path.$type.$name;
-
-						// switch between actions
-						// NOTE: source and destination are the same
-						$check = self::set_action($action, $filename, $filename, $limits);
-
-						// return or delete
-						if ($check)
-						{
-							$names[$name] = $filename;
-						}
-						else
-						{
-							unlink($filename);
-						}
-					}
-					else
-					{
-						$errors[$file][] = '_upload_error';
-					}
-				}
-			}
-			else
-			{
-				if (empty($names))
-				{
-					$errors[$file][] = '_upload_error';
-				}
-			}
-		}
+                if (!empty($error))
+                {
+                    $errors[$file] = $error;
+                }
+            }
+            else
+            {
+                $errors[$file][] = '_upload_error';
+            }
+        }
 
 		if (empty($errors))
 		{
-			return array(array_keys($names), 1);
+			return array(array_keys($file_names), 1);
 		}
 		else
 		{
-			foreach ($names as $k => $v)
+			foreach ($file_names as $v)
 			{
-				// delete the file
 				unlink($v);
 			}
 			return array($errors, 0);
 		}
 	}
 
+    /**
+     * Extract file data from _FILES array
+     */
+    private static function file_data(string $file, int $i, string $what) : mixed
+    {
+        $tmp = $i
+            ? $_FILES[$file][$what][$i]
+            : $_FILES[$file][$what];
+
+        if (is_array($tmp))
+        {
+            $values= array_unique($tmp);
+            return $values[0];
+        }
+        return $tmp;
+    }
+
+    /**
+     * perform checks on file uploaded and return filename or errors
+     */
+    private static function uploading(
+        array $file_n,
+        string $path,
+        string $prefix,
+        array $limits,
+        array $mimes,
+        bool $zip = false
+    ) : array
+    {
+        list($file, $i) = $file_n;
+
+        $errors = [];
+        $action = $file_name = $tmp_file_path = '';
+        // define the final folder
+        $type = self::filter_mime($mimes, self::file_data($file, $i, 'type'));
+        if ((!empty($mimes) && empty($type)) || $type === false)
+        {
+            $errors[] = '_bad_mimetype';
+        }
+
+        if ($type == 'img' && $path == APATH.self::$file_path)
+        {
+            if (self::file_data($file, $i, 'size') > ($limits[3] * 1024))
+            {
+                $errors[] = '_file_size_is_too_big';
+            }
+
+            $imageinfo = getImageSize(self::file_data($file, $i, 'tmp_name'));
+            if (!X4Files_helper::checkImageSize($imageinfo, $limits))
+            {
+                if ($limits[2] == 'NONE')
+                {
+                    $errors[] = '_image_size_is_too_big';
+                }
+                else
+                {
+                    $action = $limits[2];
+                }
+            }
+        }
+        else
+        {
+            // too big
+            if (self::file_data($file, $i, 'size') > ($limits[4] * 1024) && $path == APATH.self::$file_path)
+            {
+                $errors[] = '_file_size_is_too_big';
+            }
+        }
+
+        if (empty($errors))
+        {
+            // handle type folder
+            $type = ($path == APATH.self::$file_path)
+                ? $type.'/'
+                : '';
+
+            // file name
+            $tmp_name = X4Utils_helper::slugify(strtolower($prefix.self::file_data($file, $i, 'name')));
+            // exists?
+            $file_name = X4Files_helper::get_final_name($path.$type, $tmp_name);
+
+            // copy
+            $check = X4Files_helper::copy_file($path.$type, $file_name, self::file_data($file, $i, 'tmp_name'));
+            if ($check)
+            {
+                // define the filename with the complete path
+                $tmp_file_path = $path.$type.$file_name;
+
+                // switch between actions
+                // NOTE: source and destination are the same
+                if (self::set_action($action, $tmp_file_path, $tmp_file_path, $limits))
+                {
+                    // handle zip
+						if ($zip && !X4Files_helper::zip_file($tmp_file_path))
+						{
+                            unlink($tmp_file_path);
+                            $tmp_file_path = '';
+                            $errors[] = '_zip_error';
+						}
+                }
+                else
+                {
+                    unlink($tmp_file_path);
+                    $tmp_file_path = '';
+                }
+            }
+            else
+            {
+                $errors[] = '_upload_error';
+            }
+        }
+        return [$file_name, $tmp_file_path, $errors];
+    }
+
+    /**
+	 * Switch by available actions
+	 */
+	private static function set_action(string $action, string $source, string $destination, array $limits) : bool
+	{
+		// disable action for SVG
+        if (self::get_mime($source) == 'image/svg+xml')
+        {
+            $action = 'NONE';
+        }
+
+        // perform action
+		switch($action)
+		{
+		case 'CROP':
+			$check = X4Files_helper::create_cropped($source, $destination, $limits);
+			break;
+		case 'RESIZE':
+			$check = X4Files_helper::create_resized($source, $destination, $limits, true, true);
+			break;
+		case 'SCALE':
+			$check = X4Files_helper::create_resized($source, $destination, $limits, false);
+			break;
+		case 'FIT':
+			$check = X4Files_helper::create_fit($source, $destination, $limits, true);
+			break;
+		default:
+			$check = true;
+		}
+		return $check;
+	}
+
 	/**
 	 * Check image size
-	 *
-	 * @param array		the size of the image
-	 * @param array		the array contains (maximum width, maximum height)
-	 * @return boolean	true if image size is lower than image size limits
 	 */
-	private static function checkImageSize($size, $limits = array(MAX_W, MAX_H))
+	private static function checkImageSize(array $size, array $limits = array(MAX_W, MAX_H)) : bool
 	{
 		return ($size[0] <= $limits[0] && $size[1] <= $limits[1])
 			? true
@@ -754,14 +585,8 @@ class X4Files_helper
 
 	/**
 	 * Create a resized file image
-	 *
-	 * @param string	source image path to file
-	 * @param string	destination image path to file
-	 * @param array		the array contains (maximum width, maximum height)
-	 * @param boolean	if true force the creation of the file even if smaller than required
-	 * @return boolean
 	 */
-	public static function create_fit($src_img, $new_img, $sizes, $force = false)
+	public static function create_fit(string $src_img, string $new_img, array $sizes, bool $force = false) : bool
 	{
 		list($w, $h, $image_type) = getimagesize($src_img);
 
@@ -802,24 +627,16 @@ class X4Files_helper
 			if ($force)
 			{
 				copy($src_img, $new_img);
-				return 1;
+				return true;
 			}
 		}
-		return 0;
+		return false;
 	}
 
 	/**
 	 * Create a resized file image
-	 *
-	 * @param string	$src_img source image path to file
-	 * @param string	$new_img destination image path to file
-	 * @param array		$sizes the array contains (maximum width, maximum height)
-	 * @param boolean	$resize if true re-frame the image
-	 * @param boolean	$center if true put the new image in the center
-	 * @param array		the array color of the background
-	 * @return boolean
 	 */
-	public static function create_resized($src_img, $new_img, $sizes, $resize = true, $center = true, $rgb = array(255, 255, 255))
+	public static function create_resized(string $src_img, string $new_img, array $sizes, bool $resize = true, bool $center = true, array $rgb = [255, 255, 255]) : bool
 	{
 		// get original sizes
 		list($w, $h, $image_type) = getimagesize($src_img);
@@ -904,20 +721,15 @@ class X4Files_helper
 		        $rgb
 		    );
 		}
-
 		return $res;
 	}
 
 	/**
 	 * Create a scaled thumb from an image
-	 *
-	 * @param string	source image path to file
-	 * @param string	destination image path to file
-	 * @param array		the array contains (width, height, start_width, start_height, scalex, scaley)
-	 * @return boolean
 	 */
-	public static function create_thumb($src_img, $new_img, $sizes)
+	public static function create_thumb(string $src_img, string $new_img, array $sizes) : bool
 	{
+        // sizes = array(width, height, start_width, start_height, scalex, scaley)
 		list($w, $h, $image_type) = getimagesize($src_img);
 
 		$nw = ceil($sizes[0] * $sizes[4]);
@@ -944,15 +756,8 @@ class X4Files_helper
 
 	/**
 	 * Crop an image file
-	 *
-	 * @param string	source image path to file
-	 * @param string	destination image path to file
-	 * @param array		the array contains (maximum width, maximum height)
-	 * @param array		the array contains source coordinates (X coords, Y coords)
-	 * @param boolean	force creation
-	 * @return boolean
 	 */
-	public static function create_cropped($src_img, $new_img, $sizes, $coords = array(0, 0), $force = false)
+	public static function create_cropped(string $src_img, string $new_img, array $sizes, array $coords = [0, 0], bool $force = false) : bool
 	{
 		list($w, $h, $image_type) = getimagesize($src_img);
 		if ($w > $sizes[0] || $h > $sizes[1])
@@ -978,23 +783,17 @@ class X4Files_helper
 				)
 			);
 		}
-		else if ($force)
+		elseif ($force)
 		{
-				copy($src_img, $new_img);
+			copy($src_img, $new_img);
 		}
-		return 1;
+		return true;
 	}
 
 	/**
 	 * Create an extended file image
-	 *
-	 * @param string	source image path to file
-	 * @param string	destination image path to file
-	 * @param array		the array contains (new width and new height)
-	 * @param array		the array color of the border
-	 * @return boolean
 	 */
-	public static function create_extended($src_img, $new_img, $sizes, $rgb = array(255, 255, 255))
+	public static function create_extended(string $src_img, string $new_img, array $sizes, $rgb = [255, 255, 255]) : bool
 	{
 		list($w, $h, $image_type) = getimagesize($src_img);
 
@@ -1042,15 +841,8 @@ class X4Files_helper
 
 	/**
 	 * Create a new image with an image inside
-	 *
-	 * @param string	source image path to file
-	 * @param string	destination image path to file
-	 * @param integer	the width of the new image
-	 * @param integer	the height of the new image
-	 * @param array		the array color of the background
-	 * @return boolean
 	 */
-	public static function create_container($src_img, $new_img, $w, $h, $rgb = array(255, 255, 255))
+	public static function create_container(string $src_img, string $new_img, int $w, int $h, array $rgb = [255, 255, 255]) : bool
 	{
 		list($sw, $sh, $image_type) = getimagesize($src_img);
 
@@ -1100,14 +892,8 @@ class X4Files_helper
 
 	/**
 	 * Rotate an image
-	 *
-	 * @param string	source image path to file
-	 * @param string	destination image path to file
-	 * @param integer	degrees of the rotation anticlockwise
-	 * @param array		the array color of the background
-	 * @return boolean
 	 */
-	public static function rotate($src_img, $new_img, $degrees = 0, $rgb = array(255, 255, 255))
+	public static function rotate(string $src_img, string $new_img, int $degrees = 0, array $rgb = [255, 255, 255]) : bool
 	{
 		list($w, $h, $image_type) = getimagesize($src_img);
 
@@ -1151,15 +937,12 @@ class X4Files_helper
 
     /**
      * Check if a png has alpha channel
-     *
-     * @param   string  $file   File path
-     * @return  boolean
      */
-    public static function is_transparent_png($file)
+    public static function is_transparent_png(string $file) : bool
     {
         if (filesize($file) > 18000)
         {
-            return false;
+            return false; // too big to check
         }
         // 32-bit pngs
         // 4 checks for greyscale + alpha and RGB + alpha
@@ -1198,17 +981,12 @@ class X4Files_helper
 
 	/**
 	 * Create a new image from another
-	 *
-	 * @param integer	image type index (1 => gif, 2 => jpeg, 3 => png)
-	 * @param string	source image path to file
-	 * @param string	destination image path to file
-	 * @param array		array of sizes ($dst_width, $dst_height, $dst_x , $dst_y , $src_x , $src_y , $dst_w , $dst_h , $src_w , $src_h)
-	 * @param array		the array color of the background
-	 * @return boolean
+	 * $image_type index (1 => gif, 2 => jpeg, 3 => png)
+     * $sizes = array($dst_width, $dst_height, $dst_x , $dst_y , $src_x , $src_y , $dst_w , $dst_h , $src_w , $src_h)
 	 */
-	public static function create_image($image_type, $src_img, $new_img, $sizes, $rgb = (array(255, 255, 255)))
+	public static function create_image(int $image_type, string $src_img, string $new_img, array $sizes, array $rgb = [255, 255, 255]) : bool
 	{
-		$tn = imagecreatetruecolor($sizes['w'], $sizes['h']);
+        $tn = imagecreatetruecolor($sizes['w'], $sizes['h']);
 
         if ($image_type == 3)
         {
@@ -1278,17 +1056,13 @@ class X4Files_helper
 			@chmod($new_img, 0777);
 			return file_exists($new_img);
 		}
-		return 0;
+		return false;
 	}
 
 	/**
-	 * Return a not existent filename
-	 *
-	 * @param string	path to file
-	 * @param string	original filename
-	 * @return string
+	 * Return a not existent filename to avoid overwrite of files
 	 */
-	public static function get_final_name($path, $name, $suffix = '')
+	public static function get_final_name(string $path, string $name, string $suffix = '') : string
 	{
 		while (file_exists($path.$name.$suffix))
 		{
@@ -1311,13 +1085,8 @@ class X4Files_helper
 
 	/**
 	 * Copy uploaded file and set chmod
-	 *
-	 * @param string	path where save the file
-	 * @param string	filename
-	 * @param string	uploaded file obj
-	 * @return boolean
 	 */
-	public static function copy_file($path, $name, $obj)
+	public static function copy_file(string $path, string $name, string $obj) : bool
 	{
 		$check = move_uploaded_file($obj, $path.$name);
 		if ($check)
@@ -1328,14 +1097,9 @@ class X4Files_helper
 	}
 
     /**
-	 * Empty log file
-	 *
-	 * @param string	path where save the file
-	 * @param string	filename
-	 * @param string	uploaded file obj
-	 * @return boolean
+	 * Empty file
 	 */
-	public static function empty_file($path, $name)
+	public static function empty_file(string $path, string $name) : bool
 	{
 		chmod($path.$name, 0777);
 		return file_put_contents($path.$name, '');
@@ -1343,12 +1107,8 @@ class X4Files_helper
 
 	/**
 	 * Delete a file
-	 *
-	 * @param string	path where is stored the file
-	 * @param string	filename
-	 * @return boolean
 	 */
-	public static function del_file($path, $name)
+	public static function delete_file(string $path, string $name)
 	{
 		if (file_exists($path.$name))
 		{
@@ -1359,11 +1119,8 @@ class X4Files_helper
 
 	/**
 	 * Browse a folder and return an array of contents
-	 *
-	 * @param string	path of the folder to browse
-	 * @return array
 	 */
-	public static function browse($path)
+	public static function browse(string $path) : array
 	{
 		// Open the folder
 		$dir = @opendir($path) or die('Unable to open '.$path);
@@ -1383,26 +1140,16 @@ class X4Files_helper
 
     /**
 	 * Check if a shell command is available for PHP
-	 *
-	 * @access	private
-	 * @param	string $cmd	Command name
-	 * @return	string
 	 */
-	public static function command_exist($cmd)
+	public static function command_exist(string $cmd) : string
 	{
 		return (string) @shell_exec("which $cmd");
 	}
 
     /**
 	 * Extract a frame from a video
-	 *
-	 * @param string	$video	the video
-	 * @param string	$image	the frame
-	 * @param integer	$time	second of the frame to capture
-	 * @param array		$sizes	width and height to scale
-	 * @return mixed
 	 */
-	public static function extract_frame($video, $image, $time, $sizes = array())
+	public static function extract_frame(string $video, string $image_name, int $time, array $sizes = [])
 	{
 		// get the command, if exists
 		$ffmpeg = str_replace(NL, '', self::command_exist('ffmpeg'));
@@ -1412,7 +1159,7 @@ class X4Files_helper
 			$ipath = APATH.'files/'.SPREFIX.'/filemanager/img/';
 
 			// set the new name
-			$final_name = self::get_final_name($ipath, $image);
+			$final_name = self::get_final_name($ipath, $image_name);
 
 			//ffmpeg -i video_file -an -ss 27.888237 -vframes 1 -s 320x240 -f image2 image_file
 			if (empty($sizes))
@@ -1435,29 +1182,24 @@ class X4Files_helper
 
 	 /**
 	 * Extract a frame from a remote video
-	 *
-	 * @param string	$video	the video
-	 * @param string	$image	the frame
-	 * @param array		$sizes	width and height to scale
-	 * @return mixed
 	 */
-	public static function remote_video_frame($video, $image, $sizes = array())
+	public static function remote_video_frame(string $video, string $image_name, array $sizes = [])
 	{
 		$frame = '';
 		$image_url = parse_url($video);
 		if ($image_url['host'] == 'www.youtube.com' || $image_url['host'] == 'youtube.com')
 		{
 			$array = explode("&", $image_url['query']);
-			$frame = 'http://img.youtube.com/vi/'.substr($array[0], 2).'/0.jpg';
+			$frame = 'https://img.youtube.com/vi/'.substr($array[0], 2).'/0.jpg';
 		}
 		elseif ($image_url['host'] == 'youtu.be')
 		{
 			$path = explode('/', $image_url['path']);
-			$frame = 'http://i.ytimg.com/vi/'.$path[1].'/0.jpg';
+			$frame = 'https://i.ytimg.com/vi/'.$path[1].'/0.jpg';
 		}
 		elseif ($image_url['host'] == 'www.vimeo.com' || $image_url['host'] == 'vimeo.com')
 		{
-			$hash = unserialize(file_get_contents('http://vimeo.com/api/v2/video/'.substr($image_url['path'], 1).'.php'));
+			$hash = unserialize(file_get_contents('https://vimeo.com/api/v2/video/'.substr($image_url['path'], 1).'.php'));
 			$frame = $hash[0]['thumbnail_large'];
 		}
 
@@ -1467,7 +1209,7 @@ class X4Files_helper
 			$ipath = APATH.'files/'.SPREFIX.'/filemanager/img/';
 
 			// set the new name
-			$final_name = self::get_final_name($ipath, $image);
+			$final_name = self::get_final_name($ipath, $image_name);
 
 			// copy remote file
 			$chk = copy($frame, $ipath.$final_name);
@@ -1487,11 +1229,8 @@ class X4Files_helper
 
     /**
 	 * Zip a file
-	 *
-	 * @param string	the file to zip
-	 * @return boolean
 	 */
-	public static function zip_file($file)
+	public static function zip_file(string $file) : bool
 	{
 		// get mimetype
 		$mimetype = self::get_mime($file);
@@ -1503,7 +1242,6 @@ class X4Files_helper
 		}
 		else
 		{
-			// try to zip
 			$info = pathinfo($file);
 
 			$zip = new ZipArchive();
@@ -1523,20 +1261,15 @@ class X4Files_helper
 	/**
 	 * Get a file
 	 * the path of the file will remain anonymous
-	 *
-	 * @param string	$file file with path
-	 * @param string	$filename file dname for the download
-	 * @param boolean	$download force the download
-	 * @return file
 	 */
-	public static function get_file($file, $filename = '', $download = true)
+	public static function get_file(string $file, string $download_name = '', bool $download = true)
 	{
 		if (file_exists($file))
 		{
             set_time_limit(0);
-			$download_name = (empty($filename))
+			$download_name = (empty($download_name))
 				? basename($file)
-				: X4Utils_helper::slugify($filename);
+				: X4Utils_helper::slugify($download_name);
 
 			$mime = self::get_mime($file);
 			if ($download)
@@ -1571,7 +1304,10 @@ class X4Files_helper
 
             ob_clean();
             flush();
-            if (ob_get_level()) ob_end_clean();
+            if (ob_get_level())
+            {
+                ob_end_clean();
+            }
             readfile($file);
 			exit;
 		}
@@ -1579,12 +1315,8 @@ class X4Files_helper
 
     /**
 	 * Set header
-	 *
-	 * @param string	$filename
-	 * @param integer   $filesize
-	 * @return void
 	 */
-	public static function setHeader($filename, $filesize)
+	public static function setHeader(string $filename, int $filesize)
 	{
 		// disable caching
 		$now = gmdate("D, d M Y H:i:s");
@@ -1600,25 +1332,23 @@ class X4Files_helper
 
 		// disposition / encoding on response body
 		if (isset($filename) && strlen($filename) > 0)
+        {
 			header("Content-Disposition: attachment;filename={$filename}");
+        }
 		if (isset($filesize))
+        {
 			header("Content-Length: ".$filesize);
+        }
 		header("Content-Transfer-Encoding: binary");
 		header("Connection: close");
 	}
 
     /**
-	 * Get csv
-	 *
-	 * @param string	$filename
-	 * @param array     $items
-     * @param boolean   $header
-	 * @return void
+	 * Return array as CSV file
 	 */
-	public static function get_csv($filename, $items, $header = false)
+	public static function get_csv(string $filename, array $items, bool $header = false)
 	{
 		$csv = tmpfile();
-
 		foreach ($items as $i)
 		{
 			$row = (array) $i;
@@ -1631,7 +1361,6 @@ class X4Files_helper
 		}
 
 		rewind($csv);
-
 		$filename = X4Utils_helper::slugify($filename.' '.date('Y-m-d').'.csv');
 
 		$fstat = fstat($csv);
@@ -1647,19 +1376,16 @@ class X4Files_helper
 	 * @param   string	$folder Folder name
 	 * @return  boolean
 	 */
-	public static function folder_exist($folder)
+	public static function folder_exist(string $folder) : bool
 	{
-		// is set?
-		if (!$folder || $folder == '')
+		if (empty($folder))
 		{
 			return false;
 		}
 
-		// exists?
 		if (!is_dir(APATH.'files/'.$folder))
 		{
 			$chk = mkdir(APATH.'files/'.$folder);
-
 			// is writable?
 			if ($chk)
 			{
@@ -1671,18 +1397,13 @@ class X4Files_helper
 		    // is writable?
 		    $chk = (is_writable(APATH.'files/'.$folder));
 		}
-
 		return $chk;
 	}
 
 	/**
 	 * Copy file from
-	 *
-	 * @param string	the name of the field
-	 * @param string	the path where to store the file
-	 * @return mixed	the filename string if
 	 */
-	public static function copy_file_from($old_file, $path)
+	public static function copy_file_from(string $old_file, string $path)
 	{
 		if (file_exists($old_file) && !empty($path))
 		{
@@ -1701,15 +1422,10 @@ class X4Files_helper
 
 	/**
 	 * Get a remote file
-	 *
-	 * @param string	the name of the field
-	 * @param string	the path where to store the file
-	 * @return string
 	 */
-	public static function get_remote_file($remote, $path)
+	public static function get_remote_file(string $remote, string $path) : string
 	{
         $headers = get_headers($remote);
-
         if (substr($headers[0], 9, 3) == '200')
         {
             $str = file_get_contents($remote);
@@ -1729,35 +1445,31 @@ class X4Files_helper
 	}
 
 	/**
-	 * Get the real name of a remote file
-	 *
-	 * @param string	remote file URL
-	 * @return string
+	 * Get the real name of a remote URL
 	 */
-	public static function get_real_filename($headers, $url)
+	public static function get_real_filename(array $headers, string $url) : string
     {
         foreach ($headers as $header)
         {
             if (strpos(strtolower($header),'content-disposition') !== false)
             {
                 $tmp_name = explode('=', $header);
-                if ($tmp_name[1]) return trim($tmp_name[1],'";\'');
+                if ($tmp_name[1])
+                {
+                    return trim($tmp_name[1],'";\'');
+                }
             }
         }
-
         $stripped_url = preg_replace('/\\?.*/', '', $url);
         return basename($stripped_url);
     }
 
 	/**
 	 * Get the mime type of a remote file
-	 *
-	 * @param string	remote file URL
-	 * @return string
 	 */
-	public static function get_remote_file_mime_type($remote)
+	public static function get_remote_file_mime_type(string $url) : string
     {
-        $ch = curl_init($remote);
+        $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($ch, CURLOPT_HEADER, 1);
@@ -1767,13 +1479,9 @@ class X4Files_helper
     }
 
 	/**
-	 * Get icon
-	 *
-	 * @param string	filename
-	 * @param string	size
-	 * @return mixed	the filename string if
+	 * Get Fontawesome icon
 	 */
-	public static function get_icon($file, $size= 'fa-2x')
+	public static function get_icon(string $file, string $size= 'fa-2x') : string
 	{
 	    $ext = substr($file, -3);
 	    switch ($ext)
@@ -1805,7 +1513,7 @@ class Upload_file_xhr
     public $temp;
     public $real_size;
 
-    public function __construct($field)
+    public function __construct()
     {
     	$input = fopen("php://input", "r");
 		$this->temp = tmpfile();
@@ -1815,13 +1523,13 @@ class Upload_file_xhr
 
 	/**
      * Save the file to the specified path
-     * @return integer greater than 0 on success
      */
-    public function save($path)
+    public function save(string $path) : int
     {
 		if ($this->real_size != $this->get_size())
+        {
 			return 0;
-
+        }
 		$target = fopen($path, "w");
 		fseek($this->temp, 0, SEEK_SET);
 		$check = stream_copy_to_stream($this->temp, $target);
@@ -1836,14 +1544,12 @@ class Upload_file_xhr
 
     public function get_size()
     {
-        if (isset($_SERVER["CONTENT_LENGTH"]))
-            return (int)$_SERVER["CONTENT_LENGTH"];
-        else
-        {
-        	return 0;
-        	//throw new Exception('Getting content length is not supported.');
-            //header('Location: '.BASE_URL.'msg/message/_upload_error');
-            //die;
-        }
+        return (isset($_SERVER["CONTENT_LENGTH"]))
+            ? (int)$_SERVER["CONTENT_LENGTH"]
+            : 0;
+
+        //throw new Exception('Getting content length is not supported.');
+        //header('Location: '.BASE_URL.'msg/message/_upload_error');
+        //die;
     }
 }

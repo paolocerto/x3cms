@@ -17,9 +17,6 @@ class X4get_by_key_plugin extends X4Plugin_core implements X3plugin
 {
 	/**
 	 * Constructor
-	 *
-	 * @param	object	$site, site object
-	 * @return	void
 	 */
 	public function __construct(X4Site_model $site)
 	{
@@ -30,13 +27,8 @@ class X4get_by_key_plugin extends X4Plugin_core implements X3plugin
 	/**
 	 * Default method
 	 * Display paginated articles with specified key
-	 *
-	 * @param object	$page object
-	 * @param array		$args array of args
-	 * @param string	$param parameter (the key)
-	 * @return string
 	 */
-	public function get_module(stdClass $page, array $args, string $param = '')
+	public function get_module(stdClass $page, array $args, string $param = '') : mixed
 	{
 		$out = '';
 
@@ -136,15 +128,8 @@ class X4get_by_key_plugin extends X4Plugin_core implements X3plugin
 
 	/**
 	 * call plugin actions
-	 *
-	 * @param   string	$control action name
-	 * @param   mixed	$a
-	 * @param   mixed	$b
-	 * @param   mixed	$c
-	 * @param   mixed	$d
-	 * @return  void
 	 */
-	public function plugin(string $control, string $a, string $b, string $c, string $d)
+	public function plugin(string $control, mixed $a, mixed $b, mixed $c, mixed $d) : void
 	{
 		// none
 	}

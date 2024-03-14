@@ -18,8 +18,6 @@ class Search_controller extends X4Cms_controller
 	/**
 	 * Constructor
 	 * check if user is logged
-	 *
-	 * @return  void
 	 */
 	public function __construct()
 	{
@@ -29,10 +27,8 @@ class Search_controller extends X4Cms_controller
 
 	/**
 	 * Display search results
-	 *
-	 * @return  void
 	 */
-	public function _default()
+	public function _default() : void
 	{
 		// load dictionary
 		$this->dict->get_wordarray(array('search'));
@@ -41,9 +37,6 @@ class Search_controller extends X4Cms_controller
 		$page = $this->get_page('search');
 		$view = new X4View_core(X4Theme_helper::set_tpl($page->tpl));
 		$view->page = $page;
-
-		// build the message
-		$tmp = '';
 
         // check post
 		$is_post = (X4Route_core::$post && trim($_POST['search']) != '');
@@ -61,6 +54,7 @@ class Search_controller extends X4Cms_controller
 		{
 			// found counter
 			$tot = 0;
+            $list = '<p>'._SEARCH_ZERO_RESULT.'</p>';
 
 			// sanitize
 			$searched = ($is_post)
@@ -71,91 +65,16 @@ class Search_controller extends X4Cms_controller
 			$str = explode(' ', addslashes($searched));
 
 			// search in area's articles
-			$found = $this->site->search($page->id_area, $str);
+            $found_pages = $this->search_in_articles($tot, $page, $str);
 
-			// build links to items found
-			if ($found)
-			{
-				// update counter
-				$tot += sizeof($found);
+            // search in modules
+            $found_modules = $this->search_in_modules($tot, $page, $str, $found_pages);
 
-				// set message
-				$tmp .= '<strong>'._SEARCH_PAGES.'</strong></p><ul class="search_result">';
-
-				// build links to items found
-				foreach ($found as $i)
-				{
-					$tmp .= '<li><a href="'.BASE_URL.$i->url.'" title="'.stripslashes($i->description).'">'.stripslashes($i->name).'</a>'._TRAIT_.nl2br(stripslashes($i->description)).'</li>';
-				}
-				$tmp .= '</ul>';
-			}
-
-			// modules
-			$plug = new X4Plugin_model();
-
-			// get searchable plugins
-			$searchable = $plug->get_searchable($page->id_area);
-			if ($searchable)
-			{
-				foreach ($searchable as $i)
-				{
-					// model to load
-					$model = ucfirst($i->name).'_model';
-					$mod = new $model;
-
-					// get page URL to use as link
-					$to_page = (isset($mod->search_param))
-						? $this->site->get_page_to($page->id_area, $page->lang, $i->name, $mod->search_param)
-                        : $this->site->get_page_to($page->id_area, $page->lang, $i->name, '*');
-
-					// perform plugin search
-					$found = $mod->search($page->id_area, $page->lang, $str);
-
-					// build links to items found
-					if ($found)
-					{
-						// plugin name
-						$plugin = strtoupper($i->name);
-
-						// update counter
-						$tot += sizeof($found);
-
-						// set message
-						if (defined('_SEARCH_'.$plugin))
-                        {
-							$tmp .= '<strong>'.constant('_SEARCH_'.$plugin).'</strong></p>';
-                        }
-						// build links to items found
-						$tmp .= '<ul class="search_result">';
-                        // create list to pages where found articles with matched contents
-						foreach ($found as $ii)
-						{
-							// create url
-							$url = (isset($mod->personalized_url) && $mod->personalized_url)
-								? $mod->get_url($ii, $to_page)
-								: $to_page.'/'.$ii->id.'/detail';
-
-							// item name
-							$item = stripslashes($ii->name);
-
-							$description = (empty($ii->description))
-								? ''
-								: _TRAIT_.stripslashes($ii->description);
-
-							// link to item
-							$tmp .= '<li><a href="'.BASE_URL.$url.'" title="'.$item.'">'.$item.'</a>'.$description.'</li>';
-						}
-						$tmp .= '</ul>';
-					}
-				}
-			}
-
-			// if found
-			$tmp = ($tot)
-                ? '<p>'._SEARCH_FOUND.' '.$tot.' '._SEARCH_ITEMS.'</p>'.$tmp
-                : '<p>'._SEARCH_ZERO_RESULT.'</p>';
-
-			$msg = new Obj_msg(_SEARCH_RESULT, _SEARCH_OF.' <strong>'.addslashes($_POST['search']).'</strong>'.$tmp);
+            if ($tot)
+            {
+                $list = $this->build_found_list($tot, $found_pages, $found_modules);
+            }
+			$msg = new Obj_msg(_SEARCH_RESULT, _SEARCH_OF.' <strong>'.addslashes($searched).'</strong>'.$list, ['Hn' => 'h1']);
 		}
 		else
 		{
@@ -175,4 +94,166 @@ class Search_controller extends X4Cms_controller
 
 		$view->render(true);
 	}
+
+    /**
+     * Search in articles
+     */
+    private function search_in_articles(int &$tot, stdClass $page, array $str) : array
+    {
+        // results array(page_url =>[<li>item, num of found])
+        $results= [];
+        // search in area's articles
+        $found = $this->site->search($page->id_area, $str);
+
+        // build links to items found
+        if ($found)
+        {
+            // build links to items found
+            foreach ($found as $i)
+            {
+                $results[$i->url] = ['<li>
+                                    <a href="'.BASE_URL.$i->url.'" title="'.stripslashes($i->description).'">
+                                        '.stripslashes($i->name).'
+                                    </a>
+                                    '._TRAIT_.nl2br(stripslashes($i->description)).'XXXNUMXXX
+                                </li>'
+                                , $i->n];
+
+                // update counter
+                $tot += $i->n;
+            }
+        }
+        return $results;
+    }
+
+    /**
+     * Search in modules
+     */
+    private function search_in_modules(int &$tot, stdClass $page, array $str, array &$found_pages) : array
+    {
+        $results = [];
+
+        // get searchable plugins
+        $plug = new X4Plugin_model();
+        $searchable = $plug->get_searchable($page->id_area);
+        if ($searchable)
+        {
+            foreach ($searchable as $i)
+            {
+                // model to load
+                $model = ucfirst($i->name).'_model';
+                $mod = new $model;
+
+                // get page URL to use as link
+                $to_page = (isset($mod->search_param))
+                    ? $this->site->get_page_to($page->id_area, $page->lang, $i->name, $mod->search_param)
+                    : $this->site->get_page_to($page->id_area, $page->lang, $i->name, '*');
+
+                // perform plugin search
+                $found = $mod->search($page->id_area, $page->lang, $str);
+
+                // build links to items found
+                if ($found)
+                {
+                    // plugin name
+                    $plugin = strtoupper($i->name);
+
+                    // create list to pages where found articles with matched contents
+                    foreach ($found as $ii)
+                    {
+                        // create url
+                        $url = (isset($mod->personalized_url) && $mod->personalized_url)
+                            ? $mod->get_url($ii, $to_page)
+                            : $to_page.'/'.$ii->id.'/detail';
+
+                        // item name
+                        $item = stripslashes($ii->name);
+
+                        $description = (empty($ii->description))
+                            ? ''
+                            : _TRAIT_.stripslashes($ii->description);
+
+                        if (defined('_SEARCH_'.$plugin))
+                        {
+                            // handle as module
+                            if (!isset($results['modules'][$plugin]))
+                            {
+                                $results['modules'][$plugin] = '<strong>'.constant('_SEARCH_'.$plugin).'</strong></p>';
+                            }
+
+                            if (isset($results[$plugin]['pages'][$url]))
+                            {
+                                $results[$plugin]['pages'][$url][1] += 1;
+                            }
+                            else
+                            {
+                                $results[$plugin]['pages'][$url] = [
+                                    '<li><a href="'.BASE_URL.$url.'" title="'.$item.'">'.$item.'</a>'.$description.'XXXNUMXXX</li>',
+                                    1];
+                            }
+                        }
+                        else
+                        {
+                            // handle as page
+                            if (isset($found_pages[$url]))
+                            {
+                                $found_pages[$url][1] += 1;
+                            }
+                            else
+                            {
+                                $found_pages[$url] = [
+                                    '<li><a href="'.BASE_URL.$url.'" title="'.$item.'">'.$item.'</a>'.$description.'XXXNUMXXX</li>',
+                                    1];
+                            }
+                        }
+                        $tot++;
+                    }
+                }
+            }
+        }
+        return $results;
+    }
+
+    /**
+     * Build found list
+     */
+    private function build_found_list(int $tot, array $found_pages, array $found_modules) : string
+    {
+        $list = '<p>'._SEARCH_FOUND.' '.$tot.' '._SEARCH_ITEMS.'</p>';
+        if (!empty($found_pages))
+        {
+            $list .= '<strong>'._SEARCH_PAGES.'</strong></p>
+                <ul class="search_result">';
+            foreach ($found_pages as $i)
+            {
+                $num = $i[1] > 1
+                    ? '<span class="text-sm">('.$i[1].')</span>'
+                    : '';
+
+                $list .= str_replace('XXXNUMXXX', $num, $i[0]);
+            }
+
+        }
+        $list .= '</ul>';
+
+        if (!empty($found_modules))
+        {
+            foreach ($found_modules['modules'] as $k => $v)
+            {
+                $list.= $v;
+                $list .= '<ul class="search_result">';
+                foreach ($found_modules[$k]['pages'] as $i)
+                {
+                    $num = $i[1] > 1
+                        ? '<span class="text-sm">('.$i[1].')</span>'
+                        : '';
+
+                    $list .= str_replace('XXXNUMXXX', $num, $i[0]);
+                }
+
+                $list .= '</ul>';
+            }
+        }
+        return $list;
+    }
 }

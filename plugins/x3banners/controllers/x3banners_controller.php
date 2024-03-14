@@ -20,8 +20,6 @@ class X3banners_controller extends X3ui_controller implements X3plugin_controlle
 	/**
 	 * Constructor
 	 * check if user is logged
-	 *
-	 * @return  void
 	 */
 	public function __construct()
 	{
@@ -32,13 +30,8 @@ class X3banners_controller extends X3ui_controller implements X3plugin_controlle
 	/**
 	 * Default method
 	 * This method is required
-	 *
-	 * @param   integer $id_area Area ID
-	 * @param   string  $lang Language code
-	 * @param   integer $pp Pagination index
-	 * @return  void
 	 */
-	public function mod(int $id_area = 2, string $lang = '', int $pp = 0)
+	public function mod(int $id_area = 2, string $lang = '', int $pp = 0) : void
 	{
 		// load dictionary
 		$this->dict->get_wordarray(array('x3banners'));
@@ -67,7 +60,7 @@ class X3banners_controller extends X3ui_controller implements X3plugin_controlle
 		$view->content->pp = $pp;
         $view->content->qs = $qs;
 
-		$mod = new X3banners_model($this->site->data->xdatabase);
+		$mod = new X3banners_model($this->site->data->db);
 
 		$view->content->items = X4Pagination_helper::paginate($mod->get_items($id_area, $lang, $qs), $pp);
         $view->content->pages = $mod->get_pages($id_area, $lang);
@@ -89,12 +82,8 @@ class X3banners_controller extends X3ui_controller implements X3plugin_controlle
 
 	/**
 	 * x3banners actions
-	 *
-     * @param   integer $id_area
-	 * @param	string	$lang
-	 * @return  void
 	 */
-	public function actions(int $id_area, string $lang)
+	public function actions(int $id_area, string $lang) : string
 	{
 		return '<a class="link" @click="popup(\''.BASE_URL.'x3banners/edit/'.$id_area.'/'.$lang.'\')" title="'._X3BANNERS_ADD.'">
                 <i class="fa-solid fa-lg fa-circle-plus"></i>
@@ -103,14 +92,8 @@ class X3banners_controller extends X3ui_controller implements X3plugin_controlle
 
 	/**
 	 * Change status
-	 *
-	 * @param   string	$what field to change
-     * @param   integer $id_area
-	 * @param   integer $id ID of the item to change
-	 * @param   integer $value value to set (0 = off, 1 = on)
-	 * @return  void
 	 */
-	public function set(string $what, int $id_area, int $id, int $value = 0)
+	public function set(string $what, int $id_area, int $id, int $value = 0) : void
 	{
 		$msg = null;
 		// check permission
@@ -118,7 +101,7 @@ class X3banners_controller extends X3ui_controller implements X3plugin_controlle
 		if (is_null($msg))
 		{
 			// do action
-			$mod = new X3banners_model($this->site->data->xdatabase);
+			$mod = new X3banners_model($this->site->data->db);
 			$result = $mod->update($id, array($what => $value));
 
 			// set message
@@ -139,19 +122,14 @@ class X3banners_controller extends X3ui_controller implements X3plugin_controlle
 
 	/**
 	 * Edit item
-	 *
-	 * @param   integer $id_area Area ID
-	 * @param   string	$lang Language code
-	 * @param   integer $id Item ID
-	 * @return  void
 	 */
-	public function edit(int $id_area, string $lang, int $id = 0)
+	public function edit(int $id_area, string $lang, int $id = 0) : void
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'x3banners'));
 
 		// get object
-		$mod = new X3banners_model($this->site->data->xdatabase);
+		$mod = new X3banners_model($this->site->data->db);
 		$item = ($id)
 			? $mod->get_by_id($id)
 			: new Obj_x3banners($id_area, $lang);
@@ -197,12 +175,8 @@ class X3banners_controller extends X3ui_controller implements X3plugin_controlle
 
 	/**
 	 * Register Edit / New item
-	 *
-	 * @access	private
-	 * @param   array 	$_post _POST array
-     * @return  void
 	 */
-	private function editing(array $_post)
+	private function editing(array $_post) : void
 	{
 		$msg = null;
 		// check permission
@@ -226,7 +200,7 @@ class X3banners_controller extends X3ui_controller implements X3plugin_controlle
                 'auto_hide' => $_post['auto_hide']
 			);
 
-            $mod = new X3banners_model($this->site->data->xdatabase);
+            $mod = new X3banners_model($this->site->data->db);
 
             // update or insert
             if ($_post['id'])
@@ -247,7 +221,7 @@ class X3banners_controller extends X3ui_controller implements X3plugin_controlle
                 if (!$_post['id'])
                 {
                     // permissions
-                    $perm = new Permission_model($this->site->data->xdatabase);
+                    $perm = new Permission_model($this->site->data->db);
                     $array[] = array(
                         'action' => 'insert',
                         'id_what' => $result[0],
@@ -268,17 +242,14 @@ class X3banners_controller extends X3ui_controller implements X3plugin_controlle
 
 	/**
 	 * Delete item
-	 *
-	 * @param   integer $id Item ID
-	 * @return  void
 	 */
-	public function delete(int $id)
+	public function delete(int $id) : void
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'x3banners'));
 
 		// get object
-		$mod = new X3banners_model($this->site->data->xdatabase);
+		$mod = new X3banners_model($this->site->data->db);
 		$item = $mod->get_by_id($id, 'x3_banners', 'id, id_area, title');
 		// build the form
 		$fields = array();
@@ -310,12 +281,8 @@ class X3banners_controller extends X3ui_controller implements X3plugin_controlle
 
 	/**
 	 * Deleting item
-	 *
-	 * @access	private
-	 * @param   object 	$item Item object
-	 * @return  void
 	 */
-	private function deleting(stdClass $item)
+	private function deleting(stdClass $item) : void
 	{
 		$msg = null;
 		// check permission
@@ -323,7 +290,7 @@ class X3banners_controller extends X3ui_controller implements X3plugin_controlle
 		if (is_null($msg))
 		{
 			// action
-			$mod = new X3banners_model($this->site->data->xdatabase);
+			$mod = new X3banners_model($this->site->data->db);
 			$result = $mod->delete($item->id, 'x3_banners');
 
 			// set message
@@ -332,7 +299,7 @@ class X3banners_controller extends X3ui_controller implements X3plugin_controlle
 			// clear useless permissions
 			if ($result[1])
 			{
-				$perm = new Permission_model($this->site->data->xdatabase);
+				$perm = new Permission_model($this->site->data->db);
 				$perm->deleting_by_what('x3_banners', $item->id);
 
 				// set what update

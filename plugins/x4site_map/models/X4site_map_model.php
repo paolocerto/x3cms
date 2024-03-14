@@ -18,8 +18,6 @@ class X4site_map_model extends X4Model_core
 	/**
 	 * Constructor
 	 * set the default table
-	 *
-	 * @return  void
 	 */
 	public function __construct()
 	{
@@ -29,14 +27,8 @@ class X4site_map_model extends X4Model_core
     /**
 	 * Build the form array required to set the parameter
 	 * This method have to be updated with the plugin options
-	 *
-	 * @param	integer $id_area Area ID
-	 * @param	string	$lang Language code
-     * @param	integer $id_page
-	 * @param	string	$param Parameter
-	 * @return	array
 	 */
-	public function configurator(int $id_area, string $lang, int $id_page, string $param)
+	public function configurator(int $id_area, string $lang, int $id_page, string $param) : array
 	{
 	    $fields = array();
 

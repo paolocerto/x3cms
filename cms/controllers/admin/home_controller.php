@@ -18,8 +18,6 @@ class Home_controller extends X3ui_controller
 	/**
 	 * Constructor
 	 * check if user is logged
-	 *
-	 * @return  void
 	 */
 	public function __construct()
 	{
@@ -29,21 +27,16 @@ class Home_controller extends X3ui_controller
 
 	/**
 	 * Redirect to home method
-	 *
-	 * @return  void
 	 */
-	public function _default()
+	public function _default() : void
 	{
 		$this->start();
 	}
 
 	/**
 	 * Reload to home method
-	 *
-     * @param   string $url
-	 * @return  void
 	 */
-	public function redirect(string $url)
+	public function redirect(string $url) : void
 	{
 		$page = $this->get_page('home');
 		$view = new X4View_core(X4Theme_helper::set_tpl($page->tpl));
@@ -57,11 +50,8 @@ class Home_controller extends X3ui_controller
 	/**
 	 * Admin area home page
 	 * This page displays Notices and Bookmarks
-	 *
-	 * @param   string  $start_page URL of first page to load
-	 * @return  void
 	 */
-	public function start(string $start_page = 'home§dashboard')
+	public function start(string $start_page = 'home§dashboard') : void
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('home'));
@@ -84,11 +74,9 @@ class Home_controller extends X3ui_controller
 
 	/**
 	 * Admin area dashboard
-	 * This page displays Notices and Bookmarks
-	 *
-	 * @return  void
+	 * This page displays Notices and widgets
 	 */
-	public function dashboard()
+	public function dashboard() : void
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('widgets', 'home'));
@@ -111,12 +99,19 @@ class Home_controller extends X3ui_controller
 		$view->render(true);
 	}
 
+    /**
+	 * Admin server load
+	 */
+	public function load() : void
+	{
+		$load = X4System_helper::getServerLoad();
+		echo round($load, 2).'%';
+	}
+
 	/**
 	 * Admin area menu
-	 *
-	 * @return  void
 	 */
-	public function menu()
+	public function menu() : void
 	{
         $this->dict->get_wordarray(array('menus'));
 
@@ -134,11 +129,8 @@ class Home_controller extends X3ui_controller
 
 	/**
 	 * Get notices from x3cms.net
-	 *
-	 * @param   string  $lang Language code
-	 * @return  string
 	 */
-	private function get_notices(string $lang)
+	private function get_notices(string $lang) : string
 	{
 		$contextOptions = [
 			'ssl' => [

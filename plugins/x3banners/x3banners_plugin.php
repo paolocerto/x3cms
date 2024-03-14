@@ -18,9 +18,6 @@ class X3banners_plugin extends X4Plugin_core implements X3plugin
 
 	/**
 	 * Constructor
-	 *
-	 * @param	object	$site, site object
-	 * @return	void
 	 */
 	public function __construct(X4Site_model $site)
 	{
@@ -30,13 +27,8 @@ class X3banners_plugin extends X4Plugin_core implements X3plugin
 
 	/**
 	 * Default method
-	 *
-	 * @param object	$page object
-	 * @param array		$args array of args
-	 * @param string	$param plugin parameter
-	 * @return string
 	 */
-	public function get_module(stdClass $page, array $args, string $param = '')
+	public function get_module(stdClass $page, array $args, string $param = '') : mixed
 	{
         // if param can be exploded
 		$p = explode('|', $param);
@@ -54,15 +46,11 @@ class X3banners_plugin extends X4Plugin_core implements X3plugin
 
     /**
 	 * banner_top
-	 *
-	 * @param   object	Page
-	 * @param   array	Array of args
-	 * @return  string
 	 */
-	private function banner_top($page, $args)
+	private function banner_top(stdClass $page, array $args) : string
 	{
 		// get banner
-        $mod = new X3banners_model($this->site->data->xdatabase);
+        $mod = new X3banners_model($this->site->data->db);
 		$banner = $mod->get_banner_by_id_page($page->id);
 
 		if ($banner)
@@ -105,15 +93,8 @@ class X3banners_plugin extends X4Plugin_core implements X3plugin
 
 	/**
 	 * call plugin actions
-	 *
-	 * @param   string	$control action name
-	 * @param   mixed	$a
-	 * @param   mixed	$b
-	 * @param   mixed	$c
-	 * @param   mixed	$d
-	 * @return  void
 	 */
-	public function plugin(string $control, string $a, string $b, string $c, string $d)
+	public function plugin(string $control, mixed $a, mixed $b, mixed $c, mixed $d) : void
 	{
 	 	switch ($control)
 		{
@@ -128,20 +109,15 @@ class X3banners_plugin extends X4Plugin_core implements X3plugin
 		*/
 
 		default:
-			return '';
+			echo '';
 			break;
 		}
 	}
 
     /**
 	 * SAMPLE method
-	 *
-	 * @param   integer $id_area Area ID
-	 * @param   mixed	$a
-	 * @param   mixed	$b
-	 * @return  mixed
 	 */
-	private function test($a, $b)
+	private function test(mixed $a, mixed $b)
 	{
 		// TO DO
 		/*

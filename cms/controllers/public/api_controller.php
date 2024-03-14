@@ -18,8 +18,6 @@ class Api_controller extends X4Cms_controller
 {
 	/**
 	 * Constructor
-	 *
-	 * @return  void
 	 */
 	public function __construct()
 	{
@@ -29,10 +27,6 @@ class Api_controller extends X4Cms_controller
 
 	/**
 	 * Generic API override __call
-	 *
-	 * @param string	url/controller name
-	 * @param array		array of arguments
-	 * @return void
 	 */
 	public function __call(string $method, array $args)
 	{

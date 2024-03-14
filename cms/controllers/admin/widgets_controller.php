@@ -18,8 +18,6 @@ class Widgets_controller extends X3ui_controller
 	/**
 	 * Constructor
 	 * check if user is logged
-	 *
-	 * @return  void
 	 */
 	public function __construct()
 	{
@@ -55,24 +53,16 @@ class Widgets_controller extends X3ui_controller
 
 	/**
 	 * Widget actions
-	 *
-     * @access	private
-	 * @return  void
 	 */
-	private function actions()
+	private function actions() : string
 	{
 		return '<a class="link" @click="popup(\''.BASE_URL.'widgets/edit\')" title="'._WIDGETS_NEW.'"><i class="fa-solid fa-lg fa-circle-plus"></i></a>';
 	}
 
 	/**
 	 * Change status
-	 *
-	 * @param   string  $what field to change
-	 * @param   integer $id ID of the item to change
-	 * @param   integer $value value to set (0 = off, 1 = on)
-	 * @return  void
 	 */
-	public function set(string $what, int $id, int $value = 0)
+	public function set(string $what, int $id, int $value = 0) : void
 	{
 		$msg = null;
 		$mod = new Widget_model();
@@ -107,10 +97,8 @@ class Widgets_controller extends X3ui_controller
 
 	/**
 	 * Edit widget
-	 *
-	 * @return  void
 	 */
-	public function edit()
+	public function edit() : void
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'widgets'));
@@ -184,12 +172,8 @@ class Widgets_controller extends X3ui_controller
 
 	/**
 	 * Edit widget
-	 *
-	 * @access	private
-	 * @param   array 	$_post _POST array
-	 * @return  void
 	 */
-	private function editing(array $_post)
+	private function editing(array $_post) : void
 	{
 		$msg = null;
 		// check permissions
@@ -240,10 +224,8 @@ class Widgets_controller extends X3ui_controller
 
 	/**
 	 * Move widgets
-	 *
-	 * @return  void
 	 */
-	public function ordering()
+	public function ordering() : void
 	{
 		$msg = null;
 		if (X4Route_core::$input)
@@ -281,12 +263,9 @@ class Widgets_controller extends X3ui_controller
 	}
 
 	/**
-	 * Delete widget form (use Ajax)
-	 *
-	 * @param   integer $id Bookmark ID
-	 * @return  void
+	 * Delete widget form
 	 */
-	public function delete(int $id)
+	public function delete(int $id) : void
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'widgets'));
@@ -324,13 +303,9 @@ class Widgets_controller extends X3ui_controller
 	}
 
 	/**
-	 * Delete bookmark
-	 *
-	 * @access	private
-	 * @param   array 	$_post _POST array
-	 * @return  void
+	 * Delete widget
 	 */
-	private function deleting(array $_post)
+	private function deleting(array $_post) : void
 	{
 		$msg = null;
 		// check permissions

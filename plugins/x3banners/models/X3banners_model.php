@@ -19,9 +19,6 @@ class X3banners_model extends X4Model_core
 {
 	/**
 	 * Constructor
-	 * set the default table
-	 *
-	 * @return  void
 	 */
 	public function __construct(string $db = 'default')
 	{
@@ -35,14 +32,8 @@ class X3banners_model extends X4Model_core
 	/**
 	 * Build the form array required to set the parameter
 	 * This method have to be updated with the plugin options
-	 *
-	 * @param	integer $id_area Area ID
-	 * @param	string	$lang Language code
-	 * @param	integer $id_page
-	 * @param	string	$param Parameter
-	 * @return	array
 	 */
-	public function configurator(int $id_area, string $lang, int $id_page, string $param)
+	public function configurator(int $id_area, string $lang, int $id_page, string $param) : array
 	{
 	    $fields = array();
 
@@ -101,13 +92,8 @@ class X3banners_model extends X4Model_core
 	/**
 	 * Get items
 	 * Join with privs table
-	 *
-	 * @param   integer $id_area Area ID
-	 * @param   string	$lang Language code
-	 * @param   array	$qs
-	 * @return  array	array of objects
 	 */
-	public function get_items(int $id_area, string $lang, array $qs)
+	public function get_items(int $id_area, string $lang, array $qs) : array
 	{
 		$where = '';
 
@@ -148,12 +134,8 @@ class X3banners_model extends X4Model_core
 
     /**
 	 * Get pages for refresh list of pages when change contest
-	 *
-	 * @param   integer	$id_area Area ID
-	 * @param   string 	$lang Language code
-	 * @return  void
 	 */
-	public function get_pages(int $id_area, string $lang)
+	public function get_pages(int $id_area, string $lang) : array
 	{
 		return $this->db->query('SELECT p.id, LPAD(p.name, CHAR_LENGTH(p.name)+p.deep, \'-\') AS name, IF(pr.id IS NULL, u.level, pr.level) AS level
 				FROM pages p
@@ -166,11 +148,8 @@ class X3banners_model extends X4Model_core
 
     /**
 	 * Get one from available banners in a page
-	 *
-	 * @param   integer $id_page
-	 * @return  array	array of objects
 	 */
-	public function get_banner_by_id_page(int $id_page)
+	public function get_banner_by_id_page(int $id_page) : mixed
 	{
 		$items = $this->db->query('SELECT x.*
             FROM x3_banners x
@@ -185,7 +164,6 @@ class X3banners_model extends X4Model_core
         {
             // if there are more than one
             shuffle($items);
-
             return array_shift($items);
         }
         return false;

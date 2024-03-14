@@ -17,14 +17,8 @@ class X4Checker_helper
 {
 	/**
 	 * Check a date/datetime string
-	 *
-	 * @static
-	 * @param string	$datetime	The date or datetime to check
-	 * @param mixed		$return		The type of return value
-	 * @param string	$date_format	The dateformat to use for the check
-	 * @return boolean
 	 */
-	public static function isDateTime($datetime, $return = false, $date_format = 'Y-m-d H:i:s')
+	public static function isDateTime(string $datetime, string $return = '', string $date_format = 'Y-m-d H:i:s') : mixed
 	{
 		// check length
 		$dt = date($date_format);
@@ -62,59 +56,66 @@ class X4Checker_helper
 
 	/**
 	 * Check italian Fiscal ID for companies
-	 *
-	 * @static
-	 * @param string	Fiscal ID
-	 * @return boolean
 	 */
-	public static function isPIVA($pi)
+	public static function isPIVA(string $pi) : bool
 	{
 	    if(!preg_match('/^[0-9]+$/', $pi))
+        {
 	    	return false;
-	    $s = 0;
-	    for( $i = 0; $i <= 9; $i += 2 )
-	    	$s += ord($pi[$i]) - ord('0');
+        }
 
-	    for( $i = 1; $i <= 9; $i += 2 )
+	    $s = 0;
+	    for ($i = 0; $i <= 9; $i += 2)
+        {
+	    	$s += ord($pi[$i]) - ord('0');
+        }
+
+	    for ($i = 1; $i <= 9; $i += 2)
 	    {
-	    	$c = 2*( ord($pi[$i]) - ord('0') );
-	    	if( $c > 9 )
+	    	$c = 2 * (ord($pi[$i]) - ord('0'));
+	    	if ($c > 9)
+            {
 				$c = $c - 9;
+            }
 			$s += $c;
 	    }
 
-	    if( ( 10 - $s%10 )%10 != ord($pi[10]) - ord('0') )
+	    if ((10 - $s%10 ) % 10 != ord($pi[10]) - ord('0'))
+        {
 	    	return false;
+        }
 	    return true;
 	}
 
 	/**
 	 * Check italian Fiscal ID for people
-	 *
-	 * @static
-	 * @param string	Fiscal ID
-	 * @return boolean
 	 */
-	public static function isCF($cf)
+	public static function isCF(string $cf) : bool
 	{
 		$cf = strtoupper($cf);
-		if(!preg_match('/^[A-Z0-9]+$/', $cf))
+		if (!preg_match('/^[A-Z0-9]+$/', $cf))
+        {
 			return false;
+        }
 
 		$s = 0;
-		for( $i = 1; $i <= 13; $i += 2 )
+		for ($i = 1; $i <= 13; $i += 2)
 		{
 			$c = $cf[$i];
-			if( '0' <= $c && $c <= '9' )
+			if ('0' <= $c && $c <= '9')
+            {
 				$s += ord($c) - ord('0');
+            }
 			else
+            {
 				$s += ord($c) - ord('A');
+            }
 		}
 
-		for( $i = 0; $i <= 14; $i += 2 )
+		for ($i = 0; $i <= 14; $i += 2)
 		{
 			$c = $cf[$i];
-			switch( $c )
+			switch ($c)
 			{
 				case '0':  $s += 1;  break;
 				case '1':  $s += 0;  break;
@@ -154,22 +155,18 @@ class X4Checker_helper
 				case 'Z':  $s += 23;  break;
 			}
 		}
-		if( chr($s%26 + ord('A')) != $cf[15] )
+		if (chr($s % 26 + ord('A')) != $cf[15])
+        {
 			return false;
-
+        }
 		return true;
 	}
 
 	/**
 	 * verify_eu_vat()
-	 *
 	 * VIES (VAT Information Exchange System) enquiries
-	 *
-	 * @static
-	 * @param mixed $vat_number
-	 * @return boolean
 	 */
-	public static function verify_eu_vat($vat_number)
+	public static function verify_eu_vat(string $vat_number) : bool
 	{
 		$country_id = substr($vat_number, 0, 2);
 		$vat_id = substr($vat_number, 2);
@@ -182,27 +179,26 @@ class X4Checker_helper
 
 	/**
 	 * Check DNS (for Windows Systems)
-	 *
-	 * @static
-	 * @param string	host name
-	 * @param string	host type
-	 * @return boolean
 	 */
-	private static function win_checkdnsrr($host, $type = 'MX')
+	private static function win_checkdnsrr(string $host, string $type = 'MX') : bool
 	{
 		if (strtoupper(substr(PHP_OS, 0, 3)) != 'WIN')
-			return;
+        {
+			return false;
+        }
 
 		if (empty($host))
-			return;
+        {
+			return false;
+        }
 
 		$types=array('A', 'MX', 'NS', 'SOA', 'PTR', 'CNAME', 'AAAA', 'A6', 'SRV', 'NAPTR', 'TXT', 'ANY');
-
 		if (!in_array($type,$types))
 		{
 			user_error("checkdnsrr() Type '$type' not supported", E_USER_WARNING);
-			return;
+			return false;
 		}
+
 		@exec('nslookup -type='.$type.' '.escapeshellcmd($host), $output);
 		foreach ($output as $line)
 		{
@@ -215,12 +211,8 @@ class X4Checker_helper
 
 	/**
 	 * Check valid email address
-	 *
-	 * @static
-	 * @param string	email address
-	 * @return boolean
 	 */
-	public static function check_email($email, $force = false)
+	public static function check_email(string $email, bool $force = false) : bool
 	{
         $chk = filter_var($email, FILTER_VALIDATE_EMAIL);
 
@@ -237,17 +229,16 @@ class X4Checker_helper
 
 	/**
 	 * Check valid URL
-	 *
-	 * @static
-	 * @param string	URL
-	 * @return boolean
 	 */
-	public static function check_url($str)
+	public static function check_url(string $str) : bool
 	{
 		return (filter_var($str, FILTER_VALIDATE_URL) !== false);
 	}
 
-	public static function curl_headers($url)
+    /**
+     * Check CURL headers
+     */
+	public static function curl_headers(string $url) : bool
 	{
 		$c = curl_init($url);
 		curl_setopt($c,  CURLOPT_RETURNTRANSFER, TRUE);
@@ -265,12 +256,8 @@ class X4Checker_helper
 
 	/**
 	 * alternative header checker
-	 *
-	 * @static
-	 * @param string	iban string
-	 * @return boolean
 	 */
-	public static function alternative_headers($url)
+	public static function alternative_headers(string $url) : bool
 	{
 		$url_info = @parse_url($url);
 		if (isset($url_info['scheme']) && $url_info['scheme'] == 'https')
@@ -316,60 +303,44 @@ class X4Checker_helper
 
 	/**
 	 * verify iban code
-	 *
-	 * @static
-	 * @param string	iban string
-	 * @return boolean
 	 */
-	public static function verify_iban($value)
+	public static function verify_iban(string $iban) : bool
 	{
 		// Uppercase and trim spaces from left
-		$value = ltrim(strtoupper($value));
+		$iban = ltrim(strtoupper($iban));
 
-		if (function_exists('preg_replace_callback'))
-		{
-			// Remove IBAN from start of string, if present
-			$value = preg_replace_callback(
-				'/^IBAN/is',
-				function($m)
-				{
-					return '';
-				},
-				$value);
-			// Remove all non basic roman letter / digit characters
-			$value = preg_replace_callback(
-				'/[^A-Z0-9]+/is',
-				function($m)
-				{
-					return '';
-				},
-				$value);
-		}
-		else
-		{
-			// Remove IBAN from start of string, if present
-			$value = preg_replace('/^IBAN/','',$value);
-			// Remove all non basic roman letter / digit characters
-			$value = preg_replace('/[^A-Z0-9]/','',$value);
-		}
+        // Remove IBAN from start of string, if present
+        $iban = preg_replace_callback(
+            '/^IBAN/is',
+            function($m)
+            {
+                return '';
+            },
+            $iban
+        );
+        // Remove all non basic roman letter / digit characters
+        $iban = preg_replace_callback(
+            '/[^A-Z0-9]+/is',
+            function($m)
+            {
+                return '';
+            },
+            $iban
+        );
 
 		// Get country of IBAN
-		$c = substr($value,0,2);
-
+		$c = substr($iban, 0, 2);
 		// Get length of IBAN
-		if(strlen($value)!=27) return false;
-
+		if (strlen($iban) != 27) return false;
 		// Get checksum of IBAN
-		$checksum = substr($value,2,2);;
-
+		$checksum = substr($iban, 2, 2);;
 		// Get country-specific IBAN format regex
 		$regex = '/^IT(\d{2})([A-Z]{1})(\d{5})(\d{5})([A-Za-z0-9]{12})$/';
-
 		// Check regex
-		if(preg_match($regex,$value))
+		if(preg_match($regex, $iban))
 		{
 			// Regex passed, check checksum
-			if(!X4Checker_helper::iban_verify_checksum($value))
+			if(!X4Checker_helper::iban_verify_checksum($iban))
 			{
 				return false;
 			}
@@ -378,7 +349,6 @@ class X4Checker_helper
 		{
 			return false;
 		}
-
 		// Otherwise it 'could' exist
 		return true;
 	}
@@ -387,7 +357,7 @@ class X4Checker_helper
 	 * Check the checksum of an IBAN - code modified from Validate_Finance PEAR class
 	 *
 	 */
-	private static function iban_verify_checksum($iban)
+	private static function iban_verify_checksum(string $iban) : bool
 	{
 		// move first 4 chars (countrycode and checksum) to the end of the string
 		$tempiban = substr($iban, 4).substr($iban, 0, 4);
@@ -405,17 +375,16 @@ class X4Checker_helper
 
 	/**
 	 * Character substitution required for IBAN MOD97-10 checksum validation/generation
-	 *
-	 *  $s  Input string (IBAN)
+	 * $s  Input string (IBAN)
 	 */
-	private static function iban_checksum_string_replace($s)
+	private static function iban_checksum_string_replace(string $s) : string
 	{
 		$iban_replace_chars = range('A','Z');
 		foreach (range(10,35) as $tempvalue)
 		{
-			$iban_replace_values[]=strval($tempvalue);
+			$iban_replace_values[] = strval($tempvalue);
 		}
-		return str_replace($iban_replace_chars,$iban_replace_values,$s);
+		return str_replace($iban_replace_chars, $iban_replace_values, $s);
 	}
 
 	/**
@@ -423,7 +392,7 @@ class X4Checker_helper
 	 *
 	 * $s  Input string (IBAN)
 	 */
-	private static function iban_mod97_10($s)
+	private static function iban_mod97_10(string $s) : int
 	{
 		$tr = intval(substr($s, 0, 1));
 		for ($pos = 1; $pos < strlen($s); $pos++)
@@ -437,12 +406,8 @@ class X4Checker_helper
 
 	/**
 	 * verify EAN 13 code
-	 *
-	 * @static
-	 * @param string	$ean string
-	 * @return boolean
 	 */
-	public static function isEAN($ean)
+	public static function isEAN(string $ean) : bool
     {
         // check to see if barcode is 13 digits long
         if (!preg_match("/^[0-9]{13}$/", $ean))
@@ -477,7 +442,6 @@ class X4Checker_helper
         {
             return true;
         }
-
         return false;
     }
 }

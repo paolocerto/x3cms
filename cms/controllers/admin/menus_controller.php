@@ -18,8 +18,6 @@ class Menus_controller extends X3ui_controller
 	/**
 	 * Constructor
 	 * check if user is logged
-	 *
-	 * @return  void
 	 */
 	public function __construct()
 	{
@@ -29,12 +27,8 @@ class Menus_controller extends X3ui_controller
 
 	/**
 	 * Show menus
-	 *
-	 * @param   integer $id_theme Theme ID
-	 * @param   string	$theme_name Theme name
-	 * @return  void
 	 */
-	public function index(int $id_theme, string $theme_name)
+	public function index(int $id_theme, string $theme_name) : void
 	{
 		// load dictionary
 		$this->dict->get_wordarray(array('menus'));
@@ -58,10 +52,8 @@ class Menus_controller extends X3ui_controller
 
 	/**
 	 * Menus actions
-	 *
-	 * @return  void
 	 */
-	private function actions(int $id_theme)
+	private function actions(int $id_theme) : string
 	{
 		return '<a class="link" @click="popup(\''.BASE_URL.'menus/edit/'.$id_theme.'\')" title="'._NEW_MENU.'">
                 <i class="fa-solid fa-lg fa-circle-plus"></i>
@@ -70,13 +62,8 @@ class Menus_controller extends X3ui_controller
 
 	/**
 	 * Change status
-	 *
-	 * @param   string  $what field to change
-	 * @param   integer $id ID of the item to change
-	 * @param   integer $value value to set (0 = off, 1 = on)
-	 * @return  void
 	 */
-	public function set(string $what, int $id, int $value = 0)
+	public function set(string $what, int $id, int $value = 0) : void
 	{
 		$msg = null;
 		// check permission
@@ -103,13 +90,9 @@ class Menus_controller extends X3ui_controller
 	}
 
 	/**
-	 * New / Edit menu form (use Ajax)
-	 *
-	 * @param   integer  $id_theme Theme id
-	 * @param   integer  $id item ID (if 0 then is a new item)
-	 * @return  void
+	 * New / Edit menu form
 	 */
-	public function edit(int $id_theme, int $id = 0)
+	public function edit(int $id_theme, int $id = 0) : void
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'menus'));
@@ -159,13 +142,9 @@ class Menus_controller extends X3ui_controller
 	}
 
 	/**
-	 * Register Edit / New Menu form data
-	 *
-	 * @access	private
-	 * @param   array 	$_post _POST array
-	 * @return  void
+	 * Register Edit / New Menu form
 	 */
-	private function editing(int $id, array $_post)
+	private function editing(int $id, array $_post) : void
 	{
 		$msg = null;
 		// check permission
@@ -218,12 +197,9 @@ class Menus_controller extends X3ui_controller
 	}
 
 	/**
-	 * Delete Menu form (use Ajax)
-	 *
-	 * @param   integer $id Menu ID
-	 * @return  void
+	 * Delete Menu form
 	 */
-	public function delete(int $id)
+	public function delete(int $id) : void
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'menus'));
@@ -264,12 +240,8 @@ class Menus_controller extends X3ui_controller
 
 	/**
 	 * Delete Menu
-	 *
-	 * @access	private
-	 * @param   object  $item
-	 * @return  void
 	 */
-	private function deleting(stdClass $item)
+	private function deleting(stdClass $item) : void
 	{
 		$msg = null;
 		// check permission
@@ -296,36 +268,6 @@ class Menus_controller extends X3ui_controller
 					'url' => BASE_URL.'menus/index/'.$item->id_theme.'/'.$theme
 				);
 			}
-		}
-		$this->response($msg);
-	}
-
-	/**
-	 * Refresh menu order
-	 *
-	 * @param   integer $id Page ID
-	 * @param   string	$holder Menu ID
-	 * @param   string 	$orders Encoded string, for each menu you have a section, each section contains the list of Page ID in menu
-	 * @return  void
-	 */
-	public function menu(int $id_page, string $holder, string $orders)
-	{
-		$msg = null;
-		if (!is_null($id_page) && is_numeric($id_page))
-		{
-		    // check permission
-		    $msg = AdmUtils_helper::chk_priv_level(1, 'pages', $id_page, 'order');
-
-		    if (is_null($msg))
-		    {
-		        // refresh order
-		        $menu = new Menu_model();
-		        $result = $menu->menu($id_page, substr($holder, 1), $orders);
-
-		        // set message
-		        $this->dict->get_words();
-		        $msg = AdmUtils_helper::set_msg($result);
-		    }
 		}
 		$this->response($msg);
 	}

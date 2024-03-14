@@ -15,6 +15,9 @@
  */
 class Section_model extends X4Model_core
 {
+    /**
+     * Default settings
+     */
 	public $settings = array(
 		'columns' => 3,
         'col_sizes' => '2+1',
@@ -32,8 +35,6 @@ class Section_model extends X4Model_core
 	/**
 	 * Constructor
 	 * set the default table
-	 *
-	 * @return  void
 	 */
 	public function __construct()
 	{
@@ -42,12 +43,8 @@ class Section_model extends X4Model_core
 
 	/**
 	 * Get items
-	 * Join with privs table
-	 *
-	 * @param   integer $id_page
-	 * @return  array	array of sections objects
 	 */
-	public function get_items(int $id_page)
+	public function get_items(int $id_page) : array
 	{
 		$sql = 'SELECT x.*, IF(p.id IS NULL, u.level, p.level) AS level
             FROM sections x
@@ -61,15 +58,11 @@ class Section_model extends X4Model_core
 	}
 
 	/**
-	 * Get max xpos value by id_area and id_page
-	 *
-	 * @param   integer $id_area Area ID
-	 * @param   integer	$id_page
-	 * @return  array	array of objects
+	 * Get max progressive value by id_area and id_page
 	 */
-	public function get_max_pos(int $id_area, int $id_page)
+	public function get_max_pos(int $id_area, int $id_page) : int
 	{
-		return $this->db->query_var('SELECT progressive
+		return (int) $this->db->query_var('SELECT progressive
 			FROM sections
 			WHERE
 				id_area = '.$id_area.' AND
@@ -79,11 +72,8 @@ class Section_model extends X4Model_core
 
 	/**
 	 * Get sections by page
-	 *
-	 * @param   integer	$id_page
-	 * @return  array	array of section objects
 	 */
-	public function get_sections(int $id_page)
+	public function get_sections(int $id_page) : array
 	{
 		return $this->db->query('SELECT s.id, s.name, s.progressive, s.settings, s.articles
 			FROM sections s
@@ -93,11 +83,8 @@ class Section_model extends X4Model_core
 
     /**
 	 * Get theme styles by id_page
-	 *
-	 * @param   integer	$id_page
-	 * @return  mixed
 	 */
-	public function get_theme_styles(int $id_page)
+	public function get_theme_styles(int $id_page) : array
 	{
 		$styles = $this->db->query_var('SELECT th.styles
 					FROM themes th
@@ -127,12 +114,8 @@ class Section_model extends X4Model_core
 
 	/**
 	 * Get template data by id_page
-	 *
-	 * @param   integer	$id_page
-	 * @param	string	$field
-	 * @return  mixed
 	 */
-	public function get_template_data(int $id_page, string $field)
+	public function get_template_data(int $id_page, string $field) : mixed
 	{
 		$fields = array('*', 'id', 'settings', 'sections');
 
@@ -159,26 +142,18 @@ class Section_model extends X4Model_core
 
 	/**
 	 * count default sections in a page with settings
-	 *
-	 * @param   integer	$id_page
-	 * @param	string	$field
-	 * @return  mixed
 	 */
-	public function count_default_sections(int $id_page)
+	public function count_default_sections(int $id_page) : int
 	{
-		return $this->db->query_var('SELECT COUNT(s.id) AS n FROM sections s
+		return (int) $this->db->query_var('SELECT COUNT(s.id) AS n FROM sections s
 			WHERE s.id_page = '.$id_page.' AND s.settings LIKE '.$this->db->escape('%"locked":"y"%'));
 	}
 
 	/**
 	 * Initialize sections for a page
 	 * called on section index if page sections are less than template minimum sections
-	 *
-	 * @param   integer	$id_area
-     * @param   integer	$id_page
-	 * @return  void
 	 */
-	public function initialize(int $id_area, int $id_page)
+	public function initialize(int $id_area, int $id_page) : void
 	{
 		// get template
 		$tpl = $this->get_template_data($id_page, '*');
@@ -235,52 +210,30 @@ class Section_model extends X4Model_core
                     }
                 }
 			}
-
-            /*
-			// add settings to extra section if missing
-			for ($i = $tpl->sections; $i < sizeof($sections); $i++)
-			{
-				if (empty($sections[$i]->settings))
-				{
-					$post = array('settings' => json_encode($settings['sn']));
-					$this->update($sections[$i]->id, $post);
-				}
-			}
-            */
 		}
 	}
 
 	/**
 	 * Reset section's setting for tpl base of the new theme
 	 * Called when you change the theme of an area
-	 *
-	 * @param   integer $id_area Area ID
-	 * @return  array
 	 */
-	public function reset(int $id_area)
+	public function reset(int $id_area) : array
 	{
 		return $this->db->single_exec('DELETE FROM sections WHERE id_area = '.$id_area);
 	}
 
 	/**
 	 * Get section contents
-	 *
-	 * @param   integer	$id_page Page ID
-	 * @param   integer	$progressive Number of section
-	 * @return  object
 	 */
-	private function get_by_page(int $id_page, int $progressive)
+	private function get_by_page(int $id_page, int $progressive) : stdClass
 	{
 		return $this->db->query_row('SELECT * FROM sections	WHERE id_page = '.$id_page.' AND progressive = '.$progressive);
 	}
 
 	/**
 	 * Insert and Update section contents
-	 *
-	 * @param   array	$sections Array of post
-	 * @return  array
 	 */
-	public function compose(array $sections)
+	public function compose(array $sections) : array
 	{
 		$a = array();
 		foreach ($sections as $i)
@@ -310,51 +263,39 @@ class Section_model extends X4Model_core
 	}
 
 	/**
-	 * Get Pages IDs by bid
-	 *
-	 * @param   string	$bid, article unique ID
-	 * @return  object
+	 * Get Pages IDs by bid in sections
 	 */
-	public function get_pages_by_bid(string $bid)
+	public function get_pages_by_bid(string $bid) : array
 	{
 		return $this->db->query('SELECT id_page FROM sections WHERE articles LIKE '.$this->db->escape('%'.$bid.'%'));
 	}
 
 	/**
-	 * Update context and page ID of articles by bid
-	 * Use articles
-	 *
-	 * @param   integer	$id_area Area ID
-	 * @param   string	$holder Context type
-	 * @param   string	$bid, article unique ID
-	 * @param   integer	$id_page Page ID
-	 * @return  void
+	 * Update context and page ID in articles by bid
 	 */
-	public function recode(int $id_area, string $holder, string $bid, int $id_page)
+	public function recode(int $id_area, string $hold_context, string $bid, int $id_page) : array
 	{
 		// default contexts
 		$codes = array('drafts' => 0, 'pages' => 1, 'multi' => 2);
 
 		// update articles
-		$sql = 'UPDATE articles SET updated = NOW(), code_context = '.$codes[$holder].', id_page = '.$id_page.'
+		$sql = 'UPDATE articles SET updated = NOW(), code_context = '.$codes[$hold_context].', id_page = '.$id_page.'
             WHERE code_context != 2 AND bid = '.$this->db->escape($bid).' AND id_area = '.$id_area;
 		$this->db->single_exec($sql);
 	}
 
 	/**
 	 * Get articles by bid
-	 * Use articles
-	 *
-	 * @param   integer	$id_area Area ID
-	 * @param   string	$lang Language code
-	 * @param   string	$jbids, json_encoded arrayof bids, where a bid is the article unique ID
-	 * @return  array	Array of articles
 	 */
-	public function get_articles(int $id_area, string $lang, string $jbids)
+	public function get_articles(
+        int $id_area,
+        string $lang,
+        string $jbids       // json_encoded arrayof bids, where a bid is the article unique ID
+    ) : array
 	{
 		$bids = json_decode($jbids, true);
 
-		$artt = array();
+		$artt = [];
 		if ($bids)
 		{
 			foreach ($bids as $i)
@@ -375,13 +316,8 @@ class Section_model extends X4Model_core
 
 	/**
 	 * Get contexts
-	 * Use contexts
-	 *
-	 * @param   integer	$id_area Area ID
-	 * @param   string	$lang Language code
-	 * @return  array	Array of objects
 	 */
-	public function get_contexts(int $id_area, string $lang)
+	public function get_contexts(int $id_area, string $lang) : array
 	{
 		return $this->db->query('SELECT x.*
 			FROM contexts x
@@ -398,13 +334,8 @@ class Section_model extends X4Model_core
 
 	/**
 	 * Get articles to publish
-	 * Use articles, contexts and privs
-	 *
-	 * @param   object	$page Page object
-	 * @param   string	$by Sort key
-	 * @return  array	Array of objects
 	 */
-	public function get_articles_to_publish(stdClass $page, string $by)
+	public function get_articles_to_publish(stdClass $page, string $by) : array
 	{
 		// sorting
 		$order = ($by == 'name')
@@ -426,12 +357,8 @@ class Section_model extends X4Model_core
 
 	/**
 	 * Get article by bid
-	 * Use articles
-	 *
-	 * @param   string	$bid, article unique ID
-	 * @return  object
 	 */
-	public function get_by_bid(string $bid)
+	public function get_by_bid(string $bid) : stdClass
 	{
 		return $this->db->query_row('SELECT *
 			FROM articles
@@ -458,8 +385,6 @@ class Section_obj
 	/**
 	 * Constructor
 	 * Initialize the new section
-	 *
-	 * @return  void
 	 */
 	public function __construct(int $id_area, int $id_page, string $settings)
 	{

@@ -17,17 +17,11 @@ class X4Auth_helper
 {
 	/**
 	 * Authenticate user
-	 *
-	 * @static
-	 * @param string	$table User table name
-	 * @param array		$conditions array('field_name' => 'field_value')
-	 * @param array		$fields array needed to set session  eg. array('field_name' => 'session_name')
-	 * @param boolean	$last_in if true update last_in field in the user record
-	 * @param boolean	$hash if true it uses hashkey to extend sessions life
-	 * @return boolean
 	 */
-	public static function log_in($table, $conditions, $fields, $last_in = true, $hash = false)
+	public static function log_in(string $table, array $conditions, array $fields, bool $last_in = true, bool $hash = false) : bool
 	{
+        unset($_SESSION['uid']);
+
 		$mod = new X4Auth_model($table);
 		$user = $mod->log_in($conditions, $fields);
 
@@ -56,7 +50,6 @@ class X4Auth_helper
 					setcookie(COOKIE.'_hash', $new_hash, time() + 2592000, '/', $_SERVER['HTTP_HOST']);
 				}
 			}
-
 			return true;
 		}
 		return false;
@@ -64,8 +57,6 @@ class X4Auth_helper
 
 	/**
 	 * Perform logout
-	 *
-	 * @return  void
 	 */
 	public static function log_out()
 	{
@@ -76,7 +67,7 @@ class X4Auth_helper
 
     /**
      * Get header Authorization
-     * */
+     */
     public static function getAuthorizationHeader()
     {
         $headers = null;
@@ -84,7 +75,7 @@ class X4Auth_helper
         {
             $headers = trim($_SERVER["Authorization"]);
         }
-        else if (isset($_SERVER['HTTP_AUTHORIZATION']))
+        elseif (isset($_SERVER['HTTP_AUTHORIZATION']))
         {
             //Nginx or fast CGI
             $headers = trim($_SERVER["HTTP_AUTHORIZATION"]);
@@ -110,12 +101,9 @@ class X4Auth_helper
         $headers = self::getAuthorizationHeader();
 
         // HEADER: Get the access token from the header
-        if (!empty($headers))
+        if (!empty($headers) && preg_match('/Bearer\s(\S+)/', $headers, $matches))
         {
-            if (preg_match('/Bearer\s(\S+)/', $headers, $matches))
-            {
-                return $matches[1];
-            }
+            return $matches[1];
         }
         return null;
     }

@@ -29,7 +29,18 @@ class X4Mpdf_helper
      * @param   string  $background
 	 * @return boolean
 	 */
-	public static function pdf_export($title, $css, $html, $page_format = 'A4', $orientation = 'P', $output = 'D', $footer = false, $background = '')
+	public static function pdf_export(
+        string $title,
+        string $css,
+        string $html,
+        array $config = [
+            'page_format' => 'A4',
+            'orientation' => 'P',
+            'output' => 'D'
+        ],  // orientation can be [P|L], output can be [D|I|F]
+        bool $footer = false,
+        string $background = ''
+    )
 	{
 	    require_once PATH . '/vendor/autoload.php';
 
@@ -68,10 +79,8 @@ class X4Mpdf_helper
             ],
             'default_font' => 'freesans',
             'mode' => 'utf-8',
-            'format' => $page_format.'-'.$orientation,
+            'format' => $config['page_format'].'-'.$config['orientation'],
 	    ]);
-
-		//$title = $title.' - '.date('Y-m-d H:i:s');
 
 		$mpdf->SetAuthor(SERVICE);	//$_SESSION['nickname']
 		$mpdf->SetCreator(SERVICE);
@@ -98,11 +107,11 @@ class X4Mpdf_helper
 
 		$filename = X4Utils_helper::slugify(str_replace(' - ', '-', $title), true).'.pdf';
 
-		$path = ($output == 'F')
+		$path = ($config['output'] == 'F')
 			? PPATH.'tmp/'
 			: '';
 
-		$mpdf->Output($path.$filename, $output);
+		$mpdf->Output($path.$filename, $config['output']);
 		if ($output != 'F')
 		{
 			exit;

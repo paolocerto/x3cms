@@ -18,8 +18,6 @@ class X4get_by_key_model extends X4Model_core
 	/**
 	 * Constructor
 	 * set the default table
-	 *
-	 * @return  void
 	 */
 	public function __construct()
 	{
@@ -29,14 +27,8 @@ class X4get_by_key_model extends X4Model_core
 	/**
 	 * Build the form array required to set the parameter
 	 * This method have to be updated with the plugin options
-	 *
-	 * @param	integer $id_area Area ID
-	 * @param	string	$lang Language code
-	 * @param   	integer $id_page Page ID
-	 * @param	string	$param Parameter
-	 * @return	array
 	 */
-	public function configurator(int $id_area, string $lang, int $id_page, string $param)
+	public function configurator(int $id_area, string $lang, int $id_page, string $param) : array
 	{
 	    $p = (empty($param))
 	        ? array('', '')
@@ -101,30 +93,26 @@ class X4get_by_key_model extends X4Model_core
 
 	/**
 	 * Get keys
-	 *
-	 * @param integer	$id_area Area ID
-	 * @param string	$lang 	Language code
-	 * @return array	array
 	 */
-	private function get_keys($id_area, $lang)
+	private function get_keys(int $id_area, string $lang) : array
 	{
 		return $this->db->query('SELECT xkeys
 		        FROM articles
-				WHERE xkeys != \'\' AND id_area = '.intval($id_area).' AND lang = '.$this->db->escape($lang).' AND xon = 1 AND date_in <= NOW() AND (date_out = 0 OR date_out >= NOW())
+				WHERE
+                    xkeys != \'\' AND
+                    id_area = '.$id_area.' AND
+                    lang = '.$this->db->escape($lang).' AND
+                    xon = 1 AND
+                    date_in <= NOW() AND
+                    (date_out = 0 OR date_out >= NOW())
 				GROUP BY xkeys
 				ORDER BY xkeys ASC');
 	}
 
 	/**
 	 * Get articles by key and tag
-	 *
-	 * @param integer	$id_area Area ID
-	 * @param string	$lang 	Language code
-	 * @param string	$key	Article key
-	 * @param string	$tag 	Article tag
-	 * @return array	array of objects
 	 */
-	public function get_articles_by_key_and_tag($id_area, $lang, $key, $tag)
+	public function get_articles_by_key_and_tag(int $id_area, string $lang, string $key, string $tag) : array
 	{
         // check APC
 		$c = (APC)
@@ -137,7 +125,7 @@ class X4get_by_key_model extends X4Model_core
 				(
 				SELECT *
 				FROM articles
-				WHERE id_area = '.intval($id_area).' AND lang = '.$this->db->escape($lang).' AND xon = 1 AND date_in <= NOW() AND (date_out = 0 OR date_out >= NOW()) ORDER BY date_in DESC, updated DESC
+				WHERE id_area = '.$id_area.' AND lang = '.$this->db->escape($lang).' AND xon = 1 AND date_in <= NOW() AND (date_out = 0 OR date_out >= NOW()) ORDER BY date_in DESC, updated DESC
 				) a
 			WHERE a.xkeys = '.$this->db->escape($key).' AND a.tags LIKE '.$this->db->escape('%'.$tag.'%').'
 			GROUP BY a.bid
@@ -153,13 +141,8 @@ class X4get_by_key_model extends X4Model_core
 
     /**
 	 * Get articles by key
-	 *
-	 * @param integer	area ID
-	 * @param string	lang
-	 * @param string	article key
-	 * @return array	array of objects
 	 */
-	public function get_articles_by_key($id_area, $lang, $key)
+	public function get_articles_by_key(int $id_area, string $lang, string $key) : array
 	{
 	    // check APC
 		$c = (APC)
@@ -194,17 +177,10 @@ class X4get_by_key_model extends X4Model_core
 
     // FOR INTERNAL SEARCHES
 
-
-
     /**
 	 * Get an array of articles that contains search keys
-	 *
-	 * @param integer	area ID
-	 * @param string	lang
-	 * @param array		array of keys
-	 * @return array	array of objects for search results
 	 */
-	public function search(int $id_area, string $lang, array $array)
+	public function search(int $id_area, string $lang, array $array) : array
 	{
 		// first step: get articles which can be highlighted
 		$w = array();
@@ -224,7 +200,7 @@ class X4get_by_key_model extends X4Model_core
                     SELECT MAX(id) AS id, bid
                     FROM articles
                     WHERE
-                        id_area = '.intval($id_area).' AND
+                        id_area = '.$id_area.' AND
                         lang = '.$this->db->escape($lang).' AND
                         xon = 1 AND
                         date_in <= NOW() AND
@@ -327,7 +303,7 @@ class X4get_by_key_model extends X4Model_core
 	 * @param string	parameter value, accepts * wildcard
 	 * @return string	page URL
 	 */
-	public function get_page_to($id_area, $lang, $modname, $param = '')
+	public function get_page_to(int $id_area, string $lang, string $modname, string $param = '') : string
 	{
         $where = (strstr($param, '*') != '')
             ? '	AND a.param LIKE '.$this->db->escape(str_replace('*', '%', $param))
@@ -380,14 +356,10 @@ class X4get_by_key_model extends X4Model_core
 	}
 
     /**
-	 * Get url for search
+	 * Get url for search by article
 	 * if you need a special URL with search
-	 *
-	 * @param object	Plugin obj
-     * @param string    $topage if this function fails
-	 * @return string
 	 */
-	public function get_url($obj, $topage)
+	public function get_url(stdClass $obj, string $topage) : string
 	{
 		$to_page = $this->get_page_to($obj->id_area, $obj->lang, 'x4get_by_key', $obj->xkeys.'|*');
 

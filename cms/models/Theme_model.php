@@ -18,8 +18,6 @@ class Theme_model extends X4Model_core
 	/**
 	 * Constructor
 	 * set the default table
-	 *
-	 * @return  void
 	 */
 	public function __construct()
 	{
@@ -28,12 +26,8 @@ class Theme_model extends X4Model_core
 
 	/**
 	 * Get installed themes
-	 * Join with privs and areaas
-	 *
-	 * @param   integer $xon, status index
-	 * @return  array	Array of objects
 	 */
-	public function get_installed(int $xon = 2)
+	public function get_installed(int $xon = 2) : array
 	{
 		// condition
 		// if xon == 2 get enabled and disabled themes
@@ -53,10 +47,8 @@ class Theme_model extends X4Model_core
 
 	/**
 	 * Get installable themes
-	 *
-	 * @return  array	Array of strings
 	 */
-	public function get_installable()
+	public function get_installable() : array
 	{
 		// path
 		$path = PATH.'themes';
@@ -66,7 +58,7 @@ class Theme_model extends X4Model_core
 
 		// installed themes
 		$installed = $this->db->query('SELECT *	FROM themes ORDER BY name ASC');
-		$ed = array();
+		$ed = [];
 		foreach ($installed as $i)
 		{
 			$ed[] = $path.'/'.$i->name;
@@ -77,18 +69,14 @@ class Theme_model extends X4Model_core
 
 	/**
 	 * Install a new theme
-	 *
-	 * @param   string	$name Theme name (theme folder name)
-	 * @return  array	Array of errors
 	 */
-	public function install(string $name)
+	public function install(string $theme_name) : array
 	{
-		$error = array();
-
-		if ($this->exists($name) == 0 && file_exists('themes/'.$name.'/install.php'))
+		$error = [];
+		if ($this->exists($theme_name) == 0 && file_exists('themes/'.$theme_name.'/install.php'))
 		{
 			// load installer (arrays with SQL instructions)
-			require_once('themes/'.$name.'/install.php');
+			require_once('themes/'.$theme_name.'/install.php');
 
 			// install
 			$result = $this->db->single_exec($sql);
@@ -109,31 +97,26 @@ class Theme_model extends X4Model_core
 			}
 			else
             {
-				$error[] = array('error' => '_theme_not_installed', 'label' => $name);
+				$error[] = array('error' => '_theme_not_installed', 'label' => $theme_name);
             }
 		}
 		else
         {
-			$error[] = array('error' => '_already_installed', 'label' => $name);
+			$error[] = array('error' => '_already_installed', 'label' => $theme_name);
         }
 		return $error;
 	}
 
 	/**
 	 * Uninstall a theme
-	 *
-	 * @param   integer $id_theme Theme ID
-	 * @param   string	$name Theme name
-	 * @return  array	Array of errors
 	 */
-	public function uninstall(int $id_theme, string $name)
+	public function uninstall(int $id_theme, string $theme_name) : array
 	{
-		$error = array();
-
-		if (file_exists('themes/'.$name.'/uninstall.php'))
+		$error = [];
+		if (file_exists('themes/'.$theme_name.'/uninstall.php'))
 		{
 			// load uninstaller (SQL instructions)
-			require_once('themes/'.$name.'/uninstall.php');
+			require_once('themes/'.$theme_name.'/uninstall.php');
 
 			$result = $this->db->multi_exec($sql);
 			if ($result[1])
@@ -142,42 +125,35 @@ class Theme_model extends X4Model_core
             }
 			else
             {
-				$error[] = array('error' => '_THEME_NOT_UNINSTALLED', 'label' => $name);
+				$error[] = array('error' => '_THEME_NOT_UNINSTALLED', 'label' => $theme_name);
             }
 		}
 		else
         {
-			$error[] = array('error' => '_THEME_NOT_UNINSTALLED', 'label' => $name);
+			$error[] = array('error' => '_THEME_NOT_UNINSTALLED', 'label' => $theme_name);
         }
 		return $error;
 	}
 
 	/**
 	 * Check if a theme is already installed
-	 *
-	 * @param   string	$name Theme name
-	 * @param   integer $id Theme ID
-	 * @return  integer
 	 */
-	private function exists(string $name, int $id = 0)
+	private function exists(string $theme_name, int $id = 0) : int
 	{
 		// condition
 		$where = ($id)
 			? ' AND id <> '.$id
 			: '';
 
-		return $this->db->query_var('SELECT COUNT(id)
+		return (int) $this->db->query_var('SELECT COUNT(*)
 			FROM themes
-			WHERE name = '.$this->db->escape($name).' '.$where);
+			WHERE name = '.$this->db->escape($theme_name).' '.$where);
 	}
 
 	/**
 	 * Get CSSs of all templates in a theme
-	 *
-	 * @param   integer $id_theme Theme ID
-	 * @return  array	Array of objects
 	 */
-	public function get_css(int $id_theme)
+	public function get_css(int $id_theme) : array
 	{
 		return $this->db->query('SELECT DISTINCT css
 			FROM templates
@@ -186,11 +162,8 @@ class Theme_model extends X4Model_core
 
 	/**
 	 * Get JSs of all templates in a theme
-	 *
-	 * @param   integer $id_theme Theme ID
-	 * @return  array	Array of objects
 	 */
-	public function get_js(int $id_theme)
+	public function get_js(int $id_theme) : array
 	{
 		return $this->db->query('SELECT DISTINCT js
 			FROM templates
@@ -199,11 +172,8 @@ class Theme_model extends X4Model_core
 
 	/**
 	 * Minimize a CSS
-	 *
-	 * @param   string 	$str A CSS
-	 * @return  string
 	 */
-	public function compress_css(string $str)
+	public function compress_css(string $str) : string
 	{
 		// Remove comments
 		$str = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $str);
@@ -216,26 +186,20 @@ class Theme_model extends X4Model_core
 			);
 
 		// Remove whitespace
-		$str = str_replace(array("\r\n", "\r", "\n", "\t", '  ', '    ', '    '), '', $str);
-		return $str;
+		return str_replace(array("\r\n", "\r", "\n", "\t", '  ', '    ', '    '), '', $str);
 	}
 
 	/**
 	 * Minimize a JS
-	 *
-	 * @param   string 	$str A JS
-	 * @return  string
 	 */
-	public function compress_js(string $str)
+	public function compress_js(string $str) : string
 	{
 		/* remove comments */
         $str = preg_replace("/((?:\/\*(?:[^*]|(?:\*+[^*\/]))*\*+\/)|(?:\/\/.*))/", "", $str);
         /* remove tabs, spaces, newlines, etc. */
         $str = str_replace(array("\r\n","\r","\t","\n",'  ','    ','     '), '', $str);
         /* remove other spaces before/after ) */
-        $str = preg_replace(array('(( )+\))','(\)( )+)'), ')', $str);
-
-		return $str;
+        return preg_replace(array('(( )+\))','(\)( )+)'), ')', $str);
 	}
 
 }

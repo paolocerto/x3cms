@@ -18,23 +18,17 @@ class Msg_controller extends X4Cms_controller
 	/**
 	 * Constructor
 	 * check if user is logged
-	 *
-	 * @return  void
 	 */
 	public function __construct()
 	{
 		parent::__construct();
-		X4Utils_helper::logged(X4Route_core::get_id_area(), X4Route_core::$area.'/login');
+		//X4Utils_helper::logged(X4Route_core::get_id_area(), X4Route_core::$area.'/login');
 	}
 
 	/**
 	 * Empty message can be called when happens an unknnown error
-	 *
-	 * @param   string	$what Dictionary what
-	 * @param   string	$xkey Dictionary key
-	 * @return  void
 	 */
-	public function empty_msg(string $what = 'msg', string $xkey = '')
+	public function empty_msg(string $what = 'msg', string $xkey = '') : void
 	{
 		// check the key
 		$xkey = (empty($xkey))
@@ -50,12 +44,8 @@ class Msg_controller extends X4Cms_controller
 
 	/**
 	 * Display system messages
-	 *
-	 * @param   string	$what Dictionary what
-	 * @param   string	$personal_msg Alternative message
-	 * @return  void
 	 */
-	public function message(string $what = '', string $personal_msg = '')
+	public function message(string $what = '', string $personal_msg = '') : void
 	{
 		// load dictionary
 		$this->dict->get_words();
@@ -97,13 +87,17 @@ class Msg_controller extends X4Cms_controller
 			$title = _WARNING;
 		}
 
+		//check personal message
+		$checked_msg = strip_tags(urldecode($personal_msg));
+
 		// get message
-		$msg = (empty($personal_msg))
+		$msg = (empty($personal_msg) || empty($checked_msg))
 			? $this->dict->get_message($title, strtoupper($what), 'msg')
-			: $this->dict->build_message($title, $personal_msg, 'msg');
+			: $this->dict->build_message($title, $checked_msg);
 
 		$sections = $this->site->get_sections($page->id);
-		$sections[1] = array($msg);
+
+		$sections[1]['a'] = array($msg);
 		$view->sections = $sections;
 		$view->render(true);
 	}
@@ -111,7 +105,7 @@ class Msg_controller extends X4Cms_controller
 	/**
 	 * Override __call to avoid circular calls
 	 */
-    public function __call(string $method, array $args)
+    public function __call(string $method, array $args) : void
 	{
 		$this->empty_msg();
 	}

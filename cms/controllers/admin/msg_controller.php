@@ -18,8 +18,6 @@ class Msg_controller extends X4Cms_controller
 	/**
 	 * Constructor
 	 * check if user is logged
-	 *
-	 * @return  void
 	 */
 	public function __construct()
 	{
@@ -29,12 +27,8 @@ class Msg_controller extends X4Cms_controller
 
 	/**
 	 * Empty message can be called when happens an unknnown error
-	 *
-	 * @param   string	$what Dictionary what
-	 * @param   string	$xkey Dictionary key
-	 * @return  void
 	 */
-	public function empty_msg(string $what = 'msg', string $xkey = '')
+	public function empty_msg(string $what = 'msg', string $xkey = '') : void
 	{
 		// check the key
 		$xkey = (empty($xkey))
@@ -50,11 +44,8 @@ class Msg_controller extends X4Cms_controller
 
 	/**
 	 * Display system messages
-	 *
-	 * @param   string	$what Dictionary what
-	 * @return  void
 	 */
-	public function message(string $what = '')
+	public function message(string $what = '') : void
 	{
 		// load global dictionary
 		$this->dict->get_words();
@@ -81,7 +72,7 @@ class Msg_controller extends X4Cms_controller
 	/**
 	 * Override __call to avoid circular calls
 	 */
-	public function __call(string $method, array $arguments)
+	public function __call(string $method, array $arguments) : void
 	{
 		$this->empty_msg();
 	}

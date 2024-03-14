@@ -38,139 +38,85 @@ class X4Text_helper
 		'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z');
 
 	/**
-	 * Create random string
-	 *
-	 * @static
-	 * @param integer	$length
-	 * @return string
-	 * /
-	public static function randomize($lenght)
-	{
-		$codice_random = bin2hex(openssl_random_pseudo_bytes(6));
-		$xcode = uniqid().$codice_random;
-
-
-	}
-	*/
-
-	/**
-	 * Excerpt
-	 *
-	 * @static
-	 * @param string	$str string to excerpt
-	 * @param integer	$max_length max string length
-	 * @return string
+	 * Get the excerpt, long max_length, from a string
 	 */
-	public static function excerpt($str, $max_length)
+	public static function excerpt(string $str, int $max_length) : string
 	{
 		$l = strlen($str);
-		if ($l > $max_length)
+		if ($l <= $max_length)
 		{
-			$parts = preg_split('/([\s\n\r]+)/', $str, null, PREG_SPLIT_DELIM_CAPTURE);
-			$parts_count = count($parts);
+            return $str;
+        }
 
-			$length = 0;
-			$last_part = 0;
-			for (; $last_part < $parts_count; ++$last_part)
-			{
-				$length += strlen($parts[$last_part]);
-				if ($length > $max_length)
-					break;
-			}
-			return implode(array_slice($parts, 0, $last_part)).'...';
-		}
-		else
-			return $str;
+        $parts = preg_split('/([\s\n\r]+)/', $str, null, PREG_SPLIT_DELIM_CAPTURE);
+        $parts_count = count($parts);
+
+        $length = 0;
+        $last_part = 0;
+        for (; $last_part < $parts_count; ++$last_part)
+        {
+            $length += strlen($parts[$last_part]);
+            if ($length > $max_length) { break; }
+        }
+        return implode(array_slice($parts, 0, $last_part)).'...';
 	}
 
     /**
 	 * Replace first occurrence of a substring in a string
-	 *
-	 * @static
-	 * @param string	$search     String to replace
-     * @param string    $replace    String to replace
-     * @param string    $string     String containing the replace
-	 * @return string
 	 */
-    public static function str_replace_first($search, $replace, $string)
+    public static function str_replace_first(string $search, string $replace, string $string) : string
     {
         $search = '/'.preg_quote($search, '/').'/';
         return preg_replace($search, $replace, $string, 1);
     }
 
-
-	public static function empty_rows($str)
+    /**
+	 * Remove empty rows from string
+	 */
+	public static function empty_rows(string $str) : string
 	{
-		if (function_exists('preg_replace_callback'))
-		{
-			return preg_replace_callback(
+		return preg_replace_callback(
 				"/(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+/iu",
 				function($m)
 				{
 					return "\n";
 				},
 				$str);
-		}
-		else
-		{
-			return preg_replace("/(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+/", "\n", $str);
-		}
 	}
 
 	/**
 	 * Remove empty tags from html string
-	 *
-	 * @static
-	 * @param string	$str string to clean
-	 * @return string
 	 */
-	public static function empty_tags($html)
+	public static function empty_tags(string $html) : string
 	{
 		$html = str_replace( '&nbsp;', ' ', $html );
-		do
-		{
+		do {
 			$tmp = $html;
 			$html = preg_replace(
 				'#<([^ >]+)[^>]*>[[:space:]]*</\1>#', '', $html );
 		} while ( $html !== $tmp );
-
 		return $html;
 	}
 
 	/**
 	 * Remove from a string duplicate spaces or tabs
-	 *
-	 * @static
-	 * @param string	$str string to clean
-	 * @return string
 	 */
-	public static function collapse_white_space($str)
+	public static function collapse_white_space(string $str) : string
 	{
-		if (function_exists('preg_replace_callback'))
-		{
-		    $str = str_replace("\t", '', $str);
-			return preg_replace_callback(
-				'/\\s+/iu',
-				function($m)
-				{
-					return ' ';
-				},
-				$str);
-		}
-		else
-		{
-			return preg_replace('/\\s+/iu', ' ', $str);
-		}
+		$str = str_replace("\t", '', $str);
+        return preg_replace_callback(
+            '/\\s+/iu',
+            function($m)
+            {
+                return ' ';
+            },
+            $str);
 	}
 
 	/**
 	 * clean string
-	 *
-	 * @static
-	 * @param	string	$str String to clean
-	 * @return  string	cleaned string
 	 */
-	public static function clean_string($str)
+	public static function clean_string(string $str) : string
 	{
 		$src = array('</li>'.NL, '</ul>'.NL, '</blockquote>'.NL, '<br />'.NL, '<br/>'.NL);
 		$rpl = array('</li>', '</ul>', '</blockquote>', '<br />', '<br/>');
@@ -180,12 +126,8 @@ class X4Text_helper
 
     /**
 	 * Preg replace all
-	 *
-	 * @static
-	 * @param	string	$str String to clean
-	 * @return  string	cleaned string
 	 */
-	public static function pregReplaceAll($find, $replacement, $str)
+	public static function pregReplaceAll(string $find, string $replacement, string $str) : string
     {
         while(preg_match($find, $str)) {
             $str = preg_replace($find, $replacement, $str);
@@ -195,53 +137,42 @@ class X4Text_helper
 
 	/**
 	 * Fixes the encoding to utf8
-	 *
-	 * @static
-	 * @param	string	$str String to fix
-	 * @return  string	fixed string
 	 */
-	public static function fix_encoding($str)
+	public static function fix_encoding(string $str) : string
 	{
 		$cur_encoding = mb_detect_encoding($str) ;
-		if ($cur_encoding == 'UTF-8' && mb_check_encoding($str, 'UTF-8'))
-		{
-			//nothing
-		}
-		else
+		if ($cur_encoding != 'UTF-8' || !mb_check_encoding($str, 'UTF-8'))
 		{
 			$str = utf8_encode($str);
 		}
 		return preg_replace("/[\n\r]/","\n", $str);
 	}
 
+    /**
+	 * Create random string
+	 * /
+	public static function randomize(int $lenght)
+	{
+		$codice_random = bin2hex(openssl_random_pseudo_bytes(6));
+		$xcode = uniqid().$codice_random;
+	}
+	*/
 
 	/**
 	 * Create a random string
-	 *
-	 * @static
-	 * @param integer	$len length of the string
-	 * @param string	$what define which group of characters to use
-	 * @return string
 	 */
-	public static function random_string($len, $what = 'chars')
+	public static function random_string(int $len, string $what = 'chars')
 	{
 		$chars = self::$$what;
 	    shuffle($chars);
-	    $string = implode('', array_slice($chars, 0, $len));
-	    return $string;
+	    return implode('', array_slice($chars, 0, $len));
     }
 
     /**
 	 * Create a random password
-	 *
-	 * @static
-	 * @return string
 	 */
-	public static function random_password()
+	public static function random_password(int $chars = 6, int $symbols = 2) : string
 	{
-        $chars = 6;
-        $symbols = 2;
-
         $tmp = self::random_string($chars, 'chars').self::random_string($symbols, 'symbols');
         $tmp = str_split($tmp);
         shuffle($tmp);
@@ -255,203 +186,225 @@ class X4Text_helper
 	 * @param string	$html
 	 * @return string
 	 */
-	public static function responsive_table($html, $size = 'xs', $fixed = 'th')
+	public static function responsive_table(string $html, string $size = 'xs', string $fixed = 'th') : string
 	{
-	    if (!empty($html))
+	    if (empty($html))
 	    {
-            $src = array('<thead>', '<td ', '<td>');
-            $rpl = array('<thead class="hidden-'.$size.'">', '<td class="hidden-'.$size.'" ', '<td class="hidden-'.$size.'">');
-
-            $html = str_replace($src, $rpl, $html);
-
-            try
-            {
-                $doc = new DOMDocument('1.0', 'utf-8');
-                $internalErrors = libxml_use_internal_errors(true);
-                $doc->loadHTML($html);
-
-                // get table data
-                $doc->preserveWhiteSpace = false;
-
-                //the table by its tag name
-                $tables = $doc->getElementsByTagName('table');
-
-                if ($tables->length)
-                {
-                    foreach ($tables as $table)
-                    {
-                        //get all rows from the table
-                        $rows = $table->getElementsByTagName('tr');
-                        // get each column by tag name
-                        $cols = $rows->item(0)->getElementsByTagName('th');
-                        $row_headers = NULL;
-                        foreach ($cols as $node)
-                        {
-                            //print $node->nodeValue."\n";
-                            $row_headers[] = $node->nodeValue;
-                        }
-
-                        //get all rows from the table
-                        $rows = $table->getElementsByTagName('tr');
-                        foreach ($rows as $row)
-                        {
-                            // get each column by tag name
-                            $cols = $row->getElementsByTagName('td');
-                            $tmp = array();
-                            $i = 0;
-                            foreach ($cols as $node) {
-                                # code...
-                                //print $node->nodeValue."\n";
-                                if ($row_headers == NULL)
-                                {
-                                    $tmp[] = $node->nodeValue;
-                                }
-                                else
-                                {
-                                    $tmp[$row_headers[$i]] = $node->nodeValue;
-                                }
-                                $i++;
-                            }
-
-                            // build TDs
-                            if ($fixed == 'th')
-                            {
-                                // headers as column
-                                if ($row_headers == NULL)
-                                {
-                                    $txt = implode('<br>', $tmp);
-                                }
-                                else
-                                {
-                                    $a = array();
-                                    foreach ($tmp as $k => $v)
-                                    {
-                                        $a[] = '<b>'.$k.'</b>: '.$v;
-                                    }
-                                    $txt = implode('<br />', $a);
-                                }
-                            }
-                            else
-                            {
-                                // first column as key
-                                // TODO
-                                foreach ($tmp as $k => $v)
-                                {
-                                    $a[] = '<b>'.$k.'</b>: '.$v;
-                                }
-                                $txt = implode('<br />', $a);
-                            }
-				$tmp = $doc->createDocumentFragment();
-				$chk = $tmp->appendXML('<td class="visible-'.$size.'">'.$txt.'</td>');
-				if ($chk)
-				{
-					$row->appendChild($tmp);
-				}
-                        }
-                    }
-                    return $doc->saveXML();
-                }
-            }
-            catch (Exception $e)
-            {
-                // do none
-            }
             return $html;
         }
-        else
+
+        $src = array('<thead>', '<td ', '<td>');
+        $rpl = array(
+            '<thead class="hidden-'.$size.'">',
+            '<td class="hidden-'.$size.'" ',
+            '<td class="hidden-'.$size.'">'
+        );
+
+        $html = str_replace($src, $rpl, $html);
+
+        try
         {
-            return $html;
+            $doc = new DOMDocument('1.0', 'utf-8');
+            libxml_use_internal_errors(true);
+            $doc->loadHTML($html);
+
+            // get table data
+            $doc->preserveWhiteSpace = false;
+
+            //the table by its tag name
+            $tables = $doc->getElementsByTagName('table');
+
+            if ($tables->length)
+            {
+                foreach ($tables as $table)
+                {
+                    //get all rows from the table
+                    $rows = $table->getElementsByTagName('tr');
+                    // get each column by tag name
+                    $cols = $rows->item(0)->getElementsByTagName('th');
+                    $row_headers = null;
+                    foreach ($cols as $node)
+                    {
+                        $row_headers[] = $node->nodeValue;
+                    }
+
+                    //get all rows from the table
+                    $rows = $table->getElementsByTagName('tr');
+
+                    // handle rows
+                    self::tableRow($row_headers, $doc, $rows, $size, $fixed);
+                }
+                return $doc->saveXML();
+            }
         }
+        catch (Exception $e)
+        {
+            if (DEBUG)
+			{
+				echo $e->getMessage();
+				die;
+			}
+			else
+			{
+			    $mod = new Log_model();
+			    $mod->logger(1, 1, 'responsive_table_debug', 'error: +++'.$e->getMessage().'+++');
+			}
+        }
+        return $html;
 	}
 
-	/**
-     * Turn all URLs in clickable links.
-     *
-     * @param string $value
-     * @param array  $protocols  http/https, ftp, mail, twitter
-     * @param array  $attributes
-     * @param string $mode       normal or all
-     * @return string
+    /**
+     * Handle table row
      */
-    public static function linkify($value, $protocols = array('http', 'https', 'mail', 'twitter'), array $attributes = array())
+    private static function tableRow(
+        mixed $row_headers,
+        DOMDocument $doc,
+        DOMNodeList &$rows,
+        string $size,
+        string $fixed
+    )
+    {
+        foreach ($rows as $row)
+        {
+            // get each column by tag name
+            $cols = $row->getElementsByTagName('td');
+            $tmp = array();
+            $i = 0;
+            foreach ($cols as $node)
+            {
+                if ($row_headers == null)
+                {
+                    $tmp[] = $node->nodeValue;
+                }
+                else
+                {
+                    $tmp[$row_headers[$i]] = $node->nodeValue;
+                }
+                $i++;
+            }
+
+            // build TDs
+            if ($fixed == 'th')
+            {
+                // headers as column
+                if ($row_headers == null)
+                {
+                    $txt = implode('<br>', $tmp);
+                }
+                else
+                {
+                    $a = array();
+                    foreach ($tmp as $k => $v)
+                    {
+                        $a[] = '<b>'.$k.'</b>: '.$v;
+                    }
+                    $txt = implode('<br />', $a);
+                }
+            }
+            else
+            {
+                // first column as key
+                foreach ($tmp as $k => $v)
+                {
+                    $a[] = '<b>'.$k.'</b>: '.$v;
+                }
+                $txt = implode('<br />', $a);
+            }
+            $tmp = $doc->createDocumentFragment();
+            $chk = $tmp->appendXML('<td class="visible-'.$size.'">'.$txt.'</td>');
+            if ($chk)
+            {
+                $row->appendChild($tmp);
+            }
+        }
+    }
+
+	/**
+     * Turn all URLs in clickable links
+     */
+    public static function linkify(
+        string $value,
+        array $protocols = ['http', 'https', 'mail', 'twitter'],
+        array $attributes = []
+    ) : string
     {
         // Link attributes
         $attr = '';
         foreach ($attributes as $key => $val)
         {
-            $attr = ' ' . $key . '="' . htmlentities($val) . '"';
+            $attr = ' '.$key.'="'.htmlentities($val).'"';
         }
 
         $links = array();
 
-        if (function_exists('preg_replace_callback'))
+        // Extract existing links and tags
+        $value = preg_replace_callback(
+            '~(<a .*?>.*?</a>|<.*?>)~i',
+            function ($match) use (&$links) {
+                return '<' . array_push($links, $match[1]) . '>';
+            },
+            $value
+        );
+
+        // Extract text links for each protocol
+        foreach ((array)$protocols as $protocol)
         {
-        	// Extract existing links and tags
-			$value = preg_replace_callback('~(<a .*?>.*?</a>|<.*?>)~i', function ($match) use (&$links) { return '<' . array_push($links, $match[1]) . '>'; }, $value);
+            switch ($protocol)
+            {
+                case 'http':
+                case 'https':
+                    $value = preg_replace_callback(
+                        '~(?:(https?)://([^\s<]+)|(www\.[^\s<]+?\.[^\s<]+))(?<![\.,:])~i',
+                        function ($match) use ($protocol, &$links, $attr)
+                        {
+                            if ($match[1])
+                            {
+                                $protocol = $match[1];
+                                $link = $match[2] ?: $match[3];
+                                return '<' . array_push($links, "<a class=\"linked\" target=\"_blank\" $attr href=\"$protocol://$link\">$link</a>") . '>';
+                            }
+                        },
+                        $value);
+                    break;
+                case 'mail':
+                    $value = preg_replace_callback(
+                        '~([^\s<]+?@[^\s<]+?\.[^\s<]+)(?<![\.,:])~',
+                        function ($match) use (&$links, $attr)
+                        {
+                            return '<' . array_push($links, "<a class=\"linked\" target=\"_blank\" $attr href=\"mailto:{$match[1]}\">{$match[1]}</a>") . '>';
+                        },
+                        $value);
+                    break;
+                case 'twitter':
+                    $value = preg_replace_callback(
+                        '~(?<!\w)[@#](\w++)~',
+                        function ($match) use (&$links, $attr)
+                        {
+                            return '<' . array_push($links, "<a class=\"linked\" target=\"_blank\" $attr href=\"https://twitter.com/" . ($match[0][0] == '@' ? '' : 'search/%23') . $match[1]  . "\">{$match[0]}</a>") . '>';
+                        },
+                        $value);
+                    break;
+                default:
+                    $value = preg_replace_callback(
+                        '~' . preg_quote($protocol, '~') . '://([^\s<]+?)(?<![\.,:])~i',
+                        function ($match) use ($protocol, &$links, $attr)
+                        {
+                            return '<' . array_push($links, "<a class=\"linked\" target=\"_blank\" $attr href=\"$protocol://{$match[1]}\">{$match[1]}</a>") . '>';
+                        },
+                        $value);
+                    break;
+            }
+        }
 
-			// Extract text links for each protocol
-			foreach ((array)$protocols as $protocol)
-			{
-				switch ($protocol)
-				{
-					case 'http':
-					case 'https':
-						$value = preg_replace_callback(
-							'~(?:(https?)://([^\s<]+)|(www\.[^\s<]+?\.[^\s<]+))(?<![\.,:])~i',
-							function ($match) use ($protocol, &$links, $attr)
-							{
-								if ($match[1])
-								{
-									$protocol = $match[1];
-									$link = $match[2] ?: $match[3];
-									return '<' . array_push($links, "<a class=\"linked\" target=\"_blank\" $attr href=\"$protocol://$link\">$link</a>") . '>';
-								}
-							},
-							$value);
-						break;
-					case 'mail':
-						$value = preg_replace_callback(
-							'~([^\s<]+?@[^\s<]+?\.[^\s<]+)(?<![\.,:])~',
-							function ($match) use (&$links, $attr)
-							{
-								return '<' . array_push($links, "<a class=\"linked\" target=\"_blank\" $attr href=\"mailto:{$match[1]}\">{$match[1]}</a>") . '>';
-							},
-							$value);
-						break;
-					case 'twitter':
-						$value = preg_replace_callback(
-							'~(?<!\w)[@#](\w++)~',
-							function ($match) use (&$links, $attr)
-							{
-								return '<' . array_push($links, "<a class=\"linked\" target=\"_blank\" $attr href=\"https://twitter.com/" . ($match[0][0] == '@' ? '' : 'search/%23') . $match[1]  . "\">{$match[0]}</a>") . '>';
-							},
-							$value);
-						break;
-					default:
-						$value = preg_replace_callback(
-							'~' . preg_quote($protocol, '~') . '://([^\s<]+?)(?<![\.,:])~i',
-							function ($match) use ($protocol, &$links, $attr)
-							{
-								return '<' . array_push($links, "<a class=\"linked\" target=\"_blank\" $attr href=\"$protocol://{$match[1]}\">{$match[1]}</a>") . '>';
-							},
-							$value);
-						break;
-				}
-			}
-
-			// Insert all link
-			return preg_replace_callback(
-				'/<(\d+)>/',
-				function ($match) use (&$links)
-				{
-					return $links[$match[1] - 1];
-				},
-				$value);
-		}
-		else
-		{
-			return $value;
-		}
+        // Insert all link
+        return preg_replace_callback(
+            '/<(\d+)>/',
+            function ($match) use (&$links)
+            {
+                return $links[$match[1] - 1];
+            },
+            $value
+        );
     }
 
 	/**
@@ -470,13 +423,8 @@ class X4Text_helper
 	 *	htmlDiff is a wrapper for the diff command, it takes two strings and
 	 *	returns the differences in HTML. The tags used are <ins> and <del>,
 	 *	which can easily be styled with CSS.
-	 *
-	 * @static
-	 * @param array	$old Array of strings
-	 * @param array	$new Array of strings
-	 * @return array
 	 */
-	public static function diff($old, $new)
+	public static function diff(array $old, array $new) : array
 	{
 		$maxlen = 0;
 		foreach ($old as $oindex => $ovalue)
@@ -487,7 +435,7 @@ class X4Text_helper
 				$matrix[$oindex][$nindex] = isset($matrix[$oindex - 1][$nindex - 1])
 					? $matrix[$oindex - 1][$nindex - 1] + 1
 					: 1;
-				if($matrix[$oindex][$nindex] > $maxlen)
+				if ($matrix[$oindex][$nindex] > $maxlen)
 				{
 					$maxlen = $matrix[$oindex][$nindex];
 					$omax = $oindex + 1 - $maxlen;
@@ -530,10 +478,11 @@ class X4Text_helper
 	 * @param array	$new Array of strings
 	 * @return array
 	 */
-	public static function htmlDiff($old, $new)
+	public static function htmlDiff(array $old, array $new) : string
 	{
 		$diff = self::diff(explode(' ', $old), explode(' ', $new));
-		foreach ($diff as $k)
+		$ret = '';
+        foreach ($diff as $k)
 		{
 			if (is_array($k))
             {
@@ -558,46 +507,24 @@ class X4Text_helper
 
 	/**
 	 * format address
-	 *
-	 * @param   mixed	$address object or array
-	 * @param   string	$nl New line item
-	 * @return  string
 	 */
-	public static function write_address($address, $nl = BR)
+	public static function write_address(mixed $address, string $nl = BR) : string
 	{
 		$a = $b = array();
+        // address could be an array or an object
 		if (is_array($address))
 		{
-            // middle block
-			if (isset($address['zip_code']) && !empty($address['zip_code']))
-			{
-				$b[] = $address['zip_code'];
-			}
-
-			$b[] = strtoupper($address['city']);
-
-			if (isset($address['region']) && !empty($address['region']))
-			{
-				$b[] = '('.strtoupper($address['region']).')';
-			}
-
-            // complete address
-			if (isset($address['co']) && !empty($address['co']))
-			{
-				$a[] = 'C/O '.$address['co'];
-			}
-
-			$a[] = $address['address'];
-
-			$a[] = implode(' ', $b);
-			if (isset($address['country']) && !empty($address['country']))
-			{
-				$a[] = strtoupper($address['country']);
-			}
+            $address = json_decode(json_encode($address));
 		}
 
 		if (is_object($address))
 		{
+			if (isset($address->co) && !empty($address->co))
+			{
+				$a[] = 'C/O '.$address->co;
+			}
+			$a[] = $address->address;
+
             // middle block
             if (isset($address->zip_code) && !empty($address->zip_code))
 			{
@@ -609,15 +536,8 @@ class X4Text_helper
 			{
 				$b[] = '('.strtoupper($address->region).')';
 			}
-
-			if (isset($address->co) && !empty($address->co))
-			{
-				$a[] = 'C/O '.$address->co;
-			}
-
-			$a[] = $address->address.$nl;
-
 			$a[] = implode(' ', $b);
+
 			if (isset($address->country) && !empty($address->country))
 			{
 				$a[] = strtoupper($address->country);
@@ -628,21 +548,16 @@ class X4Text_helper
 
 	/**
 	 * remove unwanted tags and content
-	 *
-	 * @param   string	$text
-	 * @param   array	$tags
-	 * @param   boolean	$invert
-	 * @return  string
 	 */
-	public static function strip_tags_content($text, $tags, $invert = FALSE)
+	public static function strip_tags_content(string $text, array $tags, $invert = false) : string
 	{
 
 		//preg_match_all('/<(.+?)[\s]*\/?[\s]*>/si', trim($tags), $tags);
 		//$tags = array_unique($tags[1]);
 
-		if(is_array($tags) AND count($tags) > 0)
+		if (is_array($tags) && count($tags) > 0)
 		{
-			if($invert == FALSE)
+			if(!$invert)
 			{
 			  return preg_replace('@<(?!(?:'. implode('|', $tags) .')\b)(\w+)\b.*?>.*?</\1>@si', '', $text);
 			}
@@ -651,7 +566,7 @@ class X4Text_helper
 			  return preg_replace('@<('. implode('|', $tags) .')\b.*?>.*?</\1>@si', '', $text);
 			}
 		}
-		elseif($invert == FALSE)
+		elseif(!$invert)
 		{
 			return preg_replace('@<(\w+)\b.*?>.*?</\1>@si', '', $text);
 		}
@@ -660,20 +575,19 @@ class X4Text_helper
 
 	/**
 	 * remove unwanted tags and remove unwanted attributes
-	 *
-	 * @param   string	$text
-	 * @param   array	$allowed_tags List the tags you want to allow here, NOTE you MUST allow html and body otherwise entire string will be cleared
-	 * @param   array	$allowed_attrs List the attributes you want to allow here
-	 * @return  string
 	 */
-	public static function stripUnwantedTagsAndAttrs($html_str, $allowed_tags = array("html", "body", "b", "br", "em", "hr", "i", "li", "ol", "p", "blockquote", "s", "span", "table", "tr", "td", "u", "ul"), $allowed_attrs = array ("class", "id", "style"))
+	public static function stripUnwantedTagsAndAttrs(
+        string $html_str,
+        array $allowed_tags = array("html", "body", "b", "br", "em", "hr", "i", "li", "ol", "p", "blockquote", "s", "span", "table", "tr", "td", "u", "ul"),    // NOTE you MUST allow html and body otherwise entire string will be cleared
+        array $allowed_attrs = array ("class", "id", "style")
+    ): string
 	{
 		$xml = new DOMDocument();
 
-		//Suppress warnings: proper error handling is beyond scope of example
+		// Suppress warnings: proper error handling is beyond scope of example
 		libxml_use_internal_errors(true);
 
-		if (!strlen($html_str))
+		if (empty($html_str))
 		{
 			return false;
 		}
@@ -703,22 +617,20 @@ class X4Text_helper
 
     /**
 	 * Get the content of a CSV file in a string and return an associative array
-	 *
-	 * @param   string	$string
-	 * @return  array
 	 */
-    public static function csv2array($string)
+    public static function csv2array(string $string) : array
     {
         $array = array_map('str_getcsv', explode(NL, $string));
-
         $header = array_shift($array);
-
         array_walk($array, '_combine_array', $header);
         return $array;
     }
 }
 
-function _combine_array(&$row, $key, $header)
+/**
+ * combine headers with values
+ */
+function _combine_array(array &$row, string $header)
 {
     $row = array_combine($header, $row);
 }

@@ -17,8 +17,6 @@ class Logout_controller extends X4Cms_controller
 {
 	/**
 	 * Constructor
-	 *
-	 * @return  void
 	 */
 	public function __construct()
 	{
@@ -28,10 +26,8 @@ class Logout_controller extends X4Cms_controller
 	/**
 	 * Perform logout
 	 * Destroy session and redirect to home
-	 *
-	 * @return  void
 	 */
-	public function _default()
+	public function _default() : void
 	{
 		// destroy session
 		session_unset();

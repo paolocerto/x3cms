@@ -23,8 +23,6 @@ class File_model extends X4Model_core
 	/**
 	 * Constructor
 	 * set the default table
-	 *
-	 * @return  void
 	 */
 	public function __construct()
 	{
@@ -36,12 +34,8 @@ class File_model extends X4Model_core
 	/**
 	 * Get file categories by Area ID
 	 * Used for autocompletion
-	 *
-	 * @param   integer $id_area Area ID
-	 * @param   string	$value A piece of category name
-	 * @return  array	Array of objects
 	 */
-	public function get_cat(int $id_area, string $value = '')
+	public function get_cat(int $id_area, string $value = '') : array
 	{
 		// condition
 		$like = (empty($value))
@@ -54,13 +48,8 @@ class File_model extends X4Model_core
 	/**
 	 * Get file subcategories by Area ID
 	 * Used for autocompletion
-	 *
-	 * @param   integer $id_area Area ID
-	 * @param   string	$category Category name
-	 * @param   string	$value A piece of subcategory name
-	 * @return  array	Array of objects
 	 */
-	public function get_subcat(int $id_area, string $category = '', string $value = '')
+	public function get_subcat(int $id_area, string $category = '', string $value = '') : array
 	{
 		// conditions
 		$where = (empty($category) || $category == '-')
@@ -76,11 +65,8 @@ class File_model extends X4Model_core
 
 	/**
 	 * Get areas
-	 * Join with privs table
-	 *
-	 * @return  array	Array of objects
 	 */
-	public function get_areas()
+	public function get_areas() : array
 	{
 		return $this->db->query('SELECT a.id, a.title, a.description, IF(p.id IS NULL, u.level, p.level) AS level
 			FROM areas a
@@ -91,11 +77,8 @@ class File_model extends X4Model_core
 
 	/**
 	 * Get tree of areas, categories and subcategories
-	 * Use areas table and join with files and privs table
-	 *
-	 * @return  array	Array of objects
 	 */
-	public function get_tree()
+	public function get_tree() : array
 	{
 		return $this->db->query('SELECT a.id, a.title, a.description, f.category, f.subcategory, IF(p.id IS NULL, u.level, p.level) AS level
 			FROM areas a
@@ -108,10 +91,8 @@ class File_model extends X4Model_core
 
 	/**
 	 * Get file types
-	 *
-	 * @return  array	Array of objects
 	 */
-	public function get_types()
+	public function get_types() : array
 	{
 		$a = array(
 			array('name' => _ALL_FILES, 'value' => -1),
@@ -120,42 +101,29 @@ class File_model extends X4Model_core
 			array('name' => _MEDIA, 'value' => 2),
 			array('name' => _TEMPLATES, 'value' => 3)
 		);
-
 		return X4Array_helper::array2obj($a, 'value', 'name');
 	}
 
 	/**
 	 * Get categories by Area ID
-	 *
-	 * @param   integer $id_area Area ID
-	 * @return  array	Array of objects
 	 */
-	public function get_categories(int $id_area)
+	public function get_categories(int $id_area) : array
 	{
 		return $this->db->query('SELECT DISTINCT category FROM files WHERE id_area = '.$id_area.' ORDER BY category ASC');
 	}
 
 	/**
 	 * Get subcategories by Area ID and category name
-	 *
-	 * @param   integer $id_area Area ID
-	 * @param   string	$category Category name
-	 * @return  array	Array of objects
 	 */
-	public function get_subcategories(int $id_area, string $category)
+	public function get_subcategories(int $id_area, string $category) : array
 	{
 		return $this->db->query('SELECT DISTINCT subcategory FROM files WHERE id_area = '.$id_area.' AND category = '.$this->db->escape($category).' ORDER BY subcategory ASC');
 	}
 
 	/**
 	 * Get files by Area ID, Category and Subcategory
-	 * Join with privs table
-	 *
-	 * @param   integer $id_area Area ID
-	 * @param   array	$qs
-	 * @return  array	Array of objects
 	 */
-	public function get_files(int $id_area, array $qs)
+	public function get_files(int $id_area, array $qs) : array
 	{
 		// category condition
 		$where = (empty($qs['xctg']))
@@ -204,11 +172,8 @@ class File_model extends X4Model_core
 	/**
 	 * Add record to files table
 	 * Multiple insert
-	 *
-	 * @param   array	$array Array of files data
-	 * @return  array
 	 */
-	public function insert_file(array $array)
+	public function insert_file(array $array) : array
 	{
 		// build queries
 		$sql = array();
@@ -225,11 +190,8 @@ class File_model extends X4Model_core
 
 	/**
 	 * Delete file
-	 *
-	 * @param   integer	$id File ID
-	 * @return  array
 	 */
-	public function delete_file(int $id)
+	public function delete_file(int $id) : array
 	{
 		// folders
 		$what = array('img', 'files', 'media', 'template');
@@ -257,24 +219,17 @@ class File_model extends X4Model_core
 
 	/**
 	 * Check if a file is registered in files table
-	 *
-	 * @param   string	$filename File name
-	 * @return  integer	Number of files found
 	 */
-	private function in_other_area(string $filename)
+	private function in_other_area(string $filename) : int
 	{
-		return $this->db->query_var('SELECT COUNT(id) FROM files WHERE name = '.$this->db->escape($filename));
+		return (int) $this->db->query_var('SELECT COUNT(*) FROM files WHERE name = '.$this->db->escape($filename));
 	}
 
 	/**
 	 * Get js lists
 	 * Used in TinyMCE
-	 *
-	 * @param 	integer	$id_area	Area ID
-	 * @param   string	$type		Type of files
-	 * @return void
 	 */
-	public function get_js_list(int $id_area, string $type)
+	public function get_js_list(int $id_area, string $type) : string
 	{
 		// type are also folders
 		$what = array(

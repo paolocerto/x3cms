@@ -31,14 +31,8 @@ final class X4Core_core
 
 	/**
 	 * Set the contest
-	 *
-	 * @static
-     * @param   string  $default
-     * @param   string  $db
-     * @param   string  $cli
-	 * @return  void
 	 */
-	public static function setCore($default, $db = NULL, $cli = '')
+	public static function setCore(array $default, mixed $db = null, string $cli = '')
 	{
 		// set the route
 		if (defined('X3CLI') && !empty($cli))
@@ -73,10 +67,7 @@ final class X4Core_core
 	}
 
 	/**
-	 * Load the controller and run the method
-	 *
-	 * @static
-	 * @return  object  instance of controller
+	 * Load the controller and run the method and return the controller
 	 */
 	final public static function & instance()
 	{
@@ -134,10 +125,6 @@ final class X4Core_core
 
     /**
 	 * caching
-	 *
-	 * @static
-	 * @param   string  current output buffer
-	 * @return  string
 	*/
 	final public static function caching()
 	{
@@ -148,7 +135,7 @@ final class X4Core_core
             X4Cache_core::setStore(APATH.'files/tmp/');
 
             // if no cache to read
-            if (!X4Cache_core::Start($_SERVER['REQUEST_URI'], CACHE_TIME))
+            if (!X4Cache_core::start($_SERVER['REQUEST_URI'], CACHE_TIME))
             {
                 self::$caching = true;
             }
@@ -165,12 +152,8 @@ final class X4Core_core
 
 	/**
 	 * output handler.
-	 *
-	 * @static
-	 * @param   string  current output buffer
-	 * @return  string
 	*/
-	final public static function output_buffer(string $output)
+	final public static function output_buffer(string $output) : string
 	{
 		// Set final output
 		self::$output = $output;
@@ -181,9 +164,6 @@ final class X4Core_core
 
 	/**
 	 * Triggers the shutdown by closing the output buffer
-	 *
-	 * @static
-	 * @return  void
 	 */
 	public static function shutdown()
 	{
@@ -196,18 +176,14 @@ final class X4Core_core
 		// close caching
 		if (self::$caching && !defined('NOCACHE'))
 		{
-			X4Cache_core::End(self::$output);
+			X4Cache_core::end(self::$output);
 		}
 	}
 
 	/**
-	 * Provides class auto-loading.
-	 *
-	 * @static
-	 * @param   string  name of class
-	 * @return  bool
+	 * Provides class auto-loading
 	 */
-	public static function auto_load(string $class)
+	public static function auto_load(string $class) : bool
 	{
 		if (class_exists($class, false))
 		{
@@ -267,9 +243,9 @@ final class X4Core_core
 
         foreach ($dirs as $d)
         {
-            if(file_exists($d.$class.EXT))
+            if (file_exists($d.$class.'.php'))
             {
-                require_once($d.$class.EXT);
+                require_once($d.$class.'.php');
                 return true;
             }
         }

@@ -18,8 +18,6 @@ class Sections_controller extends X3ui_controller
 	/**
 	 * Constructor
 	 * check if user is logged
-	 *
-	 * @return  void
 	 */
 	public function __construct()
 	{
@@ -29,12 +27,8 @@ class Sections_controller extends X3ui_controller
 
 	/**
 	 * Show sections by page
-	 *
-     * @param   integer  $id_area
-     * @param   integer  $id_page
-	 * @return  void
 	 */
-	public function index(int $id_area, int $id_page)
+	public function index(int $id_area, int $id_page) : void
 	{
 		// load the dictionary
 		$this->dict->get_wordarray(array('sections'));
@@ -74,14 +68,8 @@ class Sections_controller extends X3ui_controller
 
 	/**
 	 * Compose actions
-	 *
-	 * @param   integer $id_area Area ID
-	 * @param   string	$lang Language code
-	 * @param   integer $id_page Page id
-	 * @param	string	$page
-	 * @return  string
 	 */
-	public function actions(int $id_area, string $lang, int $id_page, string $page = 'compose')
+	public function actions(int $id_area, string $lang, int $id_page, string $page = 'compose') : string
 	{
 		if ($page == 'compose')
 		{
@@ -102,14 +90,8 @@ class Sections_controller extends X3ui_controller
 
 	/**
 	 * Change status
-	 *
-	 * @param   string  $what field to change
-     * @param   integer $id_area
-	 * @param   integer $id ID of the item to change
-	 * @param   integer $value value to set (0 = off, 1 = on)
-	 * @return  void
 	 */
-	public function set(string $what, int $id_area, int $id, int $value = 0)
+	public function set(string $what, int $id_area, int $id, int $value = 0) : void
 	{
 		$msg = null;
 		// check permission
@@ -137,14 +119,9 @@ class Sections_controller extends X3ui_controller
 	}
 
 	/**
-	 * New / Edit section form (use Ajax)
-	 *
-	 * @param   integer	$id area
-	 * @param   integer	$id_page
-	 * @param   integer	$id Section ID
-	 * @return  void
+	 * New / Edit section form
 	 */
-	public function edit(int $id_area, int $id_page, int $id = 0)
+	public function edit(int $id_area, int $id_page, int $id = 0) : void
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'sections'));
@@ -236,14 +213,8 @@ class Sections_controller extends X3ui_controller
 
 	/**
 	 * Register Edit / New item
-	 *
-	 * @access	private
-	 * @param   integer $id item ID (if 0 then is a new item)
-	 * @param   array 	$_post _POST array
-	 * @param   array 	$_file_array
-	 * @return  void
 	 */
-	private function editing($id, $_post, $file_array)
+	private function editing($id, $_post, $file_array) : void
 	{
 		$msg = null;
 		// check permission
@@ -456,12 +427,9 @@ class Sections_controller extends X3ui_controller
 	}
 
 	/**
-	 * Delete section form (use Ajax)
-	 *
-	 * @param   integer $id Section ID
-	 * @return  void
+	 * Delete section form
 	 */
-	public function delete(int $id)
+	public function delete(int $id) : void
 	{
 		// get object
 		$mod = new Section_model();
@@ -500,12 +468,8 @@ class Sections_controller extends X3ui_controller
 
 	/**
 	 * Delete section
-	 *
-	 * @access	private
-	 * @param   stdClass	$item Section Obj
-	 * @return  void
 	 */
-	private function deleting(stdClass $item)
+	private function deleting(stdClass $item) : void
 	{
 		$msg = null;
 		// check permissions
@@ -538,12 +502,8 @@ class Sections_controller extends X3ui_controller
 
 	/**
 	 * Move item
-	 *
-     * @param   integer $id_area
-	 * @param   integer $id_page
-	 * @return  void
 	 */
-	public function ordering(int $id_area, int $id_page)
+	public function ordering(int $id_area, int $id_page) : void
 	{
 		$msg = null;
         $msg = AdmUtils_helper::chk_priv_level($id_area, 'pages', $id_page, 'order');
@@ -586,12 +546,8 @@ class Sections_controller extends X3ui_controller
 
 	/**
 	 * Page compositing
-	 *
-	 * @param   integer $id_page Page ID
-	 * @param   string  $by sort key
-	 * @return  void
 	 */
-	public function compose(int $id_page, string $by = 'name')
+	public function compose(int $id_page, string $by = 'name') : void
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('sections', 'form', 'articles'));
@@ -648,13 +604,8 @@ class Sections_controller extends X3ui_controller
 	 * Get article to show in composer
 	 * During composition of page contents, user drag and drop articles from context list to page sections and vice versa
 	 * When an article move the system calls this method
-	 *
-	 * @param   integer $id_page Page ID
-     * @param   string  $destination (section-[progessive] or context-[draft|pages|multi])
-	 * @param   string  $bid, article unique ID
-	 * @return  string
 	 */
-	public function get_article(int $id_page, string $destination, string $bid)
+	public function get_article(int $id_page, string $destination, string $bid) : void
 	{
 		// load dictionary
 		$this->dict->get_wordarray(array('articles'));
@@ -698,12 +649,8 @@ class Sections_controller extends X3ui_controller
 	/**
 	 * Register page's composition
 	 * Use _POST data
-	 *
-	 * @param   integer item id (if 0 then is a new item)
-	 * @param   array 	_POST array
-	 * @return  void
 	 */
-	public function compositing()
+	public function compositing() : void
 	{
 		$msg = null;
 		// check permission

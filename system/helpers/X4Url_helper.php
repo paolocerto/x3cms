@@ -16,13 +16,9 @@
 class X4Url_helper
 {
     /**
-	 * Get meta
-	 *
-	 * @static
-	 * @param string	$str
-	 * @return array
+	 * Get meta data
 	 */
-    public static function getMetaTags($str)
+    public static function getMetaTags(string $str) : array
     {
         $pattern = '
 
@@ -52,15 +48,10 @@ class X4Url_helper
 
     /**
 	 * Get title
-	 *
-	 * @static
-	 * @param string	$str
-	 * @return array
 	 */
-    public static function getTitle($str)
+    public static function getTitle(string $str) : array
     {
         $pattern = '~<title>[\s\S]*<\/title>~ix';
-
         if(preg_match_all($pattern, $str, $out, PREG_PATTERN_ORDER))
         {
             return $out[0];
@@ -70,33 +61,17 @@ class X4Url_helper
 
     /**
      * Fix UTF8 encoding
-     *
-     * @static
-	 * @param string	$str
-	 * @return str
      */
-    public static function utf_fixer($str)
+    public static function utf_fixer(string $str) : string
     {
         return X4Text_helper::fix_encoding($str);
-        /*
-        $src = [];
-        $rpl = [];
-
-        return str_replace($src, $rpl, $tmp);
-        */
-        //return \ForceUTF8\Encoding::fixUTF8($str);
-        //return preg_replace('/[^\x20-\x7E]/','', $str);
     }
 
 
     /**
 	 * Get meta
-	 *
-	 * @static
-	 * @param string	$url
-	 * @return array
 	 */
-    public static function extract_tags_from_url($url)
+    public static function extract_tags_from_url(string $url) : array
     {
         $tags = array();
 
@@ -116,7 +91,6 @@ class X4Url_helper
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-
         $contents = curl_exec($ch);
         curl_close($ch);
 
@@ -126,10 +100,8 @@ class X4Url_helper
         }
 
         $matches = self::getMetaTags($contents);
-
         // fix non UTF8
         $xml = self::utf_fixer(implode($matches));
-        //$xml = implode($matches);
 
         try
         {
@@ -156,7 +128,6 @@ class X4Url_helper
                 $matches = self::getTitle($contents);
                 // fix non UTF8
                 $xml = self::utf_fixer(implode($matches));
-                //$xml = implode($matches);
                 $doc = new DOMDocument();
                 $doc->loadHTML($xml);
                 foreach ($doc->getElementsByTagName('title') as $title)
@@ -186,12 +157,8 @@ class X4Url_helper
 
 	/**
 	 * Handle meta
-	 *
-	 * @static
-	 * @param string	$url
-	 * @return array
 	 */
-	public static function meta($url)
+	public static function meta(string $url) : array
 	{
 	    $metas = self::extract_tags_from_url($url);
 
@@ -233,11 +200,8 @@ class X4Url_helper
 
 	/**
 	 * convert youtube url to embed url
-	 *
-	 * @param   array    $data
-	 * @return  string
 	 */
-	public static function youtube_embed($url)
+	public static function youtube_embed(string $url) : string
 	{
 	    $uqs = explode('?', $url);
 	    $t = explode('/', $uqs[0]);
@@ -247,11 +211,8 @@ class X4Url_helper
 
 	/**
 	 * format post/comment contents
-	 *
-	 * @param   array    $data
-	 * @return  string
 	 */
-	public static function format_content($data)
+	public static function format_content(array $data) : string
 	{
 	    $out = '';
 	    if (isset($data['txt']))
@@ -259,7 +220,9 @@ class X4Url_helper
             // post
             if (!empty($data['txt']))
             {
-                $out = '<p class="mb-4">'.nl2br(X4Text_helper::linkify(stripslashes($data['txt']), ['http', 'https', 'mail'])).'</p>';
+                $out = '<p class="mb-4">
+                    '.nl2br(X4Text_helper::linkify(stripslashes($data['txt']), ['http', 'https', 'mail'])).'
+                    </p>';
             }
 
             foreach ($data['related'] as $k => $v)
@@ -272,11 +235,8 @@ class X4Url_helper
 
     /**
 	 * format post/comment contents
-	 *
-	 * @param   array    $data
-	 * @return  string
 	 */
-	public static function formatter($k, $v)
+	public static function formatter(string $k, array $v) : string
 	{
 	    $out = '';
 	    if ($k === 'img')
@@ -331,11 +291,8 @@ class X4Url_helper
 
 	/**
 	 * format link box
-	 *
-	 * @param   array    $data
-	 * @return  string
 	 */
-	public static function link_format($data)
+	public static function link_format(array $data) : string
 	{
 	    // link
         $title = (empty($data['title']))
@@ -357,32 +314,53 @@ class X4Url_helper
         // video replace img
         if (!empty($data['video']))
         {
-            $img = '<div class="w-full"><iframe class="w-full" src="'.$data['video'].'?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>';
+            $img = '<div class="w-full">
+                <iframe
+                    class="w-full"
+                    src="'.$data['video'].'?rel=0&amp;controls=0&amp;showinfo=0"
+                    frameborder="0"
+                    allow="autoplay; encrypted-media"
+                    allowfullscreen
+                ></iframe>
+            </div>';
         }
-        else if (!empty($data['player']))
+        elseif (!empty($data['player']))
         {
-            $img = '<div class="w-full"><iframe class="w-full" src="'.$data['player'].'?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>';
+            $img = '<div class="w-full">
+                <iframe
+                    class="w-full"
+                    src="'.$data['player'].'?rel=0&amp;controls=0&amp;showinfo=0"
+                    frameborder="0"
+                    allow="autoplay; encrypted-media"
+                    allowfullscreen
+                ></iframe>
+            </div>';
         }
 
         // disposition
         if ($img && (!empty($title) || !empty($desc)))
         {
-            $msg = '<div class="flex flex-col md:flex-row mb-2"><div class="w-full md:w-5/12">'.$img.'</div><div class="w-full pl-0 md:pl-4 pt-4 md:pt-0 md:w-7/12">'.$title.$desc.$site.'</div></div>';
+            $msg = '<div class="flex flex-col md:flex-row mb-2">
+                <div class="w-full md:w-5/12">
+                    '.$img.'</div>
+                <div class="w-full pl-0 md:pl-4 pt-4 md:pt-0 md:w-7/12">
+                    '.$title.$desc.$site.'
+                </div>
+            </div>';
         }
         else
         {
-            $msg = '<div class="w-full mb-2">'.$title.$desc.$site.'</div>';
+            $msg = '<div class="w-full mb-2">
+                '.$title.$desc.$site.'
+            </div>';
         }
         return $msg;
 	}
 
 	/**
 	 * compact meta data array
-	 *
-	 * @param   array    $data
-	 * @return  string
 	 */
-	public static function compact_meta($data)
+	public static function compact_meta(aray $data) : string
 	{
 	    $a = array();
 	    foreach ($data as $k => $v)

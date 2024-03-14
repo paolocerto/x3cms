@@ -16,7 +16,7 @@
 class Permission_model extends X4Model_core
 {
 	/**
-	 * @var array	admin related privtypes
+	 * admin related privtypes
 	 */
 	protected $admin_privtypes = array(
 		'_group_creation',
@@ -33,8 +33,8 @@ class Permission_model extends X4Model_core
 	);
 
     /**
-	 * @var array	super admin related privtypes
-     *  Set restricted access for creation and deletion
+	 * super admin related privtypes
+     * Set restricted access for creation and deletion
 	 */
 	protected $superadmin_privtypes = array(
 		'_area_creation',
@@ -54,7 +54,7 @@ class Permission_model extends X4Model_core
 	);
 
 	/**
-	 * @var array	tables to not set privs
+	 * tables to not set privs
 	 */
 	protected $no_privs = array(
         'debug',
@@ -64,8 +64,6 @@ class Permission_model extends X4Model_core
 
 	/**
 	 * Constructor: set reference table
-	 *
-	 * @return  void
 	 */
 	public function __construct(string $db = 'default')
 	{
@@ -75,14 +73,8 @@ class Permission_model extends X4Model_core
 
 	/**
 	 * Get priv id
-	 *
-	 * @param   integer $id_area Area ID
-	 * @param   integer $id_user User ID
-	 * @param   string	$what what name
-	 * @param   integer $id_what what ID
-	 * @return  integer	priv ID
 	 */
-	private function get_id(int $id_area, int $id_user, string $what, int $id_what)
+	private function get_id(int $id_area, int $id_user, string $what, int $id_what) : int
 	{
 		return (int) $this->db->query_var('SELECT IF (p.id IS NULL, 0, p.id) AS id
 			FROM uprivs u
@@ -92,14 +84,8 @@ class Permission_model extends X4Model_core
 
 	/**
 	 * Get user priv on an item
-	 *
-	 * @param   integer	$id_area Area ID
-	 * @param   integer	$id_user User ID
-	 * @param   string	$what item (Table name)
-	 * @param   integer	$id_what Item ID in the table
-	 * @return  integer
 	 */
-	public function get_priv(int $id_area, int $id_user, string $what, int $id_what)
+	public function get_priv(int $id_area, int $id_user, string $what, int $id_what) : stdClass
 	{
 		return $this->db->query_row('SELECT IF(p.id IS NULL, 0, p.id) AS id, IF(p.id IS NULL, u.level, p.level) AS level
 			FROM uprivs u
@@ -109,13 +95,8 @@ class Permission_model extends X4Model_core
 
 	/**
 	 * Get user permission's level on an item
-	 *
-	 * @param   integer	$id_user User ID
-	 * @param   string	$what item (Table name)
-	 * @param   integer	$id_what Item ID in the table
-	 * @return  integer
 	 */
-	public function check_priv(int $id_user, string $what, int $id_what, int $id_area = 0)
+	public function check_priv(int $id_user, string $what, int $id_what, int $id_area = 0) : int
 	{
         $where = $id_area
             ? 'u.id_area = '.$id_area.' AND'
@@ -139,24 +120,16 @@ class Permission_model extends X4Model_core
 
 	/**
 	 * Get user priv on a table
-	 *
-	 * @param   integer	$id_area Area ID
-	 * @param   integer	$id_user User ID
-	 * @param   string	$what item (Table name)
-	 * @return  integer
 	 */
-	public function get_upriv(int $id_area, int $id_user, string $what)
+	public function get_upriv(int $id_area, int $id_user, string $what) : stdClass
 	{
 		return $this->db->query_row('SELECT id, level FROM uprivs WHERE id_area = '.$id_area.' AND id_user = '.$id_user.' AND privtype = '.$this->db->escape($what));
 	}
 
 	/**
 	 * Get permission level names
-	 * Use levels table
-	 *
-	 * @return  array	array of objects
 	 */
-	public function get_levels()
+	public function get_levels() : array
 	{
         $max_level = isset($_SESSION['level'])
             ? $_SESSION['level']
@@ -167,25 +140,16 @@ class Permission_model extends X4Model_core
 
 	/**
 	 * Get in which areas user can do something
-	 * Use aprivs table
-	 *
-	 * @param   integer $id_user User ID
-	 * @return  array	array of objects
 	 */
-	public function get_aprivs(int $id_user)
+	public function get_aprivs(int $id_user) : array
 	{
 		return $this->db->query('SELECT id_area, area FROM aprivs WHERE id_user = '.$id_user.' ORDER BY id_area ASC');
 	}
 
 	/**
 	 * Set in which areas user can do something
-	 * Use aprivs table
-	 *
-	 * @param   integer $id_user User ID
-	 * @param   array 	$ids_area array of Area IDs
-	 * @return  array	Array(0, boolean)
 	 */
-	public function set_aprivs(int $id_user, array $ids_area)
+	public function set_aprivs(int $id_user, array $ids_area) : array
 	{
 		$sql = array();
 
@@ -196,20 +160,22 @@ class Permission_model extends X4Model_core
 			// get area data
 			$a = $this->get_by_id($i, 'areas', 'name');
 
-			$sql[] = 'INSERT INTO aprivs (updated, id_user, id_area, area, xon) VALUES (NOW(), '.$id_user.', '.intval($i).', '.$this->db->escape($a->name).', 1)';
+			$sql[] = 'INSERT INTO aprivs
+                    (updated, id_user, id_area, area, xon)
+                VALUES
+                    (NOW(), '.$id_user.', '.intval($i).', '.$this->db->escape($a->name).', 1)';
 		}
 		return $this->db->multi_exec($sql);
 	}
 
 	/**
 	 * Perform multiple insert permission
-	 *
-	 * @param   string	$what table name
-	 * @param   array 	$array array(id_what, id_user, level)
-	 * @param   integer	$id_area Area ID
-	 * @return  array	Array(0, boolean)
 	 */
-	public function pexec(string $what, array $array, int $id_area = 0)
+	public function pexec(
+        string $what,
+        array $array,       // array(id_what, id_user, level)
+        int $id_area = 0
+    ) : array
 	{
 		$sql = array();
 		foreach ($array as $i)
@@ -243,7 +209,17 @@ class Permission_model extends X4Model_core
 				if ($upriv->level != $i['level'])
 				{
 					// insert
-					$sql[] = 'INSERT INTO privs (updated, id_area, id_who, what, id_what, level, xon) VALUES (NOW(), '.$id_area.', '.$id_user.', '.$this->db->escape($what).', '.$id_what.', '.intval($i['level']).', 1)';
+					$sql[] = 'INSERT INTO privs
+                            (updated, id_area, id_who, what, id_what, level, xon)
+                        VALUES (
+                            NOW(),
+                            '.$id_area.',
+                            '.$id_user.',
+                            '.$this->db->escape($what).',
+                            '.$id_what.',
+                            '.intval($i['level']).',
+                            1
+                        )';
 				}
 			}
 		}
@@ -255,25 +231,17 @@ class Permission_model extends X4Model_core
 	}
 
 	/**
-	 * Perform delete permission
-	 *
-	 * @param   string	$what table name
-	 * @param   integer $id_what Record ID
-	 * @return  array	Array(0, boolean)
+	 * Perform delete permission for all on deleted item
 	 */
-	public function deleting_by_what(string $what, int $id_what)
+	public function deleting_by_what(string $what, int $id_what) : array
 	{
 		return $this->db->single_exec('DELETE FROM privs WHERE what = '.$this->db->escape($what).' AND id_what = '.$id_what);
 	}
 
 	/**
 	 * Reset all permissions of an user
-	 * Use aprivs, uprivs and privs tables
-	 *
-	 * @param   integer $id_user User ID
-	 * @return  void
 	 */
-	public function deleting_by_user(int $id_user)
+	public function deleting_by_user(int $id_user) : array
 	{
 		$sql = array();
 
@@ -290,13 +258,8 @@ class Permission_model extends X4Model_core
 
 	/**
 	 * Get group's permissions
-	 * Use gprivs table
-	 *
-	 * @param   integer $id_group Group ID
-	 * @param   string	$table Table name
-	 * @return  array	array of objects
 	 */
-	public function get_gprivs(int $id_group, string $table = '')
+	public function get_gprivs(int $id_group, string $table = '') : mixed
 	{
 		return (empty($table))
 			? $this->db->query('SELECT * FROM gprivs WHERE id_group = '.$id_group)
@@ -305,63 +268,45 @@ class Permission_model extends X4Model_core
 
 	/**
 	 * Get user's privtype permissions into an area
-	 * Use uprivs table
-	 *
-	 * @param   integer $id_user User ID
-	 * @param   integer $id_area Area ID
-	 * @param   string	$privtype Privtype name
-	 * @return  mixed
 	 */
-	public function get_uprivs(int $id_user, int $id_area, string $privtype = '')
+	public function get_uprivs(int $id_user, int $id_area, string $privtype = '') : mixed
 	{
 		return (empty($privtype))
-			? $this->db->query('SELECT * FROM uprivs WHERE id_user = '.$id_user.' AND id_area = '.$id_area.' ORDER BY privtype ASC')
-			: $this->db->query_var('SELECT level FROM uprivs WHERE privtype = '.$this->db->escape($privtype).' AND id_user = '.$id_user.' AND id_area = '.$id_area);
+			? $this->db->query('SELECT *
+                FROM uprivs
+                WHERE id_user = '.$id_user.' AND id_area = '.$id_area.'
+                ORDER BY privtype ASC')
+			: $this->db->query_var('SELECT level
+                FROM uprivs
+                WHERE privtype = '.$this->db->escape($privtype).' AND id_user = '.$id_user.' AND id_area = '.$id_area);
 	}
 
 	/**
 	 * Set user's privtype permissions into an area
-	 * Use uprivs table
-	 *
-	 * @param   integer $id_user User ID
-	 * @param   integer $id_area Area ID
-	 * @param   string  $privtype Privtype name
-	 * @param   integer $level
-	 * @return  mixed
 	 */
-	public function set_uprivs(int $id_user, int $id_area, string $privtype, int $level)
-	{
-		$sql = 'INSERT INTO uprivs (updated, id_area, id_user, privtype, level, xon)
-			VALUES (NOW(), '.$id_area.', '.$id_user.', '.$this->db->escape($privtype).', '.$level.', 1)';
+	public function set_uprivs(int $id_user, int $id_area, string $privtype, int $level) : array
+    {
 		return $this->db->single_exec($sql);
 	}
 
 	/**
 	 * Get user's permission on a table into an area
-	 *
-	 * @param   string	$what Table name
-	 * @param   integer $id_user User ID
-	 * @param   integer $id_area Area ID
-	 * @return  array	array[record ID] => permission level
 	 */
-	private function get_privs(string $what, int $id_user, int $id_area)
+	private function get_privs(string $what, int $id_user, int $id_area) : array
 	{
 		return $this->db->query('SELECT IF(p.id IS NULL, 0, p.id) AS id, IF(p.id IS NULL, u.level, p.level) AS level
 			FROM uprivs u
 			LEFT JOIN privs p ON p.id_who = u.id_user AND p.id_area = u.id_area AND p.what = u.privtype
 			WHERE u.id_user = '.$id_user.' AND u.id_area = '.$id_area.' AND u.privtype = '.$this->db->escape($what));
-
-		// 'SELECT * FROM privs WHERE what = '.$this->db->escape($what).' AND id_who = '.$id_user.' AND id_area = '.$id_area);
 	}
 
 	/**
 	 * Refresh user permissions
-	 *
-	 * @param   integer $id_user User ID
-	 * @param   boolean	$force if false leaves priv personalizations else (integer) set to default
-	 * @return  array	Array(0, boolean)
 	 */
-	public function refactory(int $id_user, bool $force = false)
+	public function refactory(
+        int $id_user,
+        bool $force = false         // if false leaves priv personalizations else (integer) set to default
+    ) : array
 	{
 		// action areas
 		$areas = $this->get_aprivs($id_user);
@@ -384,12 +329,8 @@ class Permission_model extends X4Model_core
 	 * Syncronize user privilege types with group privilege types
 	 * Add privtypes but not change uprivs levels
 	 * Remove privtypes and privs if group hasn't privtype
-	 *
-	 * @param   integer $id_user User ID
-	 * @param	array	$areas array of area objects
-	 * @return  array	Array(0, boolean)
 	 */
-	private function sync_upriv(int $id_user, array $areas)
+	private function sync_upriv(int $id_user, array $areas) : array
 	{
 		// get group's privilege types
 		$group = new Group_model();
@@ -410,10 +351,13 @@ class Permission_model extends X4Model_core
 					// if user have a group's privilege do none
 					unset($up[$k]);
 				}
-				else if ($i->id_area == 1 || !in_array($k, $this->admin_privtypes))
+				elseif ($i->id_area == 1 || !in_array($k, $this->admin_privtypes))
 				{
 					// if user don't have then add the missing privilege type
-					$sql[] = 'INSERT INTO uprivs (updated, id_area, id_user, privtype, level, xon) VALUES (NOW(), '.$i->id_area.', '.$id_user.', \''.$k.'\', '.$v.', 1)';
+					$sql[] = 'INSERT INTO uprivs
+                            (updated, id_area, id_user, privtype, level, xon)
+                        VALUES
+                            (NOW(), '.$i->id_area.', '.$id_user.', \''.$k.'\', '.$v.', 1)';
 				}
 			}
 
@@ -434,13 +378,12 @@ class Permission_model extends X4Model_core
 	 * Syncronize user privileges with user permissions
 	 * if force is false remove privs equal to default value
 	 * else remove all privs
-	 *
-	 * @param   integer $id_user User ID
-	 * @param	array	$areas array of area objects
-	 * @param	boolean	$force if false leaves privs personalizations (only add missing privs) else set to default
-	 * @return  array	Array(0, boolean)
 	 */
-	private function sync_priv(int $id_user, array $areas, bool $force = false)
+	private function sync_priv(
+        int $id_user,
+        array $areas,
+        bool $force = false     // if false leaves privs personalizations (only add missing privs) else set to default
+    ) : array
 	{
 		$sql = array();
 		foreach ($areas as $i)
@@ -501,15 +444,8 @@ class Permission_model extends X4Model_core
 	 * Get id of table records with user priv equal to default or with priv level different from default
 	 * if equal to default we delete them
 	 * if different we delete them in case of force set to true
-	 *
-	 * @param   string	$table Table name
-	 * @param   integer $id_user User ID
-	 * @param   integer $id_area Area ID
-	 * @param	integer	$level
-	 * @param 	boolean force
-	 * @return  array	array of integer
 	 */
-	private function get_all_records(string $table, int $id_user, int $id_area, int $level, bool $force)
+	private function get_all_records(string $table, int $id_user, int $id_area, int $level, bool $force) : array
 	{
 		$where = ($force)
 			? ' WHERE p.level <> '.$level   // we will delete items with different level permissions
@@ -613,26 +549,17 @@ class Permission_model extends X4Model_core
 	/**
 	 * Get privtypes by xrif
 	 * xrif should separate different types of privilege private areas (admin and private) and public areas
-	 * Util now is always 1 (private)
-	 *
-	 * @param   integer $xrif
-	 * @return  array	array of objects
+	 * Util now xrif is always 1 (private)
 	 */
-	public function get_privtypes(int $xrif)
+	public function get_privtypes(int $xrif) : array
 	{
 		return $this->db->query('SELECT * FROM privtypes WHERE xrif = '.$xrif.' AND xon = 1');
 	}
 
 	/**
 	 * Refresh privilege types of the group (insert, update and delete)
-	 *
-	 * @param   integer $id_group Group ID
-	 * @param   array	$insert array to insert
-	 * @param   array	$update array to update
-	 * @param   array	$delete array to delete
-	 * @return  array	Array(0, boolean)
 	 */
-	public function update_gprivs(int $id_group, array $insert, array $update, array $delete)
+	public function update_gprivs(int $id_group, array $insert, array $update, array $delete) : array
 	{
 		$sql = array();
 
@@ -673,11 +600,8 @@ class Permission_model extends X4Model_core
 
 	/**
 	 * Perform a permission's refactory on all users of a group
-	 *
-	 * @param   integer $id_group group ID
-	 * @return  array	Array(0, boolean)
 	 */
-	private function refactory_group(int $id_group)
+	private function refactory_group(int $id_group) : array
 	{
 		// get users
 		$user = new User_model();
@@ -696,15 +620,8 @@ class Permission_model extends X4Model_core
 
 	/**
 	 * Refresh user permissions (insert, update and delete)
-	 *
-	 * @param   integer $id_user User ID
-	 * @param   integer $id_area Area ID
-	 * @param   array	$insert array to insert
-	 * @param   array	$update array to update
-	 * @param   array	$delete array to delete
-	 * @return  array	Array(0, boolean)
 	 */
-	public function update_uprivs(int $id_user, int $id_area, array $insert, array $update, array $delete)
+	public function update_uprivs(int $id_user, int $id_area, array $insert, array $update, array $delete) : array
 	{
 		$sql = array();
 
@@ -747,13 +664,8 @@ class Permission_model extends X4Model_core
 	 * Get user permission on all record in a table by id_area
 	 * This method returns all the records in a table
 	 * For each element collects: id, name and description (This is the reason why every table must have the following fields: id, name, description)
-	 *
-	 * @param   integer $id_user User ID
-	 * @param   integer	$id_area Area ID
-	 * @param   string	$table Table name
-	 * @return  array	array of objects
 	 */
-	public function get_detail(int $id_user, int $id_area, string $table)
+	public function get_detail(int $id_user, int $id_area, string $table) : array
 	{
 		// switch table
 		switch($table)
@@ -863,14 +775,8 @@ class Permission_model extends X4Model_core
 
 	/**
 	 * Refresh user privs on a table
-	 *
-	 * @param   integer $id_user User ID
-	 * @param   integer	$id_area Area ID
-	 * @param   string	$table Table name
-	 * @param   array	$array Associative array(id, value)
-	 * @return  array	Array(0, boolean)
 	 */
-	public function update_detail_privs(int $id_user, int $id_area, string $table, array $array)
+	public function update_detail_privs(int $id_user, int $id_area, string $table, array $array) : array
 	{
 		// get upriv
 		$upriv = $this->get_upriv($id_area, $id_user, $table);
@@ -899,8 +805,7 @@ class Permission_model extends X4Model_core
 				}
 			}
 		}
-		$res = $this->db->multi_exec($sql);
-		return $res;
+		return $this->db->multi_exec($sql);
 	}
 
 }
@@ -916,9 +821,6 @@ class Obj_item
 
 	/**
 	 * Constructor
-	 *
-	 * @param   integer $id item ID
-	 * @return  void
 	 */
 	public function __construct(int $id)
 	{

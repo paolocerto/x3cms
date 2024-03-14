@@ -18,9 +18,7 @@ abstract class X4Controller_core
 {
 
 	/**
-	 * Loads URI, and Input into this controller.
-	 *
-	 * @return  void
+	 * Loads URI, and Input into this controller
 	 */
 	public function __construct()
 	{
@@ -32,11 +30,7 @@ abstract class X4Controller_core
 	}
 
 	/**
-	 * Handles methods that do not exist.
-	 *
-	 * @param   string  method name
-	 * @param   array   arguments
-	 * @return  void
+	 * Handles methods that do not exist
 	 */
 	public function __call(string $method, array $args)
 	{
@@ -45,11 +39,7 @@ abstract class X4Controller_core
 	}
 
 	/**
-	 * Includes a View within the controller scope.
-	 *
-	 * @param   string  view filename
-	 * @param   array   array of view variables
-	 * @return  string
+	 * Includes a View within the controller scope
 	 */
 	public function load_view(string $filename, array $input_data)
 	{
@@ -64,7 +54,7 @@ abstract class X4Controller_core
 		// Views are straight HTML pages with embedded PHP, so importing them
 		// this way insures that $this can be accessed as if the user was in
 		// the controller, which gives the easiest access to libraries in views
-		include $filename;
+		include_once $filename;
 
 		// Fetch the output and close the buffer
 		return ob_get_clean();

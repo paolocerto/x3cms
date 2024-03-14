@@ -18,9 +18,6 @@ class X4search_plugin extends X4Plugin_core implements X3plugin
 	/**
 	 * Constructor
 	 * Initialize dict
-	 *
-	 * @param	object	$site, site object
-	 * @return	void
 	 */
 	public function __construct(X4Site_model $site)
 	{
@@ -31,13 +28,8 @@ class X4search_plugin extends X4Plugin_core implements X3plugin
 	/**
 	 * Default method
 	 * Display a search form
-	 *
-	 * @param object	$page object
-	 * @param array		$args array of args
-	 * @param string	$param parameter (empty)
-	 * @return string
 	 */
-	public function get_module(stdClass $page, array $args, string $param = '')
+	public function get_module(stdClass $page, array $args, string $param = '') : mixed
 	{
 		// load dictionary
 		$this->dict->get_wordarray(array('x4search'));
@@ -71,15 +63,8 @@ class X4search_plugin extends X4Plugin_core implements X3plugin
 
 	/**
 	 * plugin actions
-	 *
-	 * @param   string	$control action name
-	 * @param   mixed	$a
-	 * @param   mixed	$b
-	 * @param   mixed	$c
-	 * @param   mixed	$d
-	 * @return  void
 	 */
-	public function plugin(string $control, string $a, string $b, string $c, string $d)
+	public function plugin(string $control, mixed $a, mixed $b, mixed $c, mixed $d) : void
 	{
 		// none
 	}

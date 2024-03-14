@@ -40,20 +40,19 @@ class X4Form_helper
 	 *	'options' => an array(array of objects, attribute name for value, attribute name for option, optional value for empty option)
 	 *	'disabled' => if set as name of boolean attribute of array of objects disable options where attribute is true
 	 *	'multiple' => integer, set multiple select height
-	 *
-	 * @static
-	 * @param	string	$name form name
-	 * @param	string	$action form action
-	 * @param	mixed	$fields array of form fields or prebuilded form string
-	 * @param	array	$buttons array of form buttons (reset button, submit button, alignment)
-	 * @param	string	$method form method
-	 * @param	string	$extra extra value for the form (eg. enctype="multipart/form-data")
-	 * @param	string	$submit_action javascript to run on submit
-	 * @param	string	$reset_actionjavascript to run on reset
-	 * @param	boolean	$inline label in the same line of the input field
-	 * @return string
+     * $extra extra value for the form (eg. enctype="multipart/form-data")
 	 */
-	public static function doform($name, $action, $fields, $buttons = array(_RESET, _SUBMIT, 'text-center'), $method = 'post', $extra = '', $submit_action = '', $reset_action = '', $inline = false)
+	public static function doform(
+        string $name,
+        string $action,
+        array $fields,
+        array $buttons = [_RESET, _SUBMIT, 'text-center'],
+        string $method = 'post',
+        string $extra = '',
+        string $submit_action = '',
+        string $reset_action = '',
+        bool $inline = false
+    ) : string
 	{
 		if (!empty($submit_action))
         {
@@ -63,175 +62,112 @@ class X4Form_helper
 		// sanitize action
 		$action = htmlentities(strip_tags($action), ENT_QUOTES, 'UTF-8', false);
 
-		$btn = false;
-		if (is_array($fields))
+        // add x4 token field security token
+        $fields[] = array(
+            'label' => null,
+            'type' => 'hidden',
+            'value' => md5($_SESSION['token'].$name),
+            'name' => 'x4token'
+        );
+
+        $body = self::doform_section($fields, '', $inline);
+		if (!empty($buttons))
 		{
-			// add x4 token field security token
-			$fields[] = array(
-				'label' => null,
-				'type' => 'hidden',
-				'value' => md5($_SESSION['token'].$name),
-				'name' => 'x4token'
-			);
-
-			// check for buttons
-			$btn = true;
-
-			// build form tag
-			$str = '<form id="'.$name.'" name="'.$name.'" action="'.$action.'" method="'.$method.'" '.$extra.'>';
-
-            $str .= self::doform_section($fields, '', $inline);
+			$body .= self::buttons($buttons, $name, $submit_action, $reset_action);
 		}
-		else
-		{
-			// if fields is not an array inject in a prebuilded form
-			// build form tag
-			$str = '<form id="'.$name.'"  action="'.$action.'" method="'.$method.'" '.$extra.'>
-				'.$fields.'<input type="hidden" value="'.md5($_SESSION['token'].$name).'" name="x4token" id="x4token" />';
-		}
-
-		// buttons box
-		if ($btn)
-		{
-			$str .= self::buttons($buttons, $name, $submit_action, $reset_action);
-		}
-
-		$str .= '</form>';
-		return $str;
+		return '<form id="'.$name.'" name="'.$name.'" action="'.$action.'" method="'.$method.'" '.$extra.'>
+                '.$body.'
+            </form>';
 	}
 
 	/**
 	 * Build a form section
-	 *
-	 * @static
-	 * @param	mixed	$fields array of form fields or prebuilded form string
-	 * @param	string	$form name
-	 * @return string
 	 */
-	public static function doform_section($fields, $name = '', $inline = false)
+	public static function doform_section(array $fields, string $name = '', bool $inline = false) : string
 	{
-		$str = '';
+		if (!empty($name))
+        {
+            // add x4 token field security token
+            $fields[] = array(
+                'label' => null,
+                'type' => 'hidden',
+                'value' => md5($_SESSION['token'].$name),
+                'name' => 'x4token'
+            );
+        }
 
-		if (is_array($fields))
-		{
-			if (!empty($name))
-			{
-				// add x4 token field security token
-				$fields[] = array(
-					'label' => null,
-					'type' => 'hidden',
-					'value' => md5($_SESSION['token'].$name),
-					'name' => 'x4token'
-				);
-			}
-
-			foreach ($fields as $i)
-			{
-				$tmp = $req = '';
-				// check for hidden
-				if (isset($i['hide']))
+        $body = '';
+        foreach ($fields as $i)
+        {
+            $req = '';
+            // label
+            if (!is_null($i['label']) && $i['type'] != 'button')
+            {
+                $req = '';
+                if (isset($i['rule']))
                 {
-					$str .= '<div id="'.$i['hide'].'" class="hide">';
+                    $rules = explode('|', $i['rule']);
+                    if (in_array('required', $rules))
+                    {
+                        $req = '*';
+                    }
                 }
+                $err = (isset($i['error'])) ? ' class="error"' : '';
 
-				// label
-				if (!is_null($i['label']) && $i['type'] != 'button')
-				{
-					$req = '';
-					if (isset($i['rule']))
-					{
-						$rules = explode('|', $i['rule']);
-						if (in_array('required', $rules))
-						{
-							$req = '*';
-						}
-					}
-					$err = (isset($i['error'])) ? ' class="error"' : '';
+                if ($inline || (isset($i['extra']) && strstr($i['extra'], 'inline') != ''))
+                {
+                    $body .= '
+                    <label for="'.$i['name'].'" '.$err.'>'.stripslashes($i['label']).$req;
+                }
+                else
+                {
+                    $body .= '
+                    <label for="'.$i['name'].'" '.$err.'>'.stripslashes($i['label']).$req.'</label>';
+                }
+            }
 
-					if ($inline || (isset($i['extra']) && strstr($i['extra'], 'inline') != ''))
-					{
-						$str .= '
-						<label for="'.$i['name'].'" '.$err.'>'.stripslashes($i['label']).$req;
-					}
-					else
-					{
-						$str .= '
-						<label for="'.$i['name'].'" '.$err.'>'.stripslashes($i['label']).$req.'</label>';
-					}
-				}
+            switch($i['type'])
+            {
+            case 'loading':
+                $body .= '<div id="loading" style="visibility:hidden;"><img src="'.ROOT.'files/files/ajax-loader.gif" alt="Loading..." /></div>';
+                break;
+            case 'slider':
+                $body .= self::slider($i['name']);
+                break;
+            case 'html':
+                $body .= $i['value'];
+                break;
+            case 'button':
+                $body .= '<div class="xcenter">'.self::button($i).'</div>';
+                break;
+            default:
+                // for: fieldset, hidden, text, file, password, checkbox, radio, texarea, select
+                $t = $i['type'];
+                $body .= self::$t($i, $req);
+                break;
+            }
 
-				switch($i['type'])
-				{
-				case 'clear':
-					$str .= self::clear();
-					break;
-				case 'loading':
-					$str .= '<div id="loading" style="visibility:hidden;"><img src="'.ROOT.'files/files/ajax-loader.gif" alt="Loading..." /></div>';
-					break;
-				case 'slider':
-					$str .= self::slider($i['name']);
-					break;
-				case 'html':
-					$str .= $i['value'];
-					break;
-				case 'button':
-					$str .= '<div class="xcenter">'.self::button($i).'</div>';
-					break;
-				default:
-					// for: fieldset, hidden, text, file, password, checkbox, radio, texarea, select
-					$t = $i['type'];
-					$str .= self::$t($i, $req);
-					break;
-				}
-
-				// close label
-				if (($inline || (isset($i['extra']) && strstr($i['extra'], 'inline') != '')) && !is_null($i['label']))
-				{
-					$str .= '</label>';
-				}
-
-				// close hidden
-				if (isset($i['hide']))
-				{
-					$str .= '</div>';
-				}
-			}
-		}
-
-		return $str;
-	}
-
-	/**
-	 * Return clear div
-	 *
-	 * @static
-	 * @return string
-	 */
-	public static function clear()
-	{
-		return '<div class="clear"></div>';
+            // close label
+            if (($inline || (isset($i['extra']) && strstr($i['extra'], 'inline') != '')) && !is_null($i['label']))
+            {
+                $body .= '</label>';
+            }
+        }
+		return $body;
 	}
 
 	/**
 	 * Return slider
-	 *
-	 * @static
-	 * @param string	$name id of the slider
-	 * @return string
 	 */
-	public static function slider($name)
+	public static function slider(string $name) : string
 	{
 		return '<div id="'.$name.'" class="slider"><div class="knob"></div></div>';
 	}
 
 	/**
 	 * Return fieldset
-	 *
-	 * @static
-	 * @param array		$e Fieldset data
-	 * @return string
 	 */
-	public static function fieldset($e, $req = '')
+	public static function fieldset(array $e, string $req = '') : string
 	{
 		if ($e['value'] == 'open')
 		{
@@ -249,12 +185,8 @@ class X4Form_helper
 
 	/**
 	 * Return hidden input field
-	 *
-	 * @static
-	 * @param array		$e Field data
-	 * @return string
 	 */
-	public static function hidden($e, $req = '')
+	public static function hidden(array $e, string $req = '') : string
 	{
 		$iextra = (isset($e['extra']))
 			? $e['extra']
@@ -275,18 +207,13 @@ class X4Form_helper
 		        $iextra = '';
 		    }
 		}
-
 		return '<input type="hidden" name="'.$e['name'].'" id="'.$e['name'].'" value="'.$e['value'].'" '.$iextra.' />';
 	}
 
 	/**
 	 * Return text input field
-	 *
-	 * @static
-	 * @param array		$e Field data
-	 * @return string
 	 */
-	public static function text($e, $req = '')
+	public static function text(array $e, string $req = '') : string
 	{
 		$error = (is_null($e['label']) && isset($e['error']))
 			? 'error '
@@ -324,12 +251,8 @@ class X4Form_helper
 
 	/**
 	 * Return range input field
-	 *
-	 * @static
-	 * @param array		$e Field data
-	 * @return string
 	 */
-	public static function range($e, $req = '')
+	public static function range(array $e, string $req = '') : string
 	{
 		$error = (is_null($e['label']) && isset($e['error']))
 			? 'error '
@@ -353,12 +276,8 @@ class X4Form_helper
 
 	/**
 	 * Return file input field
-	 *
-	 * @static
-	 * @param array		$e Field data
-	 * @return string
 	 */
-	public static function file($e, $req = '')
+	public static function file(array $e, string $req = '') : string
 	{
 		$iextra = (isset($e['extra']))
 			? $e['extra']
@@ -437,12 +356,8 @@ class X4Form_helper
 
 	/**
 	 * Return password input field
-	 *
-	 * @static
-	 * @param array		$e Field data
-	 * @return string
 	 */
-	public static function password($e, $req = '')
+	public static function password(array $e, string $req = '') : string
 	{
 		$iextra = (isset($e['extra']))
 			? $e['extra']
@@ -453,12 +368,8 @@ class X4Form_helper
 
 	/**
 	 * Return checkbox input field
-	 *
-	 * @static
-	 * @param array		$e Field data
-	 * @return string
 	 */
-	public static function checkbox($e, $req = '')
+	public static function checkbox(array $e, string $req = '') : string
 	{
 		$inline = false;
 
@@ -497,12 +408,8 @@ class X4Form_helper
 
 	/**
 	 * Return multiple checkbox input fields
-	 *
-	 * @static
-	 * @param array		$e Field data
-	 * @return string
 	 */
-	public static function mcheckbox($e, $req = '')
+	public static function mcheckbox(array $e, string $req = '') : string
 	{
 		$inline = false;
 
@@ -553,12 +460,8 @@ class X4Form_helper
 
 	/**
 	 * Return radio input field
-	 *
-	 * @static
-	 * @param array		$e Field data
-	 * @return string
 	 */
-	public static function radio($e, $req = '')
+	public static function radio(array $e, string $req = '') : string
 	{
 		$inline = false;
 
@@ -614,18 +517,13 @@ class X4Form_helper
             // NOTE: this works only with TailwindCSS
 			$tmp = '<div class="flex flex-col md:flex-row gap-4">'.$tmp.'</div>';
 		}
-
 		return $tmp.self::suggestion($e);
 	}
 
 	/**
 	 * Return a single radio input field
-	 *
-	 * @static
-	 * @param array		$e Field data
-	 * @return string
 	 */
-	public static function singleradio($e, $req = '')
+	public static function singleradio(array $e, string $req = '') : string
 	{
 		if (isset($e['extra']))
 		{
@@ -649,18 +547,13 @@ class X4Form_helper
 			: '';
 
 		$tmp = '<input type="radio" '.$class.' name="'.$e['value'].'" id="'.$e['name'].'" value="'.$e['name'].'" '.$checked.' /> ';
-
 		return $tmp.self::suggestion($e);
 	}
 
 	/**
 	 * Return textarea field
-	 *
-	 * @static
-	 * @param array		$e Field data
-	 * @return string
 	 */
-	public static function textarea($e, $req = '')
+	public static function textarea(array $e, string $req = '') : string
 	{
 		$textra = (isset($e['extra']))
 			? $e['extra']
@@ -675,12 +568,8 @@ class X4Form_helper
 
 	/**
 	 * Return select field
-	 *
-	 * @static
-	 * @param array		$e Field data
-	 * @return string
 	 */
-	public static function select($e, $req = '')
+	public static function select(array $e, string $req = '') : string
 	{
 		$sextra = (isset($e['extra']) && $e['extra'] != 'selectbox')
 			? $e['extra']
@@ -729,17 +618,9 @@ class X4Form_helper
                 ? $e['options'][3]
                 : null;
 
-            $disabled = (isset($e['disabled']))
+            $disabled = (isset($e['disabled']) && is_array($e['disabled']))
                 ? $e['disabled']
-                : '';
-
-            $disabled2 = (isset($e['disabled2']))
-                ? $e['disabled2']
-                : '';
-
-            $disabled3 = (isset($e['disabled3']))
-                ? true
-                : false;
+                : [''];
 
             $tmp .= self::get_options(
                 $e['options'][0],
@@ -747,132 +628,10 @@ class X4Form_helper
                 $e['options'][2],
                 $e['value'],
                 $empty,
-                isset($e['multiple']),
-                $disabled,
-                $disabled2,
-                $disabled3
+                $disabled
             );
         }
 
-/*
-        // empty option
-		if (isset($e['options'][3]) && !is_null($e['options'][3]))
-		{
-			if (is_array($e['options'][3]))
-			{
-				// selected
-				if (isset($i['multiple']) && is_array($i['value']))
-				{
-					$sel = (in_array($e['options'][3][0], $e['value']))
-						? 'selected="selected"'
-						: '';
-				}
-				else
-				{
-					$sel = ($e['value'] == $e['options'][3][0])
-						? 'selected'
-						: '';
-				}
-
-				$tmp .= '<option value="'.$e['options'][3][0].'" '.$sel.'>'.$e['options'][3][1].'</option>';
-			}
-			else
-			{
-				// selected
-				$sel = ($e['options'][3] == $e['value'])
-						? 'selected'
-						: '';
-
-				$tmp .= '<option value="'.$e['options'][3].'" '.$sel.'>'.$e['options'][3].'</option>';
-			}
-		}
-
-		// option 4: sections
-		$section = (isset($e['options'][4]))
-			? $e['options'][4]
-			: '';
-
-		// other options
-		if (!empty($e['options'][0]))
-		{
-			$s = '';
-			foreach ($e['options'][0] as $ii)
-			{
-				$sign = $dis = ' ';
-				if (!empty($section) && !empty($ii->$section))
-				{
-					if ($ii->$section != $s)
-					{
-						$s = $ii->$section;
-						$tmp .= '<option value="" disabled="disabled">'.$s.'</option>';
-					}
-					$sign = '&nbsp; &nbsp;';
-				}
-
-				// use a field to mark items to disable
-				// $e['disabled'] contains the field name
-				if (isset($e['disabled']))
-				{
-				    $disabled_label = $e['disabled'];
-					if ($ii->$disabled_label > 0)
-					{
-						$dis = ' disabled="disabled"';
-						$sign = (isset($e['disabled_sign']))
-							? $e['disabled_sign']
-							: 'x';
-					}
-					else
-					{
-						$sign = '&nbsp; &nbsp;';
-					}
-				}
-
-				if (isset($e['disabled2']))
-				{
-                    $disabled_label = $e['disabled2'];
-					if ($ii->$disabled_label < 0)
-					{
-						$dis = ' disabled="disabled"';
-						$sign = '>';
-					}
-					else
-					{
-						$sign = '&nbsp; &nbsp;';
-					}
-				}
-
-				$v = $e['options'][1];
-				$o = $e['options'][2];
-
-				// check for selected value
-				if (is_array($e['value']))
-				{
-					$sel = (in_array($ii->$v, $e['value']))
-						? 'selected'
-						: '';
-				}
-				else
-				{
-					$sel = ($e['value'] == $ii->$v)
-						? 'selected'
-						: '';
-				}
-
-				// option 5: readonly emulation
-				if (isset($e['options'][5]) && empty($sel) && $e['options'][5] == 'readonly')
-				{
-					$dis = ' disabled="disabled"';
-				}
-
-				if (!empty($sign))
-				{
-					// to do if needed
-				}
-				$tmp .= '<option value="'.$ii->$v.'" '.$sel.$dis.'>'.$sign.' '.stripslashes($ii->$o).'</option>';
-
-			}
-		}
-*/
 		$tmp .= '</select>';
 
 		// container for select
@@ -880,18 +639,13 @@ class X4Form_helper
 		{
 			$tmp = '<div class="selectbox-container">'.$tmp.'</div>';
 		}
-
 		return $tmp.self::suggestion($e);
 	}
 
 	/**
 	 * Return suggestion field
-	 *
-	 * @static
-	 * @param array		$e Field data
-	 * @return string
 	 */
-	public static function suggestion($e)
+	public static function suggestion(array $e) : string
 	{
 		if (isset($e['suggestion']) && !empty($e['suggestion']))
 		{
@@ -908,13 +662,9 @@ class X4Form_helper
 	}
 
 	/**
-	 * Return button field
-	 *
-	 * @static
-	 * @param array		$e Field data
-	 * @return string
+	 * Button field
 	 */
-	public static function button($e)
+	public static function button(array $e) : string
 	{
 		switch($e['value'])
 		{
@@ -936,17 +686,11 @@ class X4Form_helper
 
 	/**
 	 * Return buttons box
-	 *
-	 * @static
-	 * @param array		$buttons Buttons array (can be an array with 3 elements (reset_button_label, submit_button_label, container_class)
-	 *							or an array with 2 elements: the first is an array of buttons (where each button is an associative array with this
-	 *							keys: type, name (optional), extra (optional), action (optional), label) and the second the container_class
-	 * @param string	$form_id
-	 * @param string	$submit_action
-	 * @param string	$reset_action
-	 * @return string
+	 * Buttons array (can be an array with 3 elements (reset_button_label, submit_button_label, container_class)
+	 * or an array with 2 elements: the first is an array of buttons (where each button is an associative array with this
+	 * keys: type, name (optional), extra (optional), action (optional), label) and the second the container_class
 	 */
-	public static function buttons($buttons, $form_id, $submit_action = '', $reset_action = '')
+	public static function buttons(array $buttons, string $form_id, string $submit_action = '', string $reset_action = '') : string
 	{
 		if (sizeof($buttons) >= 3)
 		{
@@ -1017,14 +761,8 @@ class X4Form_helper
 
 	/**
 	 * Create captcha image
-	 *
-	 * @static
-	 * @param integer	$length The length of captcha
-	 * @param string	$font	The font to use
-	 * @param array		$bg	    Background color
-	 * @return image
 	 */
-	public static function captcha($length = 5, $font = 'espek___.ttf', $bg = array(255, 255, 255))
+	public static function captcha(int $length = 5, string $font = 'espek___.ttf', array $bg = [255, 255, 255])
 	{
 		$_SESSION['captcha'] = X4Text_helper::random_string($length);
 		// create image
@@ -1073,20 +811,16 @@ class X4Form_helper
 
 	/**
 	 * Build options list
-	 *
-	 * @static
-	 * @param array		$o Array of options as object
-	 * @param string	$value	field name for option value
-	 * @param string	$option field name for option name
-	 * @param string	$selected selected value
-	 * @param mixed		$empty option value (can be a string ONLY VALUE, or an array(VALUE, OPTION))
-     * @param boolean   $multiple
-	 * @param string	$disabled1 field name for disabling check value
-	 * @param string	$disabled2 field name for disabling check value
-	 * @param boolean	$disabled3 to disable all not selected options
-	 * @return string
+     * $disabled is an array with [field to check, relation, value]
 	 */
-	public static function get_options(array $o, string $value, string $option, mixed $selected = '', mixed $empty = null, bool $multiple = false, string $disabled1 = '', string $disabled2 = '', bool $disabled3 = false)
+	public static function get_options(
+        array $o,
+        string $value,
+        string $option,
+        mixed $selected = '',
+        mixed $empty = null,
+        array $disabled = ['']
+    ) : string
 	{
 		$str = '';
 
@@ -1119,25 +853,14 @@ class X4Form_helper
 			foreach ($o as $i)
 			{
 				$sign = $dis = ' ';
-				if (!empty($disabled1))
+				if (!empty($disabled[0]) && $disabled[0] != 'NOT_SELECTED')
 				{
-					if ($i->$disabled1 > 0)
+                    $field = $disabled[0];
+                    eval('$chk = '.$i->$field.$disabled[1].$disabled[2].';');
+					if ($chk)
 					{
 						$dis = ' disabled = "disabled"';
 						$sign = 'x';
-					}
-				}
-
-				if (!empty($disabled2))
-				{
-					if ($i->$disabled2 < 0)
-					{
-						$dis = ' disabled = "disabled"';
-						$sign = '>';
-					}
-					else
-					{
-						$sign = '&nbsp; &nbsp;';
 					}
 				}
 
@@ -1156,7 +879,7 @@ class X4Form_helper
 				}
 
 				// to disable all not selected options
-				if (empty($sel) && $disabled3)
+				if (empty($sel) && $disabled[0] == 'NOT_SELECTED')
 				{
 					$dis = ' disabled = "disabled"';
 				}
@@ -1173,16 +896,8 @@ class X4Form_helper
 
     /**
 	 * Build options list with template for Alpine.js
-	 *
-	 * @static
-	 * @param string	$alpine_var
-	 * @param string	$value	field name for option value
-	 * @param string	$option field name for option name
-     * @param string    $model
-     * @param mixed     $empty
-	 * @return string
 	 */
-	public static function get_options_template(string $alpine_var, string $value, string $option, string $model, mixed $empty = null)
+	public static function get_options_template(string $alpine_var, string $value, string $option, string $model, mixed $empty = null) : string
     {
         $str = '';
         // empty option

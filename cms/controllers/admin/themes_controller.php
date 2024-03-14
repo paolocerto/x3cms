@@ -18,8 +18,6 @@ class Themes_controller extends X3ui_controller
 	/**
 	 * Constructor
 	 * check if user is logged
-	 *
-	 * @return  void
 	 */
 	public function __construct()
 	{
@@ -29,10 +27,8 @@ class Themes_controller extends X3ui_controller
 
 	/**
 	 * Show themes
-	 *
-	 * @return  void
 	 */
-	public function _default()
+	public function _default() : void
 	{
 		// load dictionary
 		$this->dict->get_wordarray(array('themes', 'msg'));
@@ -59,13 +55,8 @@ class Themes_controller extends X3ui_controller
 
 	/**
 	 * Change status
-	 *
-	 * @param   string  $what field to change
-	 * @param   integer $id ID of the item to change
-	 * @param   integer $value value to set (0 = off, 1 = on)
-	 * @return  void
 	 */
-	public function set(string $what, int $id, int $value = 0)
+	public function set(string $what, int $id, int $value = 0) : void
 	{
 		$msg = null;
 		// check permission
@@ -93,11 +84,8 @@ class Themes_controller extends X3ui_controller
 
 	/**
 	 * Install a theme
-	 *
-	 * @param   string	$theme_name Theme name
-	 * @return  void
 	 */
-	public function install(string $theme_name)
+	public function install(string $theme_name) : void
 	{
 		$msg = null;
 		// check permission
@@ -132,11 +120,8 @@ class Themes_controller extends X3ui_controller
 
     /**
 	 * New / Edit theme styles
-	 *
-	 * @param   integer	$id theme
-	 * @return  void
 	 */
-	public function edit(int $id)
+	public function edit(int $id) : void
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'themes', 'sections', 'articles'));
@@ -194,12 +179,6 @@ class Themes_controller extends X3ui_controller
 
     /**
 	 * Return recorded selected options
-	 *
-	 * @param   string 	$str Encoded options
-     * @param   string  $fields name of the array with configuration
-	 * @param   boolean	$move With or without direction buttons
-	 * @param   boolean	$echo Return or echo
-	 * @return  string
 	 */
 	public function decompose(string $str = '', string $fields = '', int $move = 0, int $echo = 0, $data = '')
 	{
@@ -221,13 +200,8 @@ class Themes_controller extends X3ui_controller
 
     /**
 	 * Register Edit
-	 *
-	 * @access	private
-	 * @param   integer $id item ID (if 0 then is a new item)
-	 * @param   array 	$_post _POST array
-	 * @return  void
 	 */
-	private function editing($id, $_post)
+	private function editing($id, $_post) : void
 	{
 		$msg = null;
 		// check permission
@@ -259,12 +233,9 @@ class Themes_controller extends X3ui_controller
 	}
 
 	/**
-	 * Uninstall a theme (use Ajax)
-	 *
-	 * @param   integer	$id Theme ID
-	 * @return  void
+	 * Uninstall a theme
 	 */
-	public function uninstall(int $id)
+	public function uninstall(int $id) : void
 	{
 		// load dictionary
 		$this->dict->get_wordarray(array('form', 'themes'));
@@ -282,7 +253,6 @@ class Themes_controller extends X3ui_controller
 			'name' => 'id'
 		);
 
-		// if submitted
 		if (X4Route_core::$post)
 		{
 			$this->uninstalling($item);
@@ -305,12 +275,8 @@ class Themes_controller extends X3ui_controller
 
 	/**
 	 * Perform the uninstall
-	 *
-	 * @access	private
-	 * @param   object  $item
-	 * @return  void
 	 */
-	private function uninstalling(stdClass $item)
+	private function uninstalling(stdClass $item) : void
 	{
 		$msg = null;
 		// check permission
@@ -321,7 +287,6 @@ class Themes_controller extends X3ui_controller
 			$mod = new Theme_model();
 			$result = $mod->uninstall($item->id, $item->name);
 
-			// check the result
 			if (is_array($result))
 			{
 				$this->notice(false, '_theme_not_uninstalled');
@@ -331,13 +296,11 @@ class Themes_controller extends X3ui_controller
 			{
 				// uninstalled
 
-				// set message
 				$msg = AdmUtils_helper::set_msg(true);
 
 				if ($result)
                 {
-                    // clear useless permissions
-				    $perm = new Permission_model();
+                    $perm = new Permission_model();
 					$perm->deleting_by_what('themes', $item->id);
                 }
 
@@ -352,12 +315,8 @@ class Themes_controller extends X3ui_controller
 
 	/**
 	 * Minimize css files
-	 *
-     * @param   integer	$id_theme
-     * @param   string $name
-	 * @return void
 	 */
-	public function minimize(int $id_theme, string $name)
+	public function minimize(int $id_theme, string $name) : void
 	{
 		$msg = null;
 		// check permission
@@ -410,11 +369,9 @@ class Themes_controller extends X3ui_controller
 
 			$result= array(0, $res);
 
-			// set message
 			$this->dict->get_words();
 			$msg = AdmUtils_helper::set_msg($result);
 
-			// set update
 			if ($result[1])
             {
 				$msg->update = array(

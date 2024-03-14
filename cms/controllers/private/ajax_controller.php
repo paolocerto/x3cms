@@ -18,8 +18,6 @@ class Ajax_controller extends X4Cms_controller
 {
 	/**
 	 * Constructor
-	 *
-	 * @return  void
 	 */
 	public function __construct()
 	{

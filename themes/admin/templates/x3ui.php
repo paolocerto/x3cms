@@ -179,6 +179,7 @@ echo $view->render(false);
         x-show="modal"
 
         x-on:popup.window="popup($event.detail)"
+        x-on:menu.window="menu($event.detail)"
         x-on:completed.window="completed($event.detail)"
         x-on:failed.window="failed($event.detail)"
         x-cloak

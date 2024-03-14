@@ -99,13 +99,8 @@ class X4Validation_helper
 	/**
 	 * Validate an external form
 	 * Used to validate data submitted on remote (Mobile app)
-	 *
-	 * @static
-	 * @param   array		field array
-     * @param   array       $data
-	 * @return boolean
 	 */
-	public static function validate(&$fields, $data)
+	public static function validate(array &$fields, array $data) : array
 	{
 		// share the array of fields in the class
 		self::$fields = $fields;
@@ -117,45 +112,14 @@ class X4Validation_helper
 		$n = sizeof($fields);
 		for ($i = 0; $i < $n; $i++)
 		{
-			if (isset($fields[$i]['rule']))
-			{
-                $e = true;
-				$token = explode('|', $fields[$i]['rule']);
-				foreach ($token as $ii)
-				{
-					// handle multiple select
-					//$name = self::get_name($field);
+            $e = true;
+            self::validateField($fields[$i], $e);
 
-					// get parameters
-					$tok = explode('§', $ii);
-
-					// set rule function name
-					$rule = '_'.$tok[0];
-
-					// if we have this validation function
-					if (method_exists(__CLASS__, $rule))
-					{
-						if (in_array($rule, self::$special_rules))
-						{
-							// special rules
-							self::$rule($fields[$i], $tok, $e, self::$data, []);
-						}
-						else
-						{
-							// here rules checked only if the field value is not empty
-							if (!self::is_empty($fields[$i]['name']))
-							{
-								self::$rule($fields[$i], $tok, $e, self::$data, []);
-							}
-						}
-                        if (!$e)
-                        {
-                            $last = end($fields[$i]['error']);
-                            $errors[$fields[$i]['name']] = $last['msg'];
-                        }
-					}
-				}
-			}
+            if (!$e)
+            {
+                $last = end($fields[$i]['error']);
+                $errors[$fields[$i]['name']] = $last['msg'];
+            }
 		}
 		return $errors;
 	}
@@ -163,15 +127,8 @@ class X4Validation_helper
 	/**
 	 * Validate a form
 	 * on each field you can mix many rules (with |) and some rules can contains parameter (with § as separator)
-	 *
-	 * @static
-	 * @param array		array of form fields
-	 * @param string	form name
-     * @param string    $method
-     * @param array     $data
-	 * @return boolean
 	 */
-	public static function form(&$fields, $form_name = '', $method = 'post', $data = [])
+	public static function form(array &$fields, string $form_name, string $method = 'post', array $data = []) : bool
 	{
 		// share the array of fields in the class
 		self::$fields = $fields;
@@ -189,11 +146,11 @@ class X4Validation_helper
         }
 
 		$e = true;
+
 		// check x4token
 		if (!isset(self::$data['x4token']) || self::$data['x4token'] != md5($_SESSION['token'].$form_name))
 		{
 			$e = false;
-            //$fields[0]['error'][] = array('msg' => '_session_expired');
             $fields[] = [
                 'label' => '',
                 'name' => ' ',
@@ -208,40 +165,8 @@ class X4Validation_helper
 			$n = sizeof($fields);
 			for ($i = 0; $i < $n; $i++)
 			{
-				// check errors
-				if (isset($fields[$i]['rule']))
-				{
-					$token = explode('|', $fields[$i]['rule']);
-					foreach ($token as $ii)
-					{
-						// handle multiple select
-						//$name = self::get_name($fields[$i]);
+                self::validateField($fields[$i], $e);
 
-						// get parameters
-						$tok = explode('§', $ii);
-
-						// set rule function name
-						$rule = '_'.$tok[0];
-
-						// if we have this validation function
-						if(method_exists(__CLASS__, $rule))
-						{
-							if (in_array($rule, self::$special_rules))
-							{
-								// special rules
-								self::$rule($fields[$i], $tok, $e, self::$data, $_FILES);
-							}
-							else
-							{
-								// here rules checked only if the field value is not empty
-								if (!self::is_empty($fields[$i]['name']))
-								{
-									self::$rule($fields[$i], $tok, $e, self::$data, $_FILES);
-								}
-							}
-						}
-					}
-				}
 				// assign the value
 				if (!in_array($fields[$i]['type'], X4Form_helper::$exclude) &&
 					(
@@ -254,59 +179,92 @@ class X4Validation_helper
 					)
 				)
 				{
-					switch($fields[$i]['type'])
-					{
-						case 'checkbox':
-							$fields[$i]['value'] = 1;
-							$fields[$i]['checked'] = intval(isset(self::$data[$fields[$i]['name']]));
-							break;
-
-						case 'mcheckbox':
-							$fields[$i]['checked'] = (isset(self::$data[$fields[$i]['name']]))
-														? self::$data[$fields[$i]['name']]
-														: array();
-							break;
-						case 'radio':
-							if (isset(self::$data[$fields[$i]['name']]))
-							{
-								$fields[$i]['checked'] = self::$data[$fields[$i]['name']];
-							}
-							break;
-
-						default:
-							// handle 0
-							if (is_array(self::$data[$fields[$i]['name']]))
-                            {
-                                $tmp_value = self::$data[$fields[$i]['name']];
-                            }
-                            else
-                            {
-                                $tmp_value = (self::$data[$fields[$i]['name']] === '0' || strval(self::$data[$fields[$i]['name']]) == '0')
-                                    ? '0'
-                                    : self::$data[$fields[$i]['name']];
-                            }
-
-							// check for sanitize
-							$fields[$i]['value'] = (isset($fields[$i]['sanitize']))
-								? self::sanitize($tmp_value, $fields[$i]['sanitize'])
-								: $tmp_value;
-							break;
-					}
+                    self::assignValue($fields[$i]);
 				}
 			}
 		}
 		return $e;
 	}
 
+    /**
+     * Validate field
+     */
+    private static function validateField(array &$field, bool &$e)
+    {
+        if (isset($field['rule']))
+		{
+            $token = explode('|', $field['rule']);
+            foreach ($token as $ii)
+            {
+                // get parameters
+                $tok = explode('§', $ii);
+
+                // set rule function name
+                $rule = '_'.$tok[0];
+
+                // if we have this validation function
+                if(method_exists(__CLASS__, $rule))
+                {
+                    if (
+                        in_array($rule, self::$special_rules) ||        // special rules
+                        !self::is_empty($field['name'])                 // checked only if the field value is not empty
+                    )
+                    {
+                        self::$rule($field, $tok, $e, self::$data, $_FILES);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Assign value
+     */
+    private static function assignValue(array &$field)
+    {
+        switch($field['type'])
+        {
+            case 'checkbox':
+                $field['value'] = 1;
+                $field['checked'] = intval(isset(self::$data[$field['name']]));
+                break;
+
+            case 'mcheckbox':
+                $fields[$i]['checked'] = (isset(self::$data[$field['name']]))
+                    ? self::$data[$field['name']]
+                    : array();
+                break;
+            case 'radio':
+                if (isset(self::$data[$field['name']]))
+                {
+                    $field['checked'] = self::$data[$field['name']];
+                }
+                break;
+
+            default:
+                // handle 0
+                if (is_array(self::$data[$field['name']]))
+                {
+                    $tmp_value = self::$data[$field['name']];
+                }
+                else
+                {
+                    $tmp_value = (self::$data[$field['name']] === '0' || strval(self::$data[$field['name']]) == '0')
+                        ? '0'
+                        : self::$data[$field['name']];
+                }
+                // check for sanitize
+                $field['value'] = (isset($field['sanitize']))
+                    ? self::sanitize($tmp_value, $field['sanitize'])
+                    : $tmp_value;
+                break;
+        }
+    }
+
 	/**
 	 * Sanitize input
-	 *
-	 * @static
-	 * @param string	$string string to sanitize
-	 * @param string	$type switch between sanitize cases
-	 * @return string
 	 */
-	public static function sanitize($string, $type)
+	public static function sanitize(string $string, string $type) : mixed
 	{
 		switch($type)
 		{
@@ -327,16 +285,14 @@ class X4Validation_helper
 
 	/**
 	 * Avoid resubmissions
-	 *
-	 * @static
-	 * @param string	form name
-	 * @return boolean
 	 */
-	public static function no_duplicate($form_name)
+	public static function no_duplicate(string $form_name) : bool
 	{
 		$str = md5(serialize(self::$data));
 		if (isset($_SESSION['x4'.$form_name]) && $_SESSION['x4'.$form_name] == $str)
+        {
 			return false;
+        }
 		else
 		{
 			$_SESSION['x4'.$form_name] = $str;
@@ -346,12 +302,8 @@ class X4Validation_helper
 
 	/**
 	 * Rebuild form fields after validation
-	 *
-	 * @static
-	 * @param array		array of form fields
-	 * @return array
 	 */
-	public static function get_form($fields = array())
+	public static function get_form(array $fields = array()) : array
 	{
 		$elements = array();
 		foreach ($fields as $i)
@@ -403,16 +355,8 @@ class X4Validation_helper
 
 	/**
 	 * Required rule
-	 *
-	 * @static
-	 * @param array		$field	Array of the field form (passed as reference)
-	 * @param array		$tok	Array of the rule parameters (rule_name, param1, param2...)
-	 * @param boolean	$e		Error status
-	 * @param array		$_post	_POST array
-	 * @param array		$_files	_FILES array
-	 * @return void
 	 */
-	private static function _required(&$field, $tok, &$e,  $_post, $_files)
+	private static function _required(array &$field, array $tok, bool &$e, array $_post, array $_files)
 	{
 		if (!isset($field['name']) || self::is_empty($field['name']))
 		{
@@ -423,16 +367,8 @@ class X4Validation_helper
 
 	/**
 	 * Hidden Required rule
-	 *
-	 * @static
-	 * @param array		$field	Array of the field form (passed as reference)
-	 * @param array		$tok	Array of the rule parameters (rule_name, param1, param2...)
-	 * @param boolean	$e		Error status
-	 * @param array		$_post	_POST array
-	 * @param array		$_files	_FILES array
-	 * @return void
 	 */
-	private static function _hidden_req(&$field, $tok, &$e,  $_post, $_files)
+	private static function _hidden_req(array &$field, array $tok, bool &$e, array $_post, array $_files)
 	{
 		self::_required($field, $tok, $e,  $_post, $_files);
 	}
@@ -443,16 +379,8 @@ class X4Validation_helper
      * Added more options to value field (rule = requiredif§related_field§related_value)
      * Related value can have a prefix (!, gt_, lt_ and bt_) for (different, greater than, lower than and between two values saparated with #)
      * This rule for more options works by default like an AND, if only a rule is false the field is not required
-	 *
-	 * @static
-	 * @param array		$field	Array of the field form (passed as reference)
-	 * @param array		$tok	Array of the rule parameters (rule_name, param1, param2...)
-	 * @param boolean	$e		Error status
-	 * @param array		$_post	_POST array
-	 * @param array		$_files	_FILES array
-	 * @return void
 	 */
-	private static function _requiredif(&$field, $tok, &$e, $_post, $_files)
+	private static function _requiredif(array &$field, array $tok, bool &$e, array $_post, array $_files)
 	{
 		if (self::is_empty($field['name']))
 		{
@@ -548,16 +476,8 @@ class X4Validation_helper
 	/**
 	 * If empty rule
 	 * if the field defined in tok[1] is empty (or not set) then catch an error
-	 *
-	 * @static
-	 * @param array		$field	Array of the field form (passed as reference)
-	 * @param array		$tok	Array of the rule parameters (rule_name, param1, param2...)
-	 * @param boolean	$e		Error status
-	 * @param array		$_post	_POST array
-	 * @param array		$_files	_FILES array
-	 * @return void
 	 */
-	private static function _ifempty(&$field, $tok, &$e, $_post, $_files)
+	private static function _ifempty(array &$field, array $tok, bool &$e, array $_post, array $_files)
 	{
 	    // there are multiple fields in tok[1]?
 		$toks = explode(':', $tok[1]);
@@ -584,16 +504,8 @@ class X4Validation_helper
 	 * Required if empty rule
 	 * if tok[1] field as a specific value stored in tok[2] then check if tok[3] is empty
 	 * tok[] = rule name, tok[1] = field that triggers the check, tok[2] = value that triggers, tok[3] = field that if empty triggers the required
-	 *
-	 * @static
-	 * @param array		$field	Array of the field form (passed as reference)
-	 * @param array		$tok	Array of the rule parameters (rule_name, param1, param2...)
-	 * @param boolean	$e		Error status
-	 * @param array		$_post	_POST array
-	 * @param array		$_files	_FILES array
-	 * @return void
 	 */
-	private static function _requiredifempty(&$field, $tok, &$e, $_post, $_files)
+	private static function _requiredifempty(array &$field, array $tok, bool &$e, array $_post, array $_files)
 	{
 		// only if isset the field defined in $tok[1]
 		if (self::is_empty($field['name']))
@@ -698,16 +610,8 @@ class X4Validation_helper
 	 * Check if
      * Set a rule on a field if another field  has a specific value
 	 * tok[] = rule name, tok[1] = field that triggers the check, tok[2] = value that triggers, tok[3] = is the validation rule to apply on tok
-	 *
-	 * @static
-	 * @param array		$field	Array of the field form (passed as reference)
-	 * @param array		$tok	Array of the rule parameters (rule_name, param1, param2...)
-	 * @param boolean	$e		Error status
-	 * @param array		$_post	_POST array
-	 * @param array		$_files	_FILES array
-	 * @return void
 	 */
-	private static function _checkif(&$field, $tok, &$e, $_post, $_files)
+	private static function _checkif(array &$field, array $tok, bool &$e, array $_post, array $_files)
 	{
         // check for not
 		$tok2 = str_replace('!', '', $tok[2]);
@@ -725,16 +629,8 @@ class X4Validation_helper
 	/**
 	 * Equal rule
 	 * if the field value and the field value defined in tok[1] are differents then catch an error
-	 *
-	 * @static
-	 * @param array		$field	Array of the field form (passed as reference)
-	 * @param array		$tok	Array of the rule parameters (rule_name, param1, param2...)
-	 * @param boolean	$e	Error status
-	 * @param array		$_post	_POST array
-	 * @param array		$_files	_FILES array
-	 * @return void
 	 */
-	private static function _equal(&$field, $tok, &$e, $_post, $_files)
+	private static function _equal(array &$field, array $tok, bool &$e, array $_post, array $_files)
 	{
 		if ($_post[$field['name']] != $_post[$tok[1]])
 		{
@@ -749,16 +645,8 @@ class X4Validation_helper
 	/**
 	 * Different rule
 	 * if the field value and the field value defined in tok[1] are equals then catch an error
-	 *
-	 * @static
-	 * @param array		$field	Array of the field form (passed as reference)
-	 * @param array		$tok	Array of the rule parameters (rule_name, param1, param2...)
-	 * @param boolean	$e		Error status
-	 * @param array		$_post	_POST array
-	 * @param array		$_files	_FILES array
-	 * @return void
 	 */
-	private static function _different(&$field, $tok, &$e, $_post, $_files)
+	private static function _different(array &$field, array $tok, bool &$e, array $_post, array $_files)
 	{
 		if ($_post[$field['name']] == $_post[$tok[1]])
 		{
@@ -773,16 +661,8 @@ class X4Validation_helper
 	/**
 	 * Sizes rule
 	 * if the sizes of the image uploaded are greater than defined in tok[1] (width) and tok[2] (height) then catch an error
-	 *
-	 * @static
-	 * @param array		$field	Array of the field form (passed as reference)
-	 * @param array		$tok	Array of the rule parameters (rule_name, param1, param2...)
-	 * @param boolean	$e		Error status
-	 * @param array		$_post	_POST array
-	 * @param array		$_files	_FILES array
-	 * @return void
 	 */
-	private static function _sizes(&$field, $tok, &$e, $_post, $_files)
+	private static function _sizes(array &$field, array $tok, bool &$e, array $_post, array $_files)
 	{
 		if (isset($_files[$field['name']]) && is_uploaded_file($_files[$field['name']]['tmp_name']))
 		{
@@ -798,16 +678,8 @@ class X4Validation_helper
 	/**
 	 * Small rule
 	 * if the sizes of the image uploaded are lower than defined in tok[1] (width) and tok[2] (height) then catch an error
-	 *
-	 * @static
-	 * @param array		$field	Array of the field form (passed as reference)
-	 * @param array		$tok	Array of the rule parameters (rule_name, param1, param2...)
-	 * @param boolean	$e		Error status
-	 * @param array		$_post	_POST array
-	 * @param array		$_files	_FILES array
-	 * @return void
 	 */
-	private static function _small(&$field, $tok, &$e, $_post, $_files)
+	private static function _small(array &$field, array $tok, bool &$e, array $_post, array $_files)
 	{
 		if (isset($_files[$field['name']]) && is_uploaded_file($_files[$field['name']]['tmp_name']))
 		{
@@ -823,16 +695,8 @@ class X4Validation_helper
 	/**
 	 * Weight rule
 	 * if the weight of the file uploaded are greater than defined in tok[1] (file size in Kilobytes) then catch an error
-	 *
-	 * @static
-	 * @param array		$field	Array of the field form (passed as reference)
-	 * @param array		$tok	Array of the rule parameters (rule_name, param1, param2...)
-	 * @param boolean	$e	Error status
-	 * @param array		$_post	_POST array
-	 * @param array		$_files	_FILES array
-	 * @return void
 	 */
-	private static function _weight(&$field, $tok, &$e, $_post, $_files)
+	private static function _weight(array &$field, array $tok, bool &$e, array $_post, array $_files)
 	{
 		if (isset($_files[$field['name']]) && is_uploaded_file($_files[$field['name']]['tmp_name']))
 		{
@@ -847,16 +711,8 @@ class X4Validation_helper
 	/**
 	 * Captcha rule
 	 * if the value is different from the session stored captcha value then catch an error
-	 *
-	 * @static
-	 * @param array		$field	Array of the field form (passed as reference)
-	 * @param array		$tok	Array of the rule parameters (rule_name, param1, param2...)
-	 * @param boolean	$e		Error status
-	 * @param array		$_post	_POST array
-	 * @param array		$_files	_FILES array
-	 * @return void
 	 */
-	private static function _captcha(&$field, $tok, &$e, $_post, $_files)
+	private static function _captcha(array &$field, array $tok, bool &$e, array $_post, array $_files)
 	{
 		if (!isset($_SESSION['captcha']) || strtolower($_post[$field['name']]) != strtolower($_SESSION['captcha']))
 		{
@@ -868,16 +724,8 @@ class X4Validation_helper
 	/**
 	 * Mail rule
 	 * if the value is not a valid email address then catch an error
-	 *
-	 * @static
-	 * @param array		$field	Array of the field form (passed as reference)
-	 * @param array		$tok	Array of the rule parameters (rule_name, param1, param2...)
-	 * @param boolean	$e		Error status
-	 * @param array		$_post	_POST array
-	 * @param array		$_files	_FILES array
-	 * @return void
 	 */
-	private static function _mail(&$field, $tok, &$e, $_post, $_files)
+	private static function _mail(array &$field, array $tok, bool &$e, array $_post, array $_files)
 	{
 		$mail = explode('|', strtolower(trim($_post[$field['name']])));
 
@@ -894,16 +742,8 @@ class X4Validation_helper
 	/**
 	 * URL rule
 	 * if the value is not a valid URL then catch an error
-	 *
-	 * @static
-	 * @param array		$field	Array of the field form (passed as reference)
-	 * @param array		$tok	Array of the rule parameters (rule_name, param1, param2...)
-	 * @param boolean	$e		Error status
-	 * @param array		$_post	_POST array
-	 * @param array		$_files	_FILES array
-	 * @return void
 	 */
-	private static function _url(&$field, $tok, &$e, $_post, $_files)
+	private static function _url(array &$field, array $tok, bool &$e, array $_post, array $_files)
 	{
 		$url = trim($_post[$field['name']]);
 		if (!X4Checker_helper::check_url($url))
@@ -916,16 +756,8 @@ class X4Validation_helper
 	/**
 	 * Phone rule
 	 * if the value is not a valid phone number then catch an error
-	 *
-	 * @static
-	 * @param array		$field	Array of the field form (passed as reference)
-	 * @param array		$tok	Array of the rule parameters (rule_name, param1, param2...)
-	 * @param boolean	$e		Error status
-	 * @param array		$_post	_POST array
-	 * @param array		$_files	_FILES array
-	 * @return void
 	 */
-	private static function _phone(&$field, $tok, &$e, $_post, $_files)
+	private static function _phone(array &$field, array $tok, bool &$e, array $_post, array $_files)
 	{
 		$val = str_replace(array(' ', '-', '/', '+'), '', $_post[$field['name']]);
 		if (!preg_match('/^([0-9])*?$/', $val))
@@ -938,16 +770,8 @@ class X4Validation_helper
 	/**
 	 * Depends rule
 	 * if the value in the field defined in tok[1] is not set or empty then catch an error
-	 *
-	 * @static
-	 * @param array		$field	Array of the field form (passed as reference)
-	 * @param array		$tok	Array of the rule parameters (rule_name, param1, param2...)
-	 * @param boolean	$e		Error status
-	 * @param array		$_post	_POST array
-	 * @param array		$_files	_FILES array
-	 * @return void
 	 */
-	private static function _depends(&$field, $tok, &$e, $_post, $_files)
+	private static function _depends(array &$field, array $tok, bool &$e, array $_post, array $_files)
 	{
 		if (
             !isset($_post[$tok[1]]) || (
@@ -966,16 +790,8 @@ class X4Validation_helper
 	/**
 	 * Contains rule
 	 * check if the value of the field desn't contain the string in tok[1] then catch an error
-	 *
-	 * @static
-	 * @param array		$field	Array of the field form (passed as reference)
-	 * @param array		$tok	Array of the rule parameters (rule_name, param1, param2...)
-	 * @param boolean	$e		Error status
-	 * @param array		$_post	_POST array
-	 * @param array		$_files	_FILES array
-	 * @return void
 	 */
-	private static function _contains(&$field, $tok, &$e, $_post, $_files)
+	private static function _contains(array &$field, array $tok, bool &$e, array $_post, array $_files)
 	{
 		// get minimum limit
 		$n = (isset($tok[2]))
@@ -995,16 +811,8 @@ class X4Validation_helper
 	/**
 	 * In array rule (or not in array if tok[2] == '!')
 	 * if the value is not in an array of selections (multiple select) then catch an error
-	 *
-	 * @static
-	 * @param array		$field	Array of the field form (passed as reference)
-	 * @param array		$tok	Array of the rule parameters (rule_name, param1, param2...)
-	 * @param boolean	$e		Error status
-	 * @param array		$_post	_POST array
-	 * @param array		$_files	_FILES array
-	 * @return void
 	 */
-	private static function _inarray(&$field, $tok, &$e, $_post, $_files)
+	private static function _inarray(array &$field, array $tok, bool &$e, array $_post, array $_files)
 	{
         if (
                 isset($tok[2]) &&
@@ -1021,19 +829,16 @@ class X4Validation_helper
             );
             $e = false;
         }
-        elseif (
+        elseif ((
                 !isset($tok[2]) &&
                 isset(self::$data[$tok[1]]) &&
                 (
                     !is_array(self::$data[$tok[1]]) ||
                     !in_array($_post[$field['name']], self::$data[$tok[1]])
-                )
+                )) ||
+                !isset($_post[$tok[1]]) ||
+                !is_array($_post[$tok[1]])
             )
-        {
-            $field['error'][] = array('msg' => '_inarray');
-            $e = false;
-        }
-        else if (!isset($_post[$tok[1]]) || !is_array($_post[$tok[1]]))
         {
             $field['error'][] = array('msg' => '_inarray');
             $e = false;
@@ -1043,16 +848,8 @@ class X4Validation_helper
     /**
 	 * Selected rule
 	 * check if selected values in a multiple select are less, equal or more than required then catch an error
-	 *
-	 * @static
-	 * @param array		$field	Array of the field form (passed as reference)
-	 * @param array		$tok	Array of the rule parameters (rule_name, param1, param2...)
-	 * @param boolean	$e		Error status
-	 * @param array		$_post	_POST array
-	 * @param array		$_files	_FILES array
-	 * @return void
 	 */
-	private static function _selected(&$field, $tok, &$e, $_post, $_files)
+	private static function _selected(array &$field, array $tok, bool &$e, array $_post, array $_files)
 	{
         if (!is_array($_post[$field['name']]))
 		{
@@ -1076,16 +873,8 @@ class X4Validation_helper
 	/**
 	 * Length rule
 	 * if the value length is different from tok[1] then catch an error
-	 *
-	 * @static
-	 * @param array		$field	Array of the field form (passed as reference)
-	 * @param array		$tok	Array of the rule parameters (rule_name, param1, param2...)
-	 * @param boolean	$e		Error status
-	 * @param array		$_post	_POST array
-	 * @param array		$_files	_FILES array
-	 * @return void
 	 */
-	private static function _length(&$field, $tok, &$e, $_post, $_files)
+	private static function _length(array &$field, array $tok, bool &$e, array $_post, array $_files)
 	{
 		$len = strlen($_post[$field['name']]);
 		if ($len != $tok[1])
@@ -1101,16 +890,8 @@ class X4Validation_helper
 	/**
 	 * Min length rule
 	 * if the value length is lower than tok[1] then catch an error
-	 *
-	 * @static
-	 * @param array		$field	Array of the field form (passed as reference)
-	 * @param array		$tok	Array of the rule parameters (rule_name, param1, param2...)
-	 * @param boolean	$e		Error status
-	 * @param array		$_post	_POST array
-	 * @param array		$_files	_FILES array
-	 * @return void
 	 */
-	private static function _minlength(&$field, $tok, &$e, $_post, $_files)
+	private static function _minlength(array &$field, array $tok, bool &$e, array $_post, array $_files)
 	{
 		$len = strlen($_post[$field['name']]);
 		if ($len < $tok[1])
@@ -1126,16 +907,8 @@ class X4Validation_helper
 	/**
 	 * Max length rule
 	 * if the value length is greater than tok[1] then catch an error
-	 *
-	 * @static
-	 * @param array		$field	Array of the field form (passed as reference)
-	 * @param array		$tok	Array of the rule parameters (rule_name, param1, param2...)
-	 * @param boolean	$e		Error status
-	 * @param array		$_post	_POST array
-	 * @param array		$_files	_FILES array
-	 * @return void
 	 */
-	private static function _maxlength(&$field, $tok, &$e, $_post, $_files)
+	private static function _maxlength(array &$field, array $tok, bool &$e, array $_post, array $_files)
 	{
 		$len = strlen($_post[$field['name']]);
 		if ($len > $tok[1])
@@ -1151,16 +924,8 @@ class X4Validation_helper
 	/**
 	 * Alphabetic rule
 	 * if the value contains not alphabetic chars then catch an error
-	 *
-	 * @static
-	 * @param array		$field	Array of the field form (passed as reference)
-	 * @param array		$tok	Array of the rule parameters (rule_name, param1, param2...)
-	 * @param boolean	$e		Error status
-	 * @param array		$_post	_POST array
-	 * @param array		$_files	_FILES array
-	 * @return void
 	 */
-	private static function _alpha(&$field, $tok, &$e, $_post, $_files)
+	private static function _alpha(array &$field, array $tok, bool &$e, array $_post, array $_files)
 	{
 		if (sizeof($tok) > 1)
 		{
@@ -1186,16 +951,8 @@ class X4Validation_helper
 	/**
 	 * Alphanumeric rule
 	 * if the value contains not alphanumeric chars then catch an error
-	 *
-	 * @static
-	 * @param array		$field	Array of the field form (passed as reference)
-	 * @param array		$tok	Array of the rule parameters (rule_name, param1, param2...)
-	 * @param boolean	$e		Error status
-	 * @param array		$_post	_POST array
-	 * @param array		$_files	_FILES array
-	 * @return void
 	 */
-	private static function _alphanumeric(&$field, $tok, &$e, $_post, $_files)
+	private static function _alphanumeric(array &$field, array $tok, bool &$e, array $_post, array $_files)
 	{
 		if (!preg_match('/^([a-zA-Z0-9._-]*)$/', $_post[$field['name']]))
 		{
@@ -1207,42 +964,30 @@ class X4Validation_helper
 	/**
 	 * Password rule
 	 * if the value contains not alphanumeric chars or symbols then catch an error
-	 *
-	 * @static
-	 * @param array		$field	Array of the field form (passed as reference)
-	 * @param array		$tok	Array of the rule parameters (rule_name, param1, param2...)
-	 * @param boolean	$e		Error status
-	 * @param array		$_post	_POST array
-	 * @param array		$_files	_FILES array
-	 * @return void
 	 */
-	private static function _password(&$field, $tok, &$e, $_post, $_files)
+	private static function _password(array &$field, array $tok, bool &$e, array $_post, array $_files)
 	{
 		if (!strpbrk($_post[$field['name']], 'ABCDEFGHIJKLMNOPQRSTUVXYWZ'))
 		{
 			$field['error'][] = array('msg' => '_must_contain_uppercase');
 			$e = false;
 		}
-
-		else if (!strpbrk($_post[$field['name']], 'abcdefghijklmnopqrstuvxywz'))
+		elseif (!strpbrk($_post[$field['name']], 'abcdefghijklmnopqrstuvxywz'))
 		{
 			$field['error'][] = array('msg' => '_must_contain_lowercase');
 			$e = false;
 		}
-
-		else if (!strpbrk($_post[$field['name']], '0123456789'))
+		elseif (!strpbrk($_post[$field['name']], '0123456789'))
 		{
 			$field['error'][] = array('msg' => '_must_contain_number');
 			$e = false;
 		}
-
-		else if (!strpbrk($_post[$field['name']], '!"#$%&()*+,\-./:;<=>?@[]^_{|}~'))
+		elseif (!strpbrk($_post[$field['name']], '!"#$%&()*+,\-./:;<=>?@[]^_{|}~'))
 		{
 			$field['error'][] = array('msg' => '_must_contain_symbol');
 			$e = false;
 		}
-
-		else if (preg_match('/^(.*)([.\s]+)(.*)$/', $_post[$field['name']]))
+		elseif (preg_match('/^(.*)([.\s]+)(.*)$/', $_post[$field['name']]))
 		{
 			$field['error'][] = array('msg' => '_must_be_alphanumeric_plus_symbols');
 			$e = false;
@@ -1252,16 +997,8 @@ class X4Validation_helper
 	/**
 	 * Numeric rule
 	 * if the value contains not numeric chars then catch an error
-	 *
-	 * @static
-	 * @param array		$field	Array of the field form (passed as reference)
-	 * @param array		$tok	Array of the rule parameters (rule_name, param1, param2...)
-	 * @param boolean	$e		Error status
-	 * @param array		$_post	_POST array
-	 * @param array		$_files	_FILES array
-	 * @return void
 	 */
-	private static function _numeric(&$field, $tok, &$e, $_post, $_files)
+	private static function _numeric(array &$field, array $tok, bool &$e, array $_post, array $_files)
 	{
 		$_post[$field['name']] = str_replace(',', '.', $_post[$field['name']]);
 		if (!is_numeric($_post[$field['name']]))
@@ -1274,16 +1011,8 @@ class X4Validation_helper
 	/**
 	 * Color rule
 	 * if the value is not a valide HEX color then catch an error
-	 *
-	 * @static
-	 * @param array		$field	Array of the field form (passed as reference)
-	 * @param array		$tok	Array of the rule parameters (rule_name, param1, param2...)
-	 * @param boolean	$e		Error status
-	 * @param array		$_post	_POST array
-	 * @param array		$_files	_FILES array
-	 * @return void
 	 */
-	private static function _color(&$field, $tok, &$e, $_post, $_files)
+	private static function _color(array &$field, array $tok, bool &$e, array $_post, array $_files)
 	{
 		if (!preg_match('/^\#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$/', $_post[$field['name']]))
 		{
@@ -1295,16 +1024,8 @@ class X4Validation_helper
 	/**
 	 * Greater rule
 	 * if the value is lower than the value of the field defined in tok[1] then catch an error
-	 *
-	 * @static
-	 * @param array		$field	Array of the field form (passed as reference)
-	 * @param array		$tok	Array of the rule parameters (rule_name, param1, param2...)
-	 * @param boolean	$e		Error status
-	 * @param array		$_post	_POST array
-	 * @param array		$_files	_FILES array
-	 * @return void
 	 */
-	private static function _greater(&$field, $tok, &$e, $_post, $_files)
+	private static function _greater(array &$field, array $tok, bool &$e, array $_post, array $_files)
 	{
 		$_post[$field['name']] = str_replace(',', '.', $_post[$field['name']]);
 		$_post[$tok[1]] = str_replace(',', '.', $_post[$tok[1]]);
@@ -1321,16 +1042,8 @@ class X4Validation_helper
 	/**
 	 * Less rule
 	 * if the value is greater than the value of the field defined in tok[1] then catch an error
-	 *
-	 * @static
-	 * @param array		$field	Array of the field form (passed as reference)
-	 * @param array		$tok	Array of the rule parameters (rule_name, param1, param2...)
-	 * @param boolean	$e		Error status
-	 * @param array		$_post	_POST array
-	 * @param array		$_files	_FILES array
-	 * @return void
 	 */
-	private static function _less(&$field, $tok, &$e, $_post, $_files)
+	private static function _less(array &$field, array $tok, bool &$e, array $_post, array $_files)
 	{
 		$_post[$field['name']] = str_replace(',', '.', $_post[$field['name']]);
 		$_post[$tok[1]] = str_replace(',', '.', $_post[$tok[1]]);
@@ -1347,16 +1060,8 @@ class X4Validation_helper
 	/**
 	 * Max rule
 	 * if the value is greater than the value defined in tok[1] then catch an error
-	 *
-	 * @static
-	 * @param array		$field	Array of the field form (passed as reference)
-	 * @param array		$tok	Array of the rule parameters (rule_name, param1, param2...)
-	 * @param boolean	$e		Error status
-	 * @param array		$_post	_POST array
-	 * @param array		$_files	_FILES array
-	 * @return void
 	 */
-	private static function _max(&$field, $tok, &$e, $_post, $_files)
+	private static function _max(array &$field, array $tok, bool &$e, array $_post, array $_files)
 	{
 		$_post[$field['name']] = str_replace(',', '.', $_post[$field['name']]);
 		$tok[1] = str_replace(',', '.', $tok[1]);
@@ -1373,16 +1078,8 @@ class X4Validation_helper
 	/**
 	 * Min rule
 	 * if the value is lower than the value defined in tok[1] then catch an error
-	 *
-	 * @static
-	 * @param array		$field	Array of the field form (passed as reference)
-	 * @param array		$tok	Array of the rule parameters (rule_name, param1, param2...)
-	 * @param boolean	$e		Error status
-	 * @param array		$_post	_POST array
-	 * @param array		$_files	_FILES array
-	 * @return void
 	 */
-	private static function _min(&$field, $tok, &$e, $_post, $_files)
+	private static function _min(array &$field, array $tok, bool &$e, array $_post, array $_files)
 	{
 		$_post[$field['name']] = str_replace(',', '.', $_post[$field['name']]);
 		$tok[1] = str_replace(',', '.', $tok[1]);
@@ -1399,16 +1096,8 @@ class X4Validation_helper
 	/**
 	 * Date rule
 	 * if the value is not a valid date then catch an error
-	 *
-	 * @static
-	 * @param array		$field	Array of the field form (passed as reference)
-	 * @param array		$tok	Array of the rule parameters (rule_name, param1, param2...)
-	 * @param boolean	$e		Error status
-	 * @param array		$_post	_POST array
-	 * @param array		$_files	_FILES array
-	 * @return void
 	 */
-	private static function _date(&$field, $tok, &$e, $_post, $_files)
+	private static function _date(array &$field, array $tok, bool &$e, array $_post, array $_files)
 	{
 		if ($_post[$field['name']] != '0000-00-00')
 		{
@@ -1443,16 +1132,8 @@ class X4Validation_helper
 	/**
 	 * Time rule
 	 * if the value is not a valid time then catch an error
-	 *
-	 * @static
-	 * @param array		$field	Array of the field form (passed as reference)
-	 * @param array		$tok	Array of the rule parameters (rule_name, param1, param2...)
-	 * @param boolean	$e		Error status
-	 * @param array		$_post	_POST array
-	 * @param array		$_files	_FILES array
-	 * @return void
 	 */
-	private static function _time(&$field, $tok, &$e, $_post, $_files)
+	private static function _time(array &$field, array $tok, bool &$e, array $_post, array $_files)
 	{
 		$value = (isset($_post['time_format']))
 			? X4Time_helper::reformat($_post[$field['name']], $_post['time_format'], 'H:i')
@@ -1468,16 +1149,8 @@ class X4Validation_helper
 	/**
 	 * Timer rule
 	 * if the value is not a valid timer then catch an error
-	 *
-	 * @static
-	 * @param array		$field	Array of the field form (passed as reference)
-	 * @param array		$tok	Array of the rule parameters (rule_name, param1, param2...)
-	 * @param boolean	$e		Error status
-	 * @param array		$_post	_POST array
-	 * @param array		$_files	_FILES array
-	 * @return void
 	 */
-	private static function _timer(&$field, $tok, &$e, $_post, $_files)
+	private static function _timer(array &$field, array $tok, bool &$e, array $_post, array $_files)
 	{
 		if(!preg_match('/^(([0-9])*):([0-5][0-9])((:([0-5][0-9]))*)$/', $_post[$field['name']]))
 		{
@@ -1489,16 +1162,8 @@ class X4Validation_helper
 	/**
 	 * Datetime rule
 	 * if the value is not a valid datetime then catch an error
-	 *
-	 * @static
-	 * @param array		$field	Array of the field form (passed as reference)
-	 * @param array		$tok	Array of the rule parameters (rule_name, param1, param2...)
-	 * @param boolean	$e		Error status
-	 * @param array		$_post	_POST array
-	 * @param array		$_files	_FILES array
-	 * @return void
 	 */
-	private static function _datetime(&$field, $tok, &$e, $_post, $_files)
+	private static function _datetime(array &$field, array $tok, bool &$e, array $_post, array $_files)
 	{
 		if ($_post[$field['name']] != '0000-00-00 00:00:00')
 		{
@@ -1533,72 +1198,60 @@ class X4Validation_helper
 
 	/**
 	 * Handle dates for date comparason
-	 *
-	 * @static
-	 * @param array		$field	Array of the field form
-	 * @param array		$tok	Array of the rule parameters (rule_name, param1, param2...)
-	 * @param array		$_post
-	 * @return array
 	 */
-	private static function handle_dates($field, $tok, $_post)
+	private static function handle_dates(array $field, array $tok, array $_post) : array
 	{
 		$len = strlen($_post[$field['name']]);
-		if ($len > 0)
-		{
-			if (($len == 10 && isset($_post['date_format'])) || ($len == 16 && isset($_post['datetime_format'])) || ($len == 19 && isset($_post['datetime_format'])) || ($len == 5 && isset($_post['time_format'])))
-			{
-				// exists an alternative date_format
-				$val = str_replace('/', '-', $_post[$field['name']]);
-				switch($len)
-				{
-				case 10:
-					// date
-					$value = X4Time_helper::reformat($val, $_post['date_format'], 'Y-m-d');
-					$related = isset($_post[$tok[1]])
-						? X4Time_helper::reformat($_post[$tok[1]], $_post['date_format'], 'Y-m-d')
-						: X4Time_helper::reformat($tok[1], $_post['date_format'], 'Y-m-d');
-					break;
-				case 16:
-				case 19:
-					// datetime
-					$value = X4Time_helper::reformat($val, $_post['datetime_format'], 'Y-m-d H:i:s');
-					$related = isset($_post[$tok[1]])
-						? X4Time_helper::reformat($_post[$tok[1]], $_post['datetime_format'], 'Y-m-d H:i:s')
-						: X4Time_helper::reformat($tok[1], $_post['date_format'], 'Y-m-d H:i:s');
-					break;
-				case 5:
-					// time
-					$value = X4Time_helper::reformat($val, $_post['time_format'], 'H:i');
-					$related = isset($_post[$tok[1]])
-						? X4Time_helper::reformat($_post[$tok[1]], $_post['time_format'], 'H:i')
-						: X4Time_helper::reformat($tok[1], $_post['time_format'], 'H:i');
-					break;
-				}
-			}
-			else
-			{
-				$value = $_post[$field['name']];
-				$related = isset($_post[$tok[1]])
-					? $_post[$tok[1]]
-					: $tok[1];
-			}
-			return array($value, $related);
-		}
+        if (
+            ($len == 10 && isset($_post['date_format'])) ||
+            ($len == 16 && isset($_post['datetime_format'])) ||
+            ($len == 19 && isset($_post['datetime_format'])) ||
+            ($len == 5 && isset($_post['time_format']))
+        )
+        {
+            // exists an alternative date_format
+            $val = str_replace('/', '-', $_post[$field['name']]);
+            switch($len)
+            {
+            case 10:
+                // date
+                $value = X4Time_helper::reformat($val, $_post['date_format'], 'Y-m-d');
+                $related = isset($_post[$tok[1]])
+                    ? X4Time_helper::reformat($_post[$tok[1]], $_post['date_format'], 'Y-m-d')
+                    : X4Time_helper::reformat($tok[1], $_post['date_format'], 'Y-m-d');
+                break;
+            case 16:
+            case 19:
+                // datetime
+                $value = X4Time_helper::reformat($val, $_post['datetime_format'], 'Y-m-d H:i:s');
+                $related = isset($_post[$tok[1]])
+                    ? X4Time_helper::reformat($_post[$tok[1]], $_post['datetime_format'], 'Y-m-d H:i:s')
+                    : X4Time_helper::reformat($tok[1], $_post['date_format'], 'Y-m-d H:i:s');
+                break;
+            case 5:
+                // time
+                $value = X4Time_helper::reformat($val, $_post['time_format'], 'H:i');
+                $related = isset($_post[$tok[1]])
+                    ? X4Time_helper::reformat($_post[$tok[1]], $_post['time_format'], 'H:i')
+                    : X4Time_helper::reformat($tok[1], $_post['time_format'], 'H:i');
+                break;
+            }
+        }
+        else
+        {
+            $value = $_post[$field['name']];
+            $related = isset($_post[$tok[1]])
+                ? $_post[$tok[1]]
+                : $tok[1];
+        }
+		return array($value, $related);
 	}
 
 	/**
 	 * After rule
 	 * if the value is not a date after another field date then catch an error
-	 *
-	 * @static
-	 * @param array		$field	Array of the field form (passed as reference)
-	 * @param array		$tok	Array of the rule parameters (rule_name, param1, param2...)
-	 * @param boolean	$e		Error status
-	 * @param array		$_post	_POST array
-	 * @param array		$_files	_FILES array
-	 * @return void
 	 */
-	private static function _after(&$field, $tok, &$e, $_post, $_files)
+	private static function _after(array &$field, array $tok, bool &$e, array $_post, array $_files)
 	{
 		list($value, $related) = self::handle_dates($field, $tok, $_post);
 		if (strtotime($value) <= strtotime($related))
@@ -1614,16 +1267,8 @@ class X4Validation_helper
 	/**
 	 * After or equal rule
 	 * if the value is a date before another field date then catch an error
-	 *
-	 * @static
-	 * @param array		$field	Array of the field form (passed as reference)
-	 * @param array		$tok	Array of the rule parameters (rule_name, param1, param2...)
-	 * @param boolean	$e		Error status
-	 * @param array		$_post	_POST array
-	 * @param array		$_files	_FILES array
-	 * @return void
 	 */
-	private static function _afterequal(&$field, $tok, &$e, $_post, $_files)
+	private static function _afterequal(array &$field, array $tok, bool &$e, array $_post, array $_files)
 	{
 		list($value, $related) = self::handle_dates($field, $tok, $_post);
 		if (strtotime($value) < strtotime($related))
@@ -1639,16 +1284,8 @@ class X4Validation_helper
 	/**
 	 * Before rule
 	 * if the value is not a date before another field date then catch an error
-	 *
-	 * @static
-	 * @param array		$field	Array of the field form (passed as reference)
-	 * @param array		$tok	Array of the rule parameters (rule_name, param1, param2...)
-	 * @param boolean	$e		Error status
-	 * @param array		$_post	_POST array
-	 * @param array		$_files	_FILES array
-	 * @return void
 	 */
-	private static function _before(&$field, $tok, &$e, $_post, $_files)
+	private static function _before(array &$field, array $tok, bool &$e, array $_post, array $_files)
 	{
 		list($value, $related) = self::handle_dates($field, $tok, $_post);
 		if (strtotime($value) >= strtotime($related))
@@ -1664,16 +1301,8 @@ class X4Validation_helper
 	/**
 	 * Before or equal rule
 	 * if the value is a date before another field date then catch an error
-	 *
-	 * @static
-	 * @param array		$field	Array of the field form (passed as reference)
-	 * @param array		$tok	Array of the rule parameters (rule_name, param1, param2...)
-	 * @param boolean	$e		Error status
-	 * @param array		$_post	_POST array
-	 * @param array		$_files	_FILES array
-	 * @return void
 	 */
-	private static function _beforeequal(&$field, $tok, &$e, $_post, $_files)
+	private static function _beforeequal(array &$field, array $tok, bool &$e, array $_post, array $_files)
 	{
 		list($value, $related) = self::handle_dates($field, $tok, $_post);
 		if (strtotime($value) > strtotime($related))
@@ -1689,16 +1318,8 @@ class X4Validation_helper
 	/**
 	 * Periodical rule
 	 * if the value is not a periodical date then catch an error
-	 *
-	 * @static
-	 * @param array		$field	Array of the field form (passed as reference)
-	 * @param array		$tok	Array of the rule parameters (rule_name, param1, param2...)
-	 * @param boolean	$e		Error status
-	 * @param array		$_post	_POST array
-	 * @param array		$_files	_FILES array
-	 * @return void
 	 */
-	private static function _periodical(&$field, $tok, &$e, $_post, $_files)
+	private static function _periodical(array &$field, array $tok, bool &$e, array $_post, array $_files)
 	{
 		if (!preg_match('/^([0-9]) (year|month|week|day)$/', $_post[$field['name']]))
 		{
@@ -1710,16 +1331,8 @@ class X4Validation_helper
 	/**
 	 * Fiscal IT rule
 	 * if the value is not a valid italian Fiscal ID then catch an error
-	 *
-	 * @static
-	 * @param array		$field	Array of the field form (passed as reference)
-	 * @param array		$tok	Array of the rule parameters (rule_name, param1, param2...)
-	 * @param boolean	$e		Error status
-	 * @param array		$_post	_POST array
-	 * @param array		$_files	_FILES array
-	 * @return void
 	 */
-	private static function _fiscalit(&$field, $tok, &$e, $_post, $_files)
+	private static function _fiscalit(array &$field, array $tok, bool &$e, array $_post, array $_files)
 	{
 		$tmp = trim($_post[$field['name']]);
 		switch (strlen($tmp))
@@ -1744,16 +1357,8 @@ class X4Validation_helper
 	/**
 	 * Iban rule
 	 * if the value is not a valid IBAN then catch an error
-	 *
-	 * @static
-	 * @param array		$field	Array of the field form (passed as reference)
-	 * @param array		$tok	Array of the rule parameters (rule_name, param1, param2...)
-	 * @param boolean	$e		Error status
-	 * @param array		$_post	_POST array
-	 * @param array		$_files	_FILES array
-	 * @return void
 	 */
-	private static function _iban(&$field, $tok, &$e, $_post, $_files)
+	private static function _iban(array &$field, array $tok, bool &$e, array $_post, array $_files)
 	{
         $val = str_replace(array(' '), '', $_post[$field['name']]);
 		if (!X4Checker_helper::verify_iban($val))
@@ -1766,16 +1371,8 @@ class X4Validation_helper
 	/**
 	 * Ean rule
 	 * if the value is not a valid EAN then catch an error
-	 *
-	 * @static
-	 * @param array		$field	Array of the field form (passed as reference)
-	 * @param array		$tok	Array of the rule parameters (rule_name, param1, param2...)
-	 * @param boolean	$e		Error status
-	 * @param array		$_post	_POST array
-	 * @param array		$_files	_FILES array
-	 * @return void
 	 */
-	private static function _ean(&$field, $tok, &$e, $_post, $_files)
+	private static function _ean(array &$field, array $tok, bool &$e, array $_post, array $_files)
 	{
 		if (!X4Checker_helper::isEAN(trim($_post[$field['name']])))
 		{
@@ -1787,16 +1384,8 @@ class X4Validation_helper
 	/**
 	 * Isdir rule
 	 * if the value is not a valid directory in the server then catch an error
-	 *
-	 * @static
-	 * @param array		$field	Array of the field form (passed as reference)
-	 * @param array		$tok	Array of the rule parameters (rule_name, param1, param2...)
-	 * @param boolean	$e		Error status
-	 * @param array		$_post	_POST array
-	 * @param array		$_files	_FILES array
-	 * @return void
 	 */
-	private static function _isdir(&$field, $tok, &$e, $_post, $_files)
+	private static function _isdir(array &$field, array $tok, bool &$e, array $_post, array $_files)
 	{
 		if (!is_dir(trim($_post[$field['name']])))
 		{
@@ -1806,13 +1395,9 @@ class X4Validation_helper
 	}
 
 	/**
-	 * Get name, for multiple select
-	 *
-	 * @static
-	 * @param array		$field  Field to check
-	 * @return string
+	 * Get name, also for multiple select
 	 */
-	public static function get_name($field)
+	public static function get_name(array $field) : string
 	{
 		return (isset($field['multiple']))
 			? $field['name'].'[]'
@@ -1822,12 +1407,8 @@ class X4Validation_helper
 	/**
 	 * Check if a field is empty
 	 * Used for related fields
-	 *
-	 * @static
-	 * @param string	$name	Field to check name
-	 * @return boolean	Return true if not set
 	 */
-	public static function is_empty($name)
+	public static function is_empty(string $name) : bool
 	{
 		$res = true;
 		$i = self::get_field($name);
@@ -1848,7 +1429,7 @@ class X4Validation_helper
                         if (isset($i['multiple']))
                         {
                             // not set if array is empty or the first value is empty
-                            $res = (empty(self::$data[$name]) || empty(self::$data[$name][0]));
+                            $res = empty(self::$data[$name]) || empty(self::$data[$name][0]);
                         }
                         else
                         {
@@ -1862,7 +1443,7 @@ class X4Validation_helper
                         {
                             // multiple
                             // not set if array is empty or the first value is empty
-                            $res = (empty(self::$data[$i['name']]) || empty(self::$data[$i['name']][0]));
+                            $res = empty(self::$data[$i['name']]) || empty(self::$data[$i['name']][0]);
                         }
                         else
                         {
@@ -1878,12 +1459,8 @@ class X4Validation_helper
 	/**
 	 * Check file upload
 	 * return true if file is uploaded
-	 *
-	 * @static
-	 * @param  array	$field	field name
-	 * @return boolean
 	 */
-	private static function check_file_upload($field)
+	private static function check_file_upload(array $field) : bool
 	{
         $uploaded = true;
 		if (!isset($field['old']) || empty($field['old']))
@@ -1917,63 +1494,60 @@ class X4Validation_helper
 	/**
 	 * Get the value of a field
 	 * Used for requiredif fields
-	 *
-	 * @static
-	 * @param string	$name	Field to check name
-	 * @return mixed	Return 	value
 	 */
-	public static function get_value($name)
+	public static function get_value(string $name) : mixed
 	{
-		$res = '';
 		$i = self::get_field($name);
-		if ($i)
+		if (!$i)
 		{
-            $name = self::get_name($i);
-            switch ($i['type'])
-            {
-                case 'file':
-					$res = 'file';
-					break;
-				case 'checkbox':
-					$res = (isset(self::$data[$name]) && self::$data[$name])
-						? $i['value']
-						: '';
-					break;
-				case 'select':
-					// fields with multiple
-                    if (isset(self::$data[$name]))
+            return '';
+        }
+        $res = '';
+        $name = self::get_name($i);
+        switch ($i['type'])
+        {
+            case 'file':
+                $res = 'file';
+                break;
+            case 'checkbox':
+                $res = (isset(self::$data[$name]) && self::$data[$name])
+                    ? $i['value']
+                    : '';
+                break;
+            case 'select':
+                // fields with multiple
+                if (isset(self::$data[$name]))
+                {
+                    if (isset($i['multiple']))
                     {
-                        if (isset($i['multiple']))
-                        {
-                            $res = (!empty(self::$data[$name]) && isset(self::$data[$name][0]))
-								? self::$data[$name][0]
-								: '';
-                        }
-                        else
-                        {
-                            // empty value (zero is a value)
-                            $res = self::$data[$name];
-                        }
+                        $res = (!empty(self::$data[$name]) && isset(self::$data[$name][0]))
+                            ? self::$data[$name][0]
+                            : '';
                     }
                     else
                     {
-                        if (isset($i['multiple']))
-                        {
-                            // multiple
-                            $res = (!empty(self::$data[$i['name']]) && isset(self::$data[$i['name']][0]))
-								? self::$data[$i['name']][0]
-								: '';
-                        }
-                        else
-                        {
-                            $res = empty(self::$data[$name]);
-                        }
+                        // empty value (zero is a value)
+                        $res = self::$data[$name];
                     }
-					break;
-				default:
-					$res = self::$data[$name];
-                    break;
-            }
+                }
+                else
+                {
+                    if (isset($i['multiple']))
+                    {
+                        // multiple
+                        $res = (!empty(self::$data[$i['name']]) && isset(self::$data[$i['name']][0]))
+                            ? self::$data[$i['name']][0]
+                            : '';
+                    }
+                    else
+                    {
+                        $res = empty(self::$data[$name]);
+                    }
+                }
+                break;
+            default:
+                $res = self::$data[$name];
+                break;
         }
 		return $res;
 	}
@@ -1981,12 +1555,8 @@ class X4Validation_helper
 	/**
 	 * Get a field from fields array by name
 	 * Used for related fields
-	 *
-	 * @static
-	 * @param string	$name	Field to check name
-	 * @return mixed
 	 */
-	public static function get_field($name)
+	public static function get_field(string $name) : mixed
 	{
 	    foreach(self::$fields as $i)
 		{
@@ -2001,12 +1571,8 @@ class X4Validation_helper
 	/**
 	 * Get options
 	 * Used for related fields
-	 *
-	 * @static
-	 * @param array	$options
-	 * @return array
 	 */
-	public static function get_options($options)
+	public static function get_options(array $options) : array
 	{
 	    $a = array();
 	    $k = $options[1];
@@ -2021,12 +1587,8 @@ class X4Validation_helper
 	/**
 	 * Get the related value of a field
 	 * Used for requiredif fields
-	 *
-	 * @static
-	 * @param string	$name	Field to check name
-	 * @return mixed	Return 	value
 	 */
-	public static function get_related_value($name, $value)
+	public static function get_related_value(string $name, mixed $value)
 	{
 		$i = self::get_field($name);
 		if ($i)

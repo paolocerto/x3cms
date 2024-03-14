@@ -37,11 +37,7 @@ class X4Site_model extends X4Model_core
 
 
 	/**
-	 * Constructor
 	 * Initialize site model
-	 *
-	 *
-	 * @return void
 	 */
 	public function __construct()
 	{
@@ -73,11 +69,8 @@ class X4Site_model extends X4Model_core
 
 	/**
 	 * Get area related object
-	 *
-     * @param   string  $lang
-	 * @return array
 	 */
-	private function get_area(string $lang = '')
+	private function get_area(string $lang = '') : stdClass
 	{
         // check APC
 		$c = (APC)
@@ -88,7 +81,7 @@ class X4Site_model extends X4Model_core
 		{
             // we get the area even if not enabled     // .' AND a.xon = 1'
             $sql = 'SELECT t.name AS theme, a.id, a.id_theme, a.folder, a.private, a.xon,
-                IF (l2.id IS NULL, l.code, l2.code) AS lang
+                l.title, IF (l2.id IS NULL, l.code, l2.code) AS lang
                 FROM themes t
                 JOIN areas a ON a.id_theme = t.id
                 JOIN alang l ON l.id_area = a.id AND l.xdefault = 1
@@ -106,11 +99,8 @@ class X4Site_model extends X4Model_core
 
 	/**
 	 * Get site related object
-	 *
-	 * @param boolean   $domain (to exclude domain check for X3Cli)
-	 * @return array
 	 */
-	public function get_site_data(int $id_area, bool $domain = true)
+	public function get_site_data(int $id_area, bool $domain = true) : stdClass
 	{
 		// check APC
 		$c = (APC)
@@ -132,7 +122,7 @@ class X4Site_model extends X4Model_core
                 $join = 'JOIN areas a ON a.id_site = s.id AND a.xdefault = 1';
             }
 
-			$c = $this->db->query_row('SELECT s.*, l.title, l.description, l.keywords, l.rtl '.$select.'
+			$c = $this->db->query_row('SELECT s.*, s.xdatabase AS db, l.title, l.description, l.keywords, l.rtl '.$select.'
 				FROM sites s
 				JOIN alang l ON l.code = '.$this->db->escape($this->area->lang).'
                 '.$join.'
@@ -148,25 +138,26 @@ class X4Site_model extends X4Model_core
 
 	/**
 	 * Define site parameters
-	 *
-	 * @return void
 	 */
-	private function to_define(int $id_site)
+	private function to_define(int $id_site) : void
 	{
-		$items = $this->db->query('SELECT UPPER(name) AS xkey, xvalue FROM param WHERE id_area = '.$id_site.' AND xrif = \'site\'');
+		$items = $this->db->query('SELECT UPPER(name) AS xkey, xvalue
+            FROM param
+            WHERE id_area = '.$id_site.' AND xrif = \'site\'');
+
 		foreach ($items as $i)
 		{
-			if (!defined($i->xkey)) define($i->xkey, $i->xvalue);
+			if (!defined($i->xkey))
+            {
+                define($i->xkey, $i->xvalue);
+            }
 		}
 	}
 
 	/**
 	 * Build area related object
-	 *
-	 * @param integer	site ID
-	 * @return array	array of objects
 	 */
-	public function get_param($id_site)
+	public function get_param(int $id_site) : array
 	{
 		// check APC
 		$c = (APC)
@@ -194,28 +185,22 @@ class X4Site_model extends X4Model_core
 
 	/**
 	 * Get page object
-	 *
-	 * @param string	page URL
-	 * @return object
 	 */
-	public function get_page($method = 'home')
+	public function get_page(string $url = 'home') : mixed
 	{
 		return $this->db->query_row('SELECT p.*, a.name AS area, a.private
 			FROM pages p
 			JOIN areas a ON a.id = p.id_area
 			WHERE a.id = '.intval($this->area->id).' AND
 				p.lang = '.$this->db->escape($this->area->lang).' AND
-				p.url = '.$this->db->escape($method).' AND
+				p.url = '.$this->db->escape($url).' AND
 				p.xon = 1');
 	}
 
 	/**
 	 * Get sections
-	 *
-	 * @param integer	page ID
-	 * @return array	array of section objects
 	 */
-	public function get_sections($id_page)
+	public function get_sections(int $id_page) : array
 	{
 		// check APC
 		$sections = (APC)
@@ -226,59 +211,12 @@ class X4Site_model extends X4Model_core
 		{
 			if (ADVANCED_EDITING)
 			{
-				// get active sections
-				$items = $this->db->query('SELECT * FROM sections WHERE id_page = '.intval($id_page).' AND xon = 1 ORDER BY progressive ASC');
-				foreach ($items as $i)
-				{
-					// get section's settings
-					$settings = (empty($i->settings))
-						? array()
-						: json_decode($i->settings, true);
-
-					$articles = array();
-					// get bids
-					$bids = empty($i->articles)
-                        ? []
-                        : json_decode($i->articles, true);
-
-                    if (is_array($bids) && !empty($bids))
-                    {
-                        foreach ($bids as $bid)
-                        {
-                            // get articles
-                            $article = $this->db->query_row('SELECT *
-                                FROM articles
-                                WHERE
-                                    id_area = '.intval($i->id_area).' AND
-                                    (code_context = 1 OR code_context = 2) AND
-                                    bid = '.$this->db->escape($bid).' AND
-                                    xon = 1 AND
-                                    date_in <= '.$this->now.' AND (date_out = 0 OR date_out >= '.$this->now.')
-                                    ORDER BY id DESC');
-
-                            if ($article)
-                            {
-                                $articles[] = $article;
-                            }
-                        }
-                    }
-					$sections[$i->progressive] = array('a' => $articles, 's' => $settings);
-				}
+				$sections = $this->section_advanced($id_page);
 			}
 			else
 			{
 				// SIMPLE EDITING
-
-				// get first section
-				$section = $this->db->query_row('SELECT * FROM sections WHERE id_page = '.intval($id_page).' AND xon = 1 AND progressive = 1');
-				$settings = (empty($section->settings))
-						? array()
-						: json_decode($section->settings, true);
-
-				$articles = $this->db->query_row('SELECT * FROM articles WHERE id_page = '.intval($id_page).' AND xon = 1 AND code_context = 1 AND date_in <= '.$this->now.' AND (date_out = 0 OR date_out >= '.$this->now.') ORDER BY id DESC');
-				$sections[1] = ($articles)
-					? array('a' => $articles, 's' => $settings)
-					: array();
+                $sections[1] = $this->simple_section($id_page);
 			}
 
 			if (APC)
@@ -289,15 +227,85 @@ class X4Site_model extends X4Model_core
 		return $sections;
 	}
 
+    /**
+     * Get sections advanced
+     */
+    private function section_advanced(int $id_page) : array
+    {
+        // get active sections
+        $items = $this->db->query('SELECT *
+            FROM sections
+            WHERE id_page = '.$id_page.' AND xon = 1
+            ORDER BY progressive ASC');
+
+        $sections = [];
+        foreach ($items as $i)
+        {
+            // get section's settings
+            $settings = (empty($i->settings))
+                ? array()
+                : json_decode($i->settings, true);
+
+            $articles = array();
+            // get bids
+            $bids = empty($i->articles)
+                ? []
+                : json_decode($i->articles, true);
+
+            if (is_array($bids) && !empty($bids))
+            {
+                foreach ($bids as $bid)
+                {
+                    // get articles
+                    $article = $this->db->query_row('SELECT *
+                        FROM articles
+                        WHERE
+                            id_area = '.$i->id_area.' AND
+                            (code_context = 1 OR code_context = 2) AND
+                            bid = '.$this->db->escape($bid).' AND
+                            xon = 1 AND
+                            date_in <= '.$this->now.' AND (date_out = 0 OR date_out >= '.$this->now.')
+                            ORDER BY id DESC');
+
+                    if ($article)
+                    {
+                        $articles[] = $article;
+                    }
+                }
+            }
+            $sections[$i->progressive] = array('a' => $articles, 's' => $settings);
+        }
+        return $sections;
+    }
+
+    /**
+     * Get sections simple
+     */
+    private function section_simple(int $id_page) : array
+    {
+        // get first section
+        $section = $this->db->query_row('SELECT *
+            FROM sections
+            WHERE id_page = '.$id_page.' AND xon = 1 AND progressive = 1');
+
+        $settings = (empty($section->settings))
+                ? array()
+                : json_decode($section->settings, true);
+
+        $articles = $this->db->query_row('SELECT *
+            FROM articles
+            WHERE id_page = '.$id_page.' AND xon = 1 AND code_context = 1 AND date_in <= '.$this->now.' AND (date_out = 0 OR date_out >= '.$this->now.')
+            ORDER BY id DESC');
+
+        return ($articles)
+            ? array('a' => $articles, 's' => $settings)
+            : array();
+    }
+
 	/**
 	 * Get an article by bid
-	 *
-	 * @param integer	area ID
-	 * @param string	lang
-	 * @param string	article bid
-	 * @return array	array of objects
 	 */
-	public function get_article_by_bid($id_area, $lang, $bid)
+	public function get_article_by_bid(int $id_area, string $lang, string $bid) : mixed
 	{
 		// check APC
 		$c = (APC)
@@ -312,7 +320,7 @@ class X4Site_model extends X4Model_core
                     SELECT MAX(id) AS id, bid
                     FROM articles
                     WHERE
-                        id_area = '.intval($id_area).' AND
+                        id_area = '.$id_area.' AND
                         lang = '.$this->db->escape($lang).' AND
                         bid = '.$this->db->escape($bid).' AND
                         xon = 1 AND
@@ -333,13 +341,8 @@ class X4Site_model extends X4Model_core
 
 	/**
 	 * Get articles by key
-	 *
-	 * @param integer	area ID
-	 * @param string	lang
-	 * @param string	article key
-	 * @return array	array of objects
 	 */
-	public function get_articles_by_key($id_area, $lang, $key)
+	public function get_articles_by_key(int $id_area, string $lang, string $key) : array
 	{
 	    // check APC
 		$c = (APC)
@@ -367,7 +370,7 @@ class X4Site_model extends X4Model_core
 
 			if (APC)
 			{
-				apcu_store(SITE.'abid'.$id_area.$lang.$bid, $c);
+				apcu_store(SITE.'abid'.$id_area.$lang.$key, $c);
 			}
 		}
 		return $c;
@@ -375,17 +378,12 @@ class X4Site_model extends X4Model_core
 
 	/**
 	 * Get articles by contexts
-	 *
-	 * @param integer	area ID
-	 * @param string	lang
-	 * @param string	article context
-	 * @return array	array of objects
 	 */
-	public function get_articles_by_context($id_area, $lang, $context)
+	public function get_articles_by_context(int $id_area, string $lang, string $context) : array
 	{
 		// check APC
 		$c = (APC)
-			? apcu_fetch(SITE.'akey'.$id_area.$lang.$key)
+			? apcu_fetch(SITE.'akey'.$id_area.$lang.$context)
 			: array();
 
 		if (empty($c))
@@ -409,7 +407,7 @@ class X4Site_model extends X4Model_core
 
 			if (APC)
 			{
-				apcu_store(SITE.'akey'.$id_area.$lang.$key, $c);
+				apcu_store(SITE.'akey'.$id_area.$lang.$context, $c);
 			}
 		}
 		return $c;
@@ -417,13 +415,8 @@ class X4Site_model extends X4Model_core
 
 	/**
 	 * Get categories by key
-	 *
-	 * @param integer	area ID
-	 * @param string	lang
-	 * @param string	article key
-	 * @return array	array of objects
 	 */
-	public function get_categories_by_key($id_area, $lang, $key)
+	public function get_categories_by_key(int $id_area, string $lang, string $key) : array
 	{
 		return $this->db->query('SELECT a.*, c.description AS ctg
 		    FROM articles a
@@ -431,7 +424,7 @@ class X4Site_model extends X4Model_core
                 SELECT MAX(id) AS id, bid
                 FROM articles
                 WHERE
-                    id_area = '.intval($id_area).' AND
+                    id_area = '.$id_area.' AND
                     lang = '.$this->db->escape($lang).' AND
                     xon = 1 AND
                     date_in <= '.$this->time().' AND
@@ -446,13 +439,8 @@ class X4Site_model extends X4Model_core
 
 	/**
 	 * Get categories by context
-	 *
-	 * @param integer	area ID
-	 * @param string	lang
-	 * @param string	article context
-	 * @return array	array of objects
 	 */
-	public function get_categories_by_context($id_area, $lang, $context)
+	public function get_categories_by_context(int $id_area, string $lang, string $context) : array
 	{
 		return $this->db->query('SELECT a.*, c.description AS ctg
 		    FROM articles a
@@ -460,7 +448,7 @@ class X4Site_model extends X4Model_core
                 SELECT MAX(id) AS id, bid
                 FROM articles
                 WHERE
-                    id_area = '.intval($id_area).' AND
+                    id_area = '.$id_area.' AND
                     lang = '.$this->db->escape($lang).' AND
                     xon = 1 AND
                     date_in <= '.$this->time().' AND
@@ -475,10 +463,8 @@ class X4Site_model extends X4Model_core
 
 	/**
 	 * Get menus by area ID
-	 *
-	 * @return array	associative array of array of objects
 	 */
-	public function get_menus($maxdeep = MAX_MENU_DEEP)
+	public function get_menus(int $maxdeep = MAX_MENU_DEEP) : array
 	{
 		// check APC
 		$c = ($this->area->id > 1 && APC)
@@ -516,7 +502,7 @@ class X4Site_model extends X4Model_core
 					WHERE
 						pa.id_area = '.$this->area->id.' AND
 						pa.lang = '.$this->db->escape($this->area->lang).' AND
-						pa.id_menu = '.intval($i->id).' AND
+						pa.id_menu = '.$i->id.' AND
 						pa.xpos > 0 AND
 						pa.xon = 1 AND
 						pa.deep < '.$maxdeep.' AND
@@ -535,12 +521,8 @@ class X4Site_model extends X4Model_core
 
     /**
 	 * Get menus by area ID
-	 *
-	 * @param   integer	$id_area area ID
-     * @param   string  $xfrom  url value of origin page
-	 * @return array	associative array of array of objects
 	 */
-	public function get_subpages(int $id_area, string $xfrom)
+	public function get_subpages(int $id_area, string $xfrom) : array
 	{
 		// check APC
 		$pages = ($id_area > 1 && APC)
@@ -583,11 +565,8 @@ class X4Site_model extends X4Model_core
 
 	/**
 	 * Get breadcrumb
-	 *
-	 * @param object	page object
-	 * @return array	array of objects
 	 */
-	public function get_bredcrumb($page)
+	public function get_bredcrumb(stdClass $page) : array
 	{
 		// check APC
 		$c = (APC)
@@ -615,12 +594,8 @@ class X4Site_model extends X4Model_core
 
     /**
 	 * Get bookmarks
-	 *
-     * @param integer   id_user
-	 * @param object	page object
-	 * @return array	array of objects
 	 */
-	public function get_bookmarks(int $id_user, string $lang)
+	public function get_bookmarks(int $id_user, string $lang) : array
 	{
 		return $this->db->query('SELECT id, url, name
 				FROM bookmarks
@@ -632,14 +607,8 @@ class X4Site_model extends X4Model_core
 
 	/**
 	 * Get area map
-	 *
-	 * @param object	page object
-	 * @param boolean	if true only active pages
-	 * @param boolean	if true dont show subpages of disabled pages
-	 * @param string	ordinal origin
-	 * @return array	array of objects
 	 */
-	public function get_map($page, $xon = false, $public = true, $ordinal = 'A')
+	public function get_map(stdClass $page, bool $xon = false, bool $public = true, string $ordinal = 'A') : array
 	{
 		// check APC
 		$c = (APC)
@@ -686,15 +655,12 @@ class X4Site_model extends X4Model_core
 
 	/**
 	 * Search into pages
-	 *
-	 * @param integer	area ID
-	 * @param array		array of strings
-	 * @return array	array of objects
 	 */
-	public function search(int $id_area, array $array)
+	public function search(int $id_area, array $array) : array
 	{
 		$w_p = $w_c = array();
-		foreach ($array as $a) {
+		foreach ($array as $a)
+        {
 			$i = htmlentities($a);
 			$w_c[] = ' LOWER(ftext) LIKE '.$this->db->escape('%'.$i.'%');
 			$w_p[] = ' (
@@ -709,9 +675,9 @@ class X4Site_model extends X4Model_core
         if (ADVANCED_EDITING)
         {
             // advance editing uses sections and you can have articles for multipages
-            $sql = 'SELECT p.url, p.name, p.description
+            $sql = 'SELECT DISTINCT p.url, p.name, p.description, COUNT(b.id) AS n
                 FROM pages p
-                JOIN sections s oN s.id_page = p.id AND s.xon = 1
+                JOIN sections s ON s.id_page = p.id AND s.xon = 1
                 JOIN articles a ON s.articles LIKE CONCAT(\'%"\', a.bid, \'"%\')
                 LEFT JOIN (
                     SELECT MAX(id) AS id, bid
@@ -725,7 +691,7 @@ class X4Site_model extends X4Model_core
                 ) b ON b.id = a.id AND b.bid = a.bid
 				WHERE p.xon = 1 AND
 					p.id_area = '.$id_area.' AND
-					p.lang = '.$this->db->escape($this->lang).' AND
+					p.lang = '.$this->db->escape($this->area->lang).' AND
                     (
 					    '.$where_p.' OR
                         b.bid IS NOT NULL
@@ -735,7 +701,7 @@ class X4Site_model extends X4Model_core
         }
         else
         {
-		    $sql = 'SELECT p.url, p.name, p.description
+		    $sql = 'SELECT DISTINCT p.url, p.name, p.description, COUNT(b.id) AS n
                 FROM pages p
                 JOIN articles a ON a.id_page = p.id
                 LEFT JOIN (
@@ -751,7 +717,7 @@ class X4Site_model extends X4Model_core
                 ) b ON b.id = a.id AND b.bid = a.bid
 				WHERE p.xon = 1 AND
 					p.id_area = '.$id_area.' AND
-					p.lang = '.$this->db->escape($this->lang).' AND
+					p.lang = '.$this->db->escape($this->area->lang).' AND
 					(
 					    '.$where_p.' OR
                         b.bid IS NOT NULL
@@ -765,14 +731,8 @@ class X4Site_model extends X4Model_core
 
 	/**
 	 * Get page URL by plugin name and parameter
-	 *
-	 * @param integer	area ID
-	 * @param string	lang
-	 * @param string	plugin name
-	 * @param string	parameter value, accepts * wildcard
-	 * @return string	page URL
 	 */
-	public function get_page_to(int $id_area, string $lang, string $modname, string $param = '')
+	public function get_page_to(int $id_area, string $lang, string $modname, string $param = '') : string
 	{
 		// check APC
 		$c = (APC)
@@ -809,12 +769,8 @@ class X4Site_model extends X4Model_core
 
 	/**
 	 * Get plugin's parameters
-	 *
-	 * @param string	plugin name
-	 * @param integer	area ID
-	 * @return array	associative array (parameter name => value)
 	 */
-	public function get_module_param(string $plugin_name, int $id_area)
+	public function get_module_param(string $plugin_name, int $id_area) : array
 	{
 		// check APC
 		$conf = (APC)
@@ -844,13 +800,8 @@ class X4Site_model extends X4Model_core
 
 	/**
 	 * Get plugin's single parameter
-	 *
-	 * @param string	plugin name
-	 * @param integer	area ID
-	 * @param string	parameter name
-	 * @return array	associative array (parameter name => value)
 	 */
-	public function get_module_param_value(string $plugin_name, int $id_area, string $param)
+	public function get_module_param_value(string $plugin_name, int $id_area, string $param) : string
 	{
 		// check APC
 		$value = (APC)
@@ -874,11 +825,12 @@ class X4Site_model extends X4Model_core
 
 	/**
 	 * Get languages related to active area
-	 *
-	 * @return array	array of objects
 	 */
-	public function get_alang()
+	public function get_alang() : array
 	{
-		return $this->db->query('SELECT * FROM alang WHERE id_area = '.$this->area->id.' AND xon = 1 ORDER BY language ASC');
+		return $this->db->query('SELECT *
+            FROM alang
+            WHERE id_area = '.$this->area->id.' AND xon = 1
+            ORDER BY language ASC');
 	}
 }

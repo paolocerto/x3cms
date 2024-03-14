@@ -17,8 +17,6 @@ class Error_controller extends X4Cms_controller
 {
 	/**
 	 * Constructor
-	 *
-	 * @return  void
 	 */
 	public function __construct()
 	{
@@ -28,11 +26,8 @@ class Error_controller extends X4Cms_controller
 
 	/**
 	 * Display error message
-	 *
-	 * @param   string	$what Dictionary what
-	 * @return  void
 	 */
-	public function message(string $what = '')
+	public function message(string $what = '') : void
 	{
 		// load dictionary
 		$this->dict->get_words();

@@ -18,8 +18,6 @@ class Help_controller extends X3ui_controller
 	/**
 	 * Constructor
 	 * check if user is logged
-	 *
-	 * @return  void
 	 */
 	public function __construct()
 	{
@@ -29,10 +27,8 @@ class Help_controller extends X3ui_controller
 
 	/**
 	 * Default method
-	 *
-	 * @return  void
 	 */
-	public function _default()
+	public function _default() : void
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('help'));
@@ -58,9 +54,6 @@ class Help_controller extends X3ui_controller
 
 	/**
 	 * Help on site
-	 *
-	 * @param   boolean  $render Switch the rendering
-	 * @return  void
 	 */
 	public function local(bool $render = true)
 	{
@@ -88,11 +81,8 @@ class Help_controller extends X3ui_controller
 
 	/**
 	 * Help on line
-	 *
-	 * @param   string  $lang Language code
-	 * @return  void
 	 */
-	public function online(string $lang)
+	public function online(string $lang) : void
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('home'));
@@ -123,26 +113,16 @@ class Help_controller extends X3ui_controller
 
 	/**
 	 * Build the remote suffix
-	 *
-	 * @param   string  $lang Language code
-	 * @param   string  $page Page URL
-	 * @return  void
 	 */
-	private function remotize()
+	private function remotize() : string
 	{
 		return str_replace('/', '-', BASE_URL.'help/hol/').'/1';
 	}
 
 	/**
 	 * Help on line
-	 *
-	 * @param   string  $lang
-     * @param   string  $area
-     * @param   string  $page Remote URL
-     * @param   string  $suffix
-	 * @return  void
 	 */
-	public function hol(string $lang, string $area, string $page, string $suffix = '')
+	public function hol(string $lang, string $area, string $page, string $suffix = '') : void
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('home'));
@@ -166,10 +146,8 @@ class Help_controller extends X3ui_controller
 
 	/**
 	 * Help actions
-	 *
-	 * @return  void
 	 */
-	public function actions(string $lang)
+	public function actions(string $lang) : string
 	{
 		return '';
 	}

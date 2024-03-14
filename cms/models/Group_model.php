@@ -18,8 +18,6 @@ class Group_model extends X4Model_core
 	/**
 	 * Constructor
 	 * set the default table
-	 *
-	 * @return  void
 	 */
 	public function __construct()
 	{
@@ -28,11 +26,8 @@ class Group_model extends X4Model_core
 
 	/**
 	 * Get groups
-	 * Join with privs and areas tables
-	 *
-	 * @return  array	array of area objects
 	 */
-	public function get_groups()
+	public function get_groups() : array
 	{
 		return $this->db->query('SELECT g.*, a.title, IF(p.id IS NULL, u.level, p.level) AS level
 				FROM xgroups g
@@ -44,11 +39,8 @@ class Group_model extends X4Model_core
 
 	/**
 	 * Get a group by User ID
-	 *
-	 * @param   integer $id_user User ID
-	 * @return  array	array of area objects
 	 */
-	public function get_group_by_user(int $id_user)
+	public function get_group_by_user(int $id_user) : stdClass
 	{
 		return $this->db->query_row('SELECT g.*
 			FROM xgroups g

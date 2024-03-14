@@ -18,8 +18,6 @@ class Modules_controller extends X3ui_controller
 	/**
 	 * Constructor
 	 * set the default table
-	 *
-	 * @return  void
 	 */
 	public function __construct()
 	{
@@ -29,22 +27,16 @@ class Modules_controller extends X3ui_controller
 
 	/**
 	 * Default
-	 *
-	 * @return  void
 	 */
-	public function _default()
+	public function _default() : void
 	{
 		$this->index(2, 'public');
 	}
 
 	/**
 	 * Show modules
-	 *
-	 * @param   integer $id_area Area ID
-	 * @param   string  $area Area name
-	 * @return  void
 	 */
-	public function index(int $id_area = 2, string $area = 'public')
+	public function index(int $id_area = 2, string $area = 'public') : void
 	{
 		// load dictionary
 		$this->dict->get_wordarray(array('modules'));
@@ -83,14 +75,8 @@ class Modules_controller extends X3ui_controller
 
 	/**
 	 * Change status
-	 *
-	 * @param   string  $what field to change
-     * @param   integer $id_area
-	 * @param   integer $id ID of the item to change
-	 * @param   integer $value value to set (0 = off, 1 = on)
-	 * @return  void
 	 */
-	public function set(string $what, int $id_area, int $id, int $value = 0)
+	public function set(string $what, int $id_area, int $id, int $value = 0) : void
 	{
 		$msg = null;
 		// check permission
@@ -120,12 +106,9 @@ class Modules_controller extends X3ui_controller
 	}
 
 	/**
-	 * Plugin configuration form (use Ajax)
-	 *
-	 * @param   integer  $id Module ID
-	 * @return  void
+	 * Plugin configuration form
 	 */
-	public function config(int $id)
+	public function config(int $id) : void
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('modules', 'form'));
@@ -175,13 +158,8 @@ class Modules_controller extends X3ui_controller
 
 	/**
 	 * Register Plugin configuration
-	 *
-	 * @access	private
-	 * @param   stdClass 	$plugin plugin
-	 * @param   array 	$_post _POST array
-	 * @return  void
 	 */
-	private function configure(stdClass $item, array $_post)
+	private function configure(stdClass $item, array $_post) : void
 	{
 		$msg = null;
 		// check permission
@@ -250,12 +228,8 @@ class Modules_controller extends X3ui_controller
 
 	/**
 	 * Install a plugin
-	 *
-	 * @param integer	$id_area Area ID
-	 * @param string	$plugin_name Plugin name
-	 * @return  void
 	 */
-	public function install(int $id_area, string $plugin_name)
+	public function install(int $id_area, string $plugin_name) : void
 	{
 		$msg = null;
 		// check permission
@@ -312,11 +286,8 @@ class Modules_controller extends X3ui_controller
 
 	/**
 	 * Uninstall a plugin
-	 *
-	 * @param integer	$id Pungin ID
-	 * @return  void
 	 */
-	public function uninstall(int $id)
+	public function uninstall(int $id) : void
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'modules'));
@@ -354,12 +325,8 @@ class Modules_controller extends X3ui_controller
 
 	/**
 	 * Uninstall the plugin
-	 *
-	 * @access	private
-	 * @param   stdClass 	$item Plugin Objject
-	 * @return  void
 	 */
-	private function uninstalling(stdClass $item)
+	private function uninstalling(stdClass $item) : void
 	{
 		$msg = null;
 		// check permission
@@ -400,12 +367,8 @@ class Modules_controller extends X3ui_controller
 
 	/**
 	 * Show Plugin's instructions
-	 *
-	 * @param   string 	$module Plugin name
-	 * @param   string 	$lang Language code
-	 * @return  void
 	 */
-	public function help(string $module, string $lang)
+	public function help(string $module, string $lang) : void
 	{
 		// load dictionary
 		$this->dict->get_wordarray(array('modules'));
@@ -424,16 +387,11 @@ class Modules_controller extends X3ui_controller
 	}
 
 	/**
-	 * Duplicate an area for another language (secret method)
+	 * Duplicate modules from an area for another language (secret method)
 	 * If you need to add another language to an area you can call this script
 	 * /admin/modules/duplicate_area_lang/ID_AREA/OLD_LANG/NEW_LANG
-	 *
-	 * @param   integer $id_area Area ID
-	 * @param   string  $old_lang Old language to copy
-	 * @param   string  $new_lang New language to set
-	 * @return  string
 	 */
-	public function duplicate_area_lang(int $id_area, string $old_lang, string $new_lang)
+	public function duplicate_area_lang(int $id_area, string $old_lang, string $new_lang) : void
 	{
 		// Comment the next row to enable the method
 		die('Operation disabled!');

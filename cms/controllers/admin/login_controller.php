@@ -23,8 +23,6 @@ class Login_controller extends X4Cms_controller
 
 	/**
 	 * Constructor
-	 *
-	 * @return  void
 	 */
 	public function __construct()
 	{
@@ -44,10 +42,8 @@ class Login_controller extends X4Cms_controller
 
 	/**
 	 * Login form
-	 *
-	 * @return  void
 	 */
-	public function _default()
+	public function _default() : void
 	{
 		if (X4Utils_helper::is_ajax())
 		{
@@ -117,12 +113,8 @@ class Login_controller extends X4Cms_controller
 
 	/**
 	 * Perform login
-	 *
-	 * @access	private
-	 * @param   array 	$_post _POST array
-	 * @return  void
 	 */
-	private function do_login(array $_post)
+	private function do_login(array $_post) : void
 	{
 		// check failure counter
 		if ($_SESSION['failed'] < 5)
@@ -188,18 +180,14 @@ class Login_controller extends X4Cms_controller
 				}
 			}
 		}
-
-		// redirect
 		header('Location: '.BASE_URL.'login');
 		die;
 	}
 
 	/**
 	 * Perform logout
-	 *
-	 * @return  void
 	 */
-	public function logout()
+	public function logout() : void
 	{
 		unset($_COOKIE[COOKIE.'_hash']);
 		setcookie(COOKIE.'_hash', '', time() - 3600, '/', $_SERVER['HTTP_HOST']);
@@ -215,18 +203,14 @@ class Login_controller extends X4Cms_controller
 		}
 
 		X4Auth_helper::log_out();
-
-		// redirect
-		header('Location: '.ROOT);
+        header('Location: '.ROOT);
 		die;
 	}
 
 	/**
 	 * Recovery password
-	 *
-	 * @return  void
 	 */
-	public function recovery()
+	public function recovery() : void
 	{
 		// load dictionary
 		$this->dict->get_wordarray(array('login', 'form', 'pwd_recovery'));
@@ -299,12 +283,8 @@ class Login_controller extends X4Cms_controller
 	/**
 	 * Recovery password action
 	 * send an email with a code for reset
-	 *
-	 * @access private
-	 * @param   array	$_post POST array
-	 * @return  void
 	 */
-	private function do_recovery(array $_post)
+	private function do_recovery(array $_post) : void
 	{
 		// check if users exists
 		$mod = new X4Auth_model('users');
@@ -334,9 +314,9 @@ class Login_controller extends X4Cms_controller
 				$msg = mb_convert_encoding($body, 'ISO-8859-1', 'auto');
 
 				// recipients
-				$to = array(array('mail' => $user->mail, 'name' => $user->username));
+				$to = ['mail' => $user->mail, 'name' => $user->username];
 
-				$check = X4Mailer_helper::mailto(MAIL, true, $view->subject, $msg, $to, array());
+				$check = X4Mailer_helper::mailto(MAIL, true, $view->subject, $msg, ['to' => [$to]]);
 
 				X4Utils_helper::set_msg($check, _RESET_MSG, _MSG_ERROR);
 
@@ -350,7 +330,7 @@ class Login_controller extends X4Cms_controller
 				$mod->logger($user->id, 1, 'users', 'recovery password request from '.$_post['email']);
 			}
 		}
-		else if (LOGS)
+		elseif (LOGS)
 		{
 			$mod->logger(0, 1, 'users', 'recovery password request from unknown '.$_post['email']);
 		}
@@ -363,12 +343,11 @@ class Login_controller extends X4Cms_controller
 	/**
 	 * Reset password
 	 * send an email with new credentials
-	 *
-	 * @param   integer	$id User ID
-	 * @param   string	$md5 Encrypted verification code
-	 * @return  void
 	 */
-	public function reset(int $id, string $md5)
+	public function reset(
+        int $id,
+        string $md5     // Encrypted verification code
+    ) : void
 	{
 		$mod = new X4Auth_model('users');
 		$user = $mod->get_by_id($id, 'users', 'last_in, password, mail, username');
@@ -397,9 +376,9 @@ class Login_controller extends X4Cms_controller
 					$msg = mb_convert_encoding($body, 'ISO-8859-1', 'auto');
 
 					// recipients
-					$to = array(array('mail' => $user->mail, 'name' => $user->username));
+					$to = ['mail' => $user->mail, 'name' => $user->username];
 
-					$check = X4Mailer_helper::mailto(MAIL, true, $view->subject, $msg, $to, array());
+					$check = X4Mailer_helper::mailto(MAIL, true, $view->subject, $msg, ['to' => [$to]]);
 
 					X4Utils_helper::set_msg($check, _RECOVERY_PWD_OK, _MSG_ERROR);
 					header('Location: '.BASE_URL.'login/recovery');

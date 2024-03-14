@@ -18,8 +18,6 @@ class Template_model extends X4Model_core
 	/**
 	 * Constructor
 	 * set the default table
-	 *
-	 * @return  void
 	 */
 	public function __construct()
 	{
@@ -28,12 +26,8 @@ class Template_model extends X4Model_core
 
 	/**
 	 * Get installed templates by Theme ID
-	 * Join with privs
-	 *
-	 * @param   integer $id_theme Theme ID
-	 * @return  array	Array of objects
 	 */
-	public function get_tpl_installed(int $id_theme)
+	public function get_tpl_installed(int $id_theme) : array
 	{
 		return $this->db->query('SELECT t.*, IF(p.id IS NULL, u.level, p.level) AS level
 			FROM templates t
@@ -46,15 +40,11 @@ class Template_model extends X4Model_core
 
 	/**
 	 * Get installable templates by Theme ID and Theme name
-	 *
-	 * @param   integer $id_theme Theme ID
-	 * @param   string	$name Theme name (theme folder name)
-	 * @return  array	Array of strings
 	 */
-	public function get_tpl_installable(int $id_theme, string $name)
+	public function get_tpl_installable(int $id_theme, string $theme_name) : array
 	{
 		// templates path
-		$path = realpath('themes/'.$name.'/templates');
+		$path = realpath('themes/'.$theme_name.'/templates');
 
 		// uploaded templates
 		$tpls = array();
@@ -77,27 +67,21 @@ class Template_model extends X4Model_core
 
 	/**
 	 * Install a new template
-	 *
-	 * @param   integer $id_theme Theme ID
-	 * @param   string	$name Theme name (theme folder name)
-	 * @return  array	Array of errors
 	 */
-	public function install_tpl(int $id_theme, string $name)
+	public function install_tpl(int $id_theme, string $theme_name) : array
 	{
-		$error = array();
-
-		// check if already installed
-		if ($this->exists($id_theme, $name))
+		$error = [];
+		if ($this->exists($id_theme, $theme_name))
         {
 			$error[] = array('error' => '_ALREADY_INSTALLED', 'label' => $name);
         }
         else
 		{
 			// check if template file exists
-			if (file_exists('themes/'.$name.'_install.php'))
+			if (file_exists('themes/'.$theme_name.'_install.php'))
 			{
 				// load template installer (SQL instructions)
-				require_once('themes/'.$name.'_install.php');
+				require_once('themes/'.$theme_name.'_install.php');
 
 				// install
 				$result = $this->db->single_exec($sql);
@@ -107,31 +91,26 @@ class Template_model extends X4Model_core
 				}
 				else
                 {
-					$error[] = array('error' => '_TEMPLATE_NOT_INSTALLED', 'label' => $name);
+					$error[] = array('error' => '_TEMPLATE_NOT_INSTALLED', 'label' => $theme_name);
                 }
 			}
 			else
             {
-				$error[] = array('error' => '_TEMPLATE_INSTALLER_NOT_FOUND', 'label' => $name);
+				$error[] = array('error' => '_TEMPLATE_INSTALLER_NOT_FOUND', 'label' => $theme_name);
             }
 		}
-
 		return $error;
 	}
 
 	/**
 	 * Uninstall a template
-	 *
-	 * @param   integer $id Template ID
-	 * @param   string	$name Template name
-	 * @return  array	Array of errors
 	 */
-	public function uninstall(int $id, string $name)
+	public function uninstall(int $id, string $tpl_name) : array
 	{
 		// get object
 		$tpl = $this->get_by_id($id);
 
-		$error = array();
+		$error = [];
 		// base is the default template and cannot be uninstalled
 		if ($tpl->name != 'base')
 		{
@@ -142,26 +121,22 @@ class Template_model extends X4Model_core
             }
 			else
             {
-				$error[] = array('error' => '_TEMPLATE_NOT_UNINSTALLED', 'label' => $name);
+				$error[] = array('error' => '_TEMPLATE_NOT_UNINSTALLED', 'label' => $tpl_name);
             }
 		}
 		else
         {
-			$error[] = array('error' => '_DEFAULT_TEMPLATE_CANT_BE_UNINSTALLED', 'label' => $name);
+			$error[] = array('error' => '_DEFAULT_TEMPLATE_CANT_BE_UNINSTALLED', 'label' => $tpl_name);
         }
 		return $error;
 	}
 
 	/**
 	 * Get CSS name of a template
-	 *
-	 * @param   integer $id_area Area ID
-	 * @param   string	$tpl Template name
-	 * @return  string
 	 */
-	public function get_css(int $id_area, string $tpl)
+	public function get_css(int $id_area, string $tpl) : string
 	{
-		return $this->db->query_var('SELECT t.css
+		return (string) $this->db->query_var('SELECT t.css
 			FROM templates t
 			INNER JOIN themes th ON th.id = t.id_theme
 			INNER JOIN areas a ON a.id_theme = th.id AND a.id = '.$id_area.'
@@ -170,35 +145,25 @@ class Template_model extends X4Model_core
 
 	/**
 	 * Check if a template is already installed in a theme
-	 *
-	 * @param   integer $id_theme Theme ID
-	 * @param   string	$name Template name
-	 * @param   integer $id Template ID
-	 * @return  integer
 	 */
-	private function exists(int $id_theme, string $name, int $id = 0)
+	private function exists(int $id_theme, string $tpl_name, int $id = 0) : int
 	{
 		// condition
 		$where = ($id)
 			? ' AND id <> '.$id
 			: '';
 
-		return $this->db->query_var('SELECT COUNT(id)
+		return (int) $this->db->query_var('SELECT COUNT(*)
 			FROM templates
-			WHERE id_theme = '.$id_theme.' AND name = '.$this->db->escape($name).' '.$where);
+			WHERE id_theme = '.$id_theme.' AND name = '.$this->db->escape($tpl_name).' '.$where);
 	}
 
 	/**
 	 * Reset page's sections
 	 * replace sections settings with the new template settings
 	 * Called when you change the template of a page
-	 *
-	 * @param   integer $id_area Area ID
-	 * @param   integer $id_page Page ID
-	 * @param	string	$tpl_name Template name
-	 * @return  array
 	 */
-	public function reset_sections(int $id_area, int $id_page, string $tpl_name)
+	public function reset_sections(int $id_area, int $id_page, string $tpl_name) : void
 	{
 		// get id_theme
 		$id_theme = $this->db->query_var('SELECT id_theme FROM areas WHERE id = '.$id_area);

@@ -19,13 +19,8 @@ class X4Time_helper
 	/**
 	 * return an array with months
 	 * you should already loaded the calendar or cal dictionary
-	 *
-	 * @static
-	 * @param boolean	$long
-	 * @param boolean	$keys
-	 * @return array
 	 */
-	public static function months_array($long = true, $keys = false)
+	public static function months_array(bool $long = true, bool $keys = false) : array
 	{
 		if ($long)
 		{
@@ -59,12 +54,8 @@ class X4Time_helper
 	/**
 	 * return an array with week's days
 	 * you should already loaded the week or week_long dictionary
-	 *
-	 * @static
-	 * @param boolean	$long
-	 * @return array
 	 */
-	public static function week_array($long = true, $keys = false)
+	public static function week_array(bool $long = true, bool $keys = false) : array
 	{
 		if ($long)
 		{
@@ -93,47 +84,40 @@ class X4Time_helper
 
 	/**
 	 * return last monday or today
-	 *
-	 * @static
-	 * @param string	$format output format
-	 * @return string	$variation from now
 	 */
-	public static function last_monday($format = 'Y-n-j', $variation = '')
+	public static function last_monday(
+        string $output_format = 'Y-n-j',
+        string $variation = ''
+    ) : string
 	{
 		$today = date('w');
 		$monday = ($today == 1)
 			? date('Y-m-d')
 			: date('Y-m-d', strtotime('last monday'));
 
-		return date($format, strtotime($monday.' '.$variation));
+		return date($output_format, strtotime($monday.' '.$variation));
 	}
 
     /*
      * days_in_month($month, $year)
      * Returns the number of days in a given month and year, taking into account leap years.
-     * >>> corrected by ben at sparkyb dot net
      *
      * $month: numeric month (integers 1-12)
      * $year: numeric year (any integer)
-     *
-     * Prec: $month is an integer between 1 and 12, inclusive, and $year is an integer.
-     * Post: none
      */
-    public static function days_in_month($month, $year)
+    public static function days_in_month(int $month, int $year) : int
     {
         // calculate number of days in a month
-        return $month == 2 ? ($year % 4 ? 28 : ($year % 100 ? 29 : ($year % 400 ? 28 : 29))) : (($month - 1) % 7 % 2 ? 30 : 31);
+        return $month == 2
+            ? ($year % 4 ? 28 : ($year % 100 ? 29 : ($year % 400 ? 28 : 29)))
+            : (($month - 1) % 7 % 2 ? 30 : 31);
     }
 
 
 	/**
 	 * return a time without seconds
-	 *
-	 * @static
-	 * @param string	time string
-	 * @return string	time without seconds
 	 */
-	public static function no_seconds($time)
+	public static function no_seconds(string $time) : string
 	{
 		$t = explode(':', $time);
 		array_pop($t);
@@ -142,13 +126,8 @@ class X4Time_helper
 
 	/**
 	 * format a datetime
-	 *
-	 * @static
-	 * @param string	datetime
-	 * @param string	format
-	 * @return string	modified datetime
 	 */
-	public static function format($datetime, $format)
+	public static function format(string $datetime, string $format) : string
 	{
 		$t = strtotime($datetime);
 		return date($format, $t);
@@ -205,12 +184,8 @@ class X4Time_helper
 
 	/**
 	 * fix an incomplete date
-	 *
-	 * @static
-	 * @param string	datetime
-	 * @return string
 	 */
-	public static function fix_date($date, $old_format)
+	public static function fix_date(string $date, string $old_format) : string
 	{
 		$l = strlen($date);
 
@@ -237,26 +212,16 @@ class X4Time_helper
 			// ???
 			break;
 		}
-		if (strlen($old_format) == 10)
-		{
-			$nd = str_replace(array('Y', 'm', 'd'), array($y, $m, $d), $old_format);
-		}
-		else
-		{
-			$nd = str_replace(array('Y', 'm', 'd', 'H', 'i', 's'), array($y, $m, $d, $h, $i, $s), $old_format);
-		}
-		return $nd;
+
+        return (strlen($old_format) == 10)
+            ? str_replace(array('Y', 'm', 'd'), array($y, $m, $d), $old_format)
+            : str_replace(array('Y', 'm', 'd', 'H', 'i', 's'), array($y, $m, $d, $h, $i, $s), $old_format);
 	}
 
 	/**
 	 * Sum a time over a time
-	 *
-	 * @static
-	 * @param string	time
-	 * @param string	time
-	 * @return string	time
 	 */
-	public static function sum_time($time1, $time2, $mod = 0)
+	public static function sum_time(string $time1, string $time2, int $mod = 0) : string
 	{
 		$t1 = array_reverse(explode(':', $time1));
 		$t2 = array_reverse(explode(':', $time2));
@@ -277,24 +242,30 @@ class X4Time_helper
 
 	/**
 	 * Sum a time over a date
-	 *
-	 * @static
-	 * @param string	datetime
-	 * @param string	time string
-	 * @return string	datetime
 	 */
-	public static function date_plus_time($date, $time, $datetime = true)
+	public static function date_plus_time(string $date, string $time, bool $datetime = true) : string
 	{
 		$t = explode(':', $time);
 		if (!isset($t[2]))
+        {
 			$t[2] = 0;
-
+        }
 		$new_datetime = strtotime($date.' + '.$t[0].' hours + '.$t[1].' minutes + '.$t[2].' seconds');
-		if ($datetime)
-			return date('Y-m-d H:i:s', $new_datetime);
-		else
-			return date('Y-m-d', $new_datetime);
+
+		return ($datetime)
+			? date('Y-m-d H:i:s', $new_datetime)
+            : date('Y-m-d', $new_datetime);
 	}
+
+    /**
+     * Time 2 datetime
+     */
+    public static function time2datetime(string $time) : string
+    {
+        return (strlen($time == 8))
+            ? date('Y-m-d').' '.$time //prefix a date
+            : $time;
+    }
 
 	/**
 	 * Get time between two datetime
@@ -306,24 +277,21 @@ class X4Time_helper
 	 * @param boolean   $absolute get an absolute value
 	 * @return string	time
 	 */
-	public static function datetime_diff($start, $end = 0, $out = 'time', $absolute = true)
+	public static function datetime_diff(
+        string $start_datetime,
+        mixed $end_datetime = 0,
+        string $out = 'time',
+        bool $absolute = true
+    ) : string
 	{
-        // is a time?
-        if (strlen($start == 8))
-        {
-            //prefix a date
-            $start = date('Y-m-d').' '.$start;
-            if ($end != 0)
-            {
-                $end = date('Y-m-d').' '.$end;
-            }
-        }
+        $start_datetime = self::time2datetime($start_datetime);
+        $end_datetime = self::time2datetime($end_datetime);
 
-		$sdate = new DateTime($start);
-        $edate = ($end != 0) ? new DateTime($end) : new DateTime();
+		$sdate = new DateTime($start_datetime);
+        $edate = ($end_datetime != 0) ? new DateTime($end_datetime) : new DateTime();
         $time = $sdate->diff($edate, $absolute);
 
-        switch($out)
+        switch ($out)
         {
         case 'years':
 			return $time->format('%y');
@@ -338,22 +306,13 @@ class X4Time_helper
 			break;
 		case 'seconds':
 			// only seconds
-			$h = $time->h;
-			$m = $time->i;
-			$s = $time->s;
-
-			return $h*3600+$m*60+$s;
+            return $time->h*3600+$time->m*60+$time->s;
 			break;
 		case 'days':
 			// number of days
-			if ($absolute)
-			{
-				return $time->days;
-			}
-			else
-			{
-				return $time->format('%R%a');
-			}
+			return ($absolute)
+                ? $time->days
+                : $time->format('%R%a');
 			break;
 		case 'elapsed':
 			// incremental
@@ -408,102 +367,70 @@ class X4Time_helper
 
 	/**
 	 * Convert minutes to time
-	 *
-	 * @static
-	 * @param integer	$minutes
-	 * @return string	time (00:00:00)
 	 */
-	public static function minute2time($minutes)
+	public static function minute2time(int $minutes) : string
 	{
-		if ($minutes > 0)
+		if ($minutes == 0)
 		{
-		    $h = floor($minutes/60);
-		    $m = $minutes % 60;
-		    return str_pad($h, 2, '0', STR_PAD_LEFT).':'.str_pad($m, 2, '0', STR_PAD_LEFT).':00';
-		}
-		else
-		{
-		    return '00:00:00';
-		}
+            return '00:00:00';
+        }
+
+        $h = floor($minutes/60);
+        $m = $minutes % 60;
+        return str_pad($h, 2, '0', STR_PAD_LEFT).':'.str_pad($m, 2, '0', STR_PAD_LEFT).':00';
 	}
 
 	/**
 	 * Get elapsed time from 2 times
-	 *
-	 * @static
-	 * @param string	at available time
-	 * @param string	et end time
-	 * @return string	time or days + time
 	 */
-	public static function elapsed_time($at, $et)
+	public static function elapsed_time($available_time, $end_time) : string
 	{
-		$available_time = self::time2sec($at);
-		$end_time = self::time2sec($et);
+		$available_time = self::time2sec($available_time);
+		$end_time = self::time2sec($end_time);
 		$diff = $available_time - $end_time;
 
 		$days = round($diff / 86400);
-		if ($days > 0)
-		{
-			// with days
-			return $days._TRAIT_.gmdate('H:i:s', $diff%86400);
-		}
-		else
-		{
-			// H:m:s
-			return gmdate('H:i:s', $diff);
-		}
+		return ($days > 0)
+		    ? $days._TRAIT_.gmdate('H:i:s', $diff%86400)     // with days
+            : gmdate('H:i:s', $diff);                        // H:m:s
 	}
 
 	/**
-	 * Get the percentage of time that elapsed from the time estimated
-	 *
-	 * @static
-	 * @param string	estimated time (hh:mm:ss)
-	 * @param string	elapsed time (hh:mm:ss)
-	 * @return string	formatted number
+	 * Get the percentage of elapsed time from the total time
 	 */
-	public static function progress($estimated, $elapsed)
+	public static function progress(string $total_time, string $elapsed_time) : string
 	{
-		$tot = self::time2sec($estimated);
-		$progress = self::time2sec($elapsed);
-		return number_format(($progress*100/$tot), 3, ',','');
+		$tot = self::time2sec($total_time);
+		$progress = self::time2sec($elapsed_time);
+		return number_format(($progress * 100 / $tot), 3, ',', '');
 	}
 
 	/**
 	 * Convert time (hh:mm:ss) to seconds
-	 *
-	 * @static
-	 * @param string	time (hh:mm:ss)
-	 * @return integer	seconds
 	 */
-	public static function time2sec($time)
+	public static function time2sec(string $time) : int
 	{
 		$t = array_reverse(explode(':', $time));
 
 		$s = $t[0];
 		if (isset($t[1]))
 		{
-			$s += $t[1]*60;
+			$s += $t[1] * 60;
 		}
 
 		if (isset($t[2]))
 		{
-			$s += $t[2]*3600;
+			$s += $t[2] * 3600;
 		}
 		return $s;
 	}
 
 	/**
 	 * Convert time (hh:mm:ss) to minutes
-	 *
-	 * @static
-	 * @param string	time (hh:mm:ss)
-	 * @return integer	minutes
 	 */
-	public static function time2minutes($time)
+	public static function time2minutes(string $time) : int
 	{
 		$t = array_reverse(explode(':', $time));
-
 		$m = $t[0] > 45
 			? 1
 			: 0;
@@ -521,47 +448,32 @@ class X4Time_helper
 
 	/**
 	 * Convert time (hh:mm:ss) to money
-	 *
-	 * @static
-	 * @param string	time (hh:mm:ss)
-	 * @param float		hourly fee
-	 * @return string	formatted number
 	 */
-	public static function time2money($time, $fee)
+	public static function time2money(string $time, float $fee) : string
 	{
 		$t = explode(':', $time);
-		return number_format(($t[0]*$fee+$t[1]*$fee/60), 2, '.','');
+		return number_format(($t[0] * $fee + $t[1] * $fee / 60), 2, '.', '');
 	}
 
 	/**
 	 * Get age by birthday date
-	 *
-	 * @static
-	 * @param	string	$date date in Y-m-d format
-	 * @return	integer	Age in years
 	 */
-	public static function age($date)
+	public static function age(string $birthday_date) : int
 	{
-		list($Y,$m,$d)    = explode('-',$date);
+		list($Y,$m,$d) = explode('-',$birthday_date);
 		return (date('md') < $m.$d)
 			? date('Y') - $Y - 1
 			: date('Y') - $Y;
 	}
 
 	/**
-	 * Get months between dates
-	 *
-	 * @static
-	 * @param string	start date
-	 * @param string	end date
-	 * @return	array
+	 * Get array of months between dates
 	 */
-	public static function get_months($start, $end)
+	public static function get_months(string $start_date, string $end_date) : array
 	{
 		$m = array();
-
-		$start = new DateTime($start);
-		$end = new DateTime($end);
+		$start = new DateTime($start_date);
+		$end = new DateTime($end_date);
 
 		$m_start = $start->format('n');
 		$m_end = $end->format('n');
@@ -589,12 +501,8 @@ class X4Time_helper
 
     /**
 	 * Get month dates with gap
-	 *
-	 * @static
-	 * @param integer   $gap
-	 * @return	array
 	 */
-	public static function get_month_dates_with_gap($gap)
+	public static function get_month_dates_with_gap(int $gap) : array
 	{
 		list($year, $month, $last_day) = explode('-', date('Y-m-t', strtotime('last day of +'.$gap.' month')));
 

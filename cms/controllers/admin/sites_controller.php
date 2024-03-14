@@ -15,18 +15,9 @@
  */
 class Sites_controller extends X3ui_controller
 {
-	protected $cases = array(
-		'sites' => array('sites', 'btm'),
-		'by_page' => array('languages', 'btm'),
-		'context_order' => array('themes', 'btm'),
-		'category_order' => array('users', 'btm')
-	);
-
 	/**
 	 * Constructor
 	 * check if user is logged
-	 *
-	 * @return  void
 	 */
 	public function __construct()
 	{
@@ -36,20 +27,16 @@ class Sites_controller extends X3ui_controller
 
 	/**
 	 * Show site status
-	 *
-	 * @return  void
 	 */
-	public function _default()
+	public function _default() : void
 	{
 		$this->settings();
 	}
 
 	/**
 	 * Show settings
-	 *
-	 * @return  void
 	 */
-	public function settings()
+	public function settings() : void
 	{
 		// load dictionary
 		$this->dict->get_wordarray(array('sites'));
@@ -68,12 +55,9 @@ class Sites_controller extends X3ui_controller
 	}
 
 	/**
-	 * Sites filter
-	 *
-     * @access	private
-	 * @return  void
+	 * Sites actions
 	 */
-	private function actions()
+	private function actions() : string
 	{
 		return ($_SESSION['level'] == 5)
             ? '<a class="link" @click="popup(\''.BASE_URL.'sites/edit\')" title="'._ADD_SITE.'"><i class="fa-solid fa-lg fa-circle-plus"></i></a>'
@@ -82,10 +66,8 @@ class Sites_controller extends X3ui_controller
 
     /**
 	 * Show sites
-	 *
-	 * @return  void
 	 */
-	public function index()
+	public function index() : void
 	{
 		// load dictionary
 		$this->dict->get_wordarray(array('sites'));
@@ -107,12 +89,8 @@ class Sites_controller extends X3ui_controller
 
     /**
 	 * Change param status
-	 *
-	 * @param   string	$what field to change
-	 * @param   integer $value value to set (0 = off, 1 = on)
-	 * @return  void
 	 */
-	public function set(string $what, int  $value = 0)
+	public function set(string $what, int  $value = 0) : void
 	{
 		$msg = null;
 		// check permissions
@@ -141,12 +119,8 @@ class Sites_controller extends X3ui_controller
 
 	/**
 	 * Change site status
-	 *
-	 * @param   integer  $id Site ID
-	 * @param   integer  $value value to set (0 = off, 1 = on)
-	 * @return  void
 	 */
-	public function offline(int $id, int $value = 0)
+	public function offline(int $id, int $value = 0) : void
 	{
 	    $this->dict->get_words();
 
@@ -176,12 +150,9 @@ class Sites_controller extends X3ui_controller
 	}
 
 	/**
-	 * Site config form (use Ajax)
-	 *
-	 * @param   integer  $id Site ID
-	 * @return  void
+	 * Site config form
 	 */
-	public function config(int $id)
+	public function config(int $id) : void
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('sites', 'form'));
@@ -235,12 +206,8 @@ class Sites_controller extends X3ui_controller
 
 	/**
 	 * Register the site configuration
-	 *
-	 * @access	private
-	 * @param   array 	$_post _POST array
-	 * @return  void
 	 */
-	private function configure(array $_post)
+	private function configure(array $_post) : void
 	{
 		$msg = null;
 		// check permission
@@ -298,12 +265,9 @@ class Sites_controller extends X3ui_controller
 	}
 
 	/**
-	 * Edit site form (use Ajax)
-	 *
-	 * @param   integer  $id Site ID
-	 * @return  void
+	 * Edit site form
 	 */
-	public function edit($id = 0)
+	public function edit($id = 0) : void
 	{
 		// load dictionary
 		$this->dict->get_wordarray(array('form', 'sites'));
@@ -352,12 +316,8 @@ class Sites_controller extends X3ui_controller
 
 	/**
 	 * Register site data
-	 *
-	 * @access	private
-	 * @param   array 	$_post _POST array
-	 * @return  void
 	 */
-	private function editing(array $_post)
+	private function editing(array $_post) : void
 	{
 		$msg = null;
 		// check permission
@@ -395,10 +355,8 @@ class Sites_controller extends X3ui_controller
 
 	/**
 	 * Clear cache
-	 *
-	 * @return  void
 	 */
-	public function clear_cache()
+	public function clear_cache() : void
 	{
 		$files = glob(APATH.'files/tmp/*');
 		foreach ($files as $i)
@@ -418,10 +376,8 @@ class Sites_controller extends X3ui_controller
 
 	/**
 	 * Clear APC cache
-	 *
-	 * @return  void
 	 */
-	public function clear_apc()
+	public function clear_apc() : void
 	{
 		// clear cache
 		APC && apcu_clear_cache();

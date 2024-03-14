@@ -28,51 +28,40 @@ class X4Plugin_model extends X4Model_core
 
 	/**
 	 * Get installed plugins by area
-	 *
-	 * @param integer	area ID
-	 * @param integer	hidden status
-	 * @return array	array of objects
 	 */
-	public function get_modules(int $id_area, int $hidden = 2)
+	public function get_modules(int $id_area, int $hidden = 2) : array
 	{
 		$where = ($hidden < 2)
-			? ' AND hidden = '.intval($hidden)
+			? ' AND hidden = '.$hidden
 			: '';
 
 		return $this->db->query('SELECT m.*, IF(p.id IS NULL, u.level, p.level) AS level
 			FROM modules m
 			JOIN uprivs u ON u.id_area = m.id_area AND u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('modules').'
 			LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = m.id
-			WHERE m.id_area = '.intval($id_area).' AND m.pluggable = 1 AND m.xon = 1 '.$where.'
+			WHERE m.id_area = '.$id_area.' AND m.pluggable = 1 AND m.xon = 1 '.$where.'
 			GROUP BY m.id
 			ORDER BY m.title ASC');
 	}
 
 	/**
 	 * Get plugin's parameters
-	 *
-	 * @param string	plugin name
-	 * @param integer	area ID
-	 * @return array	array of parameter objects
 	 */
-	public function get_param(string $plugin_name, int $id_area)
+	public function get_param(string $plugin_name, int $id_area) : array
 	{
 		return $this->db->query('SELECT DISTINCT pa.*, IF(p.id IS NULL, u.level, p.level) AS level
 			FROM param pa
 			JOIN modules m ON m.name = pa.xrif AND m.id_area = pa.id_area
 			JOIN uprivs u ON u.id_area = m.id_area AND u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('modules').'
 			LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = m.id
-			WHERE pa.xrif = '.$this->db->escape($plugin_name).' AND pa.id_area = '.intval($id_area).'
+			WHERE pa.xrif = '.$this->db->escape($plugin_name).' AND pa.id_area = '.$id_area.'
 			ORDER BY pa.id ASC');
 	}
 
 	/**
 	 * Update parameters after a configure
-	 *
-	 * @param array		array of associative array (id parameter => value)
-	 * @return array	(0, boolean update result)
 	 */
-	public function update_param(array $array)
+	public function update_param(array $array) : array
 	{
 		if (empty($array))
         {
@@ -91,14 +80,8 @@ class X4Plugin_model extends X4Model_core
 
     /**
 	 * Update parameters by name
-	 *
-	 * @param integer   $id_area
-     * @param string    $xrif
-     * @param string    $name
-     * @param mixed     $value
-	 * @return array	(0, boolean update result)
 	 */
-	public function update_param_by_name(int $id_area, string $xrif, string $name, $value)
+	public function update_param_by_name(int $id_area, string $xrif, string $name, mixed $value) : array
 	{
 		$sql = 'UPDATE param
             SET updated = NOW(), xvalue = '.$this->db->escape($value).'
@@ -111,11 +94,8 @@ class X4Plugin_model extends X4Model_core
 
 	/**
 	 * Installed plugins by area with privileges
-	 *
-	 * @param integer	area ID
-	 * @return array	array of plugin objects
 	 */
-	public function get_installed(int $id_area)
+	public function get_installed(int $id_area) : array
 	{
 		return $this->db->query('SELECT DISTINCT m.*, up.level, IF(p.id IS NULL, up.level, p.level) AS adminlevel
 		FROM modules m
@@ -128,16 +108,13 @@ class X4Plugin_model extends X4Model_core
 			up.privtype = \'x3_plugins\'
 		) AND up.level > 1
 		LEFT JOIN privs p ON p.id_who = up.id_user AND p.what = up.privtype AND p.id_what = m.id
-		WHERE m.id_area = '.intval($id_area).' ORDER BY m.name ASC');
+		WHERE m.id_area = '.$id_area.' ORDER BY m.name ASC');
 	}
 
 	/**
 	 * Installable plugins
-	 *
-	 * @param integer	area ID
-	 * @return array	array of plugin paths
 	 */
-	public function get_installable(int $id_area)
+	public function get_installable(int $id_area) : array
 	{
 		// uploaded plugins
 		$plugins = glob(PATH.'plugins/*', GLOB_ONLYDIR);
@@ -153,13 +130,8 @@ class X4Plugin_model extends X4Model_core
 
 	/**
 	 * Check plugin requirements
-	 *
-	 * @param array		array of strings, names of requirements
-	 * @param integer	area ID
-	 * @param int   	if true check if needed else check if required
-	 * @return array	array of error strings
 	 */
-	private function check_required(array $array, int $id_area, int $value)
+	private function check_required(array $array, int $id_area, int $value) : array
 	{
 		$error = array();
 		$msg = ($value) ? '_plugin_needed_by' : '_required_plugin';
@@ -173,6 +145,26 @@ class X4Plugin_model extends X4Model_core
 		return $error;
 	}
 
+    /**
+	 * Check if a plugin is already installed into an area
+	 */
+	public function exists(string $plugin_name, int $id_area, bool $global = false, int $status = 2) : int
+	{
+		// condition
+		$where = ($global)
+			? ' AND id_area <> '.$id_area
+			: ' AND id_area = '.$id_area;
+
+		// status
+		if ($status < 2)
+        {
+			$where .= ' AND xon = '.$status;
+        }
+		return $this->db->query_var('SELECT COUNT(*)
+            FROM modules
+            WHERE name = '.$this->db->escape($plugin_name).' '.$where);
+	}
+
 	/**
 	 * Install a plugin
 	 *
@@ -180,82 +172,76 @@ class X4Plugin_model extends X4Model_core
 	 * @param string	plugin name (is the same name of the folder)
 	 * @return mixed	integer if all runs fine, else an array of error strings
 	 */
-	public function install(int $id_area, string $name)
+	public function install(int $id_area, string $plugin_name) : array
 	{
 		$error = array();
-		if (!$this->exists($name, $id_area))
+		if ($this->exists($plugin_name, $id_area))
 		{
-			if (file_exists(PATH.'plugins/'.$name.'/install.php'))
-			{
-				// area name, required with some installer
-				$area = $this->get_by_id($id_area, 'areas', 'name');
+            $error[] = array('error' => array('_already_installed'), 'label' => $plugin_name);
+        }
 
-				// load installer
-				require_once(PATH.'plugins/'.$name.'/install.php');
+        if (!file_exists(PATH.'plugins/'.$name.'/install.php'))
+        {
+            $error[] = array('error' => array('_missing_plugin_installer'), 'label' => $plugin_name);
+        }
 
-				// check requirements
-				$error = $this->check_required($required, $id_area, 0);
+        // area name, required with some installer
+        $area = $this->get_by_id($id_area, 'areas', 'name');
 
-				// check area requirements
-				if (isset($area_limit) && !in_array($area->name, $area_limit))
-				{
-					$error[] = array('error' => array('_incompatible_area'), 'label' => implode(', ', $area_limit));
-				}
+        // load installer
+        require_once(PATH.'plugins/'.$plugin_name.'/install.php');
 
-				// check compatibility
-				if (!isset($compatibility) || !$this->compatibility($compatibility))
-				{
-					$error[] = array('error' => array('_incompatible_plugin'), 'label' => $name);
-				}
+        // check requirements
+        $error = $this->check_required($required, $id_area, 0);
 
-				if (empty($error))
-				{
-					// global queries
-					if (!$this->exists($name, $id_area, 1))
-					{
-						foreach ($sql0 as $i)
-						{
-							$result = $this->db->single_exec($i);
-						}
-					}
+        // check area requirements
+        if (isset($area_limit) && !in_array($area->name, $area_limit))
+        {
+            $error[] = array('error' => array('_incompatible_area'), 'label' => implode(', ', $area_limit));
+        }
 
-					// area dipendent queries
-					foreach ($sql1 as $i)
-					{
-						$result = $this->db->single_exec($i);
-					}
+        // check compatibility
+        if (!isset($compatibility) || !$this->compatibility($compatibility))
+        {
+            $error[] = array('error' => array('_incompatible_plugin'), 'label' => $plugin_name);
+        }
 
-					if ($result[1])
-					{
-						// return an integer if installation run fine
-						return $result[0];
-					}
-					else
-					{
-						$error[] = array('error' => array('_plugin_not_installed'), 'label' => $name);
-					}
-				}
-			}
-			else
-			{
-				$error[] = array('error' => array('_missing_plugin_installer'), 'label' => $name);
-			}
-		}
-		else
-		{
-			$error[] = array('error' => array('_already_installed'), 'label' => $name);
-		}
-		// return an array if happen an error
-		return $error;
+        if (!empty($error))
+        {
+            return $error;
+        }
+
+        // global queries
+        if (!$this->exists($plugin_name, $id_area, 1))
+        {
+            foreach ($sql0 as $i)
+            {
+                $result = $this->db->single_exec($i);
+            }
+        }
+
+        // area dipendent queries
+        foreach ($sql1 as $i)
+        {
+            $result = $this->db->single_exec($i);
+        }
+
+        if ($result[1])
+        {
+            // return an integer if installation run fine
+            return $result[0];
+        }
+        else
+        {
+            $error[] = array('error' => array('_plugin_not_installed'), 'label' => $plugin_name);
+            return $error;
+        }
 	}
 
 	/**
-	 * Check plugin compatibility
-	 *
-	 * @param string	plugin compatibility
-	 * @return boolean	compatibility value
+	 * Check plugin version compatibility
 	 */
-	private function compatibility(string $version)
+	private function compatibility(string $version) : bool
 	{
 		$c = true;
 		// cms version (the same for all sites)
@@ -287,11 +273,8 @@ class X4Plugin_model extends X4Model_core
 	 * if the plugin was installed into many areas then uninstall only from one area
 	 * delete only dictionary and records related to this area
 	 * else uninstall all, drop tables and delete all administration items
-	 *
-	 * @param integer	plugin ID
-	 * @return mixed	integer if all runs fine, else an array of error strings
 	 */
-	public function uninstall(int $id)
+	public function uninstall(int $id) : mixed  // integer if all runs fine, else an array of error strings
 	{
 		$error = array();
 		$plugin = $this->get_by_id($id);
@@ -325,40 +308,15 @@ class X4Plugin_model extends X4Model_core
         }
 	}
 
-	/**
-	 * Check if a plugin is already installed into an area
-	 *
-	 * @param string	plugin name
-	 * @param integer	area ID
-	 * @param boolean	if true check if installed into area else check if installed into others area
-	 * @param integer	check the status
-	 * @return integer	number of installed plugins
-	 */
-	public function exists(string $plugin_name, int $id_area, bool $global = false, int $status = 2)
-	{
-		// condition
-		$where = ($global)
-			? ' AND id_area <> '.intval($id_area)
-			: ' AND id_area = '.intval($id_area);
-
-		// status
-		if ($status < 2)
-        {
-			$where .= ' AND xon = '.intval($status);
-        }
-		return $this->db->query_var('SELECT COUNT(id) FROM modules WHERE name = '.$this->db->escape($plugin_name).' '.$where);
-	}
 
 	/**
 	 * Check if a plugin is installed and enabled
-	 *
-	 * @param string	plugin name
-	 * @param integer	area ID
-	 * @return integer	number of installed plugins
 	 */
-	public function usable(string $plugin_name, int $id_area)
+	public function usable(string $plugin_name, int $id_area) : int
 	{
-		return $this->db->query_var('SELECT xon FROM modules WHERE name = '.$this->db->escape($plugin_name).' AND id_area = '.intval($id_area));
+		return (int) $this->db->query_var('SELECT xon
+            FROM modules
+            WHERE name = '.$this->db->escape($plugin_name).' AND id_area = '.$id_area);
 	}
 
 	/**
@@ -379,12 +337,8 @@ class X4Plugin_model extends X4Model_core
 
 	/**
 	 * Check plugin redirects
-	 *
-	 * @param array		array of models
-     * @param string    $url
-	 * @return mixed
 	 */
-	public function check_redirect(array $array, string $url)
+	public function check_redirect(array $array, string $url) : mixed
 	{
 	    $redirect = null;
 		foreach ($array as $i)
@@ -401,19 +355,13 @@ class X4Plugin_model extends X4Model_core
 
     /**
 	 * Get page URL by plugin name and parameter
-	 *
-	 * @param integer	area ID
-	 * @param string	lang
-	 * @param string	plugin name
-	 * @param string	parameter value, accepts * wildcard
-	 * @return string	page URL
 	 */
-	public function get_page_to(int $id_area, string $lang, string $modname, string $param = '')
+	public function get_page_to(int $id_area, string $lang, string $modname, string $param = '') : string
 	{
 		// check APC
 		$c = (APC)
 			? apcu_fetch(SITE.'pageto'.$id_area.$lang.$modname.$param)
-			: array();
+			: '';
 
 		if (empty($c))
 		{
@@ -445,26 +393,22 @@ class X4Plugin_model extends X4Model_core
 
 	/**
 	 * Duplicate modules for another language
-	 * This method have to be arranged foe each website
-	 *
-	 * @return  array(array_of_installed_modules, res)
-	 * /
-	public function duplicate_modules_lang($id_area, $old_lang, $new_lang)
+	 * This method have to be arranged for each website
+	 */
+	public function duplicate_modules_lang($id_area, $old_lang, $new_lang) : int
 	{
 	    // this list have to be adapted for each website
 	    $modules = array(
 	        'x3_forms' => null,
-	        'x3_fields' => array('x3_forms' => 'id_form'),
+	        'x3_forms_fields' => array('x3_forms' => 'id_form'),
+            'x3_forms_results' => array('x3_forms' => 'id_form'),
+            'x3_forms_blacklist' => null
 	    );
 
-	    $no_lang = array();
+	    $no_lang = $images = [];
 
-	    $images = array(
-
-	    );
-
-	    // those table are empty
-	    $tables = array();
+	    // here we store relations for IDs
+	    $tables = [];
 
 	    $path = APATH.'files/'.SPREFIX.'/filemanager/img/';
 
@@ -549,14 +493,7 @@ echo 'MODULE = '.$k.BR;
                         // relations
                         foreach ($v AS $t => $f)
                         {
-                            if ($k == 'x3_tree' && $i->id_from == 0)
-                            {
-
-                            }
-                            else
-                            {
-                                $post[$f] = $table[$t][$i->$f];
-                            }
+                            $post[$f] = $table[$t][$i->$f];
                         }
 
                         // imges?
@@ -586,5 +523,4 @@ echo 'MODULE = '.$k.BR;
 	    }
 	    return 1;
 	}
-*/
 }

@@ -15,22 +15,23 @@
  */
 class X4Xls_helper
 {
+    /**
+     * Filter data to remove unwanted chars
+     */
     private static function filterData(&$str)
     {
         $str = preg_replace("/\t/", "\\t", $str);
         $str = preg_replace("/\r?\n/", "\\n", $str);
-        if(strstr($str, '"')) $str = '"' . str_replace('"', '""', $str) . '"';
+        if (strstr($str, '"'))
+        {
+            $str = '"'.str_replace('"', '""', $str).'"';
+        }
     }
 
 	/**
 	 * Export XLS file
-	 *
-	 * @static
-	 * @param string	$file_name
-	 * @param array		$data
-	 * @return boolean
 	 */
-	public static function export($file_name, $data)
+	public static function export(string $file_name, array $data) : bool
 	{
 	    // file name for download
 	    $fileName = X4Utils_helper::slugify($file_name. ' ') . date('Ymd') . '.xls';

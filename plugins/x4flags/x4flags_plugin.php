@@ -17,9 +17,6 @@ class X4flags_plugin extends X4Plugin_core implements X3plugin
 {
 	/**
 	 * Constructor
-	 *
-	 * @param	object	$site, site object
-	 * @return	void
 	 */
 	public function __construct(X4Site_model $site)
 	{
@@ -28,13 +25,8 @@ class X4flags_plugin extends X4Plugin_core implements X3plugin
 
     /**
 	 * Default method
-	 *
-	 * @param object	$page object
-	 * @param array		$args array of args
-	 * @param string	$param plugin parameter
-	 * @return string
 	 */
-	public function get_module(stdClass $page, array $args, string $param = '')
+	public function get_module(stdClass $page, array $args, string $param = '') : mixed
 	{
 		// if param can be exploded
 		$p = explode('|', $param);
@@ -56,12 +48,8 @@ class X4flags_plugin extends X4Plugin_core implements X3plugin
 	 * Activeflag
 	 * insert a flag in the menù with a dropdown to switch between languages
      * this call uses TailwindCSS and Alpine.js
-	 *
-	 * @param object	$page object
-	 * @param array		$args array of args
-	 * @return array
 	 */
-	public function active_flag(stdClass $page, array $args)
+	public function active_flag(stdClass $page, array $args) : array
 	{
         // set empty response
         $res = [
@@ -157,15 +145,8 @@ class X4flags_plugin extends X4Plugin_core implements X3plugin
 
 	/**
 	 * call plugin actions
-	 *
-	 * @param   string	$control action name
-	 * @param   mixed	$a
-	 * @param   mixed	$b
-	 * @param   mixed	$c
-	 * @param   mixed	$d
-	 * @return  void
 	 */
-	public function plugin(string $control, string $a, string $b, string $c, string $d)
+	public function plugin(string $control, mixed $a, mixed $b, mixed $c, mixed $d) : void
 	{
 		// none
 	}

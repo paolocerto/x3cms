@@ -19,38 +19,27 @@
  */
 abstract class X4Model_core
 {
-    /**
-	 * @var DB object
-	 */
-	protected $db_name;
+    protected $db_name;
 
-	/**
-	 * @var DB object
-	 */
+    /**
+     * Db object
+     */
 	protected $db;
 
-	/**
-	 * @var table name
-	 */
 	protected $table;
 
 	/**
-	 * @var logs are disabled as default
+	 * Logs are disabled as default
 	 */
 	protected $log = false;
 
 	/**
-	 * @var shift used to shift ids of partners on tables with shared data
+	 * Shift is used to shift IDs on
 	 */
 	public $shift = 1000000;
 
 	/**
-	 * Loads the database instance, if the database is not already loaded.
-	 *
-	 * @param   string	table name
-	 * @param   string	database name
-	 * @param   string	alternative database name
-	 * @return  void
+	 * Loads the database instance, if the database is not already loaded
 	 */
 	public function __construct(string $table_name, string $db_name = 'default', string $adb = '')
 	{
@@ -63,16 +52,10 @@ abstract class X4Model_core
 	}
 
 	/**
-	 * Build the form array required to set the parameter
+	 * Build the form array required to set the parameter for plugins
 	 * This method have to be overrided with the plugin options
-	 *
-	 * @param	integer $id_area Area ID
-	 * @param	string	$lang Language code
-	 * @param   integer $id_page Page ID
-	 * @param	string	$param Parameter
-	 * @return	array
 	 */
-	public function configurator(int $id_area, string $lang, int $id_page, string $param)
+	public function configurator(int $id_area, string $lang, int $id_page, string $param) : array
 	{
 	    $fields = array();
 
@@ -99,57 +82,45 @@ abstract class X4Model_core
 			'value' => '',
 			'name' => 'options'
 		);
-
 		return $fields;
 	}
 
 	/**
 	 * Close connection
-	 *
-	 * @return	void
 	 */
-	final public function close()
+	final public function close() : void
 	{
 		$this->db->close();
 	}
 
 	/**
 	 * Log setter
-	 *
-	 * @param 	boolean	Log status
-	 * @return	void
 	 */
-	final public function set_log(bool $status)
+	final public function set_log(bool $status) : void
 	{
 		$this->log = $status;
 	}
 
 	/**
 	 * Replacement for MySQL NOW() function to use PHP timezone
-	 *
-	 * @return string
 	 */
-	final public function now()
+	final public function now() : string
 	{
 		return date('Y-m-d H:i:s');
 	}
 
 	/**
 	 * Replacement for MySQL UNIXTIMESTAMP function to use PHP timezone
-	 *
-	 * @return string
 	 */
-	final public function time()
+	final public function time() : int
 	{
 		return time();
 	}
 
 	/**
 	 * Get last query
-	 *
-	 * @return string
 	 */
-	final public function last_query()
+	final public function last_query() : string
 	{
 		return $this->db->last_query();
 	}
@@ -157,15 +128,8 @@ abstract class X4Model_core
 	/**
 	 * Get all rows from a table
 	 * to prevent the loading of different models to make base calls and to optimize queries you can set table and fields
-	 *
-	 * @final
-	 * @param   string	table name
-	 * @param   string	field list
-	 * @param	array	associative array of conditions
-	 * @param   mixed	sort rule
-	 * @return  array
 	 */
-	final public function get_all(string $table = '', string $fields = '*', array $criteria = [], string $sort = '')
+	final public function get_all(string $table = '', string $fields = '*', array $criteria = [], string $sort = '') : array
 	{
 		$t = empty($table)
             ? $this->table
@@ -193,15 +157,8 @@ abstract class X4Model_core
 	/**
 	 * Find a row in a table
 	 * to prevent the loading of different models to make base calls and to optimize queries you can set table and fields
-	 *
-	 * @final
-	 * @param   string	table name
-	 * @param   mixed	fields list (string or array)
-	 * @param	array	associative array of conditions
-	 * @param   mixed	sorting rules (string or array)
-	 * @return  array
 	 */
-	final public function find(string $table = '', string $fields = '*', array $criteria = [], string $sort = '')
+	final public function find(string $table = '', string $fields = '*', array $criteria = [], string $sort = '') : mixed
 	{
 		$t = empty($table)
             ? $this->table
@@ -236,66 +193,43 @@ abstract class X4Model_core
 	/**
 	 * Get a row from a table
 	 * to prevent the loading of different models to make base calls and to optimize queries you can set table and fields
-	 *
-	 * @final
-	 * @param   integer	record ID
-	 * @param   string	table name
-	 * @param   string	field list
-	 * @return  array
 	 */
-	final public function get_by_id(int $id, string $table = '', string $fields = '*')
+	final public function get_by_id(int $id, string $table = '', string $fields = '*') : stdClass
 	{
 		$t = empty($table)
             ? $this->table
             : $table;
 
-		// Relational DB
 		return $this->db->query_row('SELECT '.$fields.' FROM '.$t.' WHERE id = '.$id);
 	}
 
 	/**
 	 * Get a var from a table
 	 * to prevent the loading of different models to make base calls and to optimize queries you can set table and fields
-	 *
-	 * @final
-	 * @param   integer	record ID
-	 * @param   string	table name
-	 * @param   string	field name
-	 * @return  array
 	 */
-	final public function get_var(int $id, string $table = '', string $field = '')
+	final public function get_var(int $id, string $table = '', string $field = '') : mixed
 	{
 		$t = empty($table)
             ? $this->table
             : $table;
 
-		// Relational DB
 		return $this->db->query_var('SELECT '.$field.' FROM '.$t.' WHERE id = '.$id);
 	}
 
     /**
 	 * Get DB version
-	 *
-	 * @final
-	 * @return  string
 	 */
-	final public function get_version()
+	final public function get_version() : string
 	{
-		// Relational DB
 		return $this->db->query_var('SELECT version()');
 	}
 
 	/**
 	 * Insert a row in a table
 	 * to prevent the loading of different models to make base calls you can set table
-	 *
-	 * @final
-	 * @param   array	data to insert
-	 * @param   string	table name
-	 * @param   array   array of floats
-	 * @return  array	(id row, success)
+	 * Return array(id row, success)
 	 */
-	final public function insert(array $data, string $table = '', array $floats = [])
+	final public function insert(array $data, string $table = '', array $floats = []) : array
 	{
 		$t = empty($table)
             ? $this->table
@@ -326,11 +260,9 @@ abstract class X4Model_core
 	}
 
 	/**
-	 * Set user ID for logger
-	 *
-	 *  @return  integer
+	 * Get user ID for logger
 	 */
-	private function get_who()
+	private function get_who() : int
 	{
 	    if (isset($_SESSION['xuid']))
 	    {
@@ -347,17 +279,16 @@ abstract class X4Model_core
 	/**
 	 * Update a row in a table
 	 * to prevent the loading of different models to make base calls you can set table
-	 *
-	 * @final
-	 * @param   integer	record ID
-	 * @param   array	data to update
-	 * @param   string	table name
-     * @param   array   array of conditions
-	 * @param   array   array of floats
-     * @param   array   array of fields to concat
-	 * @return  array   (id row, success)
+	 * Return array(id row, success)
 	 */
-	final public function update(int $id, array $data, string $table = '', array $conditions = [], array $floats = [], array $concat = [])
+	final public function update(
+        int $id,
+        array $data,
+        string $table = '',
+        array $conditions = [],
+        array $floats = [],
+        array $concat = []
+    ) : array
 	{
 		$t = empty($table)
             ? $this->table
@@ -407,14 +338,9 @@ abstract class X4Model_core
 	/**
 	 * Delete a row from a table
 	 * to prevent the loading of different models to make base calls you can set table
-	 *
-	 * @final
-	 * @param   integer	record ID
-	 * @param   string	table name
-	 * @param   mixed	Mongo ID switcher
-	 * @return  array(rows affected, id row)
+	 * Return array(rows affected, id row)
 	 */
-	final public function delete(int $id, string $table = '', mixed $mongo_id = null)
+	final public function delete(int $id, string $table = '') : array
 	{
 		$t = empty($table)
             ? $this->table
@@ -433,19 +359,9 @@ abstract class X4Model_core
 	}
 
 	/**
-	 * Log an action
-	 *
-	 * @param   integer	$who        User ID
-	 * @param   integer	$id_what    Record ID
-	 * @param   string	$what       Table name
-	 * @param   string	$action     Action to log
-	 * @param   string	$memo       Memo to log
-     * @param   integer $xon        Log status
-     * @param   integer $related    ID of related log
-     * @param   string  $extra      Additional data
-	 * @return  array
+	 * Get last ID in a table
 	 */
-    public function get_last_id($table)
+    public function get_last_id(string $table) : int
 	{
 		return (int) $this->db->query_var('SELECT id FROM '.$table.' ORDER BY id DESC');
 	}
@@ -462,7 +378,15 @@ abstract class X4Model_core
      * @param   string  $extra      Additional data
 	 * @return  array
 	 */
-    public function logger(int $who, int $id_what, string $what, string $action, string $memo = '', int $xon = 1, string $extra = '')
+    public function logger(
+        int $who,
+        int $id_what,
+        string $what,
+        string $action,
+        string $memo = '',
+        int $xon = 1,
+        string $extra = ''
+    ) : array
 	{
 		// default result
 		$res = array(0, 0);
@@ -486,8 +410,17 @@ abstract class X4Model_core
                     : 'debug';
 
                 // here we don't use insert to avoid loops
-                $res = $this->db->single_exec('INSERT INTO '.$table.' (updated, who, what, id_what, action, memo, extra, xon)
-                    VALUES (\''.$this->now().'\', '.$who.', '.$this->db->escape($what).', '.$id_what.', '.$this->db->escape($action).', '.$log.','.$this->db->escape($extra).', '.$xon.')');
+                $res = $this->db->single_exec('INSERT INTO '.$table.'
+                        (updated, who, what, id_what, action, memo, extra, xon)
+                    VALUES (
+                        \''.$this->now().'\',
+                        '.$who.',
+                        '.$this->db->escape($what).',
+                        '.$id_what.',
+                        '.$this->db->escape($action).',
+                        '.$log.',
+                        '.$this->db->escape($extra).',
+                        '.$xon.')');
 			}
 		}
 		return $res;
@@ -495,11 +428,8 @@ abstract class X4Model_core
 
 	/**
 	 * Get attribute
-	 *
-	 * @param   string	Attribute name
-	 * @return	string
 	 */
-	public function get_attribute(string $attr)
+	public function get_attribute(string $attr) : string
 	{
 		return $this->db->get_attribute($attr);
 	}
@@ -529,13 +459,9 @@ abstract class X3db_driver
 	public $sql = null;
 
 	/**
-	 * Returns a singleton instance of Database.
-	 *
-	 * @static
-	 * @param   string	DB name
-	 * @return  X4Db driver object
+	 * Returns a singleton instance of Database
 	 */
-	public static function & instance(string $name = 'default')
+	public static function & instance(string $name = 'default') : X3db_driver
 	{
 		if (!isset(self::$instances[$name]) && isset(X4Core_core::$db[$name]))
 		{
@@ -546,87 +472,49 @@ abstract class X3db_driver
 	}
 
 	/**
-	 * Simple connect method to get the database queries up and running.
-	 *
-	 * @return  void
+	 * Simple connect method to get the database queries up and running
 	 */
 	abstract function connect();
 
 	/**
 	 * A primitive debug system
-	 *
-	 * @param   mixed  SQL query to execute
-	 * @param   mixed  Error message
-	 * @return  string
 	 */
 	abstract function print_error(string $sql, string $msg);
 
 	/**
-	 * Runs a query and returns the result.
-	 *
-	 * @param   mixed  SQL query to execute or array for MongoDB
-	 * @param   string  Collection name for Mongo DB
-	 * @param   array	fields array for Mongo DB
-	 * @param   array	sorting rules for Mongo DB
-	 * @return  Database_Result
+	 * Runs a query and returns the result
 	 */
-	abstract public function query(string $sql);     //, string $collection = '', array $fields = [], array $sort = []);
+	abstract public function query(string $sql);
 
 	/**
-	 * Runs a query and returns the first result row.
-	 *
-	 * @param   mixed  SQL query to execute or array for MongoDB
-	 * @param   string  Collection name for Mongo DB
-	 * @param	array	Fields array for Mongo DB
-	 * @param	array	Sorting array for Mongo DB
-	 * @return  Database_Result
+	 * Runs a query and returns the first result row
 	 */
-	abstract public function query_row(string $sql);     //, string $collection = '', array $fields = [], array $sort = []);
+	abstract public function query_row(string $sql);
 
 	/**
-	 * Runs a query and returns the first value.
-	 *
-	 * @param   mixed  SQL query to execute or array for MongoDB
-	 * @param   string  Collection name for Mongo DB
-	 * @param   string  Field name to retrieve for Mongo DB
-	 * @param   array	sort array for Mongo DB
-	 * @return  Database_Result
+	 * Runs a query and returns the first value
 	 */
-	abstract public function query_var(string $sql);     // , string $collection = '', string $field = '', array $sort = []);
+	abstract public function query_var(string $sql);
 
 	/**
-	 * Compiles an exec query and runs it.
-	 *
-	 * @param   mixed  SQL query to execute or array for MongoDB
-	 * @param   string  Collection name for Mongo DB or a string to force the return of the last Inserted ID
-	 * @param   array  Query options for Mongo DB ('fsync' => true, 'timeout' => 10000)
-	 * @return  Database_Result  Query result
+	 * Compiles an exec query and runs it
 	 */
-	abstract public function single_exec(string $sql);   //, string $collection = '', array $options = []);
+	abstract public function single_exec(string $sql);
 
 	/**
-	 * Compiles an array of exec query and runs it.
-	 *
-	 * @param   array of queries  sql
-	 * @param   string  Collection name for Mongo DB
-	 * @return  Database_Result  Query result
+	 * Compiles an array of exec query and runs it
 	 */
-	abstract public function multi_exec(array $sql);     //, string $collection = '');
+	abstract public function multi_exec(array $sql);
 
 	/**
-	 * Escapes a value for a query.
-	 *
-	 * @param   string  value to escape
-	 * @return  string
+	 * Escapes a value for a query
 	 */
-	abstract public function escape($value);
+	abstract public function escape(string $value);
 
 	/**
 	 * Returns the last query run.
-	 *
-	 * @return  string SQL
 	 */
-	public function last_query()
+	public function last_query() : string
 	{
 	   return $this->latest_query;
 	}
@@ -636,7 +524,6 @@ abstract class X3db_driver
 	 */
 	public function close()
 	{
-		// close db
 		$this->link = null;
 	}
 }

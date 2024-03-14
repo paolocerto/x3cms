@@ -18,8 +18,6 @@ class Categories_controller extends X3ui_controller
 	/**
 	 * Constructor
 	 * check if user is logged
-	 *
-	 * @return  void
 	 */
 	public function __construct()
 	{
@@ -29,29 +27,22 @@ class Categories_controller extends X3ui_controller
 
 	/**
 	 * Show categories
-	 *
-	 * @return  void
 	 */
-	public function _default()
+	public function _default() : void
 	{
 		$this->index(2, X4Route_core::$lang);
 	}
 
 	/**
 	 * Show categories
-	 *
-	 * @param   integer $id_area Area ID
-	 * @param   string 	$lang Language code
-	 * @param   string 	$tag
-	 * @return  void
 	 */
-	public function index(int $id_area, string $lang, string $tag = '')
+	public function index(int $id_area, string $lang, string $tag = '') : void
 	{
 		// load dictionary
 		$this->dict->get_wordarray(array('categories', 'articles'));
 
 		$area = new Area_model();
-		list($id_area, $areas) = $area->get_my_areas($id_area);
+		list($id_area, $areas) = $area->get_my_areas($this->site->data->id, $id_area);
 
 		$lang = (empty($lang))
 			? X4Route_core::$lang
@@ -91,10 +82,8 @@ class Categories_controller extends X3ui_controller
 
 	/**
 	 * Categories actions
-	 *
-	 * @return  void
 	 */
-	private function actions(int $id_area, string $lang, string $tag = '')
+	private function actions(int $id_area, string $lang, string $tag = '') : string
 	{
 		return '<a class="link" @click="popup(\''.BASE_URL.'categories/edit/'.$id_area.'/'.$lang.'/'.$tag.'\')" title="'._NEW_CATEGORY.'">
             <i class="fa-solid fa-lg fa-circle-plus"></i>
@@ -103,14 +92,8 @@ class Categories_controller extends X3ui_controller
 
 	/**
 	 * Change status
-	 *
-	 * @param   string	$what field to change
-     * @param   integer $id_area
-	 * @param   integer $id ID of the item to change
-	 * @param   integer $value value to set (0 = off, 1 = on)
-	 * @return  void
 	 */
-	public function set(string $what, int $id_area, int $id, int $value = 0)
+	public function set(string $what, int $id_area, int $id, int $value = 0) : void
 	{
 		$msg = null;
 		// check permission
@@ -139,14 +122,8 @@ class Categories_controller extends X3ui_controller
 
 	/**
 	 * New / Edit category form
-	 *
-	 * @param   integer	$id_area Area ID
-     * @param   string 	$lang Language code
-     * @param   string 	$tag
-	 * @param   integer	$id Category ID
-	 * @return  void
 	 */
-	public function edit(int $id_area, string $lang, string $tag = '', int $id = 0)
+	public function edit(int $id_area, string $lang, string $tag = '', int $id = 0) : void
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'categories'));
@@ -203,14 +180,9 @@ class Categories_controller extends X3ui_controller
 	}
 
 	/**
-	 * Register Edit / New Category form data
-	 *
-	 * @access	private
-	 * @param   integer $id item ID (if 0 then is a new item)
-	 * @param   array 	$_post _POST array
-	 * @return  void
+	 * Register Edit / New Category form
 	 */
-	private function editing(int $id, array $_post)
+	private function editing(int $id, array $_post) : void
 	{
 		$msg = null;
 		// check permission
@@ -274,21 +246,15 @@ class Categories_controller extends X3ui_controller
 	}
 
 	/**
-	 * Delete category form (use Ajax)
-	 *
-	 * @param   integer $id Category ID
-	 * @return  void
+	 * Delete category form
 	 */
-	public function delete(int $id)
+	public function delete(int $id) : void
 	{
-		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'categories'));
 
-		// get object
 		$mod = new Category_model();
 		$item = $mod->get_by_id($id, 'categories', 'id, id_area, lang, tag, title');
 
-		// build the form
 		$fields = array();
 		$fields[] = array(
 			'label' => null,
@@ -297,7 +263,6 @@ class Categories_controller extends X3ui_controller
 			'name' => 'id'
 		);
 
-		// if submitted
 		if (X4Route_core::$post)
 		{
 			$this->deleting($item);
@@ -305,11 +270,10 @@ class Categories_controller extends X3ui_controller
 		}
         $view = new X4View_core('modal');
         $view->title = _DELETE_CATEGORY;
-		// contents
+
 		$view->content = new X4View_core('delete');
 		$view->content->item = $item->title;
 
-		// form builder
 		$view->content->form = X4Form_helper::doform('delete', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
             '@click="submitForm(\'delete\')"');
 
@@ -318,12 +282,8 @@ class Categories_controller extends X3ui_controller
 
 	/**
 	 * Delete category
-	 *
-	 * @access	private
-	 * @param   stdClass	$item Category Obj
-	 * @return  void
 	 */
-	private function deleting(stdClass $item)
+	private function deleting(stdClass $item) : void
 	{
 		$msg = null;
 		// check permissions

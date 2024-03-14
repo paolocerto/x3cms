@@ -18,8 +18,6 @@ class Bookmarks_controller extends X3ui_controller
 	/**
 	 * Constructor
 	 * check if user is logged
-	 *
-	 * @return  void
 	 */
 	public function __construct()
 	{
@@ -29,10 +27,8 @@ class Bookmarks_controller extends X3ui_controller
 
     /**
 	 * Admin add bookmark
-	 *
-	 * @return  void
 	 */
-	public function add(string $lang)
+	public function add(string $lang) : void
 	{
         $this->dict->get_wordarray(array('menus'));
 
@@ -101,14 +97,11 @@ class Bookmarks_controller extends X3ui_controller
 		}
         echo json_encode($response);
 	}
-    
+
 	/**
-	 * Delete category form (use Ajax)
-	 *
-	 * @param   integer $id Bookmark ID
-	 * @return  void
+	 * Delete category form
 	 */
-	public function delete(int $id)
+	public function delete(int $id) : void
 	{
 		$mod = new Bookmark_model();
 
@@ -117,7 +110,7 @@ class Bookmarks_controller extends X3ui_controller
         if ($item && isset($item->id) && $item->id_user == $_SESSION['xuid'])
         {
             $result = $mod->delete($item->id);
-            echo 1;
+            echo $result[1];
         }
         else
         {

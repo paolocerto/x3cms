@@ -17,8 +17,6 @@ class Create_controller extends X4Cms_controller
 {
 	/**
 	 * Constructor
-	 *
-	 * @return  void
 	 */
 	public function __construct()
 	{
@@ -27,10 +25,8 @@ class Create_controller extends X4Cms_controller
 
 	/**
 	 * default method
-	 *
-	 * @return void
 	 */
-	public function _default()
+	public function _default() : void
 	{
 	    // Error message
 		echo NL.
@@ -43,21 +39,17 @@ class Create_controller extends X4Cms_controller
 
 	/**
 	 * Create controller
-	 *
-	 * @param string    $area
-	 * @param string    $name
-	 * @return void
 	 */
-	public function controller(string $area, string $name)
+	public function controller(string $area, string $name) : void
 	{
 	    // get the final name
 	    $name = X4Utils_helper::slugify($name, true, true);
 
 	    // check if the object already exists
-        if (file_exists(APATH.'controllers/'.$area.'/'.$name.'_controller'.EXT))
+        if (file_exists(APATH.'controllers/'.$area.'/'.$name.'_controller.php'))
         {
             // print an error message
-	        echo NL.'WARNING: A file named '.$name.'_controller'.EXT.' already exists in '.APATH.'controllers/'.$area.'/'.NL;
+	        echo NL.'WARNING: A file named '.$name.'_controller.php already exists in '.APATH.'controllers/'.$area.'/'.NL;
         }
 	    else
 	    {
@@ -93,22 +85,18 @@ class Create_controller extends X4Cms_controller
 
 	/**
 	 * Create model
-	 *
-	 * @param string    $area
-	 * @param string    $name
-	 * @return void
 	 */
-	public function model(string $area, string $name)
+	public function model(string $area, string $name) : void
 	{
 	    // get the final name
 	    $name = X4Utils_helper::slugify($name, true, true);
 
 	    // check if the object already exists
-	    if (file_exists(APATH.'models/'.$name.'_model'.EXT))
+	    if (file_exists(APATH.'models/'.$name.'_model.php'))
         {
             // print an error message
 	        echo NL.
-                'WARNING: A file named '.$name.'_model'.EXT.' already exists in '.APATH.'models/'.NL;
+                'WARNING: A file named '.$name.'_model.php already exists in '.APATH.'models/'.NL;
         }
         else
         {
@@ -129,22 +117,18 @@ class Create_controller extends X4Cms_controller
 
 	/**
 	 * Create view
-	 *
-	 * @param string    $area
-	 * @param string    $name
-	 * @return void
 	 */
-	public function view(string $area, string $name)
+	public function view(string $area, string $name) : void
 	{
 	    // get the final name
 	    $name = X4Utils_helper::slugify($name, true, true);
 
 	    // check if the object already exists
-        if (file_exists(APATH.'views/'.$area.'/'.$name.'_view'.EXT))
+        if (file_exists(APATH.'views/'.$area.'/'.$name.'_view.php'))
         {
             // print an error message
 	        echo NL.
-                'WARNING: A file named '.$name.'_view'.EXT.' already exists in '.APATH.'views/'.$area.'/'.NL;
+                'WARNING: A file named '.$name.'_view.php already exists in '.APATH.'views/'.$area.'/'.NL;
         }
 	    else
 	    {
@@ -165,12 +149,8 @@ class Create_controller extends X4Cms_controller
 
 	/**
 	 * Create a basic dictionary
-	 *
-	 * @param string    $area
-	 * @param string    $name
-	 * @return void
 	 */
-	public function dictionary(string $area, string $name)
+	public function dictionary(string $area, string $name) : void
 	{
 	    if ($area == 'admin')
 	    {
@@ -199,12 +179,8 @@ class Create_controller extends X4Cms_controller
 
 	/**
 	 * Create mvc (controller + model + view + dictionary)
-	 *
-	 * @param string    $area
-	 * @param string    $name
-	 * @return void
 	 */
-	public function mvc(string $area, string $name)
+	public function mvc(string $area, string $name) : void
 	{
 	    $this->controller($area, $name);
 	    $this->model($area, $name);

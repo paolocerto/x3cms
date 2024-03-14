@@ -18,8 +18,6 @@ class Bookmark_model extends X4Model_core
 	/**
 	 * Constructor
 	 * set the default table
-	 *
-	 * @return  void
 	 */
 	public function __construct()
 	{
@@ -28,15 +26,10 @@ class Bookmark_model extends X4Model_core
 
     /**
 	 * Check if a bookmark already exists
-	 *
-	 * @param   string  $bookmark link
-	 * @return  integer	the number of bookmarks set for the same user for the same link
 	 */
-	public function exists(int $id_user, string $bookmark)
+	public function exists(int $id_user, string $bookmark) : int
 	{
-        
-
-		return $this->db->query_var('SELECT COUNT(id)
+		return (int) $this->db->query_var('SELECT COUNT(*)
 			FROM bookmarks
 			WHERE id_user = '.$id_user.' AND url = '.$this->db->escape($bookmark));
 	}

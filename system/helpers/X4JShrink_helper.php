@@ -17,11 +17,8 @@ class X4JShrink_helper
 {
 	/**
 	 * Minimize JS code
-	 *
-	 * @param	string	$js code
-	 * @return	string
 	 */
-	public static function minimize($js)
+	public static function minimize(string $js) : string
 	{
 		require_once PATH . '/vendor/autoload.php';
         return \JShrink\Minifier::minify($js, array('flaggedComments' => false));

@@ -241,7 +241,7 @@ function spinner_box() {
             this.working = status;
         },
         menu() {
-            let event = new CustomEvent("popup", {detail: root + "home/menu"});
+            let event = new CustomEvent("menu", {detail: root + "home/menu"});
             window.dispatchEvent(event);
         }
     }
@@ -298,6 +298,11 @@ function xmodal() {
         error_msg: "",
         loaded_file: null,  // for extra script files
         files: {} ,
+        menu(data) {
+            if (!this.modal) {
+                this.popup(data);
+            }
+        },
         popup(data) {
             if (typeof data == "string") {
                 var url = data;

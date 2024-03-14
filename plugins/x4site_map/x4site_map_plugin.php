@@ -18,9 +18,6 @@ class X4site_map_plugin extends X4Plugin_core implements X3plugin
 
 	/**
 	 * Constructor
-	 *
-	 * @param	object	$site, site object
-	 * @return	void
 	 */
 	public function __construct(X4Site_model $site)
 	{
@@ -30,13 +27,8 @@ class X4site_map_plugin extends X4Plugin_core implements X3plugin
 	/**
 	 * Default method
 	 * Displays the tree structure of the area
-	 *
-	 * @param object	$page object
-	 * @param array		$args array of args
-	 * @param string	$param plugin parameter
-	 * @return string
 	 */
-	public function get_module(stdClass $page, array $args, string $param = '')
+	public function get_module(stdClass $page, array $args, string $param = '') : mixed
 	{
 		// if param can be exploded
 		$p = explode('|', $param);
@@ -55,13 +47,8 @@ class X4site_map_plugin extends X4Plugin_core implements X3plugin
 
 	/**
 	 * Area map
-	 *
-	 *
-	 * @param object	$page object
-	 * @param array		$args array of args
-	 * @return array
 	 */
-	public function area_map(stdClass $page, array $args)
+	public function area_map(stdClass $page, array $args) : string
 	{
         $map = $this->site->get_map($page, true);
 		$out = '<div id="sitemap" class="mt-6">';
@@ -140,15 +127,8 @@ class X4site_map_plugin extends X4Plugin_core implements X3plugin
 
 	/**
 	 * call plugin actions
-	 *
-	 * @param   string	$control action name
-	 * @param   mixed	$a
-	 * @param   mixed	$b
-	 * @param   mixed	$c
-	 * @param   mixed	$d
-	 * @return  void
 	 */
-	 public function plugin(string $control, string $a, string $b, string $c, string $d)
+	 public function plugin(string $control, mixed $a, mixed $b, mixed $c, mixed $d) : void
 	 {
 	 	 // none
 	 }

@@ -18,8 +18,6 @@ class Help_model extends X4Model_core
 	/**
 	 * Constructor
 	 * set the default table
-	 *
-	 * @return  void
 	 */
 	public function __construct()
 	{
@@ -28,11 +26,8 @@ class Help_model extends X4Model_core
 
 	/**
 	 * Get subpages
-	 *
-	 * @param   stdClass $page Page object
-	 * @return  object
 	 */
-	public function get_subpages(stdClass $page)
+	public function get_subpages(stdClass $page) : array
 	{
 		return $this->db->query('SELECT *
 			FROM pages

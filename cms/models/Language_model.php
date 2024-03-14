@@ -18,8 +18,6 @@ class Language_model extends X4Model_core
 	/**
 	 * Constructor
 	 * set the default table
-	 *
-	 * @return  void
 	 */
 	public function __construct()
 	{
@@ -28,12 +26,8 @@ class Language_model extends X4Model_core
 
 	/**
 	 * Get languages
-	 * Join with privs table
-	 *
-	 * @param   integer $xon Language status
-	 * @return  array	array of objects
 	 */
-	public function get_languages(int $xon = 2)
+	public function get_languages(int $xon = 2) : array
 	{
 		// condition
 		$where = ($xon < 2)
@@ -51,30 +45,26 @@ class Language_model extends X4Model_core
 
 	/**
 	 * Check if a language already exists
-	 *
-	 * @param   array	$array associative array with Language data ('language' =>, 'code' =>)
-	 * @param   integer $id Language ID
-	 * @return  integer	the number of languages found
 	 */
-	public function exists(array $array, int $id = 0)
+	public function exists(
+        array $array,   // associative array with Language data ('language' =>, 'code' =>)
+        int $id = 0
+    ) : int
 	{
 		// condition
 		$where = ($id == 0)
 			? ''
 			: ' AND id <> '.$id;
 
-		return $this->db->query_var('SELECT COUNT(id)
+		return (int) $this->db->query_var('SELECT COUNT(*)
 			FROM languages
 			WHERE (language = '.$this->db->escape($array['language']).' OR code = '.$this->db->escape($array['code']).') '.$where);
 	}
 
 	/**
 	 * Delete language
-	 *
-	 * @param   integer $id Language ID
-	 * @return  integer	the number of languages found
 	 */
-	public function delete_lang(int $id)
+	public function delete_lang(int $id) : array
 	{
 		// get object
 		$lang = $this->get_by_id($id);
@@ -96,12 +86,8 @@ class Language_model extends X4Model_core
 
 	/**
 	 * Get language codes of an area by ID
-	 * Use alang table
-	 *
-	 * @param   integer $id_area Area ID
-	 * @return  array	Array of strings
 	 */
-	public function get_alang_array(int $id_area)
+	public function get_alang_array(int $id_area) : array
 	{
 		$a = $this->db->query('SELECT code FROM alang WHERE id_area = '.$id_area.' ORDER BY language ASC');
 
@@ -116,12 +102,8 @@ class Language_model extends X4Model_core
 
 	/**
 	 * Get languages by Area ID
-	 * Use alang table
-	 *
-	 * @param   integer $id_area Area ID
-	 * @return  array	Array of objects
 	 */
-	public function get_alanguages(int $id_area)
+	public function get_alanguages(int $id_area) : array
 	{
 		return $this->db->query('SELECT code, language FROM alang WHERE id_area = '.$id_area.' ORDER BY language ASC');
 	}
@@ -131,13 +113,8 @@ class Language_model extends X4Model_core
 	 * Use alang table
 	 * Each area can have many languages
 	 * If an user call a page without language code then X3CMS will serve the default language
-	 *
-	 * @param   integer $id_area Area ID
-	 * @param   array 	$languages Array of Language code
-	 * @param   string 	$default default Language code
-	 * @return  array
 	 */
-	public function set_alang(int $id_area, array $languages, string $default)
+	public function set_alang(int $id_area, array $languages, string $default) : array
 	{
 		// get languages setted
 		$setted = $this->db->query('SELECT id, code FROM alang WHERE id_area = '.$id_area.' ORDER BY language ASC');
@@ -177,25 +154,17 @@ class Language_model extends X4Model_core
 
 	/**
 	 * Get language by code
-	 *
-	 * @param   string	$code Language code
-	 * @return  object	Language item
 	 */
-	public function get_language_by_code(string $code)
+	public function get_language_by_code(string $code) : stdClass
 	{
 		return $this->db->query_row('SELECT language, rtl FROM languages WHERE code = '.$this->db->escape($code));
 	}
 
 	/**
 	 * Get SEO data by Area ID
-	 * Use alang table
-	 * Join languages and privs tables
 	 * Search Engine Optimization data like site title and description are stored in alang table
-	 *
-	 * @param   integer	$id_area Area ID
-	 * @return  array	Array of objects
 	 */
-	public function get_seo_data(int $id_area)
+	public function get_seo_data(int $id_area) : array
 	{
 		return $this->db->query('SELECT DISTINCT a.*, IF(p.id IS NULL, u.level, p.level) AS level
 				FROM alang a
@@ -208,12 +177,8 @@ class Language_model extends X4Model_core
 
 	/**
 	 * Update SEO data
-	 * Use alang table
-	 *
-	 * @param   array	$_post _POST array
-	 * @return  array
 	 */
-	public function update_seo_data(array $post)
+	public function update_seo_data(array $post) : array
 	{
 		// build array of queries
 		$sql = array();
@@ -231,25 +196,16 @@ class Language_model extends X4Model_core
 
 	/**
 	 * Get RTL value by Language code
-	 *
-	 * @param   string	$lang Language code
-	 * @return  integer
 	 */
-	public function rtl(string $lang)
+	public function rtl(string $lang) : int
 	{
-		return $this->db->query_var('SELECT rtl FROM languages WHERE code = '.$this->db->escape($lang));
+		return (int) $this->db->query_var('SELECT rtl FROM languages WHERE code = '.$this->db->escape($lang));
 	}
 
 	/**
 	 * Exchange languages in a table and in an area
-	 *
-	 * @param   integer	$id_area
-	 * @param   string	$table
-	 * @param   string	$old_lang
-	 * @param   string	$new_lang
-	 * @return  array
 	 */
-	public function switch_languages(int $id_area, string $table, string $old_lang, string $new_lang)
+	public function switch_languages(int $id_area, string $table, string $old_lang, string $new_lang) : array
 	{
 		// build array of queries
 		$sql = array();

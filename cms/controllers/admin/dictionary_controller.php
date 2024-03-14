@@ -18,8 +18,6 @@ class Dictionary_controller extends X3ui_controller
 	/**
 	 * Constructor
 	 * check if user is logged
-	 *
-	 * @return  void
 	 */
 	public function __construct()
 	{
@@ -29,10 +27,8 @@ class Dictionary_controller extends X3ui_controller
 
 	/**
 	 * Redirect to language list
-	 *
-	 * @return  void
 	 */
-	public function _default()
+	public function _default() : void
 	{
 		header('Location: '.BASE_URL.'languages');
 		die;
@@ -40,12 +36,8 @@ class Dictionary_controller extends X3ui_controller
 
 	/**
 	 * Show dictionary words by Language code, Area name and key
-	 *
-	 * @param   string 	$code Language code
-	 * @param   string 	$area Area name
-	 * @return  void
 	 */
-	public function keys(string $lang = '', string $area = 'public')
+	public function keys(string $lang = '', string $area = 'public') : void
 	{
         $lang = (empty($lang))
             ? X4Route_core::$lang
@@ -57,7 +49,7 @@ class Dictionary_controller extends X3ui_controller
         // get area info
         $id_area = X4Route_core::get_id_area($area);
 		$area_mod = new Area_model();
-		list($id_area, $areas) = $area_mod->get_my_areas($id_area);
+		list($id_area, $areas) = $area_mod->get_my_areas($this->site->data->id, $id_area);
 
         // get query string from filter
         $qs = X4Route_core::get_query_string();
@@ -121,14 +113,8 @@ class Dictionary_controller extends X3ui_controller
 
 	/**
 	 * Dictionary actions
-	 *
-     * @access	private
-	 * @param   string 	$code Language code
-	 * @param   string 	$area Area name
-	 * @param   string 	$what Dictionary key
-	 * @return  string
 	 */
-	private function actions(string $lang, string $area, string $what = '')
+	private function actions(string $lang, string $area, string $what = '') : string
 	{
 		return '<a class="link" @click="popup(\''.BASE_URL.'dictionary/clean/'.$area.'\')" title="'._DICTIONARY_DELETE_DUPLICATES.'">
             <i class="fa-solid fa-lg fa-broom"></i>
@@ -143,14 +129,8 @@ class Dictionary_controller extends X3ui_controller
 
 	/**
 	 * Change status
-	 *
-	 * @param   string  $what field to change
-     * @param   integer $id_area
-	 * @param   integer $id ID of the item to change
-	 * @param   integer $value value to set (0 = off, 1 = on)
-	 * @return  void
 	 */
-	public function set(string $what, int $id_area, int $id, int $value = 0)
+	public function set(string $what, int $id_area, int $id, int $value = 0) : void
 	{
 		$msg = null;
 		// check permission
@@ -179,13 +159,8 @@ class Dictionary_controller extends X3ui_controller
 
 	/**
 	 * Edit dictionary word form
-	 *
-     * @param   string 	$code Language code
-	 * @param   string 	$area Area name
-	 * @param   integer $id Dictionary ID
-	 * @return  void
 	 */
-	public function edit(string $lang, string $area, int $id = 0)
+	public function edit(string $lang, string $area, int $id = 0) : void
 	{
         // load dictionary
 		$this->dict->get_wordarray(array('form', 'dictionary'));
@@ -238,14 +213,8 @@ class Dictionary_controller extends X3ui_controller
 
 	/**
 	 * Register Edit dictionary word
-	 *
-	 * @access	private
-     * @param   integer     $id
-     * @param   integer     $id_area
-	 * @param   array       $_post _POST array
-	 * @return  void
 	 */
-	private function editing(int $id, int $id_area, array $_post)
+	private function editing(int $id, int $id_area, array $_post) : void
 	{
 		$msg = null;
         // check permissions
@@ -327,12 +296,9 @@ class Dictionary_controller extends X3ui_controller
 	}
 
 	/**
-	 * Delete dictionary word form (use Ajax)
-	 *
-	 * @param   integer $id Dictionary word ID
-	 * @return  void
+	 * Delete dictionary word form
 	 */
-	public function delete(int $id)
+	public function delete(int $id) : void
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'dictionary'));
@@ -371,12 +337,8 @@ class Dictionary_controller extends X3ui_controller
 
 	/**
 	 * Delete dictionary word
-	 *
-	 * @access	private
-	 * @param   stdClass     $item
-	 * @return  void
 	 */
-	private function deleting(stdClass $item)
+	private function deleting(stdClass $item) : void
 	{
 		$msg = null;
 		// check permission
@@ -410,11 +372,8 @@ class Dictionary_controller extends X3ui_controller
 
     /**
 	 * Remove duplicates in dictionary table
-	 *
-     * @param   string  $area
-	 * @return  void
 	 */
-	public function clean(string $area)
+	public function clean(string $area) : void
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'dictionary'));
@@ -450,12 +409,8 @@ class Dictionary_controller extends X3ui_controller
 
 	/**
 	 * Remove duplicates
-	 *
-	 * @access	private
-     * @param   string  $area
-	 * @return  void
 	 */
-	private function cleaning($area)
+	private function cleaning($area) : void
 	{
 		$msg = null;
 		// check permission
@@ -485,13 +440,9 @@ class Dictionary_controller extends X3ui_controller
 	}
 
 	/**
-	 * Import all dictionary words from another area (use Ajax)
-	 *
-	 * @param   string 	$lang Language code
-	 * @param   string 	$area Area name
-	 * @return  void
+	 * Import all dictionary words from another area
 	 */
-	public function import(string $lang, string $area)
+	public function import(string $lang, string $area) : void
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'dictionary'));
@@ -537,12 +488,8 @@ class Dictionary_controller extends X3ui_controller
 
 	/**
 	 * Perform the importing of words
-	 *
-	 * @access	private
-	 * @param   array	$_post _POST array
-	 * @return  void
 	 */
-	private function importing(array $_post)
+	private function importing(array $_post) : void
 	{
 		$msg = null;
 		// check permission

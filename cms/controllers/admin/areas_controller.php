@@ -18,8 +18,6 @@ class Areas_controller extends X3ui_controller
 	/**
 	 * Constructor
 	 * check if user is logged
-	 *
-	 * @return  void
 	 */
 	public function __construct()
 	{
@@ -29,20 +27,16 @@ class Areas_controller extends X3ui_controller
 
 	/**
 	 * Show areas (table view)
-	 *
-	 * @return  void
 	 */
-	public function _default()
+	public function _default() : void
 	{
-		$this->index();
+		$this->index($this->site->data->id);
 	}
 
 	/**
 	 * Show areas (table view)
-	 *
-	 * @return  void
 	 */
-	public function index($id_site = 0)
+	public function index($id_site) : void
 	{
 		// load the dictionary
 		$this->dict->get_wordarray(array('areas'));
@@ -62,10 +56,6 @@ class Areas_controller extends X3ui_controller
         // sites
         $sites = $mod->get_my_sites();
         $view->content->sites = $sites;
-        if ($id_site == 0)
-        {
-            $id_site = $sites[0]->id;
-        }
         $view->content->id_site = $id_site;
         // areas
 		list($id_area, $areas) = $mod->get_my_areas($id_site);
@@ -76,11 +66,8 @@ class Areas_controller extends X3ui_controller
 
 	/**
 	 * Areas actions
-	 *
-     * @access	private
-	 * @return  void
 	 */
-	private function actions()
+	private function actions() : string
 	{
 		return '<a class="link" href="javascript:void(0)" @click="popup(\''.BASE_URL.'areas/edit\')" title="'._NEW_AREA.'">
             <i class="fa-solid fa-lg fa-circle-plus"></i>
@@ -89,13 +76,8 @@ class Areas_controller extends X3ui_controller
 
 	/**
 	 * Change status
-	 *
-	 * @param   string	$what field to change
-	 * @param   integer $id ID of the item to change
-	 * @param   integer $value value to set (0 = off, 1 = on)
-	 * @return  void
 	 */
-	public function set(string $what, int $id, int  $value = 0)
+	public function set(string $what, int $id, int  $value = 0) : void
 	{
 		$msg = null;
 		// check permissions
@@ -125,12 +107,9 @@ class Areas_controller extends X3ui_controller
 	}
 
 	/**
-	 * New / Edit area form (use Ajax)
-	 *
-	 * @param   integer  $id item ID (if 0 then is a new item)
-	 * @return  void
+	 * New / Edit area form
 	 */
-	public function edit(int $id = 0)
+	public function edit(int $id = 0) : void
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'areas', 'themes'));
@@ -183,14 +162,9 @@ class Areas_controller extends X3ui_controller
 	}
 
 	/**
-	 * Register Edit / New Area form data
-	 *
-	 * @access	private
-	 * @param   integer $id item ID (if 0 then is a new item)
-	 * @param   array 	$_post _POST array
-	 * @return  void
+	 * Register Edit / New Area
 	 */
-	private function editing(int $id_area, array $_post)
+	private function editing(int $id_area, array $_post) : void
 	{
 		$msg = null;
 		// check permissions
@@ -293,11 +267,8 @@ class Areas_controller extends X3ui_controller
 
     /**
 	 * Set permission on new area
-	 *
-	 * @param   integer $id_area area ID
-	 * @return  void
 	 */
-    private function permission_on_area(int $id_area)
+    private function permission_on_area(int $id_area) : void
     {
         $perm = new Permission_model();
 
@@ -311,11 +282,8 @@ class Areas_controller extends X3ui_controller
 
     /**
 	 * Update lang and theme settings
-	 *
-	 * @param   array   $_post
-	 * @return  void
 	 */
-    private function update_lang_and_theme_settings(array $_post)
+    private function update_lang_and_theme_settings(array $_post) : void
     {
         // refresh languages related to area
         $lang = new Language_model();
@@ -340,12 +308,9 @@ class Areas_controller extends X3ui_controller
     }
 
 	/**
-	 * SEO form data (use Ajax)
-	 *
-	 * @param   integer $id_area area ID
-	 * @return  void
+	 * SEO form
 	 */
-	public function seo(int $id_area)
+	public function seo(int $id_area) : void
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'areas', 'themes'));
@@ -392,14 +357,9 @@ class Areas_controller extends X3ui_controller
 	}
 
 	/**
-	 * Register SEO form data
-	 *
-	 * @access	private
-	 * @param   integer $id_area Area ID
-	 * @param   array 	$_post _POST array
-	 * @return  void
+	 * Register SEO form
 	 */
-	private function editing_seo_data(int $id_area, array $_post)
+	private function editing_seo_data(int $id_area, array $_post) : void
 	{
 		$msg = null;
 		// check permission
@@ -444,12 +404,9 @@ class Areas_controller extends X3ui_controller
 	}
 
 	/**
-	 * Delete Area form (use Ajax)
-	 *
-	 * @param   integer $id Area ID
-	 * @return  void
+	 * Delete Area form
 	 */
-	public function delete(int $id)
+	public function delete(int $id) : void
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'areas'));
@@ -488,12 +445,8 @@ class Areas_controller extends X3ui_controller
 
 	/**
 	 * Delete area
-	 *
-	 * @access	private
-	 * @param   stdClass $item
-	 * @return  void
 	 */
-	private function deleting(stdClass $item)
+	private function deleting(stdClass $item) : void
 	{
 		$msg = null;
 		// check permissions
@@ -524,13 +477,9 @@ class Areas_controller extends X3ui_controller
 	}
 
 	/**
-	 * Show areas map (tree view)
-	 *
-	 * @param   integer $id_area Area ID
-	 * @param   string  $lang language code
-	 * @return  void
+	 * Show area map
 	 */
-	public function map(int $id_area, string $lang)
+	public function map(int $id_area, string $lang) : void
 	{
 		// load the dictionary
 		$this->dict->get_wordarray(array('areas'));
@@ -552,12 +501,8 @@ class Areas_controller extends X3ui_controller
 	 * Rename area (secret method)
 	 * If for whatever reason you need to rename an area you can call this script
 	 * /admin/areas/reaname_area/ID_AREA/NEW_NAME
-	 *
-	 * @param   integer $id_area Area ID to rename
-	 * @param   string  $new_name New name to set
-	 * @return  string
 	 */
-	public function rename_area(int $id_area, string $new_name)
+	public function rename_area(int $id_area, string $new_name) : void
 	{
 		// Comment the next row to enable the method
 		die('Operation disabled!');

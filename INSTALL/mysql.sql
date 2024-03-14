@@ -368,6 +368,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'admin', 'home', '_ABOUT', 'Info', 0, 1),
 (NOW(), 'it', 'admin', 'home', '_NOTICES_AND_UPDATES', 'Avvisi e aggiornamenti', 0, 1),
 (NOW(), 'it', 'admin', 'home', '_UNABLE_TO_CONNECT', 'Non &egrave; possibile stabilire una connessione con il server remoto.', 0, 1),
+(NOW(), 'it', 'admin', 'home', '_SERVER_LOAD', 'Carico sul server: ', 0, 1),
 
 (NOW(), 'it', 'admin', 'widgets', '_WIDGETS_MANAGER', 'Gestione widget', 0, 1),
 (NOW(), 'it', 'admin', 'widgets', '_WIDGETS_ITEMS', 'Widget', 0, 1),
@@ -1047,6 +1048,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'admin', 'home', '_ABOUT', 'About', 0, 1),
 (NOW(), 'en', 'admin', 'home', '_NOTICES_AND_UPDATES', 'Notices and updates', 0, 1),
 (NOW(), 'en', 'admin', 'home', '_UNABLE_TO_CONNECT', 'Unable to connect to remote server.', 0, 1),
+(NOW(), 'en', 'admin', 'home', '_SERVER_LOAD', 'Load on the server: ', 0, 1),
 
 (NOW(), 'en', 'admin', 'widgets', '_WIDGETS_MANAGER', 'Widgets manager', 0, 1),
 (NOW(), 'en', 'admin', 'widgets', '_WIDGETS_ITEMS', 'Widgets', 0, 1),
@@ -1674,9 +1676,6 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'public', 'global', '_EDIT_ARTICLE', 'Modifica articolo', 0, 1),
 (NOW(), 'it', 'public', 'global', '_PRINTFRIENDLY', 'Stampa una versione ottimizzata di questa pagina o genera un PDF', 0, 1),
 
-(NOW(), 'it', 'public', 'global', '_X3CMS_PWA_INSTALL', 'Installa', 0, 1),
-(NOW(), 'it', 'public', 'global', '_X3CMS_PWA_OFFLINE_MSG', 'Sei Offline', 0, 1),
-
 (NOW(), 'it', 'public', 'msg', '_UNKNOW_ERROR', 'Si &egrave; verificato un errore.', 0, 1),
 (NOW(), 'it', 'public', 'msg', '_PAGE_NOT_FOUND', 'La pagina richiesta non &egrave; disponibile.', 0, 1),
 (NOW(), 'it', 'public', 'msg', '_OFFLINE', 'Sito in manutenzione<br />Ci scusiamo per il disagio.', 0, 1),
@@ -1813,6 +1812,20 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'public', 'time', '_TIME_MINUTES_AGO', 'minuti fa', 0, 1),
 (NOW(), 'it', 'public', 'time', '_TIME_SECONDS_AGO', 'secondi fa', 0, 1);
 
+
+INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xlock`, `xon`) VALUES
+(NOW(), 'it', 'public', 'pwa', '_PWA_SERVICE', 'Nome PWA', 0, 1),
+(NOW(), 'it', 'public', 'pwa', '_PWA_INSTALL', 'Installa', 0, 1),
+(NOW(), 'it', 'public', 'pwa', '_PWA_OFFLINE_MSG', 'Sei off line', 0, 1),
+(NOW(), 'it', 'public', 'pwa', '_PWA_CLAIM', 'Vuoi usare questa app dal cellulare?', 0, 1),
+(NOW(), 'it', 'public', 'pwa', '_PWA_ALREADY_INSTALLED', 'Questa app risulta già installata su questo dispositivo', 0, 1),
+(NOW(), 'it', 'public', 'pwa', '_PWA_INSTRUCTIONS', 'Accedi a questa pagina dal tuo tablet o cellulare Android o Apple e segui le istruzioni', 0, 1),
+(NOW(), 'it', 'public', 'pwa', '_PWA_ANDROID_MSG', 'Per installare l\'App sul tuo dispositivo Android fai click sul pulsante installa e conferma nel pop up', 0, 1),
+(NOW(), 'it', 'public', 'pwa', '_PWA_APPLE_MSG', 'Per installare l\'App sul tuo dispositivo Apple fai click sull\'icona', 0, 1),
+(NOW(), 'it', 'public', 'pwa', '_PWA_APPLE_BTN', 'In alto o in basso nella barra del tuo dispositivo', 0, 1),
+(NOW(), 'it', 'public', 'pwa', '_PWA_APPLE_OPTION', 'Tra le varie opzioni offerte scegli <b>Aggiungi al tuo desktop</b>', 0, 1),
+(NOW(), 'it', 'public', 'pwa', '_PWA_LOGIN', 'Entra', 0, 1);
+
 -- public en
 
 INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xlock`, `xon`) VALUES
@@ -1852,9 +1865,6 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'public', 'global', '_EDIT', 'Edit', 0, 1),
 (NOW(), 'en', 'public', 'global', '_EDIT_ARTICLE', 'Edit article', 0, 1),
 (NOW(), 'en', 'public', 'global', '_PRINTFRIENDLY', 'Print an optimized version of this web page or generate PDF', 0, 1),
-
-(NOW(), 'en', 'public', 'global', '_X3CMS_PWA_INSTALL', 'Install', 0, 1),
-(NOW(), 'en', 'public', 'global', '_X3CMS_PWA_OFFLINE_MSG', 'You are Offline', 0, 1),
 
 (NOW(), 'en', 'public', 'msg', '_UNKNOW_ERROR', 'An error occurred', 0, 1),
 (NOW(), 'en', 'public', 'msg', '_PAGE_NOT_FOUND', 'This page is not available', 0, 1),
@@ -1991,6 +2001,19 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'public', 'time', '_TIME_MINUTES_AGO', 'minutes ago', 0, 1),
 (NOW(), 'en', 'public', 'time', '_TIME_SECONDS_AGO', 'seconds ago', 0, 1);
 
+
+INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xlock`, `xon`) VALUES
+(NOW(), 'en', 'public', 'pwa', '_PWA_SERVICE', 'PWA name', 0, 1),
+(NOW(), 'en', 'public', 'pwa', '_PWA_INSTALL', 'Install', 0, 1),
+(NOW(), 'en', 'public', 'pwa', '_PWA_OFFLINE_MSG', 'You are off line', 0, 1),
+(NOW(), 'en', 'public', 'pwa', '_PWA_CLAIM', 'Do you want to use this app from your mobile phone?', 0, 1),
+(NOW(), 'en', 'public', 'pwa', '_PWA_ALREADY_INSTALLED', 'This app is already installed on this device', 0, 1),
+(NOW(), 'en', 'public', 'pwa', '_PWA_INSTRUCTIONS', 'Access this page from your Android or Apple tablet or mobile phone and follow the instructions', 0, 1),
+(NOW(), 'en', 'public', 'pwa', '_PWA_ANDROID_MSG', 'To install the App on your Android device, click on the install button and confirm in the pop up', 0, 1),
+(NOW(), 'en', 'public', 'pwa', '_PWA_APPLE_MSG', 'To install the App on your Apple device, click on the icon', 0, 1),
+(NOW(), 'en', 'public', 'pwa', '_PWA_APPLE_BTN', 'At the top or bottom of your device bar', 0, 1),
+(NOW(), 'en', 'public', 'pwa', '_PWA_APPLE_OPTION', 'Among the various options offered, choose <b>Add to your desktop</b>', 0, 1),
+(NOW(), 'en', 'public', 'pwa', '_PWA_LOGIN', 'Log in', 0, 1);
 
 -- private it
 

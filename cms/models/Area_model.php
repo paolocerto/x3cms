@@ -18,8 +18,6 @@ class Area_model extends X4Model_core
 	/**
 	 * Constructor
 	 * set the default table
-	 *
-	 * @return  void
 	 */
 	public function __construct($db = 'default')
 	{
@@ -29,11 +27,8 @@ class Area_model extends X4Model_core
 	/**
 	 * Get area data and default language code
 	 * Join with alang
-	 *
-	 * @param   integer $id_area Area ID
-	 * @return  object
 	 */
-	public function get_area_data(int $id_area)
+	public function get_area_data(int $id_area) : stdClass
 	{
 		return $this->db->query_row('SELECT a.*, l.code
 			FROM areas a
@@ -43,25 +38,17 @@ class Area_model extends X4Model_core
 
 	/**
 	 * Get area ID by area name
-	 *
-	 * @param   string	$name Area name
-	 * @return  integer	Area ID
 	 */
-	public function get_area_id(string $name)
+	public function get_area_id(string $area_name) : int
 	{
-		return $this->db->query_var('SELECT id FROM areas WHERE name = '.$this->db->escape($name));
+		return (int) $this->db->query_var('SELECT id FROM areas WHERE name = '.$this->db->escape($area_name));
 	}
 
 	/**
 	 * Get areas data as an array
 	 * Join with privs table
-	 *
-     * @param   integer $id_site    Site ID
-	 * @param   integer $id_area Area ID
-	 * @param	string	$which  empty is the default, other options are public|private
-	 * @return  array	array of area objects
 	 */
-	public function get_areas(int $id_site = 1, int $id_area = 1, string $which = '')
+	public function get_areas(int $id_site = 1, int $id_area = 1, string $which = '') : array
 	{
         // condition to get all areas or only one
 		$where = ($id_site)
@@ -86,8 +73,8 @@ class Area_model extends X4Model_core
         $sql = 'SELECT a.*, u.level
             FROM areas a
 			JOIN aprivs p ON p.id_area = a.id
-			JOIN uprivs u ON u.id_area = a.id AND u.id_user = p.id_user AND u.privtype = '.$this->db->escape('areas').'
-			WHERE u.id_user = '.intval($_SESSION['xuid']).' '.$where.'
+            JOIN uprivs u ON u.id_area = a.id AND u.id_user = p.id_user AND u.privtype = '.$this->db->escape('areas').'
+			WHERE p.id_user = '.intval($_SESSION['xuid']).' '.$where.'
 			GROUP BY a.id
             ORDER BY a.id ASC';
 
@@ -96,22 +83,16 @@ class Area_model extends X4Model_core
 
     /**
 	 * Get domains
-	 *
-	 * @return  array
 	 */
-	public function get_domains()
+	public function get_domains() : array
 	{
 		return $this->db->query('SELECT id, domain FROM sites ORDER BY domain ASC');
 	}
 
     /**
 	 * Reset xdefault
-	 *
-     * @param   integer $id_site
-     * @param   integer $id_area
-	 * @return  array
 	 */
-	public function reset_xdefault(int $id_site, int $id_area)
+	public function reset_xdefault(int $id_site, int $id_area) : array
 	{
 		$sql = 'UPDATE areas
             SET xdefault = 0
@@ -123,11 +104,8 @@ class Area_model extends X4Model_core
 	/**
 	 * Get areas data as an array
 	 * Join with privs table
-	 *
-	 * @param   integer $id_area Area ID
-	 * @return  array	array of area objects
 	 */
-	public function get_areas_for_users(int $id_area = 1)
+	public function get_areas_for_users(int $id_area = 1) : array
 	{
 		$sql = 'SELECT a.*, 4 AS level
             FROM areas a
@@ -139,10 +117,8 @@ class Area_model extends X4Model_core
     /**
 	 * Get sites
 	 * Join with privs table
-	 *
-     * @return  array	array
 	 */
-	public function get_my_sites()
+	public function get_my_sites() : array
 	{
 	    $sql = 'SELECT s.*, IF(p.id IS NULL, u.level, p.level) AS plevel
             FROM sites s
@@ -157,16 +133,14 @@ class Area_model extends X4Model_core
 
 	/**
 	 * Get areas data as an array
-	 * Join with privs table
-	 *
-     * @param   integer $id_site Site ID
-	 * @param   integer $id_area Area ID
-	 * @param	string	$which  empty is the default, other options are public|private
-	 * @return  array	array
 	 */
-	public function get_my_areas(int $id_site, int $id_area = 0, string $which = '')
+	public function get_my_areas(
+        int $id_site,
+        int $id_area = 0,
+        string $which = ''  // empty is the default, other options are public|private
+    ) : array
 	{
-	    $items = X4Array_helper::indicize($this->get_areas($id_site, 1, $which), 'id');
+	    $items = X4Array_helper::indicize($this->get_areas($id_site, 1, $which, 1), 'id');
 
 	    // check user group
 	    $id_group = $this->get_var($_SESSION['xuid'], 'users', 'id_group');
@@ -183,16 +157,13 @@ class Area_model extends X4Model_core
 	        reset($items);
 	        $id_area = key($items);
 	    }
-
 	    return array($id_area, $items);
 	}
 
 	/**
 	 * Create a tmp file where store extra areas data
-	 *
-	 * @return  void
 	 */
-	public function extra_areas()
+	public function extra_areas() : void
 	{
 		$items = $this->db->query('SELECT id, name, private FROM areas WHERE id > 3 AND xon = 1 ORDER BY id ASC');
 
@@ -217,11 +188,8 @@ class Area_model extends X4Model_core
 
 	/**
 	 * Get user's permissions over areas
-	 * use aprivs table
-	 *
-	 * @return  array	array of objects
 	 */
-	public function get_aprivs_id()
+	public function get_aprivs_id() : array
 	{
 		$sql = 'SELECT id_area, area
 			FROM aprivs
@@ -233,13 +201,8 @@ class Area_model extends X4Model_core
 
 	/**
 	 * Get the default template of the area
-	 * Use templates table
-	 * Join with themes and areas
-	 *
-	 * @param   integer $id_area Area ID
-	 * @return  array	array of objects
 	 */
-	public function get_default_template(int $id_area)
+	public function get_default_template(int $id_area) : int
 	{
 		$sql = 'SELECT t.id
 			FROM templates t
@@ -248,16 +211,14 @@ class Area_model extends X4Model_core
 			WHERE t.xon = 1
 			ORDER BY t.id ASC';
 
-		return $this->db->query_var($sql);
+		return (int) $this->db->query_var($sql);
 	}
 
 	/**
 	 * Get controller's folders
 	 * This information is needed when create a new area
-	 *
-	 * @return  array	array of objects
 	 */
-	public function get_folders()
+	public function get_folders() : array
 	{
 		// get all controller's folders
 		$folders = glob(APATH.'/controllers/*', GLOB_ONLYDIR);
@@ -265,19 +226,13 @@ class Area_model extends X4Model_core
 		$a = array();
 		foreach ($folders as $i)
 		{
-			if(function_exists('preg_replace_callback'))
-			{
-				$tmp = preg_replace_callback('/(.*)\/(.*)/is',
+			$tmp = preg_replace_callback('/(.*)\/(.*)/is',
 					function($m)
 					{
 						return $m[2];
 					},
 					$i);
-			}
-			else
-			{
-				$tmp = preg_replace('/(.*)\/(.*)/is', '$2', $i, 1);
-			}
+
 			// exclude admin folder and x3cli
 			if ($tmp != 'admin' && $tmp != 'x3cli')
 			{
@@ -289,33 +244,26 @@ class Area_model extends X4Model_core
 
 	/**
 	 * Check if an area name already exists
-	 *
-	 * @param   string	$area Area name to check
-	 * @param   integer $id Area ID
-	 * @return  integer	the number of areas with the searched name
 	 */
-	public function exists(string $area, int $id = 0)
+	public function exists(string $area, int $id = 0) : int
 	{
 		// condition
 		$where = ($id)
 			? ' AND id <> '.$id		// if is an update
 			: '';
 
-		$sql = 'SELECT COUNT(id)
+		$sql = 'SELECT COUNT(*)
 			FROM areas
 			WHERE name = '.$this->db->escape($area).' '.$where;
 
-		return $this->db->query_var($sql);
+		return (int) $this->db->query_var($sql);
 	}
 
 	/**
 	 * Delete area
 	 *
-	 * @param   integer $id Area ID
-	 * @param   string 	$name Area name
-	 * @return  array
 	 */
-	public function delete_area(int $id, string $name)
+	public function delete_area(int $id, string $area_name) : array
 	{
 		$sql = array();
 
@@ -330,7 +278,7 @@ class Area_model extends X4Model_core
 		// contexts
 		$sql[] = 'DELETE FROM contexts WHERE id_area = '.$id;
 		// dictionary
-		$sql[] = 'DELETE FROM dictionary WHERE area = '.$this->db->escape($name);
+		$sql[] = 'DELETE FROM dictionary WHERE area = '.$this->db->escape($area_name);
 		// files
 		$sql[] = 'DELETE FROM files WHERE id_area = '.$id;
 		// groups
@@ -360,14 +308,9 @@ class Area_model extends X4Model_core
 
 	/**
 	 * Rename area
-     	 * SECRET method not linked in admin
-	 *
-	 * @param   integer $id Area ID
-	 * @param   string 	$old Old Area name
-	 * @param   string 	$new New Area name
-	 * @return  array
+     * SECRET method not linked in admin
 	 */
-	public function rename_area(int $id_area, string $old, string $new)
+	public function rename_area(int $id_area, string $old, string $new) : array
 	{
 		$sql = array();
 
@@ -426,10 +369,6 @@ class Obj_folder
 
 	/**
 	 * Constructor
-	 * set the folder name
-	 *
-	 * @param   string $folder folder name
-	 * @return  void
 	 */
 	public function __construct(string $folder)
 	{

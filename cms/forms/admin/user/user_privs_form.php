@@ -18,7 +18,7 @@ $xdata = '{
     },
     setter() {
         if (this.xsetter != -1) {
-            let elements = document.forms["editor"].getElementsByTagName("select");
+            let elements = document.forms["editpriv"].getElementsByTagName("select");
             for (i = 0; i < elements.length; i++) {
                 if (this.xfilter == "" || elements[i].name.includes(this.xfilter)) {
                     elements[i].value = this.xsetter;

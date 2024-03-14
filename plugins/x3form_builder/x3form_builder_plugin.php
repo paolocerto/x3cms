@@ -17,9 +17,6 @@ class X3form_builder_plugin extends X4Plugin_core implements X3plugin
 {
 	/**
 	 * Constructor
-	 *
-	 * @param   object Site
-	 * @return  void
 	 */
 	public function __construct(X4Site_model $site)
 	{
@@ -29,289 +26,162 @@ class X3form_builder_plugin extends X4Plugin_core implements X3plugin
 
 	/**
 	 * Default plugin's method
-	 *
-	 * @param   object	Page
-	 * @param   array	Array of args
-	 * @param   string	Parameter
-	 * @return  string
 	 */
-	public function get_module(stdClass $page, array $args, string $param = '')
+	public function get_module(stdClass $page, array $args, string $param = '') : mixed
 	{
-		$out = '';
-		if (!empty($param))
+        $this->dict->get_wordarray(array('form', 'x3form_builder'));
+        $mod = new X3form_builder_model($this->site->data->db);
+        // get fields
+        $items = $mod->get_fields_by_form($page->id_area, $page->lang, $param);
+
+		if (empty($param) || empty($items))
 		{
-		    $this->dict->get_wordarray(array('form', 'x3form_builder'));
-			$mod = new X3form_builder_model($this->site->data->xdatabase);
-			// get fields
-			$items = $mod->get_fields_by_form($page->id_area, $page->lang, $param);
+            return '';
+        }
 
-			if ($items)
-			{
-				$form = $mod->get_by_id($items[0]->id_form);
-				$c = 0;
-				$enctype = '';
+        // build the form
+        list($fields, $file_array) = $this->build_data($mod, $items);
 
-				// build the form
-				$fields = array();
+        $enctype = empty($file_array)
+            ? ''
+            : 'enctype="multipart/form-data"';
 
-				// to handle file's label
-				$file_array = array();
-				$recaptcha = false;
-				foreach ($items as $i)
-				{
-					$opts = array();
-					// handle value
-					if (!empty($i->value) && !is_numeric($i->value))
-					{
-						switch ($i->xtype)
-						{
-						case 'hidden':
-							if (X4Utils_helper::slugify($i->value) == $i->value)
-							{
-								eval('$value = (isset($page->'.$i->value.')) ? $page->'.$i->value.' : \''.$i->value.'\';');
-							}
-							else
-							{
-								$value = $i->value;
-							}
-							break;
-						case 'radio':
-						case 'select':
-							$opt = explode('|', $i->value);
-							foreach ($opt as $ii)
-							{
-								$opts[] = array('v' => $ii, 'o' => $ii);
-							}
-							$value = $opt[0];
-							break;
-						case 'checkbox':
-							$value = _YES;
-							break;
-						default:
-							// text and textarea
-							$value = $i->value;
-							break;
-						}
-					}
-					else
-					{
-					    switch ($i->xtype)
-						{
-                            default:
-                                $value = ($i->xtype == 'checkbox') ? _YES : '';
-                                break;
-						}
-					}
+        $form = $mod->get_by_id($items[0]->id_form);
 
-					$fields[$c] = array(
-						'label' => (empty($i->label)) ? null : $i->label,
-						'type' => $i->xtype,
-						'value' => $value,
-						'name' => $i->name
-					);
+        if (X4Route_core::$post && array_key_exists(strrev($param),$_POST))
+        {
+            $e = X4Validation_helper::form($fields, $param);
+            if ($e)
+            {
+                $this->form_result($page, $form, $_POST, $fields, $file_array);
+            }
+            else
+            {
+                X4Utils_helper::set_error($fields);
+            }
+        }
 
-                    // fix default value for radiobuttons
+        $out = '<a name="anchor'.$param.'"></a>';
+        // msg
+        if (isset($_SESSION['msg']) && !empty($_SESSION['msg']))
+        {
+            $out .= '<div id="msg" class="warning p-6 my-6 text-white rounded"><p>'.$_SESSION['msg'].'</p></div>';
+            unset($_SESSION['msg']);
+        }
+
+        $reset = (empty($form->reset_button))
+            ? null
+            : $form->reset_button;
+
+        $submit = (empty($form->submit_button))
+            ? _SUBMIT
+            : $form->submit_button;
+
+        $out .= X4Form_helper::doform($param, $_SERVER['REQUEST_URI'].'#anchor'.$param, $fields, array($reset, $submit, 'buttons'), 'post', $enctype);
+		return $out;
+	}
+
+    /**
+	 * build data for form
+	 */
+	private function build_data(X3form_builder_model $mod, array $items) : array
+	{
+        $c = 0;
+        $fields = $file_array = [];
+        foreach ($items as $i)
+        {
+            $fields[$c] = array(
+                'label' => (empty($i->label)) ? null : $i->label,
+                'type' => $i->xtype,
+                'name' => $i->name,
+                'sanitize' => 'string',
+                'suggestion' => nl2br($i->suggestion),
+                'extra' => $i->extra,
+            );
+
+            // handle label and alabel (alternative label)
+            if (substr($i->label, 0, 7) == 'alabel-')
+            {
+                $fields[$c]['alabel'] = substr($i->label, 7);
+                $fields[$c]['label'] = null;
+            }
+
+            // handle value
+            if (empty($i->value) || $i->xtype == 'checkbox')
+            {
+                $fields[$c]['value'] = ($i->xtype == 'checkbox') ? _YES : '';
+            }
+            else
+            {
+                switch ($i->xtype)
+                {
+                case 'file':
+                    $file_array[$i->name] = (is_null($fields[$c]['label']) && isset($fields[$c]['alabel']))
+                        ? $fields[$c]['alabel']
+                        : $fields[$c]['label'];
+                    break;
+                case 'hidden':
+                    if (X4Utils_helper::slugify($i->value) == $i->value)
+                    {
+                        eval('$value = (isset($page->'.$i->value.')) ? $page->'.$i->value.' : \''.$i->value.'\';');
+                    }
+                    else
+                    {
+                        $value = $i->value;
+                    }
+                    break;
+                case 'radio':
+                case 'select':
+                    $opts = [];
+                    $opt = explode('|', $i->value);
+                    foreach ($opt as $ii)
+                    {
+                        $opts[] = array('v' => $ii, 'o' => $ii);
+                    }
+                    $fields[$c]['options'] = array(X4Array_helper::array2obj($opts, 'v', 'o'), 'value', 'option');
+                    $value = $opt[0];
                     if ($i->xtype == 'radio')
                     {
                         $fields[$c]['checked'] = $value;
                     }
-
-					// handle label and alabel (alternative label)
-					$label = null;
-					if (!empty($i->label))
-					{
-						if (substr($i->label, 0, 7) == 'alabel-')
-						{
-							$fields[$c]['alabel'] = substr($i->label, 7);
-						}
-						else
-						{
-							$label = $i->label;
-						}
-					}
-					$fields[$c]['label'] = $label;
-
-					// files
-					if ($i->xtype == 'file')
-					{
-						$enctype = 'enctype="multipart/form-data"';
-
-						// Store labels
-						$file_array[$i->name] = (empty($fields[$c]['label']) && isset($fields[$c]['alabel']))
-							? $fields[$c]['alabel']
-							: $fields[$c]['label'];
-					}
-
-					// rules
-					if (!empty($i->rule))
-					{
-                        $rules = json_decode($i->rule);
-                        $tmp = [];
-                        foreach ($rules as $rule)
-                        {
-                            $tmp[] = $mod->build_rule($rule);
-                        }
-						$fields[$c]['rule'] = implode('|', $tmp);
-					}
-
-					// sanitize
-					$fields[$c]['sanitize'] = 'string';
-
-					if (!empty($i->suggestion))
+                    if (strpos($i->extra, 'multiple'))
                     {
-						$fields[$c]['suggestion'] = nl2br($i->suggestion);
+                        $fields[$c]['multiple'] = 8;
                     }
+                    break;
+                default:
+                    // text and textarea
+                    $value = $i->value;
+                    break;
+                }
+                $fields[$c]['value'] = $value;
+            }
 
-					if (!empty($i->extra))
-					{
-						if ($i->extra == 'multiple')
-						{
-							$fields[$c]['multiple'] = 8;
-						}
-						else
-						{
-							$fields[$c]['extra'] = $i->extra;
-						}
-					}
-
-					// if select
-					if (!empty($opts))
-					{
-						$fields[$c]['options'] = array(X4Array_helper::array2obj($opts, 'v', 'o'), 'value', 'option');
-					}
-					$c++;
-				}
-
-				if (X4Route_core::$post && array_key_exists(strrev($param),$_POST))
-				{
-					$e = X4Validation_helper::form($fields, $param);
-					if ($e)
-					{
-						$this->form_result($page->id_area, $page->lang, $form, $_POST, $fields, $file_array);
-					}
-					else
-					{
-						X4Utils_helper::set_error($fields);
-					}
-				}
-
-				$out = '<a name="anchor'.$param.'"></a>';
-				// msg
-				if (isset($_SESSION['msg']) && !empty($_SESSION['msg']))
-				{
-					$out .= '<div id="msg" class="warning p-6 my-6 text-white rounded"><p>'.$_SESSION['msg'].'</p></div>';
-					unset($_SESSION['msg']);
-				}
-
-				$reset = (empty($form->reset_button))
-					? null
-					: $form->reset_button;
-				$submit = (empty($form->submit_button))
-					? _SUBMIT
-					: $form->submit_button;
-
-                $submit_action = ($recaptcha)
-                    ? 'onclick="fsubmit()"'
-                    : '';
-
-				$out .= X4Form_helper::doform($param, $_SERVER['REQUEST_URI'].'#anchor'.$param, $fields, array($reset, $submit, 'buttons'), 'post', $enctype, $submit_action);
-			}
-			return $out;
-		}
-		else
-		{
-			return '';
-		}
-	}
+            // rules
+            if (!empty($i->rule))
+            {
+                $rules = json_decode($i->rule);
+                $tmp = [];
+                foreach ($rules as $rule)
+                {
+                    $tmp[] = $mod->build_rule($rule);
+                }
+                $fields[$c]['rule'] = implode('|', $tmp);
+            }
+            $c++;
+        }
+        return [$fields, $file_array];
+    }
 
 	/**
 	 * register form
-	 *
-	 * @access private
-     * @param   integer $id_area Area ID
-	 * @param   string	$lang Language code
-	 * @param   object	$form Form object
-	 * @param   array	$_post _POST array
-	 * @param   array	$fields fields array
-	 * @param   array 	$file_array Files labels array
-	 * @return  void
 	 */
-	private function form_result(int $id_area, string $lang, stdClass $form, array $_post, array $fields, array $file_array)
+	private function form_result(stdClass $page, stdClass $form, array $_post, array $fields, array $file_array) : mixed
 	{
-		// get data
-		$mod = new X3form_builder_model($this->site->data->xdatabase);
+		list($_files, $error) = $this->upload_files($page->id_area, $fields);
 
-		list($_files, $error) = $this->upload_files($id_area, $fields);
-
-		if (empty($error))
+		if (!empty($error))
         {
-            $result = [0, 0];
-		    $from = MAIL;
-
-            $replyto = (isset($_post['email']) && !empty($_post['email']))
-		        ? ['mail' => $_post['email'], 'name' => $_post['email']]
-		        : [];
-
-		    // clean unused field
-            unset($_post[strrev($form->name)]);
-            unset($_post['x4token']);
-
-		    // send mail
-            $xlock = 0;
-            $msg_spam = $mod->messagize($id_area, $form->name, $_post, $_files);
-            // send email
-		    if (!empty($form->mailto) && $msg_spam == 0)
-            {
-		        $mails = explode('|', $form->mailto);
-		        $to = array();
-				$attachments = array();
-		        foreach ($mails as $i)
-		        {
-		            $to[] = array('mail' => $i, 'name' => $i);
-		        }
-
-				if (!empty($_files))
-				{
-					$conf = $this->site->get_module_param('x3form_builder', $id_area);
-					// attachments
-					$attachments = $this->attach_files($id_area, $_files, $conf);
-				}
-
-				// we send email only if not spam
-				X4Mailer_helper::mailto($from, true, $form->title, $msg_spam, $to, $attachments, [], [], $replyto);
-		    }
-
-            // it seems spam but we are unsure
-            if ($msg_spam > -2)
-            {
-                // checkbox checking
-                $this->checkbox_checking($_post, $fields);
-
-                // register data
-                $post = array(
-                    'id_area' => $id_area,
-                    'lang' => $lang,
-                    'id_form' => $form->id,
-                    'result' => json_encode($_post + $_files),
-                    'xlock' => is_numeric($msg_spam) ? 1 : 0
-                );
-                $result = $mod->insert($post, 'x3_forms_results');
-            }
-
-            // return msg
-            $msg = ($result[1] && $msg_spam == 0)
-                ? $form->msg_ok
-                : $form->msg_failed;
-
-			// delete file sfrom the server
-			if (!empty($attachments) && $conf['delete'])
-			{
-				$this->delete_files($id_area, $attachments);
-			}
-		}
-		else
-        {
-            // build msg
             $str = array();
             foreach ($error as $k => $v)
             {
@@ -326,27 +196,92 @@ class X3form_builder_plugin extends X4Plugin_core implements X3plugin
             return 1;
         }
 
+        $result = [0, 0];
+
+        // clean unused field
+        unset($_post[strrev($form->name)]);
+        unset($_post['x4token']);
+
+        $mod = new X3form_builder_model($this->site->data->db);
+
+        // check mail
+        $msg_spam = $mod->messagize($page->id_area, $form->name, $_post, $_files);
+        if (!empty($form->mailto) && $msg_spam == 0)
+        {
+            $this->send_email($form, $_post, $_files);
+        }
+
+        // it seems spam but we are unsure
+        if ($msg_spam > -2)
+        {
+            // checkbox checking
+            $this->checkbox_checking($_post, $fields);
+
+            // register data
+            $post = array(
+                'id_area' => $page->id_area,
+                'lang' => $page->lang,
+                'id_form' => $form->id,
+                'result' => json_encode($_post + $_files),
+                'xlock' => is_numeric($msg_spam) ? 1 : 0
+            );
+            $result = $mod->insert($post, 'x3_forms_results');
+        }
+
+        $msg = ($result[1] && $msg_spam == 0)
+            ? $form->msg_ok
+            : $form->msg_failed;
+
 		header('Location: '.BASE_URL.'msg/message/'.urlencode($form->title).'/'.urlencode($msg).'?ok='.intval($result[1] && $msg_spam == 0));
 		die;
 	}
 
+    /**
+     * Send email
+     */
+    private function send_email(stdClass $form, array $_post, array $_files) : void
+    {
+        $from = MAIL;
+        $recipients = [];
+        if (isset($_post['email']) && !empty($_post['email']))
+        {
+            $recipients['replyto'] = ['mail' => $_post['email'], 'name' => $_post['email']];
+        }
+
+        $mails = explode('|', $form->mailto);
+        $attachments = array();
+        foreach ($mails as $i)
+        {
+            $recipients['to'][] = array('mail' => $i, 'name' => $i);
+        }
+
+        if (!empty($_files))
+        {
+            $conf = $this->site->get_module_param('x3form_builder', $form->id_area);
+            $attachments = $this->attach_files($_files, $conf);
+        }
+
+        // we send email only if not spam
+        X4Mailer_helper::mailto($from, true, $form->title, 0, $recipients, $attachments);
+
+        // delete file sfrom the server
+        if (!empty($attachments) && $conf['delete'])
+        {
+            $this->delete_files($id_area, $attachments);
+        }
+    }
+
 	/**
 	 * attach files
-	 *
-	 * @access private
-	 * @param   integer	$id_area
-	 * @param   array	$_files
-     * @param   array	$conf
-	 * @return  array
 	 */
-	private function attach_files(int $id_area, array $files, array $conf)
+	private function attach_files(array $files, array $conf) : array
 	{
 		$path = (!empty($conf['folder']) && is_dir(PPATH.$conf['folder']))
 			? PPATH.$conf['folder'].'/'
 			: PPATH.'tmp/';
 
 		$a = array();
-		foreach ($files as $k => $v)
+		foreach ($files as $v)
 		{
 			if (!empty($v))
 			{
@@ -360,13 +295,8 @@ class X3form_builder_plugin extends X4Plugin_core implements X3plugin
 
 	/**
 	 * delete files
-	 *
-	 * @access private
-	 * @param   integer	$id_area
-	 * @param   array	$_files
-	 * @return  void
 	 */
-	private function delete_files(int $id_area, array $files)
+	private function delete_files(int $id_area, array $files) : void
 	{
 		$conf = $this->site->get_module_param('x3form_builder', $id_area);
 		$path = (!empty($conf['folder']) && is_dir(PPATH.$conf['folder']))
@@ -383,13 +313,8 @@ class X3form_builder_plugin extends X4Plugin_core implements X3plugin
 
 	/**
 	 * replace boolean with string in checkbox values
-	 *
-	 * @access private
-	 * @param   array	$_post _POST array
-	 * @param   array	$fields fields array
-	 * @return  void
 	 */
-	private function checkbox_checking(array &$_post, array $fields)
+	private function checkbox_checking(array &$_post, array $fields) : void
 	{
 		foreach ($fields as $i)
 		{
@@ -404,17 +329,10 @@ class X3form_builder_plugin extends X4Plugin_core implements X3plugin
 
 	/**
 	 * upload files
-	 *
-	 * @access private
-	 * @param   integer $id_area Area ID
-	 * @param   array	$fields fields array
-	 * @return  void
 	 */
-	private function upload_files($id_area, $fields)
+	private function upload_files($id_area, $fields) : array
 	{
-		$files = array();
-		$error = array();
-
+		$files = $error = array();
 		foreach ($fields as $i)
 		{
 			if ($i['type'] == 'file')
@@ -453,15 +371,8 @@ class X3form_builder_plugin extends X4Plugin_core implements X3plugin
 
 	/**
 	 * call plugin actions
-	 *
-	 * @param   string	$control action name
-	 * @param   mixed	$a
-	 * @param   mixed	$b
-	 * @param   mixed	$c
-	 * @param   mixed	$d
-	 * @return  void
 	 */
-	public function plugin(string $control, string $a, string $b, string $c, string $d)
+	public function plugin(string $control, mixed $a, mixed $b, mixed $c, mixed $d) : void
 	{
 		switch ($control)
 		{
@@ -469,7 +380,7 @@ class X3form_builder_plugin extends X4Plugin_core implements X3plugin
 		// put here others calls
 
 		default:
-			return '';
+			echo '';
 			break;
 		}
 	}

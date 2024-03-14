@@ -8,56 +8,6 @@
  * @package		X4WEBAPP
  */
 
-/**
-* This library is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 2 of the License, or
-* (at your option) any later version.
-*
-* This library is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this software; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-*
-* Copyright 2005 Richard Heyes
-*/
-
-/**
-* Caching Libraries for PHP5
-*
-* Handles data and output caching. Defaults to /dev/shm
-* (shared memory). All methods are static.
-*
-* Eg: (output caching)
-*
-* if (!OutputCache::Start('group', 'unique id', 600)) {
-*
-*   // ... Output
-*
-*   OutputCache::End();
-* }
-*
-* Eg: (data caching)
-*
-* if (!$data = DataCache::Get('group', 'unique id')) {
-*
-*   $data = time();
-*
-*   DataCache::Put('group', 'unique id', 10, $data);
-* }
-*
-* echo $data;
-*
-* ------------------------
-* WITH SOME LITTLE CHANGES
-* @package		X4WEBAPP
-*
-*/
-
 class Cache
 {
 
@@ -75,14 +25,10 @@ class Cache
 
 	/**
 	* Stores data
-	*
-	* @static
-	* @param string $id    Unique ID of this data
-	* @param int    $ttl   How long to cache for (in seconds)
 	*/
-	protected static function write($id, $ttl, $data)
+	protected static function write(string $id_data, int $ttl, string $data) : void
 	{
-		$filename = self::getFilename($id);
+		$filename = self::getFilename($id_data);
 		file_put_contents($filename, $data, LOCK_EX);
 		chmod($filename, 0755);
 		// Set filemtime
@@ -91,64 +37,49 @@ class Cache
 
 	/**
 	* Reads data
-	*
-	* @static
-	* @param string $id    Unique ID of this data
 	*/
-	protected static function read($id)
+	protected static function read(string $id_data) : string
 	{
-		$filename = self::getFilename($id);
+		$filename = self::getFilename($id_data);
 		return file_get_contents($filename);
 	}
 
 	/**
 	* Determines if an entry is cached
-	*
-	* @static
-	* @param string $id    Unique ID of this data
 	*/
-	protected static function isCached($id)
+	protected static function isCached(string $id_data) : bool
 	{
-		$filename = self::getFilename($id);
+		$filename = self::getFilename($id_data);
 		if (file_exists($filename) && filemtime($filename) > time())
+        {
 			return true;
-
+        }
 		@unlink($filename);
 		return false;
 	}
 
 	/**
-	* Builds a filename/path from group, id and
-	* store.
-	*
-	* @static
-	* @param string $id    Unique ID of this data
+	* Builds a filename/path from id and stores
 	*/
-	protected static function getFilename($id)
+	protected static function getFilename(string $id_data) : string
 	{
-		$id = md5($id);
+		$id = md5($id_data);
 		return self::$store . self::$prefix . "_{$id}";
 	}
 
 	/**
 	* Sets the filename prefix to use
-	*
-	* @static
-	* @param string $prefix Filename Prefix to use
 	*/
-	public static function setPrefix($prefix)
+	public static function setPrefix(string $prefix) : void
 	{
 		self::$prefix = $prefix;
 	}
 
 	/**
-	* Sets the store for cache files. Defaults to
-	* /dev/shm. Must have trailing slash.
-	*
-	* @static
-	* @param string $store The dir to store the cache data in
+	* Sets the store path for cache files. Defaults to
+	* /dev/shm. Must have trailing slash
 	*/
-	public static function setStore($store)
+	public static function setStore(string $store) : void
 	{
 		self::$store = $store;
 	}
@@ -175,13 +106,10 @@ class X4Cache_core extends Cache
 	/**
 	* Starts caching off. Returns true if cached, and dumps
 	* the output. False if not cached and start output buffering.
-	*
-	* @static
-	* @param  string $id    Unique ID of this data
-	* @param  int    $ttl   How long to cache for (in seconds)
-	* @return bool          True if cached, false if not
+	* $id    Unique ID of this data
+	* $ttl   How long to cache for (in seconds)
 	*/
-	public static function Start($id, $ttl)
+	public static function start(string $id, int $ttl) : bool
 	{
 		if (self::isCached($id))
 		{
@@ -197,13 +125,9 @@ class X4Cache_core extends Cache
 	}
 
 	/**
-	* Ends caching. Writes data to disk.
-	*
-	* @static
-	* @param  string $data
-	* @return void
+	* Ends caching. Writes data to disk
 	*/
-	public static function End($data)
+	public static function end(string $data) : void
 	{
 		self::write(self::$id, self::$ttl, $data);
 	}
@@ -217,27 +141,20 @@ class DataCache extends Cache
 {
 	/**
 	* Retrieves data from the cache
-	*
-	* @static
-	* @param  string $id    Unique ID of the data
-	* @return mixed         Either the resulting data, or null
 	*/
-	public static function Get($id)
+	public static function get(string $id) : mixed
 	{
 		if (self::isCached($id))
+        {
 			return unserialize(self::read($id));
+        }
 		return null;
 	}
 
 	/**
 	* Stores data in the cache
-	*
-	* @static
-	* @param string $id    Unique ID of the data
-	* @param int    $ttl   How long to cache for (in seconds)
-	* @param mixed  $data  The data to store
 	*/
-	public static function Put($id, $ttl, $data)
+	public static function put(string $id, int $ttl, string $data) : void
 	{
 		self::write($id, $ttl, serialize($data));
 	}

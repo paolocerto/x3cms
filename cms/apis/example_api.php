@@ -29,8 +29,6 @@ class Example
 
 	/**
 	 * Constructor
-	 *
-	 * @return  void
 	 */
 	function __construct()
 	{
@@ -41,10 +39,8 @@ class Example
 	/**
 	 * Basic hello world example
 	 * URL to call http://localhost/x3cms/api/example/hello/foo
-	 *
-	 * @return string
 	 */
-	function hello($to = 'world')
+	function hello($to = 'world') : string
 	{
 		return "Hello $to!";
 	}
@@ -93,7 +89,7 @@ class Example
 	/**
 	 * Simple validation
 	 */
-	private function _validate($data)
+	private function _validate($data) : array
 	{
 		$a = array();
 		foreach ($this->fields as $i)

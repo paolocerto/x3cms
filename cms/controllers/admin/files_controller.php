@@ -18,8 +18,6 @@ class Files_controller extends X3ui_controller
 	/**
 	 * Constructor
 	 * check if user is logged
-	 *
-	 * @return  void
 	 */
 	public function __construct()
 	{
@@ -29,8 +27,6 @@ class Files_controller extends X3ui_controller
 
 	/**
 	 * Show files
-	 *
-	 * @return  void
 	 */
 	public function _default()
 	{
@@ -39,12 +35,8 @@ class Files_controller extends X3ui_controller
 
 	/**
 	 * Show files (table view)
-	 *
-	 * @param   integer $id_area Area ID
-	 * @param   integer	$pp pagination index
-	 * @return  void
 	 */
-	public function index(int $id_area = 2, int $pp = 0)
+	public function index(int $id_area = 2, int $pp = 0) : void
 	{
 		// load dictionary
 		$this->dict->get_wordarray(array('files'));
@@ -53,7 +45,7 @@ class Files_controller extends X3ui_controller
         $qs = X4Route_core::get_query_string();
 
 		$amod = new Area_model();
-	    list($id_area, $areas) = $amod->get_my_areas($id_area);
+	    list($id_area, $areas) = $amod->get_my_areas($this->site->data->id, $id_area);
 
         // handle filters
         $qs['xstr'] = $qs['xstr'] ?? '';
@@ -92,11 +84,8 @@ class Files_controller extends X3ui_controller
 
 	/**
 	 * Show files (tree view)
-	 *
-	 * @param   integer $id_area Area ID
-	 * @return  void
 	 */
-	public function tree(int $id_area)
+	public function tree(int $id_area) : void
 	{
 		// load dictionary
 		$this->dict->get_wordarray(array('files'));
@@ -112,13 +101,9 @@ class Files_controller extends X3ui_controller
 	}
 
 	/**
-	 * Files filter
-	 *
-	 * @param   integer $id_area Area ID
-	 * @param   array   $qs
-	 * @return  void
+	 * Files actions
 	 */
-	public function actions(int $id_area, array $qs)
+	public function actions(int $id_area, array $qs) : string
 	{
         return '<a class="link" @click="popup(\''.BASE_URL.'files/upload/'.$id_area.'?'.http_build_query($qs).'\')" title="'._NEW_FILE.'">
             <i class="fa-solid fa-lg fa-circle-plus"></i>
@@ -127,11 +112,8 @@ class Files_controller extends X3ui_controller
 
 	/**
 	 * File bulk action
-	 *
-	 * @param   integer $id_area Area ID
-	 * @return  void
 	 */
-	public function bulk(int $id_area)
+	public function bulk(int $id_area) : void
 	{
 		$msg = null;
         $_post = X4Route_core::$input;
@@ -174,14 +156,8 @@ class Files_controller extends X3ui_controller
 
 	/**
 	 * Change status
-	 *
-	 * @param   string  $what field to change
-     * @param   integer $id_area
-	 * @param   integer $id ID of the item to change
-	 * @param   integer $value value to set (0 = off, 1 = on)
-	 * @return  void
 	 */
-	public function set(string $what, int $id_area, int $id, int $value = 0)
+	public function set(string $what, int $id_area, int $id, int $value = 0) : void
 	{
 		$msg = null;
 		// check permission
@@ -210,11 +186,8 @@ class Files_controller extends X3ui_controller
 
 	/**
 	 * New files form
-	 *
-	 * @param   integer	$id_area Area ID
-	 * @return  void
 	 */
-	public function upload(int $id_area)
+	public function upload(int $id_area) : void
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'files'));
@@ -259,21 +232,24 @@ class Files_controller extends X3ui_controller
 		$view->content = new X4View_core('editor');
 
 		// form builder
-		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _UPLOAD_FILE, 'buttons'), 'post', 'enctype="multipart/form-data"',
-            '@click="submitForm(\'editor\')" x-bind:disabled="files[\'filename\'] != null && !files[\'filename\'].length"');
+		$view->content->form = X4Form_helper::doform(
+            'editor',
+            $_SERVER["REQUEST_URI"],
+            $fields,
+            array(_RESET, _UPLOAD_FILE, 'buttons'),
+            'post',
+            'enctype="multipart/form-data"',
+            '@click="submitForm(\'editor\')"
+            x-bind:disabled="files[\'filename\'] != null && !files[\'filename\'].length"'
+        );
 
 		$view->render(true);
 	}
 
 	/**
-	 * Register New files form data
-	 *
-	 * @access	private
-	 * @param   array 	$_post _POST array
-	 * @param   array 	$file_array Files labels array
-	 * @return  void
+	 * Register New files form
 	 */
-	private function uploading(array $_post, array $file_array)
+	private function uploading(array $_post, array $file_array) : void
 	{
 		$msg = null;
 		// check permission
@@ -333,12 +309,15 @@ class Files_controller extends X3ui_controller
 				{
                     // permissions
                     $perm = new Permission_model();
-                    $array[] = array(
-                            'action' => 'insert',
-                            'id_what' => $result[0],
-                            'id_user' => $_SESSION['xuid'],
-                            'level' => 4);
-                    $perm->pexec('files', $array, $post['id_area']);
+                    foreach ($_post['id_area'] as $ii)
+                    {
+                        $array[] = array(
+                                'action' => 'insert',
+                                'id_what' => $result[0],
+                                'id_user' => $_SESSION['xuid'],
+                                'level' => 4);
+                        $perm->pexec('files', $array, $ii);
+                    }
 
                     $qs = [
                         'xxtype' => -1,
@@ -374,11 +353,8 @@ class Files_controller extends X3ui_controller
 	/**
 	 * Return file categories by Area ID in JSON format
 	 * Used with autocompleter
-	 *
-	 * @param   integer $id Area ID
-	 * @return  void
 	 */
-	public function categories(int $id)
+	public function categories(int $id) : void
 	{
 		$files = new File_model();
 		$view = new X4View_core('json');
@@ -389,11 +365,8 @@ class Files_controller extends X3ui_controller
 	/**
 	 * Return file subcategories by Area ID in JSON format
 	 * Used with autocompleter
-	 *
-	 * @param   integer $id Area ID
-	 * @return  void
 	 */
-	public function subcategories(int $id)
+	public function subcategories(int $id) : void
 	{
 		$files = new File_model();
 		$view = new X4View_core('json');
@@ -402,12 +375,9 @@ class Files_controller extends X3ui_controller
 	}
 
 	/**
-	 * Edit file form (use Ajax)
-	 *
-	 * @param   integer $id File id
-	 * @return  void
+	 * Edit file form
 	 */
-	public function edit(int $id)
+	public function edit(int $id) : void
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'files'));
@@ -455,13 +425,9 @@ class Files_controller extends X3ui_controller
 	}
 
 	/**
-	 * Register Edit file form data
-	 *
-	 * @access	private
-	 * @param   array 	$_post _POST array
-	 * @return  void
+	 * Register Edit file form
 	 */
-	private function editing(array $_post)
+	private function editing(array $_post) : void
 	{
 		$msg = null;
 		// check permission
@@ -501,12 +467,9 @@ class Files_controller extends X3ui_controller
 	}
 
 	/**
-	 * Delete File form (use Ajax)
-	 *
-	 * @param   integer $id File ID
-	 * @return  void
+	 * Delete File form
 	 */
-	public function delete(int $id)
+	public function delete(int $id) : void
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'files'));
@@ -536,8 +499,6 @@ class Files_controller extends X3ui_controller
 		$view->content = new X4View_core('delete');
 
 		$view->content->item = $item->name;
-
-		// form builder
 		$view->content->form = X4Form_helper::doform('delete', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
             '@click="submitForm(\'delete\')"');
 		$view->render(true);
@@ -545,12 +506,8 @@ class Files_controller extends X3ui_controller
 
 	/**
 	 * Delete file
-	 *
-	 * @access	private
-	 * @param   stdClass $item
-	 * @return  void
 	 */
-	private function deleting(stdClass $item)
+	private function deleting(stdClass $item) : void
 	{
 		$msg = null;
 		// check permission
@@ -588,12 +545,8 @@ class Files_controller extends X3ui_controller
 
 	/**
 	 * Generate Js files for TinyMCE
-	 *
-	 * @param	integer	$id_area	Area ID
-	 * @param   string	$type		List type
-	 * @return  string
 	 */
-	public function js(int $id_area, string $type)
+	public function js(int $id_area, string $type) : void
 	{
 		$mod = new File_model();
 		$js = $mod->get_js_list($id_area, $type);
@@ -605,11 +558,8 @@ class Files_controller extends X3ui_controller
 
 	/**
 	 * Editor file
-	 *
-	 * @param integer	$id_file	File ID
-	 * @return  void
 	 */
-	public function editor(int $id_file)
+	public function editor(int $id_file) : void
 	{
 		$this->dict->get_wordarray(array('files', 'form'));
 
@@ -967,13 +917,8 @@ class Files_controller extends X3ui_controller
 
 	/**
 	 * Register Edited image
-	 *
-	 * @access	private
-	 * @param   integer $id File ID (if 0 then is a new item)
-	 * @param   array 	$_post _POST array
-	 * @return  void
 	 */
-	private function saving(int $id_file, array $_post)
+	private function saving(int $id_file, array $_post) : void
 	{
 		$msg = null;
 		// check permissions
@@ -1285,12 +1230,8 @@ class Files_controller extends X3ui_controller
 
 	/**
 	 * Check if a shell command is available for PHP
-	 *
-	 * @access	private
-	 * @param	string $cmd	Command name
-	 * @return	string
 	 */
-	private function command_exist(string $cmd)
+	private function command_exist(string $cmd) : string
 	{
 		return shell_exec("which $cmd");
 	}
@@ -1310,11 +1251,8 @@ class Files_controller extends X3ui_controller
 
     /**
 	 * Get content of a folder
-	 *
-     * @param   string   $dir
-	 * @return	array
 	 */
-    private function listFolderFiles(string $dir)
+    private function listFolderFiles(string $dir) : void
     {
         // get dir content
         $ffs = scandir($dir);
@@ -1324,7 +1262,7 @@ class Files_controller extends X3ui_controller
         unset($ffs[array_search('..', $ffs, true)]);
 
         // prevent empty returns
-        if (count($ffs) > 0)
+        if (!empty($ffs))
         {
             $this->reThumb($dir, $ffs);
         }
@@ -1332,12 +1270,8 @@ class Files_controller extends X3ui_controller
 
     /**
 	 * Re-thumb images without thumb
-	 *
-     * @param   string  $folder
-     * @param   array   $files
-	 * @return	string
 	 */
-	public function reThumb(string $folder, array $files)
+	public function reThumb(string $folder, array $files) : void
 	{
 		// define thumb folder
         $thumb_folder = FFPATH.SPREFIX.'/thumbs/';

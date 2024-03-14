@@ -21,36 +21,21 @@ class X4Auth_model extends X4Model_core
 	 */
 	protected $areas_tables = array(
 		1 => array('table' => 'users', 'session' => 'xuid', 'username' => 'username', 'mail' => 'mail', 'last_in' => 'last_in'),
-        //2 => array('table' => 'x3_students', 'session' => 'uid', 'username' => 'email', 'mail' => 'email', 'last_in' => 'last_in'),
-        4 => array('table' => 'x3_students', 'session' => 'uid', 'username' => 'nickname', 'mail' => 'email', 'last_in' => 'last_in', )
 	);
 
 	/**
 	 * Constructor
 	 * set the default table
-	 *
-	 * @return  void
 	 */
-	public function __construct($table_name)
+	public function __construct(string $table_name)
 	{
 		parent::__construct($table_name);
-
-		// update areas tables
-		$areas = $this->db->query('SELECT id FROM areas WHERE id > 1 AND private = 1');
-		foreach ($areas as $i)
-		{
-		    $this->areas_tables[$i->id] = array('table' => $table_name, 'session' => 'uid', 'username' => 'title', 'mail' => 'mail', 'last_in' => 'last_in');
-		}
 	}
 
 	/**
 	 * Find user
-	 *
-	 * @param   array	$conditions Login conditions
-	 * @param   array	$fields Fields to get
-	 * @return  object
 	 */
-	public function log_in($conditions, $fields)
+	public function log_in(array $conditions, array $fields) : stdClass
 	{
 		// fields values to get from the user record
 		$keys = implode(', u.', array_keys($fields));
@@ -87,23 +72,16 @@ class X4Auth_model extends X4Model_core
 
 	/**
 	 * Update date and time of last log in
-	 *
-	 * @param   integer	$id User ID
-	 * @return  array
 	 */
-	public function last_in($id)
+	public function last_in(int $id) : array
 	{
 		return $this->db->single_exec('UPDATE '.$this->table.' SET last_in = \''.date('Y-m-d H:i:s').'\' WHERE id = '.intval($id));
 	}
 
 	/**
 	 * Get user by email
-	 *
-	 * @param   integer	$id_area Area ID
-	 * @param   string	$email Email address
-	 * @return  object
 	 */
-	public function get_user_by_email($id_area, $email)
+	public function get_user_by_email(int $id_area, string $email) : stdClass
 	{
 		// users are joined to groups
 		if ($this->table == 'users')
@@ -111,7 +89,7 @@ class X4Auth_model extends X4Model_core
 			return $this->db->query_row('SELECT u.* FROM users u
 				JOIN xgroups g ON g.id = u.id_group
 				WHERE
-					g.id_area = '.intval($id_area).' AND
+					g.id_area = '.$id_area.' AND
 					u.mail = '.$this->db->escape($email));
 		}
 		else
@@ -123,14 +101,10 @@ class X4Auth_model extends X4Model_core
 
 	/**
 	 * Reset password
-	 *
-	 * @param   string	$mail Subscriber mail
-	 * @param   string	$new_pwd Subscriber password
-	 * @return  integer
 	 */
-	public function reset($mail, $new_pwd)
+	public function reset(string $mail, string $new_pwd) : int
 	{
-		$id = $this->db->query_var('SELECT id FROM '.$this->table.' WHERE mail = '.$this->db->escape(strtolower($mail)));
+		$id = (int) $this->db->query_var('SELECT id FROM '.$this->table.' WHERE mail = '.$this->db->escape(strtolower($mail)));
 
 		if($id)
 		{
@@ -145,66 +119,28 @@ class X4Auth_model extends X4Model_core
 	}
 
 	/**
-	 * Get user by hash
-	 *
-	 * @param   integer	$id_area Area ID
-	 * @param   string	$hash Member hashkey
-	 * @param	string	$usertable
-	 * @return  object
-	 */
-	public function log_in_by_hash(int $id_area, string $hash)
-	{
-		if ($id_area > 1)
-		{
-			return $this->db->query_row('SELECT * FROM x3_users WHERE id_area = '.$id_area.' AND xon = 1 AND hashkey = '.$this->db->escape($hash));
-
-		}
-		else
-		{
-			return $this->db->query_row('SELECT * FROM '.$this->areas_tables[$id_area]['table'].' WHERE xon = 1 AND hashkey = '.$this->db->escape($hash));
-		}
-	}
-
-	/**
 	 * Log in by hash
-	 *
-	 * @param   integer	$id_area Area ID
-	 * @param   string	$hash Member hashkey
-	 * @return  void
 	 */
-	public function rehash($id_area, $hash)
+	public function rehash(string $hash) : bool
 	{
         // get user data
-		$u = $this->log_in_by_hash($id_area, $hash);
+		$u = $this->db->query_row('SELECT * FROM users WHERE id_area = 1 AND xon = 1 AND hashkey = '.$this->db->escape($hash));
 
-		if (is_object($u) && isset($u->id))
+		if (!is_object($u) || !isset($u->id))
 		{
-            $_SESSION['site'] = SITE;
-			$_SESSION['lang'] = $u->lang;
-            $_SESSION['id_area'] = $id_area;
-			$_SESSION['last_in'] = $u->last_in;
+            return false;
+        }
 
-            // level
-            if ($id_area == 1)
-            {
-                $_SESSION['xuid'] = $u->id;
-                $_SESSION['mail'] = $u->mail;
-                $_SESSION['username'] = $u->username;
-                $_SESSION['level'] = $u->level;
-                $_SESSION['id_group'] = $u->id_group;
-			}
-			else
-			{
-                $_SESSION['uid'] = $u->id;
-                $_SESSION['nickname'] = $u->nickname;
-                $_SESSION['email'] = $u->email;
+        $_SESSION['site'] = SITE;
+        $_SESSION['lang'] = $u->lang;
+        $_SESSION['id_area'] = 1;
+        $_SESSION['last_in'] = $u->last_in;
 
-			}
-			return true;
-		}
-		else
-		{
-			return false;
-		}
+        $_SESSION['xuid'] = $u->id;
+        $_SESSION['mail'] = $u->mail;
+        $_SESSION['username'] = $u->username;
+        $_SESSION['level'] = $u->level;
+        $_SESSION['id_group'] = $u->id_group;
+        return true;
 	}
 }

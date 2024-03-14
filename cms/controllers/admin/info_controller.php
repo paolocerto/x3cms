@@ -18,8 +18,6 @@ class Info_controller extends X3ui_controller
 	/**
 	 * Constructor
 	 * check if user is logged
-	 *
-	 * @return  void
 	 */
 	public function __construct()
 	{
@@ -29,10 +27,8 @@ class Info_controller extends X3ui_controller
 
 	/**
 	 * Default method
-	 *
-	 * @return  void
 	 */
-	public function _default()
+	public function _default() : void
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('info'));
@@ -57,23 +53,12 @@ class Info_controller extends X3ui_controller
 
     /**
 	 * Check hostname
-	 *
-	 * @return  string
 	 */
-	private function chk_gethostname()
+	private function chk_gethostname() : string
 	{
 		return (function_exists('gethostname'))
             ? gethostname()
             : 'Unknown';
 	}
 
-	/**
-	 * Info filter
-	 *
-	 * @return  void
-	 */
-	public function filter()
-	{
-		echo '';
-	}
 }

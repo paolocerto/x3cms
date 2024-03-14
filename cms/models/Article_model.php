@@ -16,15 +16,13 @@
 class Article_model extends X4Model_core
 {
 	/**
-	 * @var integer	$time PHP time for time zone
+	 * PHP time for time zone
 	 */
 	protected $time;
 
 	/**
 	 * Constructor
-	 * set the default table
-	 *
-	 * @return  void
+	 * set the default table and time
 	 */
 	public function __construct()
 	{
@@ -34,23 +32,16 @@ class Article_model extends X4Model_core
 
 	/**
 	 * Get a new bid (unique ID for articles) for duplicates
-	 *
-	 * @return  string	Article unique ID
 	 */
-	public function get_new_bid()
+	public function get_new_bid() : string
 	{
 		return md5(time().'-'.$_SESSION['xuid']);
 	}
 
 	/**
 	 * Get last version of article with requested bid (unique ID for articles)
-	 *
-     * @param   integer $id_area
-     * @param   string  $lang
-	 * @param   string	$bid, article unique ID
-	 * @return  object	article object
 	 */
-	public function get_by_bid(int $id_area, string $lang, string $bid)
+	public function get_by_bid(int $id_area, string $lang, string $bid) : stdClass
 	{
         return $this->db->query_row('SELECT *
 			FROM articles
@@ -63,13 +54,8 @@ class Article_model extends X4Model_core
 
 	/**
 	 * Get all versions of article with requested bid (unique ID for articles)
-	 *
-     * @param   integer $id_area
-     * @param   string  $lang
-	 * @param   string	$bid, article unique ID
-	 * @return  array 	array of article object
 	 */
-	public function get_all_by_bid(int $id_area, string $lang, string $bid)
+	public function get_all_by_bid(int $id_area, string $lang, string $bid) : array
 	{
 		return $this->db->query('SELECT *
 			FROM articles
@@ -87,9 +73,9 @@ class Article_model extends X4Model_core
 	 * @param   integer	$id_page Page ID
 	 * @return  string 	bid of article
 	 */
-	public function get_bid_by_id_page(int $id_page)
+	public function get_bid_by_id_page(int $id_page) : string
 	{
-		return $this->db->query_var('SELECT bid
+		return (string) $this->db->query_var('SELECT bid
 			FROM articles
 			WHERE code_context = 1 AND id_page = '.$id_page.'
 			ORDER BY id DESC');
@@ -97,11 +83,8 @@ class Article_model extends X4Model_core
 
 	/**
 	 * Get where
-	 *
-	 * @param   array	$qs
-	 * @return  string
 	 */
-	private function get_where(array $qs)
+	private function get_where(array $qs) : string
 	{
 		$where = '';
 		if (!empty($qs['xstr']))
@@ -149,14 +132,8 @@ class Article_model extends X4Model_core
 
 	/**
 	 * Get all articles of a requested area ID and language code
-	 * There are two order options (name ASC, id DESC)
-	 *
-	 * @param   integer	$id_area Area ID
-	 * @param   string 	$lang Language code
-	 * @param   array   $qs
-	 * @return  array 	array of article objects
 	 */
-	public function get_articles(int $id_area, string $lang, array $qs)
+	public function get_articles(int $id_area, string $lang, array $qs) : array
 	{
         // order condition
 		$order = 'aa.id DESC';  // ($by == 'name') ? 'aa.name ASC' :
@@ -184,13 +161,8 @@ class Article_model extends X4Model_core
 
     /**
 	 * Get contexts by Area ID and Language code
-	 * Join with privs table
-	 *
-	 * @param   integer $id_area Area ID
-	 * @param   string 	$lang Language code
-	 * @return  array	Array of Context objects
 	 */
-	public function get_contexts(int $id_area, string $lang)
+	public function get_contexts(int $id_area, string $lang) : array
 	{
 		return $this->db->query('SELECT c.*, IF(p.id IS NULL, u.level, p.level) AS level
 				FROM contexts c
@@ -203,14 +175,8 @@ class Article_model extends X4Model_core
 
     /**
 	 * Get categories by Area ID and Language code
-	 * Join with privs table
-	 *
-	 * @param   integer $id_area Area ID
-	 * @param   string 	$lang Language code
-	 * @param   string 	$tag Category tag
-	 * @return  array	array of category objects
 	 */
-	public function get_all_categories(int $id_area, string $lang, string $tag = '')
+	public function get_all_categories(int $id_area, string $lang, string $tag = '') : array
 	{
 	    $where = (empty($tag))
 	        ? ''
@@ -227,14 +193,8 @@ class Article_model extends X4Model_core
 
 	/**
 	 * Get articles of a requested area ID and language code by context code
-	 *
-	 * @param   integer	$id_area Area ID
-	 * @param   string 	$lang Language code
-	 * @param   integer $code_context Context code
- 	 * @param   string 	$str Search string
-	 * @return  array 	array of article objects
 	 */
-	public function get_by_context(int $id_area, string $lang, int $code_context, string $str)
+	public function get_by_context(int $id_area, string $lang, int $code_context, string $str) : array
 	{
 	    $where = $this->get_where($str);
 
@@ -259,14 +219,8 @@ class Article_model extends X4Model_core
 
 	/**
 	 * Get articles of a requested area ID and language code by category
-	 *
-	 * @param   integer	$id_area Area ID
-	 * @param   string 	$lang Language code
-	 * @param   string 	$ctg Category name
-	 * @param   string 	$str Search string
-	 * @return  array 	array of article objects
 	 */
-	public function get_by_category(int $id_area, string $lang, string $ctg, string $str)
+	public function get_by_category(int $id_area, string $lang, string $ctg, string $str) : array
 	{
 	    $where = $this->get_where($str);
 
@@ -291,50 +245,39 @@ class Article_model extends X4Model_core
 
 	/**
 	 * Get articles of a requested area ID and language code by author
-	 *
-	 * @param   integer	$id_area Area ID
-	 * @param   string 	$lang Language code
-	 * @param   integer $id_author Author ID
-	 * @param   string 	$str Search string
-	 * @return  array 	array of article objects
 	 */
-	public function get_by_author(int $id_area, string $lang, int $id_author, string $str)
+	public function get_by_author(int $id_area, string $lang, int $id_author, string $str) : array
 	{
 		if ($id_author == 0)
-			return array();
-		else
-		{
-		    $where = $this->get_where($str);
+        {
+            return [];
+        }
 
-			return $this->db->query('SELECT a.*, c.name AS context, pa.name AS page, IF(p.id IS NULL, u.level, p.level) AS level
-				FROM articles a
-                JOIN (
-                    SELECT MAX(id) AS id, bid
-                    FROM articles
-                    WHERE
-                        id_area = '.$id_area.' AND
-                        lang = '.$this->db->escape($lang).'
-                    GROUP BY bid
-                    ) b ON b.id = a.id AND b.bid = a.bid
-			    LEFT JOIN pages pa ON pa.id = a.id_page
-				JOIN contexts c ON c.id_area = a.id_area AND c.lang = a.lang AND c.code = a.code_context
-				JOIN uprivs u ON u.id_area = a.id_area AND u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('articles').'
-				LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = a.id
-				WHERE a.id_editor = '.$id_author.$where.'
-				GROUP BY a.id
-				ORDER BY a.updated DESC');
-		}
+        $where = $this->get_where($str);
+
+        return $this->db->query('SELECT a.*, c.name AS context, pa.name AS page, IF(p.id IS NULL, u.level, p.level) AS level
+            FROM articles a
+            JOIN (
+                SELECT MAX(id) AS id, bid
+                FROM articles
+                WHERE
+                    id_area = '.$id_area.' AND
+                    lang = '.$this->db->escape($lang).'
+                GROUP BY bid
+                ) b ON b.id = a.id AND b.bid = a.bid
+            LEFT JOIN pages pa ON pa.id = a.id_page
+            JOIN contexts c ON c.id_area = a.id_area AND c.lang = a.lang AND c.code = a.code_context
+            JOIN uprivs u ON u.id_area = a.id_area AND u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('articles').'
+            LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = a.id
+            WHERE a.id_editor = '.$id_author.$where.'
+            GROUP BY a.id
+            ORDER BY a.updated DESC');
 	}
 
 	/**
 	 * Get author of articles of a requested area ID and language code
-	 *
-	 * @param   integer	$id_area Area ID
-	 * @param   string 	$lang Language code
-	 * @param   string 	$str Search string
-	 * @return  array 	array of article objects
 	 */
-	public function get_authors(int $id_area, string $lang)
+	public function get_authors(int $id_area, string $lang) : array
 	{
 		return $this->db->query('SELECT a.id, a.id_editor, a.author, IF(p.id IS NULL, u.level, p.level) AS level
 			FROM articles a
@@ -347,14 +290,8 @@ class Article_model extends X4Model_core
 
 	/**
 	 * Get articles of a requested area ID and language code by key
-	 *
-	 * @param   integer	$id_area Area ID
-	 * @param   string 	$lang Language code
-	 * @param   string 	$key Article Key
-	 * @param   string 	$str Search string
-	 * @return  array 	array of article objects
 	 */
-	public function get_by_key(int $id_area, string $lang, string $key, string $str)
+	public function get_by_key(int $id_area, string $lang, string $key, string $str) : array
 	{
 	    $where = $this->get_where($str);
 
@@ -379,14 +316,8 @@ class Article_model extends X4Model_core
 
 	/**
 	 * Get articles of a requested area ID and language code by page ID
-	 *
-	 * @param   integer	$id_area Area ID
-	 * @param   string 	$lang Language code
-	 * @param   integer $id_page Page ID
-	 * @param   string 	$str Search string
-	 * @return  array 	array of article objects
 	 */
-	public function get_by_page(int $id_area, string $lang, int $id_page, string $str)
+	public function get_by_page(int $id_area, string $lang, int $id_page, string $str) : array
 	{
 	    $where = $this->get_where($str);
 
@@ -411,12 +342,8 @@ class Article_model extends X4Model_core
 
 	/**
 	 * Get keys of articles of a requested area ID and language code
-	 *
-	 * @param   integer	$id_area Area ID
-	 * @param   string 	$lang Language code
-	 * @return  array 	array of article objects
 	 */
-	public function get_keys(int $id_area, string $lang)
+	public function get_keys(int $id_area, string $lang) : array
 	{
 		return $this->db->query('SELECT a.*, IF(p.id IS NULL, u.level, p.level) AS level
 			FROM articles a
@@ -429,13 +356,8 @@ class Article_model extends X4Model_core
 
 	/**
 	 * Get article history by bid (unique ID for articles)
-	 *
-	 * @param   integer	$id_area Area ID
-     * @param   string 	$lang
-	 * @param   string 	$bid, article unique ID
-	 * @return  array 	array of article objects
 	 */
-	public function get_history(int $id_area, string $lang, string $bid)
+	public function get_history(int $id_area, string $lang, string $bid) : array
 	{
 		return $this->db->query('SELECT a.*, IF(p.id IS NULL, u.level, p.level) AS level
 			FROM articles a
@@ -448,16 +370,12 @@ class Article_model extends X4Model_core
 
 	/**
 	 * Update all versions of an article
-	 *
-	 * @param   integer	$id Article ID
-	 * @param   array 	$array associative array (field => value)
-	 * @return  array
 	 */
-	public function update_by_bid(int $id, array $array)
+	public function update_by_bid(int $id, array $fields) : array
 	{
 		$obj = $this->get_by_id($id);
 		$update = '';
-		foreach ($array as $k => $v)
+		foreach ($fields as $k => $v)
         {
 			$update .= ', '.addslashes($k).' = '.$this->db->escape($v);
 		}
@@ -475,13 +393,8 @@ class Article_model extends X4Model_core
 
 	/**
 	 * Delete all versions of an article
-	 *
-     * @param   integer	$id_area Area ID
-	 * @param   string 	$lang Language code
-	 * @param   string	$bid, article unique ID
-	 * @return  array
 	 */
-	public function delete_by_bid(int $id_area, string $lang, string $bid)
+	public function delete_by_bid(int $id_area, string $lang, string $bid) : array
 	{
 		$sql = array();
 		// delete from sections
@@ -495,16 +408,9 @@ class Article_model extends X4Model_core
 
 	/**
 	 * Get articles by context
-	 * public function
 	 * Get enabled articles in time window
-	 *
-	 * @param   integer	$id_area Area ID
-	 * @param   string 	$lang Language code
-	 * @param   string 	$context context
-	 * @param   integer	$limit index for pagination
-	 * @return  array 	array of article objects
 	 */
-	public function get_artt_by_context(int $id_area, string $lang, string $context, int $limit = PP)
+	public function get_artt_by_context(int $id_area, string $lang, string $context, int $limit = PP) : array
 	{
 		return $this->db->query('SELECT a.*
 			FROM articles a
@@ -526,15 +432,9 @@ class Article_model extends X4Model_core
 
 	/**
 	 * Get articles in reverse chronological order
-	 * public function
 	 * Get enabled articles in time window
-	 *
-	 * @param   integer	$id_area Area ID
-	 * @param   string 	$lang Language code
-	 * @param   string 	$context context
-	 * @return  array 	array of article objects
 	 */
-	public function get_latest(int $id_area, string $lang, string $context)
+	public function get_latest(int $id_area, string $lang, string $context) : array
 	{
 		return $this->db->query('SELECT a.*
 		        FROM articles a
@@ -555,15 +455,10 @@ class Article_model extends X4Model_core
 
 	/**
 	 * Get tags of articles
-	 * public function, return an associative array frequency=>tag
+	 * return an associative array frequency=>tag
 	 * Get enabled articles in time window
-	 *
-	 * @param   integer	$id_area Area ID
-	 * @param   string 	$lang Language code
-	 * @param   string 	$context context
-	 * @return  array 	array of tags (strings)
 	 */
-	public function get_tags(int $id_area, string $lang, string $context)
+	public function get_tags(int $id_area, string $lang, string $context) : array
 	{
 		$tags = $this->db->query('SELECT a.tags
 		    FROM articles a
@@ -598,15 +493,10 @@ class Article_model extends X4Model_core
 
 	/**
 	 * Get categories of articles
-	 * public function, return an associative array frequency=>category
+	 * return an associative array frequency=>category
 	 * Get enabled articles in time window
-	 *
-	 * @param   integer	$id_area Area ID
-	 * @param   string 	$lang Language code
-	 * @param   string 	$context context
-	 * @return  array 	array of categories (strings)
 	 */
-	public function get_categories(int $id_area, string $lang, string $context)
+	public function get_categories(int $id_area, string $lang, string $context) : array
 	{
 		$ctgs = $this->db->query('SELECT a.xkeys
 		    FROM articles a
@@ -635,16 +525,10 @@ class Article_model extends X4Model_core
 
 	/**
 	 * Get articles by context and key
-	 * public function, return an array which contains latest versions of all articles with the requested context and key
+	 * return an array which contains latest versions of all articles with the requested context and key
 	 * Get enabled articles in time window
-	 *
-	 * @param   integer	$id_area Area ID
-	 * @param   string 	$lang Language code
-	 * @param   string 	$context context
-	 * @param   string 	$key Article key
-	 * @return  array 	array of article object
 	 */
-	public function get_items_by_key(int $id_area, string $lang, string $context, string $key)
+	public function get_items_by_key(int $id_area, string $lang, string $context, string $key) : array
 	{
 		return $this->db->query('SELECT a.*
 		    FROM articles a
@@ -666,16 +550,10 @@ class Article_model extends X4Model_core
 
 	/**
 	 * Get articles by tag
-	 * public function, return an array which contains latest versions of all articles with the requested context and tag
+	 * return an array which contains latest versions of all articles with the requested context and tag
 	 * Get enabled articles in time window
-	 *
-	 * @param   integer	$id_area Area ID
-	 * @param   string 	$lang Language code
-	 * @param   string 	$context context
-	 * @param   string 	$tag article tag
-	 * @return  array 	array of tags
 	 */
-	public function get_by_tag(int $id_area, string $lang, string $context, string $tag)
+	public function get_by_tag(int $id_area, string $lang, string $context, string $tag) : array
 	{
 		return $this->db->query('SELECT a.*
 		    FROM articles a
@@ -697,12 +575,8 @@ class Article_model extends X4Model_core
 
 	/**
 	 * Get Pages for search by page
-	 *
-	 * @param   integer	$id_area
-	 * @param   string	$lang
-	 * @return  array
 	 */
-	public function get_pages(int $id_area, string $lang)
+	public function get_pages(int $id_area, string $lang) : array
 	{
 		return $this->db->query('SELECT id, CONCAT(REPEAT(\'- \', deep), name) AS name
 			FROM pages p
@@ -714,22 +588,18 @@ class Article_model extends X4Model_core
 
 	/**
 	 * Check ftext field
-	 *
-	 * @return  integer
 	 */
-	public function chk_ftext()
+	public function chk_ftext() : int
 	{
-		return $this->db->query_var('SELECT COUNT(id) AS n
+		return (int) $this->db->query_var('SELECT COUNT(*) AS n
 			FROM articles
 			WHERE id_area > 1 AND ftext = \'\'');
 	}
 
 	/**
 	 * Get articles for ftext field
-	 *
-	 * @return  array
 	 */
-	public function get_article_ftext()
+	public function get_article_ftext() : array
 	{
 		return $this->db->query('SELECT id, name, content
 			FROM articles
@@ -738,10 +608,8 @@ class Article_model extends X4Model_core
 
 	/**
 	 * Add filter
-	 *
-	 * @return  array
 	 */
-	public function add_filter()
+	public function add_filter() : array
 	{
 	    $sql = 'ALTER TABLE articles ADD FULLTEXT `ftext` (ftext)';
 	    return $this->db->single_exec($sql);
@@ -784,16 +652,9 @@ class Article_obj
 
     public $xlock = 0;
 
-// TODO: maybe in the future public $xschema;
-
 	/**
 	 * Constructor
 	 * initialize article
-	 *
-	 * @param   integer $id_area Area ID
-	 * @param   string 	$lang Language code
-	 * @param   integer $code_context Context code
-	 * @return  void
 	 */
 	public function __construct(int $id_area, string $lang, int $code_context)
 	{

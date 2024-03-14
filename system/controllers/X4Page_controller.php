@@ -18,7 +18,7 @@ class X4Page_controller extends X4Cms_controller
 	/**
 	 * Admitted URLs without login
 	 */
-	protected $admitted = array('login', 'login/recovery', 'login/reset', 'signup');
+	protected $admitted = array('login', 'recovery', 'signin', 'msg', 'intro');
 
 	/**
 	 * Constructor
@@ -61,15 +61,15 @@ class X4Page_controller extends X4Cms_controller
 	 * @param mixed		$d unspecified variable
 	 * @return void
 	 */
-	public function plugin($module, $control = '', $a = '', $b = '', $c = '', $d = '')
+	public function plugin(string $module, string $control = '', $a = '', $b = '', $c = '', $d = '')
 	{
 		$mod = new X4Plugin_model();
 		if ($mod->exists($module, $this->site->area->id) && file_exists(PATH.'plugins/'.$module.'/'.$module.'_plugin.php'))
 		{
 			X4Core_core::auto_load($module.'/'.$module.'_plugin');
-			$plugin = ucfirst($module.'_plugin');
-			$m = new $plugin($this->site);
-			$m->plugin($control, $a, $b, $c, $d);
+			$plugin_name = ucfirst($module.'_plugin');
+			$plugin = new $plugin_name($this->site);
+			$plugin->plugin($control, $a, $b, $c, $d);
 		}
 		else
 		{
@@ -122,13 +122,16 @@ class X4Page_controller extends X4Cms_controller
 			// check login if area is private
 			if ($this->site->area->private && !in_array($method, $this->admitted))
 			{
-				if (file_exists(APATH.'controllers/'.X4Route_core::$area.'/login.php'))
+                $login_page = $this->site->get_page('login');
+				if ($login_page !== false && file_exists(APATH.'controllers/'.X4Route_core::$area.'/login.php'))
 				{
 					X4Utils_helper::logged($page->id_area, X4Route_core::$area.'/login');
 				}
 				else
 				{
-					X4Utils_helper::logged($page->id_area, 'public/home');
+                    // get default public for this site
+                    $id_area = $this->site->data->default_area;
+					X4Utils_helper::logged($page->id_area, X4Route_core::get_area_by_id($id_area).'/home');
 				}
 			}
 

@@ -30,8 +30,6 @@ class Articles_controller extends X3ui_controller
 	/**
 	 * Constructor
 	 * check if user is logged
-	 *
-	 * @return  void
 	 */
 	public function __construct()
 	{
@@ -41,10 +39,8 @@ class Articles_controller extends X3ui_controller
 
 	/**
 	 * Show articles (table view)
-	 *
-	 * @return  void
 	 */
-	public function _default()
+	public function _default() : void
 	{
 		$this->index(2, X4Route_core::$lang);
 	}
@@ -53,13 +49,8 @@ class Articles_controller extends X3ui_controller
 	 * Show articles (table view)
 	 * Can show articles by context, by category, by author, by key, by page
 	 * Default view is reverse chronological order
-	 *
-	 * @param   integer $id_area Area ID
-	 * @param   string 	$lang Language code
-	 * @param   integer $pp index for pagination
-	 * @return  void
 	 */
-	public function index(int $id_area = 2, string $lang = '' , int $pp = 0)
+	public function index(int $id_area = 2, string $lang = '' , int $pp = 0) : void
 	{
 		// load dictionary
 		$this->dict->get_wordarray(array('articles'));
@@ -119,13 +110,8 @@ class Articles_controller extends X3ui_controller
 
 	/**
 	 * Article actions
-	 *
-     * @access	private
-	 * @param   integer $id_area Area ID
-	 * @param   string $lang Language code
-	 * @return  string
 	 */
-	public function actions(int $id_area, string $lang)
+	public function actions(int $id_area, string $lang) : string
 	{
         return '<a class="link" @click="pager(\''.BASE_URL.'articles/edit/'.$id_area.'/'.$lang.'\')" title="'._NEW_ARTICLE.'">
             <i class="fa-solid fa-lg fa-circle-plus"></i>
@@ -134,13 +120,8 @@ class Articles_controller extends X3ui_controller
 
 	/**
 	 * Article bulk action
-	 *
-	 * @param   integer $id_area Area ID
-	 * @param   string $lang Language code
-	 * @param   string $bid Article unique code
-	 * @return  void
 	 */
-	public function bulk(int $id_area, string $lang, string $bid)
+	public function bulk(int $id_area, string $lang, string $bid) : void
 	{
 		$msg = null;
         $_post = X4Route_core::$input;
@@ -181,14 +162,8 @@ class Articles_controller extends X3ui_controller
 
 	/**
 	 * Change status
-	 *
-	 * @param   string  $what field to change
-     * @param   integer $id_area
-	 * @param   integer $id ID of the item to change
-	 * @param   integer $value value to set (0 = off, 1 = on)
-	 * @return  void
 	 */
-	public function set(string $what, int $id_area, int $id, int $value = 0)
+	public function set(string $what, int $id_area, int $id, int $value = 0) : void
 	{
 		// check permissions
 		$msg = AdmUtils_helper::chk_priv_level($id_area, 'articles', $id, $what);
@@ -217,14 +192,8 @@ class Articles_controller extends X3ui_controller
 	/**
 	 * Change status by bid
 	 * bid is the uniqueID of articles
-	 *
-	 * @param   string	$what field to change
-     * @param   integer $id_area
-	 * @param   integer $id ID of the item to change
-	 * @param   integer $value value to set (0 = off, 1 = on)
-	 * @return  void
 	 */
-	public function set_by_bid(string $what, int $id_area, int $id, int $value = 0)
+	public function set_by_bid(string $what, int $id_area, int $id, int $value = 0) : void
 	{
 		// check permissions
 		$msg = AdmUtils_helper::chk_priv_level($id_area, 'articles', $id, $what);
@@ -252,12 +221,8 @@ class Articles_controller extends X3ui_controller
 
     /**
 	 * Get the list of available areas
-	 * Called via Ajax
-	 *
-	 * @param   integer $id_area Area ID
-	 * @return  string 	Options list
 	 */
-	public function refresh_areas()
+	public function refresh_areas() : void
 	{
 		$mod = new Area_model();
 		$items = $mod->get_areas();
@@ -266,12 +231,8 @@ class Articles_controller extends X3ui_controller
 
     /**
 	 * Get the list of available languages
-	 * Called via Ajax
-	 *
-	 * @param   integer $id_area Area ID
-	 * @return  string 	Options list
 	 */
-	public function refresh_languages(int $id_area)
+	public function refresh_languages(int $id_area) : void
 	{
 		$mod = new Language_model();
 		$items = $mod->get_alanguages($id_area);
@@ -280,13 +241,8 @@ class Articles_controller extends X3ui_controller
 
 	/**
 	 * Get the list of available contexts
-	 * Called via Ajax
-	 *
-	 * @param   integer $id_area Area ID
-	 * @param   string	$lang Language code
-	 * @return  string 	Options list
 	 */
-	public function refresh_contexts(int $id_area, string $lang)
+	public function refresh_contexts(int $id_area, string $lang) : void
 	{
 		$mod = new Context_model();
 		$items = $mod->get_codes($id_area, $lang, 1);
@@ -295,13 +251,8 @@ class Articles_controller extends X3ui_controller
 
 	/**
 	 * Get the list of available pages
-	 * Called via Ajax
-	 *
-	 * @param   integer $id_area Area ID
-	 * @param   string	$lang Language code
-	 * @return  string 	Options list
 	 */
-	public function refresh_pages(int $id_area, string $lang)
+	public function refresh_pages(int $id_area, string $lang) : void
 	{
 		$mod = new Context_model();
         $items = $mod->get_pages($id_area, $lang);
@@ -310,12 +261,8 @@ class Articles_controller extends X3ui_controller
 
     /**
 	 * Get the list of available modules
-	 * Called via Ajax
-	 *
-	 * @param   integer $id_area Area ID
-	 * @return  string 	Options list
 	 */
-	public function refresh_module(int $id_area)
+	public function refresh_module(int $id_area) : void
 	{
 		// get array of modules
 		$plugin = new X4Plugin_model();
@@ -326,16 +273,8 @@ class Articles_controller extends X3ui_controller
 	/**
 	 * New / Edit article form
 	 * The form is simplified if site use simple editing
-	 *
-	 * @param   integer $id_area Area ID
-	 * @param   string	$lang Language code
-	 * @param   integer	$code_context Context code
-	 * @param   string	$bid, the unique ID of articles
-	 * @param   integer	$id_page Page ID (for simple editing)
-	 * @param   boolean	$duplicate Duplicate article resetting bid
-	 * @return  void
 	 */
-	public function edit(int $id_area = 2, string $lang = '', int $code_context = 0, string $bid = '0', int $id_page = 0, int $duplicate = 0)
+	public function edit(int $id_area = 2, string $lang = '', int $code_context = 0, string $bid = '0', int $id_page = 0, int $duplicate = 0) : void
 	{
 		// set language
 		$lang = (empty($lang))
@@ -468,15 +407,8 @@ class Articles_controller extends X3ui_controller
 
 	/**
 	 * Article param setting
-	 *
-	 * @param   integer $id_area Area ID
-	 * @param   string $lang Language code
-	 * @param   integer $id_page Page ID
-	 * @param   string $module Module name
-	 * @param   string $param Parameter value
-	 * @return  void
 	 */
-	public function param(int $id_area, string $lang, int $id_page, string $module, string $param = '')
+	public function param(int $id_area, string $lang, int $id_page, string $module, string $param = '') : void
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'articles', $module));
@@ -548,14 +480,9 @@ class Articles_controller extends X3ui_controller
 	}
 
 	/**
-	 * Register New / Edit article data
-	 *
-	 * @access	private
-	 * @param   stdClass $item Article
-	 * @param   array	$_post _POST array
-	 * @return  void
+	 * Register New / Edit article
 	 */
-	private function editing($item, array $_post)
+	private function editing($item, array $_post) : void
 	{
 		$msg = null;
 		// check permission
@@ -690,13 +617,8 @@ class Articles_controller extends X3ui_controller
 	 * Show article's history
 	 * Show all versions of an article
 	 * Versions are displayed in reverse chronological order
-	 *
-	 * @param   integer $id_area Area ID
-	 * @param   string 	$lang Language code
-	 * @param   string	$bid, unique ID for articles
-	 * @return  void
 	 */
-	public function history(int $id_area, string $lang, string $bid)
+	public function history(int $id_area, string $lang, string $bid) : void
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('history', 'articles'));
@@ -722,12 +644,9 @@ class Articles_controller extends X3ui_controller
 	}
 
 	/**
-	 * Date settings form for time window of article's version (use Ajax)
-	 *
-	 * @param   integer $id Article ID
-	 * @return  void
+	 * Date settings form for time window of article's version
 	 */
-	public function setdate(int $id)
+	public function setdate(int $id) : void
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'history', 'articles'));
@@ -772,12 +691,8 @@ class Articles_controller extends X3ui_controller
 
 	/**
 	 * Register article's time window
-	 *
-	 * @access	private
-	 * @param   array 	$_post _POST array
-	 * @return  void
 	 */
-	private function setting_date(array $_post)
+	private function setting_date(array $_post) : void
 	{
 		$msg = null;
 		// check permissions
@@ -810,13 +725,10 @@ class Articles_controller extends X3ui_controller
 	}
 
 	/**
-	 * Delete Article form (use Ajax)
+	 * Delete Article form
 	 * Delete all versions of an article
-	 *
-	 * @param   $bid string, unique ID for articles
-	 * @return  void
 	 */
-	public function delete(int $id_area, string $lang, string $bid)
+	public function delete(int $id_area, string $lang, string $bid) : void
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'articles'));
@@ -853,14 +765,10 @@ class Articles_controller extends X3ui_controller
 	}
 
 	/**
-	 * Delete article
+	 * Deleting article
 	 * Delete all versions of an article
-	 *
-	 * @access	private
-	 * @param   stdClass $item
-	 * @return  void
 	 */
-	private function deleting(stdClass $item)
+	private function deleting(stdClass $item) : void
 	{
 		$msg = null;
 		// check permissions on articles
@@ -906,12 +814,9 @@ class Articles_controller extends X3ui_controller
 	}
 
 	/**
-	 * Delete a version of an Article form (use Ajax)
-	 *
-	 * @param   integer $id Article id
-	 * @return  void
+	 * Delete a version of an Article form
 	 */
-	public function delete_version(int $id)
+	public function delete_version(int $id) : void
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'articles'));
@@ -950,12 +855,8 @@ class Articles_controller extends X3ui_controller
 
 	/**
 	 * Delete article's version
-	 *
-	 * @access	private
-	 * @param   stdClass $item
-	 * @return  void
 	 */
-	private function deleting_version(stdClass $item)
+	private function deleting_version(stdClass $item) : void
 	{
 		$msg = null;
 		// check permissions

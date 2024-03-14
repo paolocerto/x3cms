@@ -18,27 +18,17 @@ class X4Utils_helper
 {
 	/**
 	 * hashing
-	 *
-	 * @static
-	 * @param string	$str String to hash
-	 * @param string	$salt optional salt
-	 * @return string
 	 */
-	public static function hashing($str, $salt = '')
+	public static function hashing(string $str, string $salt = '') : string
 	{
+        // HASH is defined in config
 		return hash(HASH, $str.$salt);
 	}
 
 	/**
 	 * Check if user need to be logged
-	 *
-	 * @static
-	 * @param integer	$id_area area ID
-	 * @param string	$location area/controller where redirect user for login
-	 * @param string	$users name of the table where search users
-	 * @return void
 	 */
-	public static function logged($id_area = 1, $location = 'admin/login', $users = 'users')
+	public static function logged(int $id_area = 1, string $login_location = 'admin/login', string $users_table = 'users')
 	{
 		if (!isset($_SESSION['site']) || $_SESSION['site'] != SITE || $_SESSION['id_area'] != $id_area)
 		{
@@ -47,21 +37,23 @@ class X4Utils_helper
 			// check hashkey
 			if (isset($_COOKIE[COOKIE.'_hash']) && $_COOKIE[COOKIE.'_hash'] != '')
 			{
-				$mod = new X4Auth_model($users);
-				$private = $mod->get_var($id_area, 'areas', 'private');
-				if ($private)
-				{
-				    $chk = $mod->rehash($id_area, $_COOKIE[COOKIE.'_hash'], $users);
-				}
-				else
-				{
-				    $chk = true;
-				}
+                switch ($users_table)
+                {
+                    case 'users':
+                        $mod = new X4Auth_model($users);
+                        $chk = $mod->rehash($_COOKIE[COOKIE.'_hash']);
+                        break;
+                    default:
+                        $model = ucfirst($users.'_model');
+                        $mod = new $model();
+                        $chk = $mod->rehash($_COOKIE[COOKIE.'_hash']);
+                        break;
+                }
 			}
 
 			if (!$chk)
 			{
-                header('Location: '.ROOT.$location);
+                header('Location: '.ROOT.$login_location);
                 die;
 			}
 		}
@@ -69,30 +61,25 @@ class X4Utils_helper
 
 	/**
 	 * Check if a call is an AJAX call
-	 *
-	 * @static
-	 * @return boolean
 	 */
-	public static function is_ajax()
+	public static function is_ajax() : bool
 	{
-		return (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest');
+		return (
+            !empty($_SERVER['HTTP_X_REQUESTED_WITH']) &&
+            strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest'
+        );
 	}
 
 	/**
 	 * Check if site is offline
-	 *
-	 * @static
-	 * @param boolean	$xon site status
-	 * @param string	$url controller where redirect unlogged user
-	 * @return void
 	 */
-	public static function offline($xon, $url)
+	public static function offline(int $site_status, string $offline_url)
 	{
-		if (!$xon && !isset($_SESSION['xuid']) && X4Route_core::$control != 'offline')
+		if (!$site_status && !isset($_SESSION['xuid']) && X4Route_core::$control != 'offline')
 		{
 		    if (X4Route_core::$control != 'offline')
 		    {
-		        header('Location: '.$url);
+		        header('Location: '.$offline_url);
 		        die;
 		    }
 		    else
@@ -105,28 +92,18 @@ class X4Utils_helper
 
 	/**
 	 * Define a personal base URL
-	 *
-	 * @static
-	 * @param string	$base_url URL
-	 * @return void
 	 */
-	public static function set_mybase_url($base_url)
+	public static function set_mybase_url(string $base_url)
 	{
 		define('MYBASE_URL', $base_url);
 	}
 
 	/**
 	 * Put the message into a session variable
-	 *
-	 * @static
-	 * @param mixed		$res boolean/array query result
-	 * @param string	$ok message if all run fine
-	 * @param string	$ko error message
-	 * @return void
 	 */
-	public static function set_msg($res, $ok = _MSG_OK, $ko = _MSG_ERROR)
+	public static function set_msg(mixed $res, string $ok = _MSG_OK, string $ko = _MSG_ERROR)
 	{
-        switch(gettype($res))
+        switch (gettype($res))
 		{
 			case 'boolean':
 				$_SESSION['msg'] = ($res) ? $ok : $ko;
@@ -138,19 +115,15 @@ class X4Utils_helper
 	}
 
 	/**
-	 * Get field's error message from a form and put it into a session variable
-	 *
-	 * @static
-	 * @param array		$fields form array
-	 * @param string	$title error message title
-	 * @return mixed
+	 * Get field's error message from a form and put it into a session variable if set_session is true
 	 */
-	public static function set_error($fields, $title = '_form_not_valid', $set_session = true)
+	public static function set_error(array $fields, string $title = '_form_not_valid', string $return = 'session')
 	{
 		$dict = new X4Dict_model(X4Route_core::$folder, X4Route_core::$lang);
 		$msg = $dict->get_word($title, 'form');
 		$fields = self::normalize_form($fields);
 
+        $errors = array();
 		foreach ($fields as $i)
 		{
 			if (isset($i['error']))
@@ -177,15 +150,16 @@ class X4Utils_helper
 						$related = $e['related'];
 						if (isset($fields[$related]))
 						{
-							// if is a related field
-							$rpl[] = ((is_null($fields[$related]['label']) && isset($fields[$related]['alabel'])) || isset($fields[$related]['alabel']))
+							$rpl[] = (
+                                (is_null($fields[$related]['label']) && isset($fields[$related]['alabel'])) ||
+                                isset($fields[$related]['alabel'])
+                            )
 								? $fields[$related]['alabel']
 								: $fields[$related]['label'];
 						}
 						else
 						{
-							// if is a related value
-							$rpl[] = $related;
+							$rpl[] = $related;  // if is a related value
 						}
 
 						if (isset($e['relatedvalue']))
@@ -193,7 +167,6 @@ class X4Utils_helper
 							$src[] = 'XXXVALUEXXX';
 							$rpl[] = $e['relatedvalue'];
 						}
-
 						$msg .= '<br /><u>'.$label.'</u> '.str_replace($src, $rpl, $dict->get_word($e['msg'], 'form'));
 					}
 					else
@@ -201,90 +174,35 @@ class X4Utils_helper
 						$msg .= '<br /><u>'.$label.'</u> '.$dict->get_word($e['msg'], 'form');
 					}
 
-					// debug
 					if (isset($e['debug']))
 					{
 						$msg .= '<br />'.$e['debug'];
 					}
+
+                    $errors[$i['name']] = addslashes(html_entity_decode($msg));
 				}
 			}
 		}
 
-		if ($set_session)
+		switch ($return)
 		{
-			$_SESSION['msg'] = $msg;
+            case 'array':
+                // for AJAX
+                return $errors;
+                break;
+            case 'string':
+                return $msg;
+                break;
+            default:
+			    $_SESSION['msg'] = $msg;
+                break;
 		}
-		else
-		{
-			return $msg;
-		}
-	}
-
-	/**
-	 * Get field's error array to use with JS validation
-	 *
-	 * @static
-	 * @param array		$fields form array
-	 * @return array
-	 */
-	public static function get_error($fields)
-	{
-		$dict = new X4Dict_model(X4Route_core::$folder, X4Route_core::$lang);
-		$fields = self::normalize_form($fields);
-
-		$error = array();
-		foreach ($fields as $i)
-		{
-			if (isset($i['error']))
-			{
-				foreach ($i['error'] as $ii)
-				{
-					// for related fields
-					if (isset($ii['related']))
-					{
-						$related = $ii['related'];
-						if (isset($fields[$related]))
-						{
-							// if is a related field
-							$rpl = ((is_null($fields[$related]['label']) && isset($fields[$related]['alabel'])) || isset($fields[$related]['alabel']))
-								? $fields[$related]['alabel']
-								: $fields[$related]['label'];
-						}
-						else
-						{
-							// if is a related value
-							$rpl = $related;
-						}
-
-						$msg = str_replace('XXXRELATEDXXX', $rpl, $dict->get_word($ii['msg'], 'form'));
-					}
-					else
-					{
-						$msg = $dict->get_word($ii['msg'], 'form');
-					}
-
-
-					// debug
-					if (isset($ii['debug']))
-					{
-						$msg .= '<br />'.$ii['debug'];
-					}
-
-					$error[$i['name']] = addslashes(html_entity_decode($msg));
-				}
-			}
-		}
-		return $error;
 	}
 
 	/**
 	 * Return the form array with as index the name of the field
-	 *
-	 * @static
-	 * @param array		$fields form array
-	 * @return array
 	 */
-	public static function normalize_form($array)
+	public static function normalize_form(array $array) : array
 	{
 		$a = array();
 		foreach ($array as $i)
@@ -299,12 +217,8 @@ class X4Utils_helper
 
 	/**
 	 * Change encoding
-	 *
-	 * @static
-	 * @param string	$text text to convert
-	 * @return string
 	 */
-	public static function to7bit($text)
+	public static function to7bit(string $text) : string
     {
         $enc = mb_detect_encoding($text);
         if ($enc != 'UTF-8')
@@ -332,15 +246,13 @@ class X4Utils_helper
 	}
 
 	/**
-	 * Clean a string
-	 *
-	 * @static
-	 * @param string	$str string to clean
-	 * @param boolean	$deep If true replace '.' too
-	 * @param boolean	$negative If true replace - with _
-	 * @return string
+	 * Slugify a string
 	 */
-	public static function slugify($str, $deep = false, $negative = false)
+	public static function slugify(
+        string $str,
+        bool $deep = false,         // If true replace '.' too
+        bool $negative = false      // If true replace - with _
+    ) : string
 	{
 		$str = trim($str);
 		$str = X4Utils_helper::to7bit($str);
@@ -348,35 +260,35 @@ class X4Utils_helper
 
         // strip special chars
         $str = preg_replace_callback(
-        '/[àèéìòùç]+/is',
-        function($m)
-        {
-            $r = '';
-            switch($m[0])
+            '/[àèéìòùç]+/is',
+            function($m)
             {
-                case 'à':
-                    $r = 'a';
-                    break;
-                case 'è':
-                case 'é':
-                    $r = 'e';
-                    break;
-                case 'ì':
-                    $r = 'i';
-                    break;
-                case 'ò':
-                    $r = 'o';
-                    break;
-                case 'ù':
-                    $r = 'u';
-                    break;
-                case 'ç':
-                    $r = 'c';
-                    break;
-            }
-            return $r;
-        },
-        $str);
+                $r = '';
+                switch ($m[0])
+                {
+                    case 'à':
+                        $r = 'a';
+                        break;
+                    case 'è':
+                    case 'é':
+                        $r = 'e';
+                        break;
+                    case 'ì':
+                        $r = 'i';
+                        break;
+                    case 'ò':
+                        $r = 'o';
+                        break;
+                    case 'ù':
+                        $r = 'u';
+                        break;
+                    case 'ç':
+                        $r = 'c';
+                        break;
+                }
+                return $r;
+            },
+            $str);
 
         // clean
         $regex = ($deep)
@@ -408,12 +320,8 @@ class X4Utils_helper
 	/**
 	 * Clean a string
 	 * remove quote and slashes
-	 *
-	 * @static
-	 * @param string	$str string to clean
-	 * @return string
 	 */
-	public static function clean_str($str)
+	public static function clean_str(string $str) : string
 	{
 		return stripslashes(str_replace(
 			array('"'),
@@ -423,96 +331,66 @@ class X4Utils_helper
 	}
 
 	/**
-	 * Format money value
-	 *
-	 * @static
-	 * @param float		$num value
-	 * @param string	$value currency
-	 * @param integer	$decimal number of decimals
-	 * @param boolean	$after switch the position of the currency
-	 * @return string
+	 * Format money amount
 	 */
-	public static function currency($num, $value = '&euro;', $decimal = 2, $after = true)
+	public static function currency(float $amount, string $currency = '&euro;', int $decimal = 2, bool $after = true) : string
 	{
-        $num = (float) $num;
-		$res = number_format($num, $decimal, ',', '.');
+        $res = number_format($amount, $decimal, ',', '.');
 
 		if ($after)
 		{
-			$res .= ' '.$value;
+			return $res .' '.$currency;
 		}
-		else
-		{
-			$res = $value.' '.$res;
-		}
-
-		return $res;
+        return $currency.' '.$res;
 	}
 
 	/**
 	 * URL correction
-	 *
-	 * @static
-	 * @param string	$url URL
-	 * @return string
 	 */
-	public static function check_url($url, $protocol = 'http')
+	public static function check_url(string $url, string $protocol = 'http') : string
 	{
-		if (substr($url, 0, 7) == 'http://' || substr($url, 0, 8) == 'https://')
-		{
-			return $url;
-		}
-		else
-		{
-			return $protocol.'://'.$url;
-		}
+		return (substr($url, 0, 7) == 'http://' || substr($url, 0, 8) == 'https://')
+            ? $url
+            : $protocol.'://'.$url;
 	}
 
 	/**
 	 * Get an integer from an ordinal string
-	 * ordinal is a string ok tokens, each token is a 4 char string
-	 *
-	 * @static
-	 * @param string	$ordinal ordinal string
-	 * @param integer	$token token index
-	 * @return integer
+	 * ordinal is a string of tokens, each token is a 4 char string
 	 */
-	public static function get_ordinal_value($ordinal, $token)
+	public static function get_ordinal_value(string $ordinal, int $token) : int
 	{
 		$a = explode('!', chunk_split(substr($ordinal, 1), 3, '!'));
 		return base_convert($a[$token], 36, 10);
 	}
 
-
 	/**
 	 * Disable caching
-	 *
-	 * @return void
 	 */
 	public static function nocache()
 	{
-		if (!defined('NOCACHE')) define('NOCACHE', true);
+		if (!defined('NOCACHE'))
+        {
+            define('NOCACHE', true);
+        }
 	}
 
 	/**
 	 * Return Client IP address
-	 *
-	 * @return string
 	 */
-	public static function get_ip()
+	public static function get_ip() : string
 	{
 		if (!empty($_SERVER['HTTP_CLIENT_IP']))
 		{
-			$ip = $_SERVER['HTTP_CLIENT_IP'];
+			return $_SERVER['HTTP_CLIENT_IP'];
 		}
 		elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR']))
 		{
-			$ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+			return $_SERVER['HTTP_X_FORWARDED_FOR'];
 		}
 		else
 		{
-			$ip = $_SERVER['REMOTE_ADDR'];
+			return $_SERVER['REMOTE_ADDR'];
 		}
-		return $ip;
 	}
 }

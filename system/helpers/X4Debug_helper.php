@@ -17,24 +17,26 @@ class X4Debug_helper
 {
 	/**
 	 * Print Debug informations about a var
-	 *
-	 * @param	string	$name Variable name
-	 * @param	mixed	$var Variable to explore
-	 * @param	boolean	$die Die after print
-	 * @return	string
 	 */
-	public static function dump($name, $var, $die = false)
+	public static function dump(string $varName, mixed $var, bool $die = false) : string
 	{
 		// Only in debug mode
 		if (DEBUG)
 		{
-			echo $name.': '.gettype($var).BR;
+			echo $varName.': '.gettype($var).BR;
 			if (is_array($var) || is_object($var))
+            {
 				print_r($var);
+            }
 			else
+            {
 				echo '*'.$var.'*';
+            }
+
 			if ($die)
+            {
 				die;
+            }
 		}
 	}
 

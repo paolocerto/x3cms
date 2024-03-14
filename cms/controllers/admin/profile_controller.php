@@ -18,8 +18,6 @@ class Profile_controller extends X3ui_controller
 	/**
 	 * Constructor
 	 * check if user is logged
-	 *
-	 * @return  void
 	 */
 	public function __construct()
 	{
@@ -29,10 +27,8 @@ class Profile_controller extends X3ui_controller
 
 	/**
 	 * Edit User profile
-	 *
-	 * @return  void
 	 */
-	public function _default()
+	public function _default() : void
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'login', 'users', 'profile'));
@@ -81,12 +77,8 @@ class Profile_controller extends X3ui_controller
 
 	/**
 	 * Register User profile
-	 *
-	 * @access	private
-	 * @param   array 	$_post _POST array
-	 * @return  void
 	 */
-	private function profiling(array $_post)
+	private function profiling(array $_post) : void
 	{
 		$msg = null;
 		// ther'is no permission check because each user can only change his profile
@@ -134,9 +126,9 @@ class Profile_controller extends X3ui_controller
 				$r = array($this->site->data->domain, $_post['username'], $_post['password']);
 				$subject = str_replace($s, $r, _SUBJECT_PROFILE);
 				$msg = str_replace($s, $r, _MSG_PROFILE);
-				$to = array(array('mail' => $_post['mail'], 'name' => $_post['username']));
+				$to = ['mail' => $_post['mail'], 'name' => $_post['username']];
 				// send
-				X4Mailer_helper::mailto(MAIL, false, $subject, $msg, $to);
+				X4Mailer_helper::mailto(MAIL, false, $subject, $msg, ['to' => [$to]]);
 			}
 
 			// set message

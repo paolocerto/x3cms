@@ -171,24 +171,20 @@ class X3cli_model extends X4Model_core
 
 	/**
 	 * Create controller
-	 *
-	 * @param string    $area
-	 * @param string    $name
-	 * @return  boolean
 	 */
-	public function create_controller(string $area, string $name)
+	public function create_controller(string $area, string $name) : bool
 	{
 	    $uname = ucfirst($name);
 	    $upper_name = strtoupper($name);
 
 	    // avoid overwrite
-	    if (!file_exists(APATH.'controllers/'.$area.'/'.$name.'_controller'.EXT))
+	    if (!file_exists(APATH.'controllers/'.$area.'/'.$name.'_controller.php'))
 	    {
 	        // try to create the file
             try
             {
                 // create the empty file
-                touch(APATH.'controllers/'.$area.'/'.$name.'_controller'.EXT);
+                touch(APATH.'controllers/'.$area.'/'.$name.'_controller.php');
 
                 if ($area == 'admin')
                 {
@@ -207,8 +203,6 @@ class '.$uname.'_controller extends X3ui_controller
 	/**
 	 * Constructor
 	 * check if user is logged
-	 *
-	 * @return  void
 	 */
 	public function __construct()
 	{
@@ -218,8 +212,6 @@ class '.$uname.'_controller extends X3ui_controller
 
 	/**
 	 * Default method
-	 *
-	 * @return  void
 	 */
 	public function _default()
 	{
@@ -292,13 +284,8 @@ If you want to fully use this method you have to create:</p>
 	/**
 	 * Index method
 	 * If you plan to use the data handled in this page in only one area set the $id_area default value as you need ((e.g. 2 == public area)
-	 *
-	 * @param   integer	$id_area  Area ID
-	 * @param   string	$lang     Language code
-	 * @param   integer	$pp       Active page index
-	 * @return  void
 	 */
-	public function index(int $id_area = 2, string $lang = \'en\', int $pp = 0)
+	public function index(int $id_area = 2, string $lang = \'en\', int $pp = 0) : void
 	{
 	    // load the dictionary
 		// you should have created a section in the dictionary for this controller
@@ -358,12 +345,8 @@ If you want to fully use this method you have to create:</p>
 	 * '.$uname.' actions
 	 * This method populates the top right of the admin layout
 	 * It usually contains the Plus button to add new items
-	 *
-	 * @param   integer	$id_area  Area ID
-	 * @param   string	$lang     Language code
-	 * @return  void
 	 */
-	private function actions(int $id_area, string $lang)
+	private function actions(int $id_area, string $lang) : string
 	{
 		return \'<a class="link" @click="popup(\\\'\'.BASE_URL.\''.$name.'/edit/\'.$id_area.\'/\'.$lang.\'\\\')" title="\'._'.strtoupper($name).'_NEW.\'">
                 <i class="fa-solid fa-lg fa-circle-plus"></i>
@@ -373,14 +356,8 @@ If you want to fully use this method you have to create:</p>
 	/**
 	 * Change status
 	 * This method is used to change the xon and xlock fields in the table '.$name.'
-	 *
-	 * @param   string	$what field to change
-     * @param   integer $id_area
-	 * @param   integer $id ID of the item to change
-	 * @param   integer $value value to set (0 = off, 1 = on)
-	 * @return  void
 	 */
-	public function set(string $what, int $id_area, int $id, int $value = 0)
+	public function set(string $what, int $id_area, int $id, int $value = 0) : void
 	{
 		$msg = null;
 		// check permissions
@@ -414,11 +391,8 @@ If you want to fully use this method you have to create:</p>
 	 * - a Table with name = '.$name.' with fields: id, name, title, description
 	 * - a dictionary section "'.$name.'" with at least the KEYS:  _EDIT_'.strtoupper($name).' and _ADD_'.strtoupper($name).'
 	 * - a model '.$uname.'_model which contains the '.$uname.'_obj class
-	 *
-	 * @param   integer  $id item ID (if 0 then is a new item)
-	 * @return  void
 	 */
-	public function edit(int $id_area, string $lang, int $id = 0)
+	public function edit(int $id_area, string $lang, int $id = 0) : void
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array(\'form\', \''.$name.'\'));
@@ -496,13 +470,8 @@ If you want to fully use this method you have to create:</p>
 	 * - a Table with name = '.$name.' with fields: id, id_area, lang, name, title, description
 	 * - you need in the table privtypes record for manage and create table items in '.$name.' ('.$name.' and _'.$name.'_creation)
 	 * - you need to assign those privileges to the group of your user in the table gprivs
-	 *
-	 * @access	private
-	 * @param   array 	$id Item ID
-	 * @param   array 	$_post _POST array
-	 * @return  void
 	 */
-	private function editing(int $id, array $_post)
+	private function editing(int $id, array $_post) : void
 	{
 		$msg = null;
 		// check permission
@@ -561,11 +530,8 @@ If you want to fully use this method you have to create:</p>
 	 * - a Table with name = '.$name.' with fields: id, title
 	 * - a dictionary section "'.$name.'" with at least the KEYS:  _DELETE_'.strtoupper($name).'
 	 * - a model '.$uname.'_model
-	 *
-	 * @param   integer $id Item ID
-	 * @return  void
 	 */
-	public function delete(int $id)
+	public function delete(int $id) : void
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array(\'form\', \''.$name.'\'));
@@ -608,12 +574,8 @@ If you want to fully use this method you have to create:</p>
 
 	/**
 	 * Delete item
-	 *
-	 * @access	private
-	 * @param   object  $item Item
-	 * @return  void
 	 */
-	private function deleting(stdClass $item)
+	private function deleting(stdClass $item) : void
 	{
 		$msg = null;
 		// check permission
@@ -645,12 +607,8 @@ If you want to fully use this method you have to create:</p>
 	/**
 	 * Move fields
 	 * Useful with orderable items
-	 *
-	 * @param   integer $id_area Area ID
-	 * @param   string $lang Language code
-	 * @return  void
 	 */
-	public function ordering(int $id_area, string $lang)
+	public function ordering(int $id_area, string $lang) : void
 	{
 		$msg = null;
 		// check permission not required
@@ -691,13 +649,8 @@ If you want to fully use this method you have to create:</p>
 
 	/**
 	 * Rebuild the widget
-	 *
-	 * @param	string	$title Widget title
-	 * @param	integer $id_area Area ID
-	 * @param	string	$area Area name
-	 * @return	array	string
 	 */
-	public function rewidget(string $title, int $id_area, string $area)
+	public function rewidget(string $title, int $id_area, string $area) : string
 	{
 		$mod = new '.$uname.'_model();
 		echo $mod->get_widget(urldecode($title), $id_area, urldecode($area), false);
@@ -724,8 +677,6 @@ class '.$uname.'_controller extends X4Cms_controller
     /**
 	 * Constructor
 	 * check if user is logged
-	 *
-	 * @return  void
 	 */
 	public function __construct()
 	{
@@ -756,8 +707,6 @@ class '.$uname.'_controller extends X4Cms_controller
 {
     /**
 	 * Constructor
-	 *
-	 * @return  void
 	 */
 	public function __construct()
 	{
@@ -772,7 +721,7 @@ class '.$uname.'_controller extends X4Cms_controller
                 }
 
                 // put the contents in the file
-                return (bool) file_put_contents(APATH.'controllers/'.$area.'/'.$name.'_controller'.EXT, $this->head.$this->controller_notes.$txt);
+                return (bool) file_put_contents(APATH.'controllers/'.$area.'/'.$name.'_controller.php', $this->head.$this->controller_notes.$txt);
 
             }
             catch (Exception $e)
@@ -782,27 +731,23 @@ class '.$uname.'_controller extends X4Cms_controller
         }
         else
         {
-            echo NL.'WARNING: the file '.APATH.'controllers/'.$area.'/'.$name.'_controller'.EXT.' already exists'.NL;
+            echo NL.'WARNING: the file '.APATH.'controllers/'.$area.'/'.$name.'_controller.php already exists'.NL;
         }
 	}
 
     /**
 	 * Create form
-	 *
-	 * @param string    $area
-	 * @param string    $name
-	 * @return  boolean
 	 */
-	public function create_form(string $area, string $name)
+	public function create_form(string $area, string $name) : bool
 	{
 	    // avoid overwrite
-	    if (!file_exists(APATH.'forms/'.$area.'/'.$name.'_form'.EXT))
+	    if (!file_exists(APATH.'forms/'.$area.'/'.$name.'_form.php'))
 	    {
 	        // try to create the file
             try
             {
                 // create the empty file
-                touch(APATH.'forms/'.$area.'/'.$name.'_form'.EXT);
+                touch(APATH.'forms/'.$area.'/'.$name.'_form.php');
 
                 $txt = '
 
@@ -931,7 +876,7 @@ $fields[] = array(
 ';
 
                 // put the contents in the file
-                return (bool) file_put_contents(APATH.'forms/'.$area.'/'.$name.'_form'.EXT, $this->head.$this->form_notes.$txt);
+                return (bool) file_put_contents(APATH.'forms/'.$area.'/'.$name.'_form.php', $this->head.$this->form_notes.$txt);
 
             }
             catch (Exception $e)
@@ -941,30 +886,26 @@ $fields[] = array(
         }
         else
         {
-            echo NL.'WARNING: the file '.APATH.'forms/'.$area.'/'.$name.'_form'.EXT.' already exists'.NL;
+            echo NL.'WARNING: the file '.APATH.'forms/'.$area.'/'.$name.'_form.php already exists'.NL;
         }
 
     }
 
 	/**
 	 * Create model
-	 *
-	 * @param string    $area
-	 * @param string    $name
-	 * @return  boolean
 	 */
-	public function create_model(string $area, string $name)
+	public function create_model(string $area, string $name) : bool
 	{
 	    $uname = ucfirst($name);
 
 	    // avoid overwrite
-	    if (!file_exists(APATH.'models/'.$uname.'_model'.EXT))
+	    if (!file_exists(APATH.'models/'.$uname.'_model.php'))
 	    {
 	        // try to create the file
             try
             {
                 // create the empty file
-                touch(APATH.'models/'.$uname.'_model'.EXT);
+                touch(APATH.'models/'.$uname.'_model.php');
 
                 // check if the table exists
                 $table = $this->get_table_name($name);
@@ -991,11 +932,8 @@ class '.$uname.'_model extends X4Model_core
 	/**
 	 * Get url for search
 	 * if you need a special URL with search
-	 *
-	 * @param object	Project obj
-	 * @return string
 	 */
-	public function get_url(stdClass $obj, string $topage)
+	public function get_url(stdClass $obj, string $topage) : string
 	{
 		return $topage.\'/\'.$obj->id.\'/\'.$obj->url;
 	}
@@ -1003,8 +941,6 @@ class '.$uname.'_model extends X4Model_core
     /**
 	 * Constructor
 	 * set the default table
-	 *
-	 * @return  void
 	 */
 	public function __construct()
 	{
@@ -1013,17 +949,11 @@ class '.$uname.'_model extends X4Model_core
 
 	/**
 	 * Get items
-	 * Join with privs table
-	 *
-	 * @param   integer $id_area Area ID
-	 * @param   string	$lang Language code
-	 * @param   mixed   $qs if you use filters is the array with filters keys else is null
-	 * @return  array	array of objects
 	 */
-	public function get_items(int $id_area, string $lang, $qs)
+	public function get_items(int $id_area, string $lang, array $qs = []) : array
 	{
 		$where = \'\';
-		if (!empty($qs[\'xstr\']))
+		if (isset($qs[\'xstr\']) && !empty($qs[\'xstr\']))
         {
             $w = array();
             $tok = explode(\' \', urldecode($qs[\'xstr\']));
@@ -1063,12 +993,8 @@ class '.$uname.'_model extends X4Model_core
                         $txt .= '
     /**
 	 * Check if table items are sortable
-	 *
-	 * @param   integer $id_area Area ID
-	 * @param   string	$lang Language code
-	 * @return  boolean
 	 */
-	public function is_sortable(int $id_area, string $lang)
+	public function is_sortable(int $id_area, string $lang) : bool
 	{
 		$obj = new '.$uname.'_obj($id_area, $lang);
 		return isset($obj->xpos);
@@ -1081,9 +1007,9 @@ class '.$uname.'_model extends X4Model_core
 	 * @param   string	$lang Language code
 	 * @return  array	array of objects
 	 */
-	public function get_max_pos(int $id_area, string $lang)
+	public function get_max_pos(int $id_area, string $lang) : int
 	{
-		return $this->db->query_var(\'SELECT xpos
+		return (int) $this->db->query_var(\'SELECT xpos
 			FROM '.$table.'
 			WHERE
 				id_area = \'.$id_area.\' AND
@@ -1097,13 +1023,8 @@ class '.$uname.'_model extends X4Model_core
 	 * You need to add a record in the modules table to make this available in the admin side
 	 * INSERT INTO modules (updated, id_area, name, title, configurable, admin, searchable, mappable, widget, version, xon) VALUES (NOW(), ID_AREA, \''.$name.'\', \''.$uname.' widget\', 0, 0, 0, 0, 1, \'0\', 1);
 	 * Please make attention to the ID_AREA value, set it like the ID of the area where you will use the items in the table, or if you plan to use in more than one area, add a record for each area.
-	 *
-	 * @param	string	$title Widget title
-	 * @param	integer $id_area Area ID
-	 * @param	string	$area Area name
-	 * @return	array	string
 	 */
-	public function get_widget(string $title, int $id_area, string $area)
+	public function get_widget(string $title, int $id_area, string $area) : string
 	{
 		// here get the data you want to show inside the widget
 
@@ -1154,10 +1075,6 @@ class '.ucfirst($name).'_obj
 
 	/**
 	 * Constructor
-	 *
-	 * @param   integer	$id_area Area ID
-	 * @param   string	$lang Language code
-	 * @return  void
 	 */
 	public function __construct(int $id_area, string $lang)
 	{
@@ -1178,7 +1095,7 @@ class '.ucfirst($name).'_obj
                     }
 
                     // put the contents in the file
-                    return (bool) file_put_contents(APATH.'models/'.$uname.'_model'.EXT, $this->head.$this->model_notes.$txt);
+                    return (bool) file_put_contents(APATH.'models/'.$uname.'_model.php', $this->head.$this->model_notes.$txt);
                 }
                 else
                 {
@@ -1192,29 +1109,25 @@ class '.ucfirst($name).'_obj
         }
         else
         {
-            echo NL.'WARNING: the file '.APATH.'models/'.$uname.'_model'.EXT.' already exists'.NL;
+            echo NL.'WARNING: the file '.APATH.'models/'.$uname.'_model.php already exists'.NL;
         }
 	}
 
 	/**
 	 * Create view
-	 *
-	 * @param string    $area
-	 * @param string    $name
-	 * @return  boolean
 	 */
-	public function create_view(string $area, string $name)
+	public function create_view(string $area, string $name) : bool
 	{
 	    $uname = strtoupper($name);
 
 	    // avoid overwrite
-	    if (!file_exists(APATH.'views/'.$area.'/'.$name.'_view'.EXT))
+	    if (!file_exists(APATH.'views/'.$area.'/'.$name.'_view.php'))
 	    {
 	        // try to create the file
             try
             {
                 // create the empty file
-                touch(APATH.'views/'.$area.'/'.$name.'_view'.EXT);
+                touch(APATH.'views/'.$area.'/'.$name.'_view.php');
 
                 if ($area == 'admin')
                 {
@@ -1420,7 +1333,7 @@ else
                 }
 
                 // put the contents in the file
-                return (bool) file_put_contents(APATH.'views/'.$area.'/'.$name.'_view'.EXT, $this->head.$this->view_notes.$txt);
+                return (bool) file_put_contents(APATH.'views/'.$area.'/'.$name.'_view.php', $this->head.$this->view_notes.$txt);
             }
             catch (Exception $e)
             {
@@ -1429,62 +1342,49 @@ else
         }
         else
         {
-            echo NL.'WARNING: the file '.APATH.'views/'.$area.'/'.$name.'_view'.EXT.' already exists'.NL;
+            echo NL.'WARNING: the file '.APATH.'views/'.$area.'/'.$name.'_view.php already exists'.NL;
         }
 	}
 
 	/**
 	 * Get table name
-	 *
-	 * @param string    $name
-	 * @return  string
 	 */
-	private function get_table_name(string $name)
+	private function get_table_name(string $table_name) : string
 	{
-	    if ($this->table_exists($name))
+	    if ($this->table_exists($table_name))
 		{
-		    // the table already exists
-		    return $name;
+		    return $table_name;
 		}
-		else
-		{
-		    // create a default table
-		    $this->db->single_exec(str_replace('XXXTABLE_NAMEXXX', $name, $this->sql), 'NO_ID');
 
-		    if ($this->table_exists($name))
-		    {
-		        return $name;
-		    }
-		    else
-		    {
-		        return '';
-		    }
-		}
+        // create a default table
+        $this->db->single_exec(str_replace('XXXTABLE_NAMEXXX', $table_name, $this->sql), 'NO_ID');
+        if ($this->table_exists($table_name))
+        {
+            return $table_name;
+        }
+        else
+        {
+            return '';
+        }
 	}
 
 	/**
 	 * Check if a table exists
-	 *
-	 * @param string    $name
-	 * @return  booelan
 	 */
-	private function table_exists(string $name)
+	private function table_exists(string $table_name) : int
 	{
-	    return  $this->db->query_var('SELECT COUNT(*) AS n
+	    return (int) $this->db->query_var('SELECT COUNT(*) AS n
 				FROM information_schema.tables
 				WHERE
 					table_schema = '.$this->db->escape(X4Core_core::$db['default']['db_name']).' AND
-					table_name = '.$this->db->escape($name));
+					table_name = '.$this->db->escape($table_name));
 	}
 
 	/**
 	 * Check if the privtypes over a table exist
 	 * If not exist create and assign them to the admin group
-	 *
-	 * @param string    $name
-	 * @return  booelan
 	 */
-	private function check_privtypes(string $name)
+	private function check_privtypes(string $table_name) : int
 	{
 	    // get admin languages
 	    $langs = $this->db->query('SELECT code FROM alang WHERE id_area = 1 ORDER BY language ASC');
@@ -1492,31 +1392,31 @@ else
 	    $sql = array();
 
 	    // creation
-	    $creation = (int) $this->db->query_var('SELECT COUNT(id) AS n
+	    $creation = (int) $this->db->query_var('SELECT COUNT(*) AS n
 				FROM privtypes
-				WHERE name = '.$this->db->escape('_'.$name.'_creation'));
+				WHERE name = '.$this->db->escape('_'.$table_name.'_creation'));
 
 		if (!$creation)
 		{
-		    $sql[] = "INSERT INTO privtypes (updated, xrif, name, description, xon) VALUES (NOW(), 1, '_".$name."_creation', '_".strtoupper($name)."_CREATION', 1)";
-		    $sql[] = "INSERT INTO gprivs (updated, id_group, what, level, xon) VALUES (NOW(), 1, '_".$name."_creation', 4, 1)";
+		    $sql[] = "INSERT INTO privtypes (updated, xrif, name, description, xon) VALUES (NOW(), 1, '_".$table_name."_creation', '_".strtoupper($table_name)."_CREATION', 1)";
+		    $sql[] = "INSERT INTO gprivs (updated, id_group, what, level, xon) VALUES (NOW(), 1, '_".$table_name."_creation', 4, 1)";
 		    foreach ($langs as $i)
 		    {
-		        $sql[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), '".$i->code."', 'admin', 'groups', '_".strtoupper($name)."_CREATION', '".ucfirst($name)." creation', 0, 1)";
+		        $sql[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), '".$i->code."', 'admin', 'groups', '_".strtoupper($table_name)."_CREATION', '".ucfirst($table_name)." creation', 0, 1)";
 		    }
 		}
 
-		$edit = (int) $this->db->query_var('SELECT COUNT(id) AS n
+		$edit = (int) $this->db->query_var('SELECT COUNT(*) AS n
 				FROM privtypes
-				WHERE name = '.$this->db->escape($name));
+				WHERE name = '.$this->db->escape($table_name));
 
 		if (!$edit)
 		{
-		    $sql[] = "INSERT INTO privtypes (updated, xrif, name, description, xon) VALUES (NOW(), 1, '".$name."', '".strtoupper($name)."', 1)";
-		    $sql[] = "INSERT INTO gprivs (updated, id_group, what, level, xon) VALUES (NOW(), 1, '".$name."', 4, 1)";
+		    $sql[] = "INSERT INTO privtypes (updated, xrif, name, description, xon) VALUES (NOW(), 1, '".$table_name."', '".strtoupper($table_name)."', 1)";
+		    $sql[] = "INSERT INTO gprivs (updated, id_group, what, level, xon) VALUES (NOW(), 1, '".$table_name."', 4, 1)";
 		    foreach ($langs as $i)
 		    {
-		        $sql[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), '".$i->code."', 'admin', 'groups', '".strtoupper($name)."', '".ucfirst($name)." manager', 0, 1)";
+		        $sql[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), '".$i->code."', 'admin', 'groups', '".strtoupper($table_name)."', '".ucfirst($table_name)." manager', 0, 1)";
 		    }
 		}
 
@@ -1536,12 +1436,8 @@ else
 	/**
 	 * Create dictionary
 	 * Only for the admin area
-	 *
-	 * @param string    $area
-	 * @param string    $name
-	 * @return  boolean
 	 */
-	public function create_dictionary(string $area, string $name)
+	public function create_dictionary(string $area, string $name) : int
 	{
 	    $uname = strtoupper($name);
 
@@ -1552,10 +1448,11 @@ else
 	        WHERE a.name = '.$this->db->escape($area).'
 	        ORDER BY l.language ASC');
 
+        $res = [0, 0];
 	    foreach ($langs as $i)
 	    {
 	        // check if the section already exists
-	        $chk = (int) $this->db->query_var('SELECT COUNT(id) AS n
+	        $chk = (int) $this->db->query_var('SELECT COUNT(*) AS n
                 FROM dictionary
                 WHERE
                     area = '.$this->db->escape($area).' AND
@@ -1572,14 +1469,13 @@ else
                     $sql[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), '".$i->code."', 'admin', '$name', '".str_replace('XXX', $uname, $k)."', '".str_replace('XXX', $name, $v)."', 0, 1)";;
                 }
                 $res = $this->db->multi_exec($sql);
-                return $res[1];
             }
             else
             {
                 echo NL.'WARNING: a dictionary section named "'.$name.'" already exists for the '.$area.' area and the '.$i->language.' language'.NL;
-                return null;
             }
         }
+        return $res[1];
 	}
 
 }

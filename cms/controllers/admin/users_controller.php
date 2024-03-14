@@ -18,8 +18,6 @@ class Users_controller extends X3ui_controller
 	/**
 	 * Constructor
 	 * check if user is logged
-	 *
-	 * @return  void
 	 */
 	public function __construct()
 	{
@@ -29,10 +27,8 @@ class Users_controller extends X3ui_controller
 
 	/**
 	 * Show groups
-	 *
-	 * @return  void
 	 */
-	public function _default()
+	public function _default() : void
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('groups', 'users', 'msg'));
@@ -55,11 +51,8 @@ class Users_controller extends X3ui_controller
 
 	/**
 	 * Show users in a group
-	 *
-     * @param   integer $id_group
-	 * @return  void
 	 */
-	public function users(int $id_group)
+	public function users(int $id_group) : void
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('users'));
@@ -84,14 +77,8 @@ class Users_controller extends X3ui_controller
 
 	/**
 	 * Group and Users actions
-	 *
-     * @access	private
-     * @param   string  $what
-     * @param   integer $id_group
-     * @param   integer $id User
-	 * @return  void
 	 */
-	private function actions(string $what, int $id_group = 0, int $id = 0)
+	private function actions(string $what, int $id_group = 0, int $id = 0) : string
 	{
         if ($what == 'group')
         {
@@ -149,13 +136,8 @@ class Users_controller extends X3ui_controller
 
 	/**
 	 * Change status
-	 *
-	 * @param   string  $what field to change
-	 * @param   integer $id ID of the item to change
-	 * @param   integer $value value to set (0 = off, 1 = on)
-	 * @return  void
 	 */
-	public function set(string $what, int $id, int $value = 0)
+	public function set(string $what, int $id, int $value = 0) : void
 	{
 		$msg = null;
 		// check permission
@@ -184,11 +166,8 @@ class Users_controller extends X3ui_controller
 
 	/**
 	 * Show user data
-	 *
-	 * @param   integer $id User ID
-	 * @return  void
 	 */
-	public function user(int $id)
+	public function user(int $id) : void
 	{
 	    // load dictionaries
 		$this->dict->get_wordarray(array('users', 'form', 'login'));
@@ -217,13 +196,9 @@ class Users_controller extends X3ui_controller
 	}
 
 	/**
-	 * New / Edit user form (use Ajax)
-	 *
-	 * @param   integer  $id User ID (if 0 then is a new item)
-	 * @param   integer  $id_group Group ID (if 0 then is a new item)
-	 * @return  void
+	 * New / Edit user form
 	 */
-	public function edit(int $id, int $id_group = 0)
+	public function edit(int $id, int $id_group = 0) : void
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'login', 'users'));
@@ -288,13 +263,9 @@ class Users_controller extends X3ui_controller
 	}
 
 	/**
-	 * Register Edit / New User form data
-	 *
-	 * @param   integer $id item ID (if 0 then is a new item)
-	 * @param   array 	$_post _POST array
-	 * @return  void
+	 * Register Edit / New User
 	 */
-	private function editing(int $id, array $_post)
+	private function editing(int $id, array $_post) : void
 	{
 		$msg = null;
 		// check permission
@@ -330,44 +301,31 @@ class Users_controller extends X3ui_controller
 			}
 			else
 			{
+                // for redirect
+                $where = '';
 			    $perm = new Permission_model();
+                $perm->set_aprivs($id, $_post['domain']);
 				if ($id)
 				{
-					// update
 					$result = $mod->update($id, $post);
-
-					// update user privileges on areas
-					$perm->set_aprivs($id, $_post['domain']);
-
-					// redirect
 					$where = '/user/'.$id;
 				}
 				else
 				{
-					// insert
 					$result = $mod->insert($post);
-
-					// redirect
-					$where = '';
-
 					if ($result[1])
 					{
 						$id = $result[0];
-
-						// set privileges on areas
-						$perm->set_aprivs($id, $_post['domain']);
+                        $perm->set_uprivs($_SESSION['xuid'], $id, 'areas', $_post['level']);
 					}
 				}
 
-				// set message
 				$msg = AdmUtils_helper::set_msg($result);
 
-				// set what update
 				if ($result[1])
 				{
                     if (!$id)
                     {
-                        // permissions
                         $perm = new Permission_model();
                         $array[] = array(
                             'action' => 'insert',
@@ -389,14 +347,9 @@ class Users_controller extends X3ui_controller
 	}
 
 	/**
-	 * Edit user permission form (use Ajax)
-	 *
-	 * @param   integer  $id_user User ID
-	 * @param   integer  $id_area Area ID
-	 * @param   integer  $table if equal to 0 manage abstract permission (creation, installation) else manage real permission over table records
-	 * @return  void
+	 * Edit user permission form
 	 */
-	public function perm(int $id_user, int $id_area, int $table = 0)
+	public function perm(int $id_user, int $id_area, int $table = 0) : void
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'groups', 'users'));
@@ -454,12 +407,8 @@ class Users_controller extends X3ui_controller
 
 	/**
 	 * Refresh upriv table and then privs
-	 *
-	 * @access	private
-	 * @param   array 	$_post _POST array
-	 * @return  void
 	 */
-	private function permitting(array $_post)
+	private function permitting(array $_post) : void
 	{
 		$msg = null;
 		// check permission
@@ -525,11 +474,8 @@ class Users_controller extends X3ui_controller
 	/**
 	 * Syncronize User permission with group's settings
 	 * User will lose any customizations
-	 *
-	 * @param   integer	$id_user User ID
-	 * @return  void
 	 */
-	public function reset(int $id_user)
+	public function reset(int $id_user) : void
 	{
 		$msg = null;
 		// check permission
@@ -559,11 +505,8 @@ class Users_controller extends X3ui_controller
 	/**
 	 * Refresh User permission with group's settings
 	 * User will keep all customizations
-	 *
-	 * @param   integer	$id_user User ID
-	 * @return  void
 	 */
-	public function refactory(int $id_user)
+	public function refactory(int $id_user) : void
 	{
 		$msg = null;
 		// check permission
@@ -592,13 +535,8 @@ class Users_controller extends X3ui_controller
 
 	/**
 	 * Edit User permission on table's records
-	 *
-	 * @param   integer	$id_user User ID
-	 * @param   integer	$id_area Area ID
-	 * @param   string	$table Table name
-	 * @return  void
 	 */
-	public function permissions(int $id_user, int $id_area, string $table)
+	public function permissions(int $id_user, int $id_area, string $table) : void
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'groups', 'users'));
@@ -656,10 +594,8 @@ class Users_controller extends X3ui_controller
 
     /**
 	 * Script for set for all
-	 *
-	 * @return  string
 	 */
-	public function set_for_all()
+	public function set_for_all() : void
 	{
         header('Content-Type: text/javascript');
         header("Content-Disposition: attachment; filename=set_for_all.js");
@@ -674,12 +610,8 @@ function setForAll(val) {
 
 	/**
 	 * Update user permissions on table records
-	 *
-	 * @access	private
-	 * @param   array 	$_post _POST array
-	 * @return  void
 	 */
-	private function detailing(array $_post)
+	private function detailing(array $_post) : void
 	{
 		$msg = null;
 		// check permission
@@ -729,12 +661,9 @@ function setForAll(val) {
 	}
 
 	/**
-	 * Delete User form (use Ajax)
-	 *
-	 * @param   integer $id User ID
-	 * @return  void
+	 * Delete User form
 	 */
-	public function delete(int $id)
+	public function delete(int $id) : void
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'users'));
@@ -773,12 +702,8 @@ function setForAll(val) {
 
 	/**
 	 * Delete user
-	 *
-	 * @access	private
-	 * @param   stdClass    $item
-	 * @return  void
 	 */
-	private function deleting(stdClass $item)
+	private function deleting(stdClass $item) : void
 	{
 		$msg = null;
 		// check permission

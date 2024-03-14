@@ -18,8 +18,6 @@ class Pages_controller extends X3ui_controller
 	/**
 	 * Constructor
 	 * check if user is logged
-	 *
-	 * @return  void
 	 */
 	public function __construct()
 	{
@@ -29,10 +27,8 @@ class Pages_controller extends X3ui_controller
 
 	/**
 	 * Show pages
-	 *
-	 * @return  void
 	 */
-	public function _default()
+	public function _default() : void
 	{
 		$this->index(2, '', 'home');
 	}
@@ -42,13 +38,8 @@ class Pages_controller extends X3ui_controller
 	 * As default display public area pages
 	 * Display all child pages of a given page
 	 * If the page is the home of the area, then you also view the home
-	 *
-	 * @param   integer $id_area Area ID
-	 * @param   string  $lang language code
-	 * @param   string  $xfrom page URL of origin
-	 * @return  void
 	 */
-	public function index(int $id_area, string $lang = '', string $xfrom = 'home')
+	public function index(int $id_area, string $lang = '', string $xfrom = 'home') : void
 	{
 	    $area = new Area_model();
 	    list($id_area, $areas) = $area->get_my_areas(0, $id_area);
@@ -102,11 +93,8 @@ class Pages_controller extends X3ui_controller
 
 	/**
 	 * Pages actions
-	 *
-     * @access	private
-	 * @return  void
 	 */
-	private function actions(int $id_area, string $lang, string $xfrom = '')
+	private function actions(int $id_area, string $lang, string $xfrom = '') : string
 	{
 		return '<a class="link" @click="popup(\''.BASE_URL.'areas/map/'.$id_area.'/'.$lang.'\')" title="'._SITE_MAP.'"><i class="fa-solid fa-lg fa-location-dot"></i></i></a>
 				<a class="link" @click="popup(\''.BASE_URL.'pages/add/'.$id_area.'/'.$lang.'/'.$xfrom.'\')" title="'._NEW_PAGE.'"><i class="fa-solid fa-lg fa-circle-plus"></i></a>';
@@ -114,14 +102,8 @@ class Pages_controller extends X3ui_controller
 
 	/**
 	 * Change status
-	 *
-	 * @param   string  $what field to change
-     * @param   integer $id_area
-	 * @param   integer $id ID of the item to change
-	 * @param   integer $value value to set (0 = off, 1 = on)
-	 * @return  void
 	 */
-	public function set(string $what, int $id_area, int $id, int $value = 0)
+	public function set(string $what, int $id_area, int $id, int $value = 0) : void
 	{
 		$msg = null;
 		// check permission
@@ -147,13 +129,8 @@ class Pages_controller extends X3ui_controller
 
 	/**
 	 * Add page form
-	 *
-	 * @param   integer $id_area Area ID
-	 * @param   string	$lang Language code
-	 * @param   string	$xfrom Page URL of parent page
-	 * @return  mixed
 	 */
-	public function add(int $id_area, string $lang, string $xfrom)
+	public function add(int $id_area, string $lang, string $xfrom) : void
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'pages'));
@@ -204,12 +181,8 @@ class Pages_controller extends X3ui_controller
 
 	/**
 	 * Register new page
-	 *
-	 * @access	private
-	 * @param   array 	$_post _POST array
-	 * @return  void
 	 */
-	private function adding(array $_post)
+	private function adding(array $_post) : void
 	{
 		$msg = null;
 		// check permissions
@@ -273,13 +246,13 @@ class Pages_controller extends X3ui_controller
 				{
                     // permissions
                     $perm = new Permission_model();
-                    $array[] = array(
+                    $array = array(
                         'action' => 'insert',
                         'id_what' => $result[0],
                         'id_user' => $_SESSION['xuid'],
                         'level' => 4
                     );
-                    $perm->pexec('pages', $array, $post['id_area']);
+                    $perm->pexec('pages', [$array], $post['id_area']);
 
 					$msg->update = array(
 						'element' => 'page',
@@ -293,11 +266,8 @@ class Pages_controller extends X3ui_controller
 
     /**
 	 * Change page position
-	 *
-	 * @param   integer  $id Page ID
-	 * @return  void
 	 */
-	public function move(int $id)
+	public function move(int $id) : void
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'pages'));
@@ -370,14 +340,8 @@ class Pages_controller extends X3ui_controller
 
     /**
 	 * Subpages
-	 *
-	 * @param   integer $id_area
-     * @param   string  $lang
-     * @param   string  $xfrom
-     * @param   integer $id_menu
-	 * @return  string
 	 */
-	public function subpages(int $id_area, string $lang, string $xfrom, int $id_menu)
+	public function subpages(int $id_area, string $lang, string $xfrom, int $id_menu) : void
 	{
 		$mod = new Page_model($id_area, $lang);
 
@@ -400,12 +364,8 @@ class Pages_controller extends X3ui_controller
 
     /**
 	 * Save new position
-	 *
-	 * @access	private
-	 * @param   array 	$_post _POST array
-	 * @return  void
 	 */
-	private function moving(array $_post)
+	private function moving(array $_post) : void
 	{
 		$msg = null;
 		// check permissions
@@ -467,12 +427,9 @@ class Pages_controller extends X3ui_controller
 
 
 	/**
-	 * Edit SEO data of a page (use Ajax)
-	 *
-	 * @param   integer  $id Page ID
-	 * @return  void
+	 * Edit SEO data of a page
 	 */
-	public function seo(int $id)
+	public function seo(int $id) : void
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'pages'));
@@ -527,12 +484,8 @@ class Pages_controller extends X3ui_controller
 
 	/**
 	 * Register SEO data
-	 *
-	 * @access	private
-	 * @param   array 	$_post _POST array
-	 * @return  void
 	 */
-	private function reg_seo(array $_post)
+	private function reg_seo(array $_post) : void
 	{
 		$msg = null;
 		// check permissions
@@ -614,12 +567,9 @@ class Pages_controller extends X3ui_controller
 	}
 
 	/**
-	 * Delete Page form (use Ajax)
-	 *
-	 * @param   integer $id Page ID
-	 * @return  void
+	 * Delete Page form
 	 */
-	public function delete(int $id)
+	public function delete(int $id) : void
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'pages'));
@@ -667,12 +617,8 @@ class Pages_controller extends X3ui_controller
 
 	/**
 	 * Delete page
-	 *
-	 * @access	private
-	 * @param   stdClass    $item
-	 * @return  void
 	 */
-	private function deleting(stdClass $item)
+	private function deleting(stdClass $item) : void
 	{
 		$msg = null;
 		// check permissions
@@ -707,12 +653,8 @@ class Pages_controller extends X3ui_controller
 
 	/**
 	 * Initialize area: create default pages
-	 *
-	 * @param   integer	$id_area Area ID
-	 * @param   string	$lang Language code
-	 * @return  void
 	 */
-	public function init(int $id_area, string $lang)
+	public function init(int $id_area, string $lang) : void
 	{
 		$msg = null;
 		// check permissions
@@ -726,44 +668,15 @@ class Pages_controller extends X3ui_controller
 
 			$mod = new Page_model($id_area, $lang);
 
-			// build the post array
-			$post = array();
-
 			if ($id_area == 1)
 			{
 				// admin area
-
-				// uses admin area with language = SESSION['lang'] as base and duplicates all pages
-				$pmod = new Page_model($id_area, $_SESSION['lang']);
-				$pages = $pmod->get_pages();
-
-				foreach ($pages as $i)
-				{
-					$post[] = array($i->url,
-						array(
-							'lang' => $lang,
-							'id_area' => $id_area,
-							'xid' => $i->xid,
-							'url' => $i->url,
-							'name' => $i->name,
-							'title' => $i->title,
-							'description' => $i->description,
-							'xfrom' => $i->xfrom,
-							'tpl' => $i->tpl,
-							'css' => $i->css,
-							'id_menu' => $i->id_menu,
-							'xpos' => $i->xpos,
-							'deep' => $i->deep,
-							'ordinal' => $i->ordinal,
-							'xon' => $i->xon
-						)
-					);
-				}
+                $post = $this->init_admin($id_area, $lang);
 			}
 			else
 			{
 				// other areas
-
+                $post = [];
 				// home
 				$post[] = array('home', array('lang' => $lang,'id_area' => $id_area,'xid' => 'pages','url' => 'home','name' => 'Home page',
 					'title' => 'Home page',	'description' => 'Home page','xfrom' => 'home','tpl' => 'base', 'css' => 'base',
@@ -813,17 +726,48 @@ class Pages_controller extends X3ui_controller
 		$this->response($msg);
 	}
 
+    /**
+     * Init admin area
+     */
+    private function init_admin(int $id_area, string $lang) : array
+    {
+
+        // uses admin area with language = SESSION['lang'] as base and duplicates all pages
+        $pmod = new Page_model($id_area, $_SESSION['lang']);
+        $pages = $pmod->get_pages();
+
+        $post = [];
+        foreach ($pages as $i)
+        {
+            $post[] = array($i->url,
+                array(
+                    'lang' => $lang,
+                    'id_area' => $id_area,
+                    'xid' => $i->xid,
+                    'url' => $i->url,
+                    'name' => $i->name,
+                    'title' => $i->title,
+                    'description' => $i->description,
+                    'xfrom' => $i->xfrom,
+                    'tpl' => $i->tpl,
+                    'css' => $i->css,
+                    'id_menu' => $i->id_menu,
+                    'xpos' => $i->xpos,
+                    'deep' => $i->deep,
+                    'ordinal' => $i->ordinal,
+                    'xon' => $i->xon
+                )
+            );
+        }
+        return $post;
+    }
+
 	/**
-	 * Duplicate an area for another language (secret method)
+	 * Duplicate pages from an area for another language (secret method)
 	 * If you need to add another language to an area you can call this script
 	 * /admin/pages/duplicate_area_lang/ID_AREA/OLD_LANG/NEW_LANG
-	 *
-	 * @param   integer $id_area Area ID
-	 * @param   string  $old_lang Old language to copy
-	 * @param   string  $new_lang New language to set
-	 * @return  string
 	 */
-	public function duplicate_area_lang(int $id_area, string $old_lang, string $new_lang)
+	public function duplicate_area_lang(int $id_area, string $old_lang, string $new_lang) : void
 	{
 		// Comment the next row to enable the method
 		die('Operation disabled!');

@@ -18,8 +18,6 @@ class Site_model extends X4Model_core
 	/**
 	 * Constructor
 	 * set the default table
-	 *
-	 * @return  void
 	 */
 	public function __construct()
 	{
@@ -28,11 +26,8 @@ class Site_model extends X4Model_core
 
     /**
 	 * Get items
-	 *
-     * @param   integer $xuid
-	 * @return  array	array of objects
 	 */
-	public function get_items(int $xuid)
+	public function get_items(int $xuid) : array
 	{
 		$sql = 'SELECT s.*
             FROM sites s
@@ -44,11 +39,8 @@ class Site_model extends X4Model_core
 
     /**
 	 * Get site params
-	 *
-	 * @param integer	site ID
-	 * @return array	array of objects
 	 */
-	public function get_params(int $id_site)
+	public function get_params(int $id_site) : array
 	{
 		return $this->db->query('SELECT pa.*
 				FROM param pa
@@ -58,11 +50,8 @@ class Site_model extends X4Model_core
     /**
 	 * Init params
      * Copy params from site 1
-	 *
-     * @param integer	site ID
-	 * @return array	array of objects
 	 */
-	public function init_params(int $id_site)
+	public function init_params(int $id_site) : array
 	{
 		$params = $this->db->query('SELECT *
 				FROM param

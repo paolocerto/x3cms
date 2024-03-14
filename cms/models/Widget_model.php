@@ -18,8 +18,6 @@ class Widget_model extends X4Model_core
 	/**
 	 * Constructor
 	 * set the default table
-	 *
-	 * @return  void
 	 */
 	public function __construct()
 	{
@@ -28,15 +26,13 @@ class Widget_model extends X4Model_core
 
 	/**
 	 * Build an array of user widgets
-	 *
-	 * @return  array	array of widget strings
 	 */
-	public function widgets()
+	public function widgets() : array
 	{
 		// get user widgets
 		$widgets = $this->get_my_widgets(1);
 
-		$a = array();
+		$a = [];
 		if ($widgets)
 		{
 			// build widgets items
@@ -55,10 +51,8 @@ class Widget_model extends X4Model_core
 
 	/**
 	 * Get user widgets
-	 *
-	 * @return  array	array of widget objects
 	 */
-	public function get_my_widgets(int $xon = 2)
+	public function get_my_widgets(int $xon = 2) : array
 	{
 		$where = ($xon < 2)
 			? ' AND x.xon = '.$xon
@@ -73,12 +67,8 @@ class Widget_model extends X4Model_core
 
 	/**
 	 * Get user available widgets
-	 * Join with areas, privs and widgets tables
-	 *
-	 * @param   integer $id_user User ID
-	 * @return  array	array of widget objects
 	 */
-	public function get_available_widgets(int $id_user)
+	public function get_available_widgets(int $id_user) : array
 	{
         return $this->db->query('SELECT m.id, CONCAT(a.title, \' - \', m.title) AS what, IF(w.id = \'null\', 0, w.id) AS wid
 			FROM modules m
@@ -94,15 +84,10 @@ class Widget_model extends X4Model_core
 
 	/**
 	 * Set user widgets
-	 *
-	 * @param   array	$insert Widgets to insert
-	 * @param   array	$delete Widgets to delete
-	 * @return  array
 	 */
-	public function set_widgets(array $insert, array $delete)
+	public function set_widgets(array $insert, array $delete) : array
 	{
-		$sql = array();
-
+		$sql = [];
 		foreach ($insert as $i)
 		{
 			$sql[] = 'INSERT INTO widgets (updated, id_area, id_user, id_module, name, description, xon)
@@ -113,7 +98,6 @@ class Widget_model extends X4Model_core
 		{
 			$sql[] = 'DELETE FROM widgets WHERE id = '.intval($i['id_widget']).' AND id_user = '.intval($i['id_user']);
 		}
-
 		$result = $this->db->multi_exec($sql);
 
 		// order
@@ -126,25 +110,19 @@ class Widget_model extends X4Model_core
 
 	/**
 	 * Get the position of the next widget
-	 *
-	 * @param   integer $id_user User ID
-	 * @return  integer
 	 */
-	public function get_max_pos(int $id_user)
+	public function get_max_pos(int $id_user) : int
 	{
-		return intval($this->db->query_var('SELECT MAX(xpos)
+		return (int) $this->db->query_var('SELECT (MAX(xpos) + 1) AS n
 			FROM widgets
 			WHERE id_user = '.$id_user.'
-			ORDER BY xpos DESC')) + 1;
+			ORDER BY xpos DESC');
 	}
 
 	/**
 	 * Reorder widgets
-	 *
-	 * @param   string 	$order ID sequence separated by commas
-	 * @return  integer
 	 */
-	public function reorder(string $order)
+	public function reorder(string $order) : array
 	{
 		$ids = explode(',', $order);
 		$c = 1;
@@ -162,11 +140,8 @@ class Widget_model extends X4Model_core
 	/**
 	 * Delete widget
 	 * Refresh xpos value
-	 *
-	 * @param   integer	$id Widget ID
-	 * @return  array
 	 */
-	public function my_delete(int $id)
+	public function my_delete(int $id) : array
 	{
 		// get xpos
 		$pos = $this->get_var($id, 'widgets', 'xpos');

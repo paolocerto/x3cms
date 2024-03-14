@@ -8,7 +8,6 @@
  * @package		X3CMS
  */
 
-
 /**
  * x4cookie plugin
  *
@@ -18,9 +17,6 @@ class X4cookie_plugin extends X4Plugin_core implements X3plugin
 {
 	/**
 	 * Constructor
-	 *
-	 * @param	object	$site, site object
-	 * @return  void
 	 */
 	public function __construct(X4Site_model $site)
 	{
@@ -30,17 +26,13 @@ class X4cookie_plugin extends X4Plugin_core implements X3plugin
 
 	/**
 	 * Default method
-	 *
-	 * @param object	$page object
-	 * @param array		$args array of args
-	 * @return string
 	 */
-	public function get_module($page, $args, $param = '')
+	public function get_module(stdClass $page, array $args, string $param = '') : mixed
 	{
 		// if param can be exploded
 		$p = explode('|', $param);
 
-		switch($p[0])
+		switch ($p[0])
 		{
         case 'alert':
             // if already set we offer link to change previous choices
@@ -58,12 +50,8 @@ class X4cookie_plugin extends X4Plugin_core implements X3plugin
     /**
 	 * Cookie config
      * here we offer the option to change previous choices
-	 *
-	 * @access private
-	 * @param	stdClass    $page
-	 * @return  string
 	 */
-	private function cookie_config(stdClass $page)
+	private function cookie_config(stdClass $page) : string
 	{
         // get conf
 		$conf = $this->site->get_module_param('x4cookie', $page->id_area);
@@ -156,12 +144,8 @@ class X4cookie_plugin extends X4Plugin_core implements X3plugin
 	/**
 	 * Cookie alert
      * here we ask to the user for the first time
-	 *
-	 * @access private
-	 * @param	stdClass    $page
-	 * @return  string
 	 */
-	private function cookie_alert(stdClass $page)
+	private function cookie_alert(stdClass $page) : string
 	{
         // disable cache
         X4Utils_helper::nocache();
@@ -263,7 +247,7 @@ class X4cookie_plugin extends X4Plugin_core implements X3plugin
 	 * @param   mixed	$d
 	 * @return  void
 	 */
-	public function plugin(string $control, $a, $b, $c, $d)
+	public function plugin(string $control, mixed $a, mixed $b, mixed $c, mixed $d) : void
 	{
 		switch ($control)
 		{
@@ -279,7 +263,7 @@ class X4cookie_plugin extends X4Plugin_core implements X3plugin
 			break;
 
 		default:
-			return '';
+			echo '';
 			break;
 		}
 	}
@@ -287,10 +271,8 @@ class X4cookie_plugin extends X4Plugin_core implements X3plugin
     /**
 	 * default
      * is the content of the dialogo for the first time
-	 *
-	 * @return  mixed
 	 */
-	private function default()
+	private function default() : void
 	{
         // load dictionary
 		$this->dict->get_wordarray(array('x4cookie'));
@@ -331,10 +313,8 @@ class X4cookie_plugin extends X4Plugin_core implements X3plugin
     /**
 	 * Settings
      * is the content of the dialog to change previous choices
-	 *
-	 * @return  mixed
 	 */
-	private function settings()
+	private function settings() : void
 	{
         // load dictionary
 		$this->dict->get_wordarray(array('x4cookie'));
@@ -415,10 +395,6 @@ class X4cookie_plugin extends X4Plugin_core implements X3plugin
 
 	/**
 	 * SAMPLE method
-	 *
-	 * @param   mixed	$a
-	 * @param   mixed	$b
-	 * @return  mixed
 	 */
 	private function test($a, $b)
 	{

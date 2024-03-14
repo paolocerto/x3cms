@@ -374,22 +374,22 @@ final class X4Route_core
 		$folder = str_replace('-', '_', self::$folder);
 		$control = str_replace('-', '_', self::$control);
 
-		if (file_exists(APATH.'controllers/'.$folder.'/'.$control.'_controller'.EXT))
+		if (file_exists(APATH.'controllers/'.$folder.'/'.$control.'_controller.php'))
 		{
 			// app controller
-			return APATH.'controllers/'.$folder.'/'.$control.'_controller'.EXT;
+			return APATH.'controllers/'.$folder.'/'.$control.'_controller.php';
 		}
-		elseif (file_exists(PATH.'plugins/'.$control.'/controllers/'.$control.'_controller'.EXT))
+		elseif (file_exists(PATH.'plugins/'.$control.'/controllers/'.$control.'_controller.php'))
 		{
 			// plugin controller
-			return PATH.'plugins/'.$control.'/controllers/'.$control.'_controller'.EXT;
+			return PATH.'plugins/'.$control.'/controllers/'.$control.'_controller.php';
 		}
 		else
 		{
 			// x4page generic controller
 			array_unshift(self::$args, self::$method);
 			self::$method = self::$control;
-			return SPATH.'controllers/X4Page_controller'.EXT;
+			return SPATH.'controllers/X4Page_controller.php';
 		}
 	}
 
@@ -407,6 +407,19 @@ final class X4Route_core
         return (isset(self::$areas[$area]))
             ? self::$areas[$area]
             : self::$default[$area.'_id'];
+	}
+
+    /**
+	 * get area name by ID
+	 *
+	 * @static
+     * @param   integer $id_area
+	 * @return  string
+	 */
+	public static function get_area_by_id(int $id_area)
+	{
+        $areas = array_flip(X4Route_core::$areas);
+        return $areas[$id_area];
 	}
 
 }

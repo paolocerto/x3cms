@@ -18,12 +18,8 @@ final class X4Bench_core
 {
 	/**
 	 * Benchmark info
-	 *
-	 * @static
-	 * @param   string   output string
-	 * @return  string
 	 */
-	public static function info(string $output)
+	public static function info(string $output) : string
 	{
 		// memory usage in MB
 		$memory = (memory_get_usage() - X4START_MEMORY) / 1024 / 1024;

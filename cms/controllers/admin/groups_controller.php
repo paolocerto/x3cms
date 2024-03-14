@@ -18,8 +18,6 @@ class Groups_controller extends X3ui_controller
 	/**
 	 * Constructor
 	 * check if user is logged
-	 *
-	 * @return  void
 	 */
 	public function __construct()
 	{
@@ -29,14 +27,8 @@ class Groups_controller extends X3ui_controller
 
 	/**
 	 * Change status
-	 *
-	 * @param   string  $what field to change
-     * @param   integer $id_area
-	 * @param   integer $id ID of the item to change
-	 * @param   integer $value value to set (0 = off, 1 = on)
-	 * @return  void
 	 */
-	public function set(string $what, int $id_area, int $id, int $value = 0)
+	public function set(string $what, int $id_area, int $id, int $value = 0) : void
 	{
 		$msg = null;
 		// check permission
@@ -64,12 +56,9 @@ class Groups_controller extends X3ui_controller
 	}
 
 	/**
-	 * New / Edit group form (use Ajax)
-	 *
-	 * @param   integer  $id item ID (if 0 then is a new item)
-	 * @return  void
+	 * New / Edit group form
 	 */
-	public function edit(int $id = 0)
+	public function edit(int $id = 0) : void
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'groups'));
@@ -120,13 +109,9 @@ class Groups_controller extends X3ui_controller
 	}
 
 	/**
-	 * Register Edit / New group form data
-	 *
-	 * @access	private
-	 * @param   array 	$_post _POST array
-	 * @return  void
+	 * Register Edit / New group
 	 */
-	private function editing(array $_post)
+	private function editing(array $_post) : void
 	{
 		$msg = null;
 		// check permission
@@ -177,12 +162,9 @@ class Groups_controller extends X3ui_controller
 	}
 
 	/**
-	 * Edit group permission (use Ajax)
-	 *
-	 * @param   integer	$id_group Group ID
-	 * @return  void
+	 * Edit group permission
 	 */
-	public function gperm(int $id_group)
+	public function gperm(int $id_group) : void
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'groups'));
@@ -236,13 +218,8 @@ class Groups_controller extends X3ui_controller
 
 	/**
 	 * Register edited group permissions
-	 *
-	 * @access	private
-     * @param   integer $id_area
-	 * @param   array 	$_post _POST array
-	 * @return  void
 	 */
-	private function permitting(int $id_area, array $_post)
+	private function permitting(int $id_area, array $_post) : void
 	{
 		$msg = null;
 		// check permission
@@ -298,12 +275,9 @@ class Groups_controller extends X3ui_controller
 	}
 
 	/**
-	 * Delete Group form (use Ajax)
-	 *
-	 * @param   integer $id Group ID
-	 * @return  void
+	 * Delete Group form
 	 */
-	public function delete(int $id)
+	public function delete(int $id) : void
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'groups'));
@@ -342,12 +316,8 @@ class Groups_controller extends X3ui_controller
 
 	/**
 	 * Delete Group
-	 *
-	 * @access	private
-	 * @param   stdClass $item
-	 * @return  void
 	 */
-	private function deleting(stdClass $item)
+	private function deleting(stdClass $item) : void
 	{
 		$msg = null;
 		// check permissions

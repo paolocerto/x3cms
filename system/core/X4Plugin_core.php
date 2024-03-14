@@ -24,9 +24,6 @@ class X4Plugin_core
 
 	/**
 	 * Set site obj
-	 *
-	 * @param object	Site obj
-	 * @return void
 	 */
 	public function __construct(X4Site_model $site)
 	{
@@ -35,12 +32,8 @@ class X4Plugin_core
 
 	/**
 	 * Set empty arguments for plugin
-	 *
-	 * @param array		arguments
-	 * @param array		array of values
-	 * @return void
 	 */
-	public function check_args(array &$args, array $values)
+	public function check_args(array &$args, array $values) : void
 	{
 		$n = sizeof($values);
 		for ($i = 0; $i < $n; $i++)
@@ -60,23 +53,11 @@ interface X3plugin
 {
 	/**
 	 * Default method
-	 *
-	 * @param	object	$page object
-	 * @param	array	$args array of args
-	 * @param	string	$param optional parameter
-	 * @return	string
 	 */
-	public function get_module(stdClass $page, array $args, string $param = '');
+	public function get_module(stdClass $page, array $args, string $param = '') : mixed;
 
 	/**
 	 * call plugin actions
-	 *
-	 * @param   string	$control action name
-	 * @param   string	$a
-	 * @param   string	$b
-	 * @param   string	$c
-	 * @param   string	$d
-	 * @return  void
 	 */
-	 public function plugin(string $control, string $a, string $b, string $c, string $d);
+	 public function plugin(string $control, mixed $a, mixed $b, mixed $c, mixed $d) : void;
 }

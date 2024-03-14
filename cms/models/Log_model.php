@@ -18,15 +18,10 @@ class Log_model extends X4Model_core
 	/**
 	 * Constructor
 	 * set the default table
-	 *
-	 * @return  void
 	 */
 	public function __construct($db = 'default')
 	{
 		parent::__construct('logs', $db);
 	}
-
-
-
 
 }

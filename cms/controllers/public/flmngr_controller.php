@@ -18,8 +18,6 @@ class Flmngr_controller extends X4Cms_controller
 	/**
 	 * Constructor
 	 * check if user is logged
-	 *
-	 * @return  void
 	 */
 	public function __construct()
 	{
@@ -29,10 +27,8 @@ class Flmngr_controller extends X4Cms_controller
 
     /**
 	 * Init Flmngr
-	 *
-	 * @return  void
 	 */
-	public function _default()
+	public function _default() : void
 	{
         require_once PATH . '/vendor/autoload.php';
 		\EdSDK\FlmngrServer\FlmngrServer::flmngrRequest(
