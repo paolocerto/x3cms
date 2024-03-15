@@ -1,0 +1,118 @@
+/* base colors */
+:root {
+    --bg_color: hsla(203, 63%, 35%, 1);/* #216692; */
+    --link-color: #FF006E;
+
+    --yellow: #FFBE0B;
+    --orange: hsl(19, 97%, 51%, 1); /* #FB5607; */
+    --fucsia: hsla(339, 100%, 55%, 1);/*#FF006E;*/
+    --green: #8AC926;
+    --military: #6b9080;
+    --violet: #8338EC;
+    --blue: #3A86FF;
+}
+
+textarea {width:90%;resize:vertical;}
+div {width:auto;background-color: rgba(221, 221, 221, 0.5);padding:1em;}
+div.container {max-width:1200px;margin:0 auto;}
+div.small_container {max-width: 1024px;}
+div.tiny_container {max-width: 800px;}
+div.video-container {position: relative; padding-bottom: 56.25%; padding-top: 30px; height: 0; overflow: hidden;}
+
+blockquote {padding:1em;border-left: 5px solid #428fdb;background:#eee;}
+
+img {max-width:100%;margin-bottom:1em;}
+img.left {float: left;margin:0 1em 1em 0;}
+img.right {float: right;margin:0 0 1em 1em;}
+
+table {border:none;width:100%;}
+thead tr {border:1px solid #ccc;}
+tr {background:none;border-bottom:1px solid #ccc;}
+th {padding:.2em 1em;text-align:center;color:#333;font-weight:bold;background:#eee;line-height:2em;}
+td {color:#333;padding:.2em 1em;vertical-align:top;line-height:2em;}
+
+.table tr {border-bottom:1px solid #999}
+.table-striped > tbody > tr:nth-child(2n) > td, .table-striped > tbody > tr:nth-child(2n) > th {
+	background-color:#dedede;
+ }
+ .table-striped.table-hover tr td {border:none;}
+ .table-striped.table-hover tr:hover td {background-color:#e2e2e2;}
+
+.table.titled tr:first-child td {
+	font-weight:bold;
+	border-bottom:2px solid #999 !important;
+}
+
+.table.columned tr td:first-child {
+	font-weight:bold;
+	border-right:2px solid #999 !important;
+}
+
+.table.grid tr td {
+	border:1px solid #999;
+}
+
+.text-sm {font-size: 0.875rem;line-height: 1.25rem;}
+.text-lg {font-size: 1.125rem;line-height: 1.75rem;margin-bottom:0.5rem;}
+.text-xl {font-size: 1.25rem;line-height: 1.75rem;}
+
+.buttons button, button.btn, a.btn {background:#216692;background: -webkit-linear-gradient(top left,#FFFFFF -200%, #216692 100%);color:rgb(255, 217, 0);text-transform:uppercase;
+    font-weight:bold;
+    margin:.5em;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    border-radius: 0.75rem;
+    --tw-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+
+.buttons button[type="submit"], .buttons button[type="button"], button.btn.link, a.btn.link {background-color:var(--link-color) !important;color:#fff !important}
+.buttons button[type="reset"], button.btn.gray, a.btn.gray {background-color:#d1d5db;color:#374151}
+button[disabled], input[disabled] { cursor: default;opacity:.5; }
+
+* colors for sections */
+
+.bg-fucsia {background:var(--fucsia)}
+.x3bg-orange {background:var(--orange) !important}
+.bg-petroleum {background:var(--bg_color)}
+.x3bg-yellow {background:var(--yellow)}
+.x3bg-violet {background:var(--violet)}
+.bg-military {background:var(--military)}
+
+/* gradients */
+.fucsium {
+    background: var(--fucsia);
+    background: linear-gradient(315deg, var(--fucsia) 0%, var(--bg_color) 100%);
+    background: -moz-linear-gradient(315deg, var(--fucsia) 0%, var(--bg_color) 100%);
+    background: -webkit-linear-gradient(315deg, var(--fucsia) 0%, var(--bg_color) 100%);
+    filter: progid: DXImageTransform.Microsoft.gradient( startColorstr="#FF006E", endColorstr="#216692", GradientType=1 );
+}
+
+.orangium {
+    background: var(--orange);
+    background: linear-gradient(315deg, var(--orange) 0%, var(--bg_color) 100%);
+    background: -moz-linear-gradient(315deg, var(--orange) 0%, var(--bg_color) 100%);
+    background: -webkit-linear-gradient(315deg, var(--orange) 0%, var(--bg_color) 100%);
+    filter: progid: DXImageTransform.Microsoft.gradient( startColorstr="#FB5607", endColorstr="#216692", GradientType=1 );
+}
+
+.fucsange {
+    background: var(--fucsia);
+    background: linear-gradient(315deg, var(--fucsia) 0%, var(--orange) 100%);
+    background: -moz-linear-gradient(315deg, var(--fucsia) 0%, var(--orange) 100%);
+    background: -webkit-linear-gradient(315deg, var(--fucsia) 0%, var(--orange) 100%);
+    filter: progid: DXImageTransform.Microsoft.gradient( startColorstr="#FF006E", endColorstr="#FB5607", GradientType=1 );
+}
+
+
+/* transparent backgrounds */
+.overlay1 {background:rgba(0, 0, 0, .1)}
+.overlay2 {background:rgba(0, 0, 0, .2)}
+.overlay3 {background:rgba(0, 0, 0, .3)}
+
+/* containers */
+.container {max-width: 1200px;}
+.small_container {max-width: 1024px;}
+.tiny_container {max-width: 800px;}

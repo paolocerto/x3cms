@@ -326,14 +326,7 @@ class Users_controller extends X3ui_controller
 				{
                     if (!$id)
                     {
-                        $perm = new Permission_model();
-                        $array[] = array(
-                            'action' => 'insert',
-                            'id_what' => $result[0],
-                            'id_user' => $_SESSION['xuid'],
-                            'level' => 4
-                        );
-                        $perm->pexec('users', $array, $post['id_area']);
+                        Admin_utils_helper::set_priv($_SESSION['xuid'], $result[0], 'users', $post['id_area']);
                     }
 
 					$msg->update = array(
@@ -715,22 +708,16 @@ function setForAll(val) {
         }
         else
 		{
-			// do action
 			$mod = new User_model();
 			$result = $mod->delete($item->id);
 
-			// set message
 			$msg = AdmUtils_helper::set_msg($result);
 
-			// clear useless permissions
 			if ($result[1])
 			{
-				$perm = new Permission_model();
+				AdmUtils_helper::delete_priv('users', $item->id);
 
-				// clean permission on user
-				$perm->deleting_by_what('users', $item->id);
-
-				// clean user permissions
+                $perm = new Permission_model();
 				$perm->deleting_by_user($item->id);
 
 				// set what update

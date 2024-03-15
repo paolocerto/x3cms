@@ -295,13 +295,11 @@ class Themes_controller extends X3ui_controller
 			else
 			{
 				// uninstalled
-
-				$msg = AdmUtils_helper::set_msg(true);
+$msg = AdmUtils_helper::set_msg(true);
 
 				if ($result)
                 {
-                    $perm = new Permission_model();
-					$perm->deleting_by_what('themes', $item->id);
+                    AdmUtils_helper::delete_priv('themes', $item->id);
                 }
 
 				$msg->update = array(

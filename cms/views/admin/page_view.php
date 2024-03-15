@@ -36,6 +36,16 @@ if (DEBUG || DEVEL)
     echo X4Bench_core::info('<p class="text-center text-xs mt-8">X4WebApp v. {x4wa_version} &copy; Cblu.net - execution time: {execution_time} - memory usage: {memory_usage} - queries: {queries} - included files: {included_files}</p>');
 }
 ?>
+    <button
+            type="button"
+
+            class="btn link fixed focus:outline-none bottom-6 right-6 md:bottom-20 md:right-6 text-xl md:text-4xl"
+            x-show="go_top"
+            @click="scrollToItem('working')"
+            x-cloak
+    >
+        <i class="fas fa-lg fa-map-marker-alt"></i>
+    </button>
 </div>
 <script>
 /* BASIC JS to handle back and reload actions */

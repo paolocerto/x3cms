@@ -45,7 +45,12 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
 
         $view = new X4View_core('page');
         $view->breadcrumb = array($this->site->get_bredcrumb($page), array('modules' => 'index/'.$id_area));
-		$view->actions = $this->actions($id_area, $lang);
+		$view->actions = AdmUtils_helper::link(
+            'memo',
+            'x3form_builder:mod:'.$lang,
+            [],
+            _MEMO
+        ).$this->actions($id_area, $lang);
         $view->content = new X4View_core('x3form_list', 'x3form_builder');
 		$view->pp = $pp;
 
@@ -111,7 +116,10 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
 		$page = $this->get_page('x3form_builder/fields');
 
         $view = new X4View_core('page');
-        $view->breadcrumb = array($this->site->get_bredcrumb($page), array('modules' => 'index/'.$id_area, 'x3form-builder/mod' => $id_area.'/'.$lang));
+        $view->breadcrumb = array(
+            $this->site->get_bredcrumb($page),
+            array('modules' => 'index/'.$id_area, 'x3form-builder/mod' => $id_area.'/'.$lang)
+        );
 		$view->actions = $this->actions($id_area, $lang, $id_form);
 
 		$view->content = new X4View_core('x3form_fields', 'x3form_builder');
@@ -142,7 +150,13 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
 		$page = $this->get_page('x3form_builder/results');
 
         $view = new X4View_core('page');
-        $view->breadcrumb = array($this->site->get_bredcrumb($page), array('modules' => 'index/'.$id_area, 'x3form-builder/mod' => $id_area.'/'.$lang));
+        $view->breadcrumb = array(
+            $this->site->get_bredcrumb($page),
+            array(
+                'modules' => 'index/'.$id_area,
+                'x3form-builder/mod' => $id_area.'/'.$lang
+            )
+        );
 		$view->actions = $this->actions($id_area, $lang);
 
         $mod = new X3form_builder_model($this->site->data->db);
@@ -177,7 +191,10 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
 		$page = $this->get_page('x3form-builder/blacklist');
 
         $view = new X4View_core('page');
-        $view->breadcrumb = array($this->site->get_bredcrumb($page), array('modules' => 'index/'.$id_area, 'x3form-builder/mod' => $id_area.'/'.$lang));
+        $view->breadcrumb = array(
+            $this->site->get_bredcrumb($page),
+            array('modules' => 'index/'.$id_area, 'x3form-builder/mod' => $id_area.'/'.$lang)
+        );
 		$view->actions = $this->actions($id_area, $lang, -1);
 
         $mod = new X3form_builder_model($this->site->data->db);
@@ -267,7 +284,13 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
 			: _X3FB_NEW_FORM;
 		$view->content = new X4View_core('editor');
         $submit = AdmUtils_helper::submit_btn($item->id_area, 'x3_forms', $id, $item->xlock);
-		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, $submit, 'buttons'), 'post', '',
+		$view->content->form = X4Form_helper::doform(
+            'editor',
+            $_SERVER["REQUEST_URI"],
+            $fields,
+            array(_RESET, $submit, 'buttons'),
+            'post',
+            '',
             '@click="submitForm(\'editor\')"');
 
 		$view->render(true);
@@ -283,67 +306,61 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
 			? AdmUtils_helper::chk_priv_level($_post['id_area'], 'x3_forms', $_post['id'], 'edit')
 			: AdmUtils_helper::chk_priv_level($_post['id_area'], '_x3form_creation', 0, 'create');
 
-		if (is_null($msg))
+		if (!is_null($msg))
 		{
-			$post = array(
-				'id_area' => $_post['id_area'],
-				'lang' => $_post['lang'],
-				'name' => X4Utils_helper::slugify($_post['name']),
-				'title' => $_post['title'],
-				'description' => $_post['description'],
-				'msg_ok' => $_post['msg_ok'],
-				'msg_failed' => $_post['msg_failed'],
-				'submit_button' => $_post['submit_button'],
-				'reset_button' => $_post['reset_button']
-			);
+            $this->response($msg);
+        }
 
-			$n = $_post['mailto_num']+1;
-			$mailto = [];
-			for($i = 0; $i < $n; $i++)
-			{
-				if (!empty($_post['mailto'.$i]))
-				{
-					$mailto[] = $_post['mailto'.$i];
-				}
-			}
-			$post['mailto'] = implode('|', $mailto);
+        $n = $_post['mailto_num']+1;
+        $mailto = [];
+        for($i = 0; $i < $n; $i++)
+        {
+            if (!empty($_post['mailto'.$i]))
+            {
+                $mailto[] = $_post['mailto'.$i];
+            }
+        }
 
-			$mod = new X3form_builder_model($this->site->data->db);
+        $post = array(
+            'id_area' => $_post['id_area'],
+            'lang' => $_post['lang'],
+            'name' => X4Utils_helper::slugify($_post['name']),
+            'title' => $_post['title'],
+            'description' => $_post['description'],
+            'msg_ok' => $_post['msg_ok'],
+            'msg_failed' => $_post['msg_failed'],
+            'submit_button' => $_post['submit_button'],
+            'reset_button' => $_post['reset_button'],
+            'mailto' => implode('|', $mailto)
+        );
 
-			$check = (boolean) $mod->form_exists($post['id_area'], $post['lang'], $post['name'], $_post['id']);
-			if ($check)
-			{
-				$msg = AdmUtils_helper::set_msg(false, '', $this->dict->get_word('_X3FB_FORM_ALREADY_EXISTS', 'msg'));
-			}
-			else
-			{
-				$result = ($_post['id'])
-                    ? $mod->update($_post['id'], $post)
-                    : $mod->insert($post);
+        $mod = new X3form_builder_model($this->site->data->db);
 
-				$msg = AdmUtils_helper::set_msg($result);
+        $check = (boolean) $mod->form_exists($post['id_area'], $post['lang'], $post['name'], $_post['id']);
+        if ($check)
+        {
+            $msg = AdmUtils_helper::set_msg(false, '', $this->dict->get_word('_X3FB_FORM_ALREADY_EXISTS', 'msg'));
+            $this->response($msg);
+        }
 
-				if ($result[1])
-				{
-                    if (!$_post['id'])
-                    {
-                        $perm = new Permission_model($this->site->data->db);
-                        $array[] = array(
-                            'action' => 'insert',
-                            'id_what' => $result[0],
-                            'id_user' => $_SESSION['xuid'],
-                            'level' => 4
-                        );
-                        $perm->pexec('x3_forms', $array, $post['id_area']);
-                    }
+        $result = ($_post['id'])
+            ? $mod->update($_post['id'], $post)
+            : $mod->insert($post);
 
-					$msg->update = array(
-						'element' => 'page',
-						'url' => $_SERVER['HTTP_REFERER']
-					);
-				}
-			}
-		}
+        $msg = AdmUtils_helper::set_msg($result);
+
+        if ($result[1])
+        {
+            if (!$_post['id'])
+            {
+                Admin_utils_helper::set_priv($_SESSION['xuid'], $result[0], 'x3_forms', $post['id_area']);
+            }
+
+            $msg->update = array(
+                'element' => 'page',
+                'url' => $_SERVER['HTTP_REFERER']
+            );
+        }
 		$this->response($msg);
 	}
 
@@ -425,14 +442,7 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
 
 					if ($result[1])
 					{
-                        $perm = new Permission_model($this->site->data->db);
-                        $array[] = array(
-                            'action' => 'insert',
-                            'id_what' => $result[0],
-                            'id_user' => $_SESSION['xuid'],
-                            'level' => 4
-                        );
-                        $perm->pexec('x3_forms', $array, $post['id_area']);
+                        Admin_utils_helper::set_priv($_SESSION['xuid'], $result[0], 'x3_forms', $post['id_area']);
 
 						$id_form = $result[0];
 
@@ -458,13 +468,7 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
 
                             if ($result[1])
                             {
-                                $array[] = array(
-                                    'action' => 'insert',
-                                    'id_what' => $result[0],
-                                    'id_user' => $_SESSION['xuid'],
-                                    'level' => 4
-                                );
-                                $perm->pexec('x3_forms_fields', $array, $post['id_area']);
+                                Admin_utils_helper::set_priv($_SESSION['xuid'], $result[0], 'x3_forms_fields', $post['id_area']);
                             }
 						}
 					}
@@ -891,7 +895,6 @@ function checkRule(item) {
 		if (!empty($_post) && isset($_post['bulk']) && is_array($_post['bulk']) && !empty($_post['bulk']))
 		{
             $mod = new X3form_builder_model($this->site->data->db);
-            $perm = new Permission_model($this->site->data->db);
 
             // NOTE: we here have only bulk_action = delete
             $result = [0, 1];
@@ -903,7 +906,7 @@ function checkRule(item) {
                     $result = $mod->delete($i, 'x3_forms_results');
                     if ($result[1])
                     {
-                        $perm->deleting_by_what('x3_forms_results', $i);
+                        AdmUtils_helper::delete_priv('x3_forms_results', $i);
                     }
                 }
             }
@@ -1092,8 +1095,7 @@ function checkRule(item) {
 
 			if ($result[1])
 			{
-				$perm = new Permission_model($this->site->data->db);
-				$perm->deleting_by_what('x3_forms'.$table, $item->id);
+				AdmUtils_helper::delete_priv('x3_forms'.$table, $item->id);
 
 				$msg->update = array(
 					'element' => 'page',

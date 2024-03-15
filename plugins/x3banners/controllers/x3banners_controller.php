@@ -220,15 +220,7 @@ class X3banners_controller extends X3ui_controller implements X3plugin_controlle
             {
                 if (!$_post['id'])
                 {
-                    // permissions
-                    $perm = new Permission_model($this->site->data->db);
-                    $array[] = array(
-                        'action' => 'insert',
-                        'id_what' => $result[0],
-                        'id_user' => $_SESSION['xuid'],
-                        'level' => 4
-                    );
-                    $perm->pexec('x3_banners', $array, $post['id_area']);
+                    Admin_utils_helper::set_priv($_SESSION['xuid'], $result[0], 'x3_banners', $post['id_area']);
                 }
 
                 $msg->update = array(
@@ -285,24 +277,18 @@ class X3banners_controller extends X3ui_controller implements X3plugin_controlle
 	private function deleting(stdClass $item) : void
 	{
 		$msg = null;
-		// check permission
 		$msg = AdmUtils_helper::chk_priv_level($item->id_area, 'x3_banners', $item->id, 'delete');
 		if (is_null($msg))
 		{
-			// action
 			$mod = new X3banners_model($this->site->data->db);
 			$result = $mod->delete($item->id, 'x3_banners');
 
-			// set message
 			$msg = AdmUtils_helper::set_msg($result);
 
-			// clear useless permissions
 			if ($result[1])
 			{
-				$perm = new Permission_model($this->site->data->db);
-				$perm->deleting_by_what('x3_banners', $item->id);
+				AdmUtils_helper::delete_priv('x3_banners', $item->id);
 
-				// set what update
 				$msg->update = array(
 					'element' => 'page',
 					'url' => $_SERVER['HTTP_REFERER']

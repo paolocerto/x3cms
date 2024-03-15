@@ -225,15 +225,7 @@ class Contexts_controller extends X3ui_controller
 					$result = $mod->insert($post);
 					if ($result[1])
 					{
-                        // permissions
-                        $perm = new Permission_model();
-                        $array[] = array(
-                            'action' => 'insert',
-                            'id_what' => $result[0],
-                            'id_user' => $_SESSION['xuid'],
-                            'level' => 4
-                        );
-                        $perm->pexec('contexts', $array, $post['id_area']);
+                        Admin_utils_helper::set_priv($_SESSION['xuid'], $result[0], 'contexts', $post['id_area']);
 
 						// add item into dictionary
 						$mod->check_dictionary($post, 1);
@@ -320,8 +312,7 @@ class Contexts_controller extends X3ui_controller
 			// clear useless permissions
 			if ($result[1])
             {
-				$perm = new Permission_model();
-				$perm->deleting_by_what('contexts', $item->id);
+				AdmUtils_helper::delete_priv('contexts', $item->id);
 
 				// set what update
 				$msg->update = array(

@@ -244,15 +244,7 @@ class Pages_controller extends X3ui_controller
 				// set what update
 				if ($result[1])
 				{
-                    // permissions
-                    $perm = new Permission_model();
-                    $array = array(
-                        'action' => 'insert',
-                        'id_what' => $result[0],
-                        'id_user' => $_SESSION['xuid'],
-                        'level' => 4
-                    );
-                    $perm->pexec('pages', [$array], $post['id_area']);
+                    Admin_utils_helper::set_priv($_SESSION['xuid'], $result[0], 'pages', $post['id_area']);
 
 					$msg->update = array(
 						'element' => 'page',
@@ -632,8 +624,7 @@ class Pages_controller extends X3ui_controller
 			// clear useless permissions
 			if ($result[1])
 			{
-				$perm = new Permission_model();
-				$perm->deleting_by_what('pages', $item->id);
+				AdmUtils_helper::delete_priv('pages', $item->id);
 			}
 
 			// set message

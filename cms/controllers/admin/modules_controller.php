@@ -351,9 +351,7 @@ class Modules_controller extends X3ui_controller
 				// uninstalled
 				if ($result)
 				{
-					// clear useless permissions
-					$perm = new Permission_model();
-					$perm->deleting_by_what('modules', $item->id);
+					AdmUtils_helper::delete_priv('modules', $item->id);
 
                     $msg->update = array(
                         'element' => 'page',

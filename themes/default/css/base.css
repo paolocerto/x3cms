@@ -35,6 +35,7 @@ h3 {font-size:1.75rem !important;font-weight:600 !important;line-height:2rem;mar
 h1 + h2 {font-size:2em;line-height:1.3em;font-weight:300;margin:.3em 0;font-style:italic;}
 h2 + h3 {font-weight:300;}
 h4 {font-size:1.5em !important;line-height:1.8em !important;}
+h5 {font-size:1.2em !important;line-height:1.5em !important;}
 
 .mpt0 {margin-top:0 !important;margin-bottom:0 !important;padding-top:0 !important;}
 
@@ -49,14 +50,15 @@ ol.none {list-style:none !important;}
 li {margin:.5em 0}
 /* form */
 label {cursor:pointer;display:block;font-size:0.9em;line-height:1em;margin:1em 0 .3em 0;}
+label.inline {display:inline !important}
 label span {font-weight:normal;color:#666;}
 label.error {font-weight:700;color:var(--fucsia) !important}
 .suggestion {display:block;font-size: 0.75rem;line-height: 1rem;margin-top:.3em}
 
-input:not([type="image"]), select, textarea {font-size:100%;margin:0;vertical-align:baseline;vertical-align:middle;border:1px solid #ccc;padding:.5em .5em !important;margin:0;border-radius: 0.125rem;;color:#444 !important;--moz-border-sizing:border-box;box-sizing:border-box;}
+input:not([type="image"]), select, textarea {width: 100%;font-size:100%;vertical-align:baseline;vertical-align:middle;padding:.5em .5em !important;margin:0;border-radius: 0.125rem;color:#444 !important;border:1px solid #ccc;--moz-border-sizing:border-box;box-sizing:border-box;}
 select {padding:.5em .6em !important;}
 select:not([multiple]) {max-height: calc(1.2em + 20) !important;height: calc(1.2em + 20px) !important;}
-input:focus, textarea:focus, select:focus {border:.1em solid #f60 !important;}
+input:focus, textarea:focus, select:focus {outline: 2px solid transparent;outline-offset: 2px;border:.1em solid var(--link-color) !important;}
 textarea {width:100%;overflow:auto;display:inline-block;vertical-align:top;resize:vertical;height:6em;margin-bottom:.2em}
 
 input[disabled], textarea[disabled], select[disabled] {background:#ddd;}
@@ -79,7 +81,7 @@ input[type="search"]::-webkit-search-decoration, input[type="search"]::-webkit-s
 .buttons button[type="submit"], .buttons button[type="button"], button.btn.link, a.btn.link {background-color:var(--link-color) !important;color:#fff !important}
 .buttons button[type="reset"], button.btn.gray, a.btn.gray {background-color:#d1d5db;color:#374151}
 button.small {line-height:1rem;padding:0.7rem 0.7rem 0.5rem !important;}
-button[disabled], input[disabled] { cursor: default;opacity:.5; }
+button[disabled], input[disabled] {cursor: default;opacity:.5; }
 a.link {color:var(--link-color) !important}
 
 /* colors for sections */

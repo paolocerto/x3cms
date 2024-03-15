@@ -224,15 +224,7 @@ class Categories_controller extends X3ui_controller
 				{
                     if (!$id)
                     {
-                        // permissions
-                        $perm = new Permission_model();
-                        $array[] = array(
-                            'action' => 'insert',
-                            'id_what' => $result[0],
-                            'id_user' => $_SESSION['xuid'],
-                            'level' => 4
-                        );
-                        $perm->pexec('categories', $array, $post['id_area']);
+                        Admin_utils_helper::set_priv($_SESSION['xuid'], $result[0], 'categories', $post['id_area']);
                     }
 
 					$msg->update = array(
@@ -301,8 +293,7 @@ class Categories_controller extends X3ui_controller
 			// clear useless permissions
 			if ($result[1])
             {
-				$perm = new Permission_model();
-				$perm->deleting_by_what('categories', $item->id);
+				AdmUtils_helper::delete_priv('categories', $item->id);
 
 				// set what update
 				$msg->update = array(

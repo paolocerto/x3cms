@@ -142,14 +142,7 @@ class Groups_controller extends X3ui_controller
 			{
                 if (!$_post['id'])
                 {
-                    // permissions
-                    $perm = new Permission_model();
-                    $array[] = array(
-                            'action' => 'insert',
-                            'id_what' => $result[0],
-                            'id_user' => $_SESSION['xuid'],
-                            'level' => 4);
-                    $perm->pexec('xgroups', $array, $post['id_area']);
+                    Admin_utils_helper::set_priv($_SESSION['xuid'], $result[0], 'xgroups', $post['id_area']);
                 }
 
 				$msg->update = array(
@@ -335,8 +328,7 @@ class Groups_controller extends X3ui_controller
 			// clear useless permissions
 			if ($result[1])
 			{
-				$perm = new Permission_model();
-				$perm->deleting_by_what('xgroups', $item->id);
+				AdmUtils_helper::delete_priv('xgroups', $item->id);
 
 				// set what update
 				$msg->update = array(

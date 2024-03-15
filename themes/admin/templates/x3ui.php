@@ -152,6 +152,7 @@ echo $view->render(false);
             x-on:blank.window="blank($event.detail)"
             x-on:setter.window="setter($event.detail)"
             x-html="content"
+            @scroll.window="go_top = (window.pageYOffset > 50) ? true : false"
             x-cloak
         >
             <div>

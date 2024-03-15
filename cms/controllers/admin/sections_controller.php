@@ -390,15 +390,7 @@ class Sections_controller extends X3ui_controller
 				{
                     if (!$id)
                     {
-                        // permissions
-                        $perm = new Permission_model();
-                        $array[] = array(
-                            'action' => 'insert',
-                            'id_what' => $result[0],
-                            'id_user' => $_SESSION['xuid'],
-                            'level' => 4
-                        );
-                        $perm->pexec('sections', $array, $post['id_area']);
+                        Admin_utils_helper::set_priv($_SESSION['xuid'], $result[0], 'sections', $post['id_area']);
                     }
 
 					$msg->update = array(
@@ -477,20 +469,15 @@ class Sections_controller extends X3ui_controller
 
 		if (is_null($msg))
 		{
-			// do action
 			$mod = new Section_model();
 			$result = $mod->delete($item->id);
 
-			// set message
 			$msg = AdmUtils_helper::set_msg($result);
 
-			// clear useless permissions
 			if ($result[1])
             {
-				$perm = new Permission_model();
-				$perm->deleting_by_what('sections', $item->id);
+				AdmUtils_helper::delete_priv('sections', $item->id);
 
-				// set what update
 				$msg->update = array(
 					'element' => 'page',
 					'url' => $_SERVER['HTTP_REFERER']

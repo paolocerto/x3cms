@@ -128,8 +128,6 @@ class Articles_controller extends X3ui_controller
 		if (!empty($_post) && isset($_post['bulk']) && is_array($_post['bulk']) && !empty($_post['bulk']))
 		{
             $mod = new Article_model();
-            $perm = new Permission_model();
-
             // NOTE: we here have only bulk_action = delete
             foreach ($_post['bulk'] as $i)
             {
@@ -139,7 +137,7 @@ class Articles_controller extends X3ui_controller
                     $result = $mod->delete($i);
                     if ($result[1])
                     {
-                        $perm->deleting_by_what('articles', $i);
+                        AdmUtils_helper::delete_priv('articles', $i);
                     }
                 }
             }
@@ -591,14 +589,7 @@ class Articles_controller extends X3ui_controller
 			// response
 			if ($result[1])
 			{
-                // permissions
-                $perm = new Permission_model();
-                $array[] = array(
-                        'action' => 'insert',
-                        'id_what' => $result[0],
-                        'id_user' => $_SESSION['xuid'],
-                        'level' => 4);
-                $perm->pexec('articles', $array, $post['id_area']);
+                Admin_utils_helper::set_priv($_SESSION['xuid'], $result[0], 'articles', $post['id_area']);
 
 				$from = (!empty($_post['from']))
                     ? urldecode($_post['from'])
@@ -871,8 +862,7 @@ class Articles_controller extends X3ui_controller
 			// clear useless permissions
 			if ($result[1])
 			{
-				$perm = new Permission_model();
-				$perm->deleting_by_what('articles', $item->id);
+				AdmUtils_helper::delete_priv('articles', $item->id);
 			}
 
 			// set message

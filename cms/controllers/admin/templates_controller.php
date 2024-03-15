@@ -250,20 +250,17 @@ class Templates_controller extends X3ui_controller
 			$mod = new Template_model();
 			$result = $mod->uninstall($item->id);
 
-			if (is_array($result)) {
-				// set error
+			if (is_array($result))
+            {
 				$msg = AdmUtils_helper::set_msg(false, '', $this->dict->get_word('_template_not_uninstalled'));
 			}
 			else
             {
-				// set message
 				$msg = AdmUtils_helper::set_msg($result);
 
 				if ($result)
 				{
-					// clear useless permissions
-					$perm = new Permission_model();
-					$perm->deleting_by_what('templates', $item->id);
+					AdmUtils_helper::delete_priv('templates', $item->id);
 
 					$theme = $mod->get_var($item->id_theme, 'themes', 'name');
 					$msg->update = array(

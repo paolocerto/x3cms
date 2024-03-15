@@ -17,14 +17,8 @@ class AdmUtils_helper
 {
 	/**
 	 * Put the message into a session variable
-	 *
-	 * @static
-	 * @param mixed		$res boolean/array query result
-	 * @param string	$ok message if all run fine
-	 * @param string	$ko error message
-	 * @return void
 	 */
-	public static function set_msg($res, string $ok = _MSG_OK, string $ko = _MSG_ERROR)
+	public static function set_msg($res, string $ok = _MSG_OK, string $ko = _MSG_ERROR) : string
 	{
 		$msg = new Msg();
 		switch(gettype($res))
@@ -65,14 +59,8 @@ class AdmUtils_helper
 
 	/**
 	 * Get User permission level on a table
-	 *
-	 * @static
-     * @param   integer	$id_area
-	 * @param   integer	$id_who User ID
-	 * @param   string	$what Privilege type
-	 * @return  integer	Permission level
 	 */
-	public static function get_ulevel(int $id_area, int $id_who, string $what)
+	public static function get_ulevel(int $id_area, int $id_who, string $what) : int
 	{
 		$mod = new Permission_model();
 		return $mod->get_upriv($id_area, $id_who, $what);
@@ -80,15 +68,8 @@ class AdmUtils_helper
 
     /**
 	 * Get User permission level on an item
-	 *
-	 * @static
-     * @param   integer	$id_area
-	 * @param   string	$what Privilege type
-	 * @param   integer	$id_what Item ID
-     * @param   string  $action
-	 * @return  integer	Permission level
 	 */
-	public static function get_priv_level(int $id_area, string $what, int $id_what, string $action = '')
+	public static function get_priv_level(int $id_area, string $what, int $id_what, string $action = '') : int
 	{
         if ($_SESSION['level'] == 5)
         {
@@ -96,7 +77,6 @@ class AdmUtils_helper
         }
 
 		$mod = new Permission_model();
-
         $priv = $mod->check_priv($_SESSION['xuid'], $what, $id_what, $id_area);
 
         // limited actions for not superadmins
@@ -119,15 +99,8 @@ class AdmUtils_helper
 
 	/**
 	 * Check User permission level on a record of a table
-	 *
-	 * @static
-     * @param   integer	$id_area
-	 * @param   string	$what Privilege type
-	 * @param   integer	$id_what Item ID
-	 * @param   string  $action
-	 * @return  mixed null or object
-	 */
-	public static function chk_priv_level(int $id_area, string $what, int $id_what, string $action)
+     */
+	public static function chk_priv_level(int $id_area, string $what, int $id_what, string $action) : mixed
 	{
 		// get priv level on the item
 		$level = self::get_priv_level($id_area, $what, $id_what, $action);
@@ -146,13 +119,33 @@ class AdmUtils_helper
 	}
 
     /**
-	 * Get the required level for each action
-	 *
-	 * @static
-     * @param   string  $action
-     * @return  integer
+	 * Set User priv on an item
 	 */
-    public static function action2level(string $action)
+	public static function set_priv(int $id_who, int $id_what, string $what, int $id_area) : void
+	{
+		$mod = new Permission_model();
+		$array[] = array(
+            'action' => 'insert',
+            'id_what' => $id_what,
+            'id_user' => $id_who,
+            'level' => 4
+        );
+        $mod->pexec($what, $array, $id_area);
+	}
+
+    /**
+	 * Delete Users priv on an item
+	 */
+	public static function delete_priv(string $what, int $id_what) : void
+	{
+		$mod = new Permission_model();
+		$mod->deleting_by_what($what, $id_what);
+	}
+
+    /**
+	 * Get the required level for each action
+	 */
+    public static function action2level(string $action) : int
     {
         // default level for unexpected actions
         $level = 3;
@@ -316,7 +309,12 @@ class AdmUtils_helper
                     <i class="fa-solid fa-copy fa-lg"></i>
                 </a>';
                 break;
-
+            case 'memo':
+                // $url have to be structured this way: page_url:lang
+                return '<a class="link" @click="popup(\''.BASE_URL.'memo/index/'.$url.'\')" title="'.$title.'">
+                    <i class="fas fa-thumbtack fa-lg"></i>
+                </a>';
+                break;
         }
 	}
 

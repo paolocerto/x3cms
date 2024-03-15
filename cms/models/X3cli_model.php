@@ -287,8 +287,7 @@ If you want to fully use this method you have to create:</p>
 	 */
 	public function index(int $id_area = 2, string $lang = \'en\', int $pp = 0) : void
 	{
-	    // load the dictionary
-		// you should have created a section in the dictionary for this controller
+	    // you should have created a section in the dictionary for this controller
 		$this->dict->get_wordarray(array(\''.$name.'\'));
 
         // get query string from filters
@@ -302,7 +301,12 @@ If you want to fully use this method you have to create:</p>
 		$page = $this->get_page(\''.$name.'\');
 		$view = new X4View_core(\'page\');
         $view->breadcrumb = array($this->site->get_bredcrumb($page));
-		$view->actions = $this->actions($id_area, $lang);
+		$view->actions = AdmUtils_helper::link(
+            \'memo\',
+            \''.$name.'\':\'.$lang,
+            [],
+            _MEMO
+        ).$this->actions($id_area, $lang);
 
 		// content
 
@@ -360,19 +364,15 @@ If you want to fully use this method you have to create:</p>
 	public function set(string $what, int $id_area, int $id, int $value = 0) : void
 	{
 		$msg = null;
-		// check permissions
 		$msg = AdmUtils_helper::chk_priv_level($id_area, \''.$name.'\', $id, $what);
 		if (is_null($msg))
 		{
-			// do action
 			$mod = new '.$uname.'_model();
 			$result = $mod->update($id, array($what => $value));
 
-			// set message
 			$this->dict->get_words();
 			$msg = AdmUtils_helper::set_msg($result);
 
-			// set update
 			if ($result[1])
             {
 				$msg->update = array(
@@ -394,7 +394,6 @@ If you want to fully use this method you have to create:</p>
 	 */
 	public function edit(int $id_area, string $lang, int $id = 0) : void
 	{
-		// load dictionaries
 		$this->dict->get_wordarray(array(\'form\', \''.$name.'\'));
 
 		// handle id
@@ -405,22 +404,17 @@ If you want to fully use this method you have to create:</p>
 			$chk = true;
 		}
 
-		// get the object
 		$mod = new '.$uname.'_model();
-
         $item = ($id)
 			? $mod->get_by_id($id)
 			: new '.$uname.'_obj($id_area, $lang);
 
-        // load the form
         $form_fields = new X4Form_core(\''.$uname.'_edit\', \''.$uname.'\');
 		$form_fields->id = $id;
 		$form_fields->item = $item;
 
-        // get the fields array
-		$fields = $form_fields->render();
+        $fields = $form_fields->render();
 
-		// if submitted
 		if (X4Route_core::$post)
 		{
 			$e = X4Validation_helper::form($fields, \'editor\');
@@ -453,11 +447,9 @@ If you want to fully use this method you have to create:</p>
         }
         $view->title = $title;
 
-		// contents
 		$view->content = new X4View_core(\'editor\');
         // can user edit?
         $submit = AdmUtils_helper::submit_btn($item->id_area, \'x3_plugins\', $id, $item->xlock);
-		// form builder
 		$view->content->form = X4Form_helper::doform(\'editor\', BASE_URL.\''.$name.'/edit/\'.$id_area.\'/\'.$lang.\'/\'.$id, $fields, array(_RESET, $submit, \'buttons\'), \'post\', \'\',
             \'@click="submitForm(\\\'editor\\\')"\');
 
@@ -474,7 +466,6 @@ If you want to fully use this method you have to create:</p>
 	private function editing(int $id, array $_post) : void
 	{
 		$msg = null;
-		// check permission
 		$msg = ($id)
 		    ? AdmUtils_helper::chk_priv_level($_post[\'id_area\'], \''.$name.'\', $id, \'edit\')
 		    : AdmUtils_helper::chk_priv_level($_post[\'id_area\'], \'_'.$name.'_creation\', 0, \'create\');
@@ -492,24 +483,19 @@ If you want to fully use this method you have to create:</p>
 
 			$mod = new '.$uname.'_model();
 
-			// save
 			if ($id)
 			{
-			    // update
-				$result = $mod->update($id, $post);
+			    $result = $mod->update($id, $post);
 			}
 			else
 			{
-			    // check if is a sortable object
 			    if ($mod->is_sortable($post[\'id_area\'], $post[\'lang\']))
 			    {
 			        $post[\'xpos\'] = $mod->get_max_pos($post[\'id_area\'], $post[\'lang\']) + 1;
 			    }
-			    // insert
-				$result = $mod->insert($post);
+			    $result = $mod->insert($post);
 			}
 
-			// set message
 			$msg = AdmUtils_helper::set_msg($result);
 
 			if ($result[1])
@@ -533,14 +519,11 @@ If you want to fully use this method you have to create:</p>
 	 */
 	public function delete(int $id) : void
 	{
-		// load dictionaries
 		$this->dict->get_wordarray(array(\'form\', \''.$name.'\'));
 
-		// get object
 		$mod = new '.$uname.'_model();
 		$item = $mod->get_by_id($id, \''.$name.'\', \'id, id_area, title\');
 
-		// build the form
 		$fields = array();
 		$fields[] = array(
 			\'label\' => null,
@@ -549,7 +532,6 @@ If you want to fully use this method you have to create:</p>
 			\'name\' => \'id\'
 		);
 
-		// if submitted
 		if (X4Route_core::$post)
 		{
 			$this->deleting($item);
@@ -562,13 +544,12 @@ If you want to fully use this method you have to create:</p>
 		    ? _'.strtoupper($name).'_DELETE
 		    : \'Delete '.$uname.'\';
         $view->title = $title;
-		// contents
+
 		$view->content = new X4View_core(\'delete\');
         $view->content->item = $item->title;
-
-		// form builder
 		$view->content->form = X4Form_helper::doform(\'delete\', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, \'buttons\'), \'post\', \'\',
 			\'@click="submitForm(\\\'delete\\\')"\');
+
 		$view->render(true);
 	}
 
@@ -578,22 +559,17 @@ If you want to fully use this method you have to create:</p>
 	private function deleting(stdClass $item) : void
 	{
 		$msg = null;
-		// check permission
 		$msg = AdmUtils_helper::chk_priv_level($item->id_area, \''.$name.'\', $item->id, \'delete\');
 
 		if (is_null($msg))
 		{
-			// action
 			$mod = new '.$uname.'_model();
 			$result = $mod->delete($item->id);
 
-			// set message
 			$msg = AdmUtils_helper::set_msg($result);
 
-			// clear useless permissions
 			if ($result[1]) {
-				$perm = new Permission_model();
-				$perm->deleting_by_what(\''.$name.'\', $item->id);
+				AdmUtils_helper::delete_priv(\''.$name.'\', $item->id);
 
 				$msg->update = array(
 					\'element\' => \'page\',
@@ -611,14 +587,11 @@ If you want to fully use this method you have to create:</p>
 	public function ordering(int $id_area, string $lang) : void
 	{
 		$msg = null;
-		// check permission not required
 		if (is_null($msg) && X4Route_core::$input)
 		{
-			// handle post
-            $_post = X4Route_core::$input;
+			$_post = X4Route_core::$input;
 			$elements = $_post[\'sort_order\'];
 
-			// do action
 			$mod = new '.$uname.'_model();
 			$items = $mod->get_items($id_area, $lang);
 
@@ -640,7 +613,6 @@ If you want to fully use this method you have to create:</p>
 				}
 			}
 
-			// set message
 			$this->dict->get_words();
 			$msg = AdmUtils_helper::set_msg($result);
 		}

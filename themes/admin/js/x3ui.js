@@ -449,6 +449,7 @@ const xevents = {
 function page_box() {
     const page = {
         content:"",
+        go_top: false,
         error_msg: "",
         files: {} ,
         blank(url) {

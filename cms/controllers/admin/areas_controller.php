@@ -463,8 +463,7 @@ class Areas_controller extends X3ui_controller
 			// clear useless permissions
 			if ($result[1])
 			{
-				$perm = new Permission_model();
-				$perm->deleting_by_what('areas', $item->id);
+                AdmUtils_helper::delete_priv('areas', $item->id);
 
 				// set what update
 				$msg->update = array(

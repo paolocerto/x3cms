@@ -151,4 +151,5 @@ class Help_controller extends X3ui_controller
 	{
 		return '';
 	}
+
 }

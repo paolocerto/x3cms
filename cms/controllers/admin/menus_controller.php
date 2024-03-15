@@ -175,15 +175,7 @@ class Menus_controller extends X3ui_controller
 			{
                 if (!$id)
                 {
-                    // permissions
-                    $perm = new Permission_model();
-                    $array[] = array(
-                        'action' => 'insert',
-                        'id_what' => $result[0],
-                        'id_user' => $_SESSION['xuid'],
-                        'level' => 4
-                    );
-                    $perm->pexec('menus', $array, 1);
+                    Admin_utils_helper::set_priv($_SESSION['xuid'], $result[0], 'menus', 1);
                 }
 
 				$theme = $mod->get_var($post['id_theme'], 'themes', 'name');
@@ -258,8 +250,7 @@ class Menus_controller extends X3ui_controller
 			// clear useless permissions
 			if ($result[1])
             {
-				$perm = new Permission_model();
-				$perm->deleting_by_what('menus', $item->id);
+				AdmUtils_helper::delete_priv('menus', $item->id);
 
 				// set what update
 				$theme = $mod->get_var($item->id_theme, 'themes', 'name');

@@ -205,13 +205,7 @@ class Widgets_controller extends X3ui_controller
 			// set what update
 			if ($result[1])
 			{
-				$perm = new Permission_model();
-				$array[] = array(
-						'action' => 'insert',
-						'id_what' => $result[0],
-						'id_user' => $_SESSION['xuid'],
-						'level' => 4);
-				$perm->pexec('widgets', $array, $post['id_area']);
+                Admin_utils_helper::set_priv($_SESSION['xuid'], $result[0], 'widgets', $post['id_area']);
 
 				$msg->update = array(
 					'element' => 'page',
@@ -308,25 +302,19 @@ class Widgets_controller extends X3ui_controller
 	private function deleting(array $_post) : void
 	{
 		$msg = null;
-		// check permissions
 		$msg = AdmUtils_helper::chk_priv_level(1, 'widgets', $_post['id'], 'delete');
 
 		if (is_null($msg))
 		{
-			// do action
 			$mod = new Widget_model();
 			$result = $mod->my_delete($_post['id']);
 
-			// set message
 			$msg = AdmUtils_helper::set_msg($result);
 
-			// clear useless permissions
 			if ($result[1])
 			{
-				$perm = new Permission_model();
-				$perm->deleting_by_what('widgets', $_post['id']);
+				AdmUtils_helper::delete_priv('widgets', $_post['id']);
 
-				// set what update
 				$msg->update = array(
 					'element' => 'page',
 					'url' => BASE_URL.'widgets'

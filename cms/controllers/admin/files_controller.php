@@ -122,8 +122,6 @@ class Files_controller extends X3ui_controller
             $qs = X4Route_core::get_query_string();
 
             $mod = new File_model();
-            $perm = new Permission_model();
-
             // NOTE: we here have only bulk_action = delete
             foreach ($_post['bulk'] as $i)
             {
@@ -133,7 +131,7 @@ class Files_controller extends X3ui_controller
                     $result = $mod->delete_file($i);
                     if ($result[1])
                     {
-                        $perm->deleting_by_what('files', $i);
+                        AdmUtils_helper::delete_priv('files', $i);
                     }
                 }
             }
@@ -311,12 +309,7 @@ class Files_controller extends X3ui_controller
                     $perm = new Permission_model();
                     foreach ($_post['id_area'] as $ii)
                     {
-                        $array[] = array(
-                                'action' => 'insert',
-                                'id_what' => $result[0],
-                                'id_user' => $_SESSION['xuid'],
-                                'level' => 4);
-                        $perm->pexec('files', $array, $ii);
+                        Admin_utils_helper::set_priv($_SESSION['xuid'], $result[0], 'files', $ii);
                     }
 
                     $qs = [
@@ -523,9 +516,7 @@ class Files_controller extends X3ui_controller
 
 			if ($result[1])
 			{
-				// clear useless permissions
-				$perm = new Permission_model();
-				$perm->deleting_by_what('files', $item->id);
+				AdmUtils_helper::delete_priv('files', $item->id);
 
                 $qs = [
                     'xxtype' => -1,
@@ -972,15 +963,7 @@ class Files_controller extends X3ui_controller
 							// create permissions
 							if ($result[1])
 							{
-								$id = $result[0];
-								$perm = new Permission_model();
-								// privs permissions
-								$array[] = array(
-										'action' => 'insert',
-										'id_what' => $id,
-										'id_user' => $_SESSION['xuid'],
-										'level' => 4);
-								$res = $perm->pexec('files', $array, $file->id_area);
+                                Admin_utils_helper::set_priv($_SESSION['xuid'], $result[0], 'files', $file->id_area);
 
 								if ($rotation)
 								{
@@ -1077,15 +1060,7 @@ class Files_controller extends X3ui_controller
 								// create permissions
 								if ($result[1])
 								{
-									$id = $result[0];
-									$perm = new Permission_model();
-									// privs permissions
-									$array[] = array(
-											'action' => 'insert',
-											'id_what' => $id,
-											'id_user' => $_SESSION['xuid'],
-											'level' => 4);
-									$res = $perm->pexec('files', $array, $file->id_area);
+                                    Admin_utils_helper::set_priv($_SESSION['xuid'], $result[0], 'files', $file->id_area);
 								}
 							}
 						}
@@ -1146,15 +1121,7 @@ class Files_controller extends X3ui_controller
 									// create permissions
 									if ($result[1])
 									{
-										$id = $result[0];
-										$perm = new Permission_model();
-										// privs permissions
-										$array[] = array(
-												'action' => 'insert',
-												'id_what' => $id,
-												'id_user' => $_SESSION['xuid'],
-												'level' => 4);
-										$res = $perm->pexec('files', $array, $file->id_area);
+                                        Admin_utils_helper::set_priv($_SESSION['xuid'], $result[0], 'files', $file->id_area);
 									}
 								}
 							}

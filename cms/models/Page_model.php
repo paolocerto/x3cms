@@ -315,15 +315,7 @@ class Page_model extends X4Model_core
 
             if ($res_article[1])
             {
-                // add permission over article
-                $perm = new Permission_model();
-                $array = array(
-                    'action' => 'insert',
-                    'id_what' => $res_article[0],
-                    'id_user' => $_SESSION['xuid'],
-                    'level' => 4
-                );
-                $perm->pexec('articles', [$array], $this->id_area);
+                Admin_utils_helper::set_priv($_SESSION['xuid'], $res_article[0], 'articles', $this->id_area);
             }
             // create sections
             $mod = new Section_model();

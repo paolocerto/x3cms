@@ -624,6 +624,10 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'admin', 'languages', '_CODE', 'Codice', 0, 1),
 (NOW(), 'it', 'admin', 'languages', '_RTL_LANGUAGE', 'Lingua che va da destra a sinistra', 0, 1),
 
+(NOW(), 'it', 'admin', 'global', '_MEMO', 'Memo', 0, 1),
+(NOW(), 'it', 'admin', 'memo', '_MEMO_MSG', 'Qui puoi scrivere una nota su questa pagina solo per te o per tutti gli utenti', 0, 1),
+(NOW(), 'it', 'admin', 'memo', '_MEMO_PERSONAL', 'Solo per me', 0, 1),
+(NOW(), 'it', 'admin', 'memo', '_DELETE_MEMO', 'Elimina memo', 0, 1),
 
 (NOW(), 'it', 'admin', 'menus', '_MENUS', 'Men&ugrave;', 0, 1),
 (NOW(), 'it', 'admin', 'menus', '_MENU_LIST', 'Elenco men&ugrave;', 0, 1),
@@ -1300,6 +1304,11 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'admin', 'languages', '_NEW_LANG', 'New language', 0, 1),
 (NOW(), 'en', 'admin', 'languages', '_CODE', 'Code', 0, 1),
 (NOW(), 'en', 'admin', 'languages', '_RTL_LANGUAGE', 'Right to Left language', 0, 1),
+
+(NOW(), 'en', 'admin', 'global', '_MEMO', 'Memo', 0, 1),
+(NOW(), 'en', 'admin', 'memo', '_MEMO_MSG', 'Here you can take a note about this page only for you or for all users', 0, 1),
+(NOW(), 'en', 'admin', 'memo', '_MEMO_PERSONAL', 'Only for me', 0, 1),
+(NOW(), 'en', 'admin', 'memo', '_DELETE_MEMO', 'Delete memo', 0, 1),
 
 
 (NOW(), 'en', 'admin', 'menus', '_MENUS', 'Men&ugrave;', 0, 1),
@@ -2519,6 +2528,26 @@ CREATE TABLE IF NOT EXISTS `matches` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `memos`
+--
+
+CREATE TABLE IF NOT EXISTS `memos` (
+  `id` int(11) NOT NULL auto_increment,
+  `updated` datetime NOT NULL,
+  `lang` char(2) NOT NULL,
+  `url` varchar(255) NOT NULL,
+  `xuid` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `description` text NOT NULL,
+  `personal` tinyint(1) NOT NULL,
+  `likes` int(11) NOT NULL,
+  `xon` tinyint(1) NOT NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `menus`
 --
 
@@ -2771,6 +2800,7 @@ INSERT INTO `param` (`updated`, `id_area`, `xrif`, `name`, `description`, `xtype
 (NOW(), 1, 'site', 'debug', 'Enable/disable debug', '0|1', '1', 1, 0, 1),
 (NOW(), 1, 'site', 'devel', 'Enable/disable development state', '0|1', '1', 1, 0, 1),
 (NOW(), 1, 'site', 'logs', 'Enable/disable logs', '0|1', '0', 1, 0, 1),
+(NOW(), 1, 'site', 'memo', 'Enable/disable memo feature', '0|1', '1', 1, 0, 1),
 (NOW(), 1, 'site', 'multilanguage', 'Enable/disable multilingual site', '0|1', '1', 1, 0, 1),
 (NOW(), 1, 'site', 'multiarea', 'Enable/disable multiarea site', '0|1', '1', 1, 0, 1),
 (NOW(), 1, 'site', 'cache', 'Enable/disable page caching', '0|1', '0', 1, 0, 1),
