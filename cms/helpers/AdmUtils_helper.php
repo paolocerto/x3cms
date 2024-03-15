@@ -18,7 +18,7 @@ class AdmUtils_helper
 	/**
 	 * Put the message into a session variable
 	 */
-	public static function set_msg($res, string $ok = _MSG_OK, string $ko = _MSG_ERROR) : string
+	public static function set_msg($res, string $ok = _MSG_OK, string $ko = _MSG_ERROR) : Msg
 	{
 		$msg = new Msg();
 		switch(gettype($res))

@@ -53,7 +53,12 @@ class X3banners_controller extends X3ui_controller implements X3plugin_controlle
 
         $view = new X4View_core('page');
         $view->breadcrumb = array($this->site->get_bredcrumb($page), array('modules' => 'index/'.$id_area));
-		$view->actions = $this->actions($id_area, $lang);
+		$view->actions = AdmUtils_helper::link(
+            'memo',
+            'x3banners:mod:'.$lang,
+            [],
+            _MEMO
+        ).$this->actions($id_area, $lang);
 
 		// content
 		$view->content = new X4View_core('x3banners_list', 'x3banners');

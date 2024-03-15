@@ -38,7 +38,12 @@ class Info_controller extends X3ui_controller
 
         $view = new X4View_core('page');
         $view->breadcrumb = array($this->site->get_bredcrumb($page));
-		$view->actions = '';
+		$view->actions = AdmUtils_helper::link(
+            'memo',
+            'inf0:'.$page->lang,
+            [],
+            _MEMO
+        );
 
         $view->content = new X4View_core('tabber');
         $view->content->title = _SITE_INFO;

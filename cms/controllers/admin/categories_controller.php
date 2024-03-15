@@ -53,7 +53,12 @@ class Categories_controller extends X3ui_controller
 
         $view = new X4View_core('page');
         $view->breadcrumb = array($this->site->get_bredcrumb($page));
-		$view->actions = $this->actions($id_area, $lang, $tag);
+		$view->actions = AdmUtils_helper::link(
+                'memo',
+                'categories:'.$lang,
+                [],
+                _MEMO
+            ).$this->actions($id_area, $lang, $tag);
 
 		$mod = new Category_model();
 		$tags = $mod->get_tags($id_area, $lang);

@@ -38,7 +38,12 @@ class Languages_controller extends X3ui_controller
 
 		$view = new X4View_core('page');
         $view->breadcrumb = array($this->site->get_bredcrumb($page));
-		$view->actions = $this->actions();
+            $view->actions = AdmUtils_helper::link(
+                'memo',
+                'languages:'.$page->lang,
+                [],
+                _MEMO
+            ).$this->actions();
 
         $view->content = new X4View_core('languages/language_list');
         $view->content->page = $page;

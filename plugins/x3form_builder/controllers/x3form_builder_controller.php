@@ -120,7 +120,12 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
             $this->site->get_bredcrumb($page),
             array('modules' => 'index/'.$id_area, 'x3form-builder/mod' => $id_area.'/'.$lang)
         );
-		$view->actions = $this->actions($id_area, $lang, $id_form);
+		$view->actions = AdmUtils_helper::link(
+                'memo',
+                'x3form_builder:fields:'.$lang,
+                [],
+                _MEMO
+            ).$this->actions($id_area, $lang, $id_form);
 
 		$view->content = new X4View_core('x3form_fields', 'x3form_builder');
 		$view->content->id_area = $id_area;
@@ -157,7 +162,12 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
                 'x3form-builder/mod' => $id_area.'/'.$lang
             )
         );
-		$view->actions = $this->actions($id_area, $lang);
+		$view->actions = AdmUtils_helper::link(
+            'memo',
+            'x3form_builder:results:'.$lang,
+            [],
+            _MEMO
+        ).$this->actions($id_area, $lang);
 
         $mod = new X3form_builder_model($this->site->data->db);
 		$form = $mod->get_by_id($id_form, 'x3_forms', 'name');
@@ -195,7 +205,12 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
             $this->site->get_bredcrumb($page),
             array('modules' => 'index/'.$id_area, 'x3form-builder/mod' => $id_area.'/'.$lang)
         );
-		$view->actions = $this->actions($id_area, $lang, -1);
+		$view->actions = AdmUtils_helper::link(
+            'memo',
+            'x3form_builder:blacklist:'.$lang,
+            [],
+            _MEMO
+        ).$this->actions($id_area, $lang, -1);
 
         $mod = new X3form_builder_model($this->site->data->db);
 

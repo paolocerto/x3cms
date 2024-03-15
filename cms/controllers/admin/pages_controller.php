@@ -58,7 +58,12 @@ class Pages_controller extends X3ui_controller
 
         $view = new X4View_core('page');
         $view->breadcrumb = array($this->site->get_bredcrumb($page), array('areas' => 'index'));
-		$view->actions = $this->actions($id_area, $lang, $xfrom);
+		$view->actions = AdmUtils_helper::link(
+                'memo',
+                'pages:'.$lang,
+                [],
+                _MEMO
+            ).$this->actions($id_area, $lang, $xfrom);
 
 		$view->content = new X4View_core('pages/pages');
 

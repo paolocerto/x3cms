@@ -38,7 +38,12 @@ class Users_controller extends X3ui_controller
 
         $view = new X4View_core('page');
         $view->breadcrumb = array($this->site->get_bredcrumb($page));
-		$view->actions = $this->actions('group');
+		$view->actions = AdmUtils_helper::link(
+                'memo',
+                'users:'.$lang,
+                [],
+                _MEMO
+            ).$this->actions('group');
 
 		// content
 		$view->content = new X4View_core('users/group_list');
@@ -184,7 +189,12 @@ class Users_controller extends X3ui_controller
 
         $view = new X4View_core('page');
         $view->breadcrumb = array($this->site->get_bredcrumb($page));
-		$view->actions = $this->actions('user', $user->id_group, $id);
+		$view->actions = AdmUtils_helper::link(
+                'memo',
+                'user:detail:'.$lang,
+                [],
+                _MEMO
+            ).$this->actions('user', $user->id_group, $id);
 
         $view->content = new X4View_core('users/user_detail');
         $view->content->user = $user;

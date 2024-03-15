@@ -41,7 +41,12 @@ class Widgets_controller extends X3ui_controller
 		// contents
 		$view = new X4View_core('page');
         $view->breadcrumb = array($this->site->get_bredcrumb($page));
-		$view->actions = $this->actions();
+		$view->actions = AdmUtils_helper::link(
+                'memo',
+                'widgets:'.$lang,
+                [],
+                _MEMO
+            ).$this->actions();
 
 		$view->content = new X4View_core('widgets/widgets_list');
 		$view->content->page = $page;
