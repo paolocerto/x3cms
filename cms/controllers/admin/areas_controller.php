@@ -493,6 +493,7 @@ class Areas_controller extends X3ui_controller
 
 		// content
 		$view->content = new X4View_core('areas/map');
+        
 		$mod = new Page_model($id_area, $lang);
 		$view->content->area = $mod->get_by_id($id_area, 'areas');
 		$view->content->lang = $lang;

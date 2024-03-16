@@ -70,7 +70,7 @@ echo '<div class="col-span-2">
 echo '</div></form>';
 
 ?>
-<h1 class="mt-6"><?php echo _X3BANNERS_MANAGE ?></h1>
+<h1 class="mt-6"><?php echo $page->icon.' '._X3BANNERS_MANAGE ?></h1>
 <?php
 $list = $items[0];
 if (!empty($list))

@@ -57,7 +57,7 @@ echo '<div class="col-span-2">
 	</div>';
 echo '</div></form>';
 
-echo '<h1 class="mt-6">'._WORDS_LIST.'</h1>';
+echo '<h1 class="mt-6">'.$page->icon.' '._WORDS_LIST.'</h1>';
 
 if ($items)
 {

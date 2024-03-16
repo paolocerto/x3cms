@@ -10,7 +10,7 @@
 
 // templates list
 
-echo '<h1 class="mt-6">'.$theme._TRAIT_._TEMPLATE_LIST.'</h1>';
+echo '<h1 class="mt-6">'.$page->icon.' '.$theme._TRAIT_._TEMPLATE_LIST.'</h1>';
 
 echo '<table>
     <thead>

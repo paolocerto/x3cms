@@ -82,6 +82,7 @@ class Dictionary_controller extends X3ui_controller
 
         // contents
         $view->content = new X4View_core('languages/words');
+        $view->content->page = $page;
         $view->content->keys = $keys;
         $view->content->id_area = $id_area;
 

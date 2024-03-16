@@ -73,7 +73,7 @@ echo '</div>
 
 $bulk_url = 'files/bulk/'.$id_area.'?'.http_build_query($qs);
 ?>
-<h1 class="mt-6"><?php echo _FILE_LIST ?></h1>
+<h1 class="mt-6"><?php echo $page->icon.' '._FILE_LIST ?></h1>
 <div x-data="bulkable()" x-init='setup("<?php echo $bulk_url ?>")' >
 
 <div x-show="bulk.length > 0" class="buttons">

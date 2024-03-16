@@ -97,7 +97,7 @@ $title = (isset($page))
 	? _TRAIT_.stripslashes($page->name)
 	: '';
 ?>
-<h1 class="mt-6"><?php echo _ARTICLE_LIST.$title ?></h1>
+<h1 class="mt-6"><?php echo $page->icon.' '._ARTICLE_LIST.$title ?></h1>
 
 <?php
 // use pagination

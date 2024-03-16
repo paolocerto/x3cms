@@ -10,7 +10,7 @@
 
 // theme manager
 
-echo '<h1 class="mt-6">'.$page->title.'</h1>';
+echo '<h1 class="mt-6">'.$page->icon' '.$page->title.'</h1>';
 
 if (empty($theme_in))
 {

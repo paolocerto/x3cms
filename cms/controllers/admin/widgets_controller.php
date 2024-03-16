@@ -43,7 +43,7 @@ class Widgets_controller extends X3ui_controller
         $view->breadcrumb = array($this->site->get_bredcrumb($page));
 		$view->actions = AdmUtils_helper::link(
                 'memo',
-                'widgets:'.$lang,
+                'widgets:'.$page->lang,
                 [],
                 _MEMO
             ).$this->actions();

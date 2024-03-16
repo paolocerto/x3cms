@@ -496,7 +496,7 @@ class X4Site_model extends X4Model_core
 			$c = array();
 			foreach ($menus as $i)
 			{
-                $c[$i->name] = $this->db->query('SELECT pa.url, pa.redirect, pa.name, pa.title, pa.xfrom, pa.hidden, pa.fake, pa.deep, pa.ordinal '.$level.'
+                $c[$i->name] = $this->db->query('SELECT pa.url, pa.redirect, pa.name, pa.title, pa.icon, pa.xfrom, pa.hidden, pa.fake, pa.deep, pa.ordinal '.$level.'
 					FROM pages pa
 					'.$page_privs.'
 					WHERE

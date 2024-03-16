@@ -196,7 +196,7 @@ class Section_model extends X4Model_core
 
                         if ($result[1])
                         {
-                            Admin_utils_helper::set_priv($_SESSION['xuid'], $result[0], 'sections', $id_area);
+                            Adminutils_helper::set_priv($_SESSION['xuid'], $result[0], 'sections', $id_area);
                         }
                     }
                 }

@@ -47,6 +47,7 @@ class Menus_controller extends X3ui_controller
 
 		// content
 		$view->content = new X4View_core('themes/menu_list');
+        $view->content->page = $page;
 		$view->content->id_theme = $id_theme;
 		$view->content->theme = $theme_name;
 

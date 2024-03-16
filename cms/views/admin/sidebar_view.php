@@ -8,21 +8,8 @@
  * @package		X3CMS
  */
 
-// icons
-$icons = [
-    'sites' => '<i class="fa-solid fa-lg fa-fw fa-gear"></i>',
-    'pages' => '<i class="fa-solid fa-lg fa-fw fa-file"></i>',
-    'articles' => '<i class="fa-solid fa-lg fa-fw fa-puzzle-piece"></i>',
-    'files' => '<i class="fa-solid fa-lg fa-fw fa-image"></i>',
-    'plugins' => '<i class="fa-solid fa-lg fa-fw fa-plug"></i>',
-    'fake' => '<i class="fa-solid fa-lg fa-fw fa-circle-question"></i>',
-
-    'widgets' => '<i class="fa-solid fa-lg fa-fw fa-paperclip"></i>',
-    'profile' => '<i class="fa-solid fa-lg fa-fw fa-user"></i>',
-    'help' => '<i class="fa-solid fa-lg fa-fw fa-circle-question"></i>',
-    'info' => '<i class="fa-solid fa-lg fa-fw fa-circle-info"></i>',
-    'login/logout' => '<i class="fa-solid fa-lg fa-fw fa-power-off"></i>'
-];
+// fake icon for pages without icon
+$fake_icon = '<i class="fa-solid fa-lg fa-fw fa-circle-question"></i>';
 
 $xdata = '{
         open:false,
@@ -68,12 +55,16 @@ foreach ($menus['sidebar'] as $k => $v)
             $open = false;
         }
 
+        $icon = !empty($v->icon)
+            ? $v->icon
+            : $fake_icon;
+
         // first level links
         switch ($v->url)
         {
             case 'sites':
                 echo '<a @click="settings=!settings;toggle()"
-                    title="'._SETTINGS.'"><i class="fa-solid fa-lg fa-fw fa-gear"></i> <span x-show="open">'._SETTINGS.'</span></a><br>
+                    title="'._SETTINGS.'">'.$icon.' <span x-show="open">'._SETTINGS.'</span></a><br>
                     <div x-show="settings" class="pl-3 text-sm leading-5 mb-4"><ul style="list-style:none">';
                 $open = true;
                 break;
@@ -87,30 +78,21 @@ foreach ($menus['sidebar'] as $k => $v)
                         @contextmenu="$dispatch(\'blank\', \''.BASE_URL.'modules\')"
                         title="'._PLUGINS.'"
                     >
-                        <i class="fa-solid fa-lg fa-fw fa-plug"></i> <span x-show="open">'._PLUGINS.'</span>
+                        '.$icon.' <span x-show="open">'._PLUGINS.'</span>
                     </a><br>';
                 }
                 else
                 {
-                    echo '<a @click="plugins=!plugins;toggle()" title="'._PLUGINS.'"><i class="fa-solid fa-lg fa-fw fa-plug"></i> <span x-show="open">'._PLUGINS.'</span></a><br>
+                    echo '<a @click="plugins=!plugins;toggle()" title="'._PLUGINS.'">'.$icon.' <span x-show="open">'._PLUGINS.'</span></a><br>
                         <div x-show="plugins" class="pl-3 text-sm leading-5 mb-4"><ul style="list-style:none">
                             <li><a @click="$dispatch(\'pager\', \''.BASE_URL.'modules\');" title="'._ALL_PLUGINS.'">'._ALL_PLUGINS.'</a></li>';
                         $open = true;
                 }
                 break;
             case 'login/logout':
-                // if someone move the item
-                $icon = isset($icons[$v->url])
-                     ? $icons[$v->url]
-                     : $icons['fake'];
-
                 echo '<a href="'.BASE_URL.'login/logout" title="'.$v->name.'">'.$icon.' <span x-show="open">'.$v->name.'</span></a><br>';
                 break;
             default:
-                $icon = isset($icons[$v->url])
-                     ? $icons[$v->url]
-                     : $icons['fake'];
-
                 echo '<a
                     @click="$dispatch(\'pager\', \''.BASE_URL.$v->url.'\')"
                     @contextmenu="$dispatch(\'blank\', \''.BASE_URL.$v->url.'\')"
@@ -140,9 +122,9 @@ if ($open)
 // user menu
 foreach ($menus['user_menu'] as $k => $v)
 {
-    $icon = isset($icons[$v->url])
-        ? $icons[$v->url]
-        : $icons['fake'];
+    $icon = !empty($v->icon)
+        ? $v->icon
+        : $fake_icon;
 
     $action = ($v->url == 'login/logout')
         ? 'href="'.BASE_URL.'login/logout"'
@@ -166,7 +148,7 @@ if ($_SESSION['level'] > 4)
         : '';
 ?>
     <a @click="$dispatch('pager', '<?php echo BASE_URL ?>info')" @contextmenu="$dispatch('blank', '<?php echo BASE_URL ?>info')"
-        title="<?php echo _ABOUT ?>"><i class="fa-solid fa-lg fa-fw fa-circle-info"></i> <span x-show="open"><?php echo _ABOUT ?></span></a><br>
+        title="<?php echo _ABOUT ?>"><?php echo $icon ?> <span x-show="open"><?php echo _ABOUT ?></span></a><br>
 
     <a @click="$dispatch('setter', '<?php echo BASE_URL.'sites/set/debug/'.((DEBUG+1)%2) ?>')" title="<?php echo _DEBUG_MODE ?>">
         <i class="fa-solid fa-lg fa-fw fa-bug <?php echo $debug ?>"></i> <span x-show="open"><?php echo _DEBUG_MODE ?></span>

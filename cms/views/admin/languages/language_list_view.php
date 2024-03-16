@@ -10,7 +10,7 @@
 
 // Language list
 
-echo '<h1 class="mt-6">'._LANGUAGES_MANAGER.'</h1>';
+echo '<h1 class="mt-6">'.$page->icon.' '._LANGUAGES_MANAGER.'</h1>';
 
 if (empty($langs))
 {

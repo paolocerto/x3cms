@@ -207,6 +207,7 @@ class Pages_controller extends X3ui_controller
 				'name' => $_post['name'],
 				'title' => $_post['name'],
 				'description' => $_post['description'],
+                'icon' => html_entity_decode($_post['icon']),
 				'xfrom' => $_post['xfrom'],
 				'tpl' => $_post['tpl']
 			);
@@ -511,11 +512,12 @@ class Pages_controller extends X3ui_controller
 				'name' => $_post['name'],
 				'title' => $_post['title'],
 				'description' => $_post['description'],
+                'icon' => html_entity_decode($_post['icon']),
 				'xkeys' => $_post['xkeys'],
 				'robot' => $_post['robot'],
 				'redirect_code' => $_post['redirect_code'],
 				'redirect' => $_post['redirect'],
-				'tpl' => $_post['tpl']
+				'tpl' => $_post['tpl'],
 			);
 
 			// check if a page with the same URL already exists

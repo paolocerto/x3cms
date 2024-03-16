@@ -10,6 +10,7 @@
 
 ?>
 <h1 class="mt-6">
+    <?php echo $page->icon ?>
     <a class="link" @click="pager('<?php echo BASE_URL.'x3form_builder/mod/'.$id_area.'/'.$lang ?>')" title="<?php echo _X3FB_MANAGE ?>"><?php echo _X3FB_MANAGE ?></a>
     <?php echo _TRAIT_.$form->name.': '._X3FB_FIELDS ?>
 </h1>

@@ -57,7 +57,7 @@ class Modules_controller extends X3ui_controller
         );
 
         $view->content = new X4View_core('modules/module_list');
-
+        $view->content->page = $page;
 		$view->content->id_area = $id_area;
 		$view->content->area = $amod->get_by_id($id_area);
 

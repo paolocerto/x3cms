@@ -25,7 +25,7 @@ if (sizeof($sites) > 1)
 }
 ?>
 
-<h1><?php echo _AREA_LIST ?></h1>
+<h1><?php echo $page->icon.' '._AREA_LIST ?></h1>
 
 <table>
     <thead>

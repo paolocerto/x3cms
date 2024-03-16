@@ -17,7 +17,7 @@ foreach ($areas as $i)
 }
 echo '</div>';
 ?>
-<h1 class="mt-6"><?php echo _MODULE_LIST.': '.$area->title ?></h1>
+<h1 class="mt-6"><?php echo $page->icon.' '._MODULE_LIST.': '.$area->title ?></h1>
 <?php
 if ($plugged || $pluggable)
 {

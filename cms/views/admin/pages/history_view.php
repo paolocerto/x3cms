@@ -8,7 +8,7 @@
  * @package		X3CMS
  */
 ?>
-<h2><?php echo _HISTORY_LIST.' '.$page->name ?></h2>
+<h2><?php echo $page->icon.' '._HISTORY_LIST.' '.$page->name ?></h2>
 <div id="popper"></div><div id="unique_pop"></div>
 <?php
 if ($page->url != 'home')

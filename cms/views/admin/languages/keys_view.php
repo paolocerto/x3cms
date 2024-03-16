@@ -29,7 +29,7 @@ foreach ($areas as $i)
 }
 echo '</ul></div>';
 ?>
-<h2><?php echo _SECTIONS_LIST.': '.$lang.'/'.$area ?></h2>
+<h2><?php echo $page->icon.' '._SECTIONS_LIST.': '.$lang.'/'.$area ?></h2>
 <table class="zebra">
 	<tr>
 		<th class="first"><?php echo _SECTION ?></th>

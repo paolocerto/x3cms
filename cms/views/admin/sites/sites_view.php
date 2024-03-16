@@ -9,7 +9,7 @@
  */
 
 ?>
-<h1><?php echo _SITE_MANAGER ?></h1>
+<h1><?php echo $page->icon.' '._SITE_MANAGER ?></h1>
 
 <table>
 <thead>

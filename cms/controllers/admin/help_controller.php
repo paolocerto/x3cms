@@ -46,8 +46,7 @@ class Help_controller extends X3ui_controller
         );
 
 		$view->content = new X4View_core('tabber');
-
-		$view->content->title = _HELP;
+		$view->content->title = $page->icon.' '._HELP;
 
 		$view->content->tabs = array(
 			_HELP_ON_SITE => ['url', BASE_URL.'help/local'],

@@ -128,10 +128,20 @@ $fields[] = array(
 );
 
 $fields[] = array(
+    'label' => _ICON,
+    'type' => 'text',
+    'value' => htmlentities($page->icon),
+    'name' => 'icon',
+    'suggestion' => _ICON_MSG,
+    'extra' => 'class="w-full"'
+);
+
+$fields[] = array(
     'label' => _KEYS,
     'type' => 'textarea',
     'value' => $page->xkeys,
-    'name' => 'xkeys'
+    'name' => 'xkeys',
+    'suggestion' => _KEYS_MSG,
 );
 
 $fields[] = array(

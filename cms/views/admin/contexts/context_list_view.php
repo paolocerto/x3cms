@@ -31,7 +31,7 @@ foreach ($areas as $i)
 echo '</div></div>';
 
 ?>
-<h1 class="mt-6"><?php echo _CONTEXT_LIST ?></h1>
+<h1 class="mt-6"><?php echo $page->icon.' '._CONTEXT_LIST ?></h1>
 <p><?php echo _CONTEXT_MSG ?></p>
 
 <table>

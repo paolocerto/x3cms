@@ -49,7 +49,7 @@ foreach ($tags as $i)
 echo '</div></div>';
 
 ?>
-<h1 class="mt-6"><?php echo _CATEGORY_LIST ?></h1>
+<h1 class="mt-6"><?php echo $page->icon.' '._CATEGORY_LIST ?></h1>
 <?php
 if ($items)
 {

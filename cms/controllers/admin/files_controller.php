@@ -60,13 +60,14 @@ class Files_controller extends X3ui_controller
         $view->breadcrumb = array($this->site->get_bredcrumb($page));
 		$view->actions = AdmUtils_helper::link(
                 'memo',
-                'files:'.$lang,
+                'files:'.$page->lang,
                 [],
                 _MEMO
             ).$this->actions($id_area, $qs);
 
 		// contents
 		$view->content = new X4View_core('files/file_list');
+        $view->content->page = $page;
 		$view->content->id_area = $id_area;
         $view->content->qs = $qs;
 
@@ -573,7 +574,7 @@ class Files_controller extends X3ui_controller
 
 		// content
 		$view->content = new X4View_core('files/editor_container');
-
+        $view->content->page = $page;
         // TODO
 
         // left

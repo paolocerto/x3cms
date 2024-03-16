@@ -73,7 +73,7 @@ class Profile_controller extends X3ui_controller
 		$view->content = new X4View_core('editor');
 
 		// form builder
-		$view->content->super_title = _EDIT_PROFILE;
+		$view->content->super_title = $page->icon.' '._EDIT_PROFILE;
 		$view->content->form = X4Form_helper::doform('profile', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
             '@click="submitForm(\'profile\')"');
 

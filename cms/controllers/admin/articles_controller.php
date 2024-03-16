@@ -93,6 +93,7 @@ class Articles_controller extends X3ui_controller
 
         $view->content->items = X4Pagination_helper::paginate($mod->get_articles($id_area, $lang, $qs), $pp);
 
+        $view->content->page = $page;
         $mod = new Page_model($id_area, $lang);
         $view->content->pages = $mod->get_pages();
 
@@ -638,6 +639,7 @@ class Articles_controller extends X3ui_controller
 
 		// content
 		$view->content = new X4View_core('articles/history');
+        $view->content->page = $page;
 		$view->content->id_area = $id_area;
 		$view->content->lang = $lang;
 		$view->content->bid = $bid;

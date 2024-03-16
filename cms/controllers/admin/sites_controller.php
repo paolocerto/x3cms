@@ -55,6 +55,7 @@ class Sites_controller extends X3ui_controller
 
         $view->content = new X4View_core('sites/settings');
         $view->content->items = $this->site->get_subpages($page->id_area, 'sites');
+        $view->content->page = $page;
 
 		$view->render(true);
 	}
@@ -93,6 +94,7 @@ class Sites_controller extends X3ui_controller
 
         $mod = new Site_model();
         $view->content->items = $mod->get_items($_SESSION['xuid']);
+        $view->content->page = $page;
 
 		$view->render(true);
 	}

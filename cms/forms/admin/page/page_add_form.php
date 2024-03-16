@@ -45,6 +45,16 @@ $fields[] = array(
     'value' => '',
     'name' => 'description'
 );
+
+$fields[] = array(
+    'label' => _ICON,
+    'type' => 'text',
+    'value' => htmlentities($page->icon),
+    'name' => 'icon',
+    'suggestion' => _ICON_MSG,
+    'extra' => 'class="w-full"'
+);
+
 $fields[] = array(
     'label' => _FROM_PAGE,
     'type' => 'select',

@@ -52,7 +52,8 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
             _MEMO
         ).$this->actions($id_area, $lang);
         $view->content = new X4View_core('x3form_list', 'x3form_builder');
-		$view->pp = $pp;
+        $view->content->page = $page;
+		$view->content->pp = $pp;
 
         $mod = new X3form_builder_model($this->site->data->db);
 		$view->content->items = X4Pagination_helper::paginate($mod->get_forms($id_area, $lang, 2), $pp);
@@ -173,6 +174,7 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
 		$form = $mod->get_by_id($id_form, 'x3_forms', 'name');
 
 		$view->content = new X4View_core('x3form_results', 'x3form_builder');
+        $view->content->page = $page;
         $view->content->form = $form;
 		$view->content->id_area = $id_area;
 		$view->content->lang = $lang;
@@ -215,6 +217,7 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
         $mod = new X3form_builder_model($this->site->data->db);
 
 		$view->content = new X4View_core('x3form_blacklist', 'x3form_builder');
+        $view->content->page = $page;
         $view->content->id_area = $id_area;
 		$view->content->lang = $lang;
 		$view->content->pp = $pp;

@@ -8,7 +8,7 @@
  * @package		X3CMS
  */
 ?>
-<h1 class="mt-6"><?php echo _WIDGETS_MANAGER ?></h1>
+<h1 class="mt-6"><?php echo $page->icon.' '._WIDGETS_MANAGER ?></h1>
 <?php
 if ($items)
 {
@@ -33,7 +33,7 @@ if ($items)
         $actions .= AdmUtils_helper::link('delete', 'widgets/delete/'.$i->id);
 
 		echo '<div class="sort-item" id="'.$i->id.'"><table class="my-0"><tr>
-                <td>'.$i->area._TRAIT_.$i->description.'</td>
+                <td>'.$i->area._TRAIT_.'<b>'.$i->description.'</b></td>
                 <td class="w-20 space-x-2 text-right">'.$actions.'</td>
             </tr>
         </table></div>';

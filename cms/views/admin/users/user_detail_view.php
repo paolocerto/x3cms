@@ -10,7 +10,7 @@
 
 // user detail view
 
-echo '<h1 class="mt-6">'._USER_DETAIL.': '.$user->username.'</h1>';
+echo '<h1 class="mt-6">'.$page->icon.' '._USER_DETAIL.': '.$user->username.'</h1>';
 
 echo '<table>
     <thead>

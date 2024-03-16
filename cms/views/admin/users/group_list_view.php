@@ -10,7 +10,7 @@
 
 // group list view
 
-echo '<h1 class="mt-6">'._GROUP_LIST.'</h1>';
+echo '<h1 class="mt-6">'.$page->icon.' '._GROUP_LIST.'</h1>';
 
 if (empty($groups))
 {

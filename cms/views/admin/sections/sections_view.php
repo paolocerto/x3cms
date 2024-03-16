@@ -19,7 +19,7 @@ $parent = str_replace('/', '§', $xpage->xfrom);
         title="'._GO_BACK.'"
     >'.$xpage->name ?></a>
 </h1>
-<p><?php echo _SECTIONS_SORT_MSG ?></p>
+<p><?php echo $page->icon._SECTIONS_SORT_MSG ?></p>
 <table class="mb-0 border-b-2 border-orange-500">
     <thead>
         <tr>

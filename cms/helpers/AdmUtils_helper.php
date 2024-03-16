@@ -60,7 +60,7 @@ class AdmUtils_helper
 	/**
 	 * Get User permission level on a table
 	 */
-	public static function get_ulevel(int $id_area, int $id_who, string $what) : int
+	public static function get_ulevel(int $id_area, int $id_who, string $what) : stdClass
 	{
 		$mod = new Permission_model();
 		return $mod->get_upriv($id_area, $id_who, $what);

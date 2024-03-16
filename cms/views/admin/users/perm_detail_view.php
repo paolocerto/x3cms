@@ -8,7 +8,7 @@
  * @package		X3CMS
  */
 ?>
-<h2><?php echo _EDIT_DETAIL_PRIV ?></h2>
+<h2><?php echo $page->icon.' '._EDIT_DETAIL_PRIV ?></h2>
 <h4><?php echo _USER.': '.$user->username.BR._TABLE.': '.$table ?></h4>
 <div id="hform">
 

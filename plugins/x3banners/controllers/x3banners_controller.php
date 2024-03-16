@@ -62,6 +62,7 @@ class X3banners_controller extends X3ui_controller implements X3plugin_controlle
 
 		// content
 		$view->content = new X4View_core('x3banners_list', 'x3banners');
+        $view->content->page = $page;
 		$view->content->pp = $pp;
         $view->content->qs = $qs;
 

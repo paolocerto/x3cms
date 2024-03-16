@@ -12,7 +12,7 @@
 $bulk_url = 'articles/bulk/'.$id_area.'/'.$lang.'/'.$bid;
 ?>
 
-<h1 class="mt-6"><?php echo _ARTICLE_HISTORY.': '.$art->name ?></h1>
+<h1 class="mt-6"><?php echo $page->icon.' '._ARTICLE_HISTORY.': '.$art->name ?></h1>
 <div x-data="bulkable()" x-init='setup("<?php echo $bulk_url ?>")' >
 
     <div x-show="bulk.length > 0" class="buttons">

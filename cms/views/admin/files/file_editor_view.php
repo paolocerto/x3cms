@@ -21,7 +21,7 @@ switch($file->xtype)
         }
 // <img src="<?php echo FPATH.'img/'.$file->name ? >" id="img" /> class="bg-gray-100 p-4 w-full overflow-hidden"
 ?>
-    <h1><?php echo _IMAGE_EDIT.': '.$file->name ?></h1>
+    <h1><?php echo $page->icon.' '._IMAGE_EDIT.': '.$file->name ?></h1>
     <div id="image_editor" ></div>
     <?php
 	// end image case

@@ -712,10 +712,12 @@ class Page_obj
 	public $url;
 	public $name;
 	public $description;
+    public $icon = '';
 	public $xfrom = '';
 	public $id_menu = 0;
 	public $deep = 0;
 	public $area = '';
+    public $xkeys = '';
 
 	public $robot = '';
 	public $redirect_code = 0;

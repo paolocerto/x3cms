@@ -46,7 +46,7 @@ class Info_controller extends X3ui_controller
         );
 
         $view->content = new X4View_core('tabber');
-        $view->content->title = _SITE_INFO;
+        $view->content->title = $page->icon.' '._SITE_INFO;
         $view->content->tabs = array(
             'Default' => ['view', 'sites/info'],
             'Apache' => ['view', 'sites/apache'],

@@ -71,6 +71,7 @@ class Users_controller extends X3ui_controller
 
 		// content
 		$view->content = new X4View_core('users/users_list');
+        $view->content->page = $page;
 		$view->content->items = $mod->get_users($id_group);
 		$view->content->link = BASE_URL.'users/user';
 		$view->content->class = 'class="link"';
@@ -197,6 +198,7 @@ class Users_controller extends X3ui_controller
             ).$this->actions('user', $user->id_group, $id);
 
         $view->content = new X4View_core('users/user_detail');
+        $view->content->page = $page;
         $view->content->user = $user;
 
         // get user privileges

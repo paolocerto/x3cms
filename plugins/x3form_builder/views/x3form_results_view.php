@@ -13,6 +13,7 @@
 $bulk_url = 'x3form_builder/bulk/'.$id_area.'/'.$lang;
 ?>
 <h1 class="mt-6">
+    <?php echo $page->icon ?>
     <a class="link" @click="pager('<?php echo BASE_URL.'x3form_builder/mod/'.$id_area.'/'.$lang ?>')" title="<?php echo _X3FB_MANAGE ?>"><?php echo _X3FB_MANAGE ?></a>
     <?php echo _TRAIT_._X3FB_RESULTS.': '.$form->name ?>
 </h1>

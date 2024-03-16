@@ -293,7 +293,15 @@ foreach ($codes as $i)
 <div x-data='<?php echo $page_composer ?>' x-init='setup(<?php echo $pagetoedit->id ?>, <?php echo json_encode($containers) ?>, <?php echo json_encode($sizes) ?>)' class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
 
 	<div class="md:col-span-2 lg:col-span-3">
-		<h1><span class="hidden md:inline-block"><?php echo _COMPOSE_EDITOR.' </span> <a class="link" @click="pager(\''.BASE_URL.'pages/index/'.$pagetoedit->id_area.'/'.$pagetoedit->lang.'/'.$pagetoedit->xfrom.'/1\')" title="">'.$pagetoedit->name.'</a>'._TRAIT_.$pagetoedit->area.'/'.$pagetoedit->lang ?></h1>
+		<h1>
+            <span class="hidden md:inline-block">
+                <?php echo $page->icon.' '._COMPOSE_EDITOR.'
+            </span>
+            <a class="link" @click="pager(\''.BASE_URL.'pages/index/'.$pagetoedit->id_area.'/'.$pagetoedit->lang.'/'.$pagetoedit->xfrom.'/1\')" title="">
+                '.$pagetoedit->name.'
+            </a>
+            '._TRAIT_.$pagetoedit->area.'/'.$pagetoedit->lang ?>
+        </h1>
 		<h2><?php echo _SECTIONS ?><span class="warn" x-show="changes"><?php echo _TRAIT_._UNSAVED_CHANGES ?></span></h2>
 		<p><?php echo _SECTIONS_MSG ?></p>
 

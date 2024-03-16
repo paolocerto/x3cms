@@ -53,6 +53,7 @@ class Sections_controller extends X3ui_controller
 
 		// contents
 		$view->content = new X4View_core('sections/sections');
+        $view->content->page = $page;
         $view->content->xpage = $mod->get_by_id($id_page, 'pages', 'id, id_area, lang, name, url, xfrom');
 
 		$view->content->sections = $tpl_sections;
@@ -563,6 +564,7 @@ class Sections_controller extends X3ui_controller
 
 		// content
 		$view->content = new X4View_core('sections/compose');
+        $view->content->page = $page;
 		$view->content->pagetoedit = $epage;
 
 		$smod = new Section_model();

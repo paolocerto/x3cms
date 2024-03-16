@@ -42,7 +42,7 @@ if (MULTIAREA)
 }
 echo '</div>';
 ?>
-<h1 class="mt-6"><?php echo _X3FB_MANAGE ?></h1>
+<h1 class="mt-6"><?php echo $page->icon.' '._X3FB_MANAGE ?></h1>
 <?php
 
 if (!empty($items[0]))

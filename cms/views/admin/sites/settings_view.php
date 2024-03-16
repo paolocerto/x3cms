@@ -11,7 +11,7 @@
 // settings cards
 
 ?>
-<h1><?php echo _SETTINGS_MANAGER ?></h1>
+<h1><?php echo $page->icon.' '._SETTINGS_MANAGER ?></h1>
 <p><?php echo _SETTINGS_MANAGER_MSG ?></p>
 
 <div class="mt-6 grid grid-cols-1 md:grid-cols-4 gap-4">
