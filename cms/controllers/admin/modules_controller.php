@@ -38,7 +38,7 @@ class Modules_controller extends X3ui_controller
 	 */
 	public function index(int $id_area = 2, string $area = 'public') : void
 	{
-		// load dictionary
+        // load dictionary
 		$this->dict->get_wordarray(array('modules'));
 
 		$amod = new Area_model();
@@ -49,7 +49,7 @@ class Modules_controller extends X3ui_controller
 
         $view = new X4View_core('page');
         $view->breadcrumb = array($this->site->get_bredcrumb($page));
-		$view->actions = AdmUtils_helper::link(
+		$view->actions = AdminUtils_helper::link(
             'memo',
             'modules:'.$page->lang,
             [],
@@ -65,9 +65,9 @@ class Modules_controller extends X3ui_controller
 		$mod = new X4Plugin_model();
 		$view->content->plugged = $mod->get_installed($id_area);
 
-		$view->content->uninstall = AdmUtils_helper::get_ulevel(1, $_SESSION['xuid'], '_module_uninstall');
+		$view->content->uninstall = AdminUtils_helper::get_ulevel(1, $_SESSION['xuid'], '_module_uninstall');
 
-		$chk = AdmUtils_helper::get_ulevel(1, $_SESSION['xuid'], '_module_install');
+		$chk = AdminUtils_helper::get_ulevel(1, $_SESSION['xuid'], '_module_install');
 		$view->content->pluggable = (!$chk || $chk->level < 4)
 		    ? array()
 		    : $mod->get_installable($id_area);
@@ -85,7 +85,7 @@ class Modules_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level($id_area, 'modules', $id, $what);
+		$msg = AdminUtils_helper::chk_priv_level($id_area, 'modules', $id, $what);
 		if (is_null($msg))
 		{
 			$qs = X4Route_core::get_query_string();
@@ -96,7 +96,7 @@ class Modules_controller extends X3ui_controller
 
 			// set message
 			$this->dict->get_words();
-			$msg = AdmUtils_helper::set_msg($result);
+			$msg = AdminUtils_helper::set_msg($result);
 
 			// set update
 			if ($result[1])
@@ -168,7 +168,7 @@ class Modules_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level(
+		$msg = AdminUtils_helper::chk_priv_level(
             $item->id_area,
             str_replace(array('x3', 'x4'), array('x3_', 'x4_'), $_post['xrif']),
             $_post['id'],
@@ -217,7 +217,7 @@ class Modules_controller extends X3ui_controller
 			APC && apcu_delete(SITE.'mod_param'.$item->name.$item->id_area);
 
 			// set message
-			$msg = AdmUtils_helper::set_msg($result);
+			$msg = AdminUtils_helper::set_msg($result);
 
 			// set what update
 			if ($result[1])
@@ -238,7 +238,7 @@ class Modules_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level($id_area, '_module_install', 0, 'create');
+		$msg = AdminUtils_helper::chk_priv_level($id_area, '_module_install', 0, 'create');
 		if (is_null($msg))
 		{
 			// load global dictionary
@@ -257,12 +257,12 @@ class Modules_controller extends X3ui_controller
 				{
 					$str[] = $i['label']._TRAIT_.$this->dict->get_word(strtoupper($i['error'][0]), 'msg');
 				}
-				$msg = AdmUtils_helper::set_msg(false, '', implode('<br />', $str));
+				$msg = AdminUtils_helper::set_msg(false, '', implode('<br />', $str));
 			}
 			else
 			{
 				// set message
-				$msg = AdmUtils_helper::set_msg(true);
+				$msg = AdminUtils_helper::set_msg(true);
 				// installed
 				if ($result)
 				{
@@ -335,7 +335,7 @@ class Modules_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level($item->id_area, 'modules', $item->id, 'delete');
+		$msg = AdminUtils_helper::chk_priv_level($item->id_area, 'modules', $item->id, 'delete');
 		if (is_null($msg))
 		{
 			// do action
@@ -351,12 +351,12 @@ class Modules_controller extends X3ui_controller
 			else
 			{
 				// set message
-				$msg = AdmUtils_helper::set_msg(true);
+				$msg = AdminUtils_helper::set_msg(true);
 
 				// uninstalled
 				if ($result)
 				{
-					AdmUtils_helper::delete_priv('modules', $item->id);
+					AdminUtils_helper::delete_priv('modules', $item->id);
 
                     $msg->update = array(
                         'element' => 'page',

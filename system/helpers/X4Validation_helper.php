@@ -230,7 +230,7 @@ class X4Validation_helper
                 break;
 
             case 'mcheckbox':
-                $fields[$i]['checked'] = (isset(self::$data[$field['name']]))
+                $field['checked'] = (isset(self::$data[$field['name']]))
                     ? self::$data[$field['name']]
                     : array();
                 break;

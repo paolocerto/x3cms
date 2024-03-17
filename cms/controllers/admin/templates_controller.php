@@ -38,7 +38,7 @@ class Templates_controller extends X3ui_controller
 
         $view = new X4View_core('page');
         $view->breadcrumb = array($this->site->get_bredcrumb($page));
-		$view->actions = AdmUtils_helper::link(
+		$view->actions = AdminUtils_helper::link(
             'memo',
             'templates:index:'.$page->lang,
             [],
@@ -66,7 +66,7 @@ class Templates_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level(1, 'templates', $id, $what);
+		$msg = AdminUtils_helper::chk_priv_level(1, 'templates', $id, $what);
 		if (is_null($msg))
 		{
 			// do action
@@ -75,7 +75,7 @@ class Templates_controller extends X3ui_controller
 
 			// set message
 			$this->dict->get_words();
-			$msg = AdmUtils_helper::set_msg($result);
+			$msg = AdminUtils_helper::set_msg($result);
 
 			// set update
 			if ($result[1])
@@ -151,7 +151,7 @@ class Templates_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level(1, '_template_install', 0, 'create');
+		$msg = AdminUtils_helper::chk_priv_level(1, '_template_install', 0, 'create');
 
 		if (is_null($msg))
 		{
@@ -168,7 +168,7 @@ class Templates_controller extends X3ui_controller
 			$result = $mod->insert($post);
 
 			// set message
-			$msg = AdmUtils_helper::set_msg($result);
+			$msg = AdminUtils_helper::set_msg($result);
 
 			// add permission on new template
 			if ($result[1])
@@ -248,7 +248,7 @@ class Templates_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level(1, 'templates', $item->id, 'delete');
+		$msg = AdminUtils_helper::chk_priv_level(1, 'templates', $item->id, 'delete');
 
 		if (is_null($msg))
 		{
@@ -258,15 +258,15 @@ class Templates_controller extends X3ui_controller
 
 			if (is_array($result))
             {
-				$msg = AdmUtils_helper::set_msg(false, '', $this->dict->get_word('_template_not_uninstalled'));
+				$msg = AdminUtils_helper::set_msg(false, '', $this->dict->get_word('_template_not_uninstalled'));
 			}
 			else
             {
-				$msg = AdmUtils_helper::set_msg($result);
+				$msg = AdminUtils_helper::set_msg($result);
 
 				if ($result)
 				{
-					AdmUtils_helper::delete_priv('templates', $item->id);
+					AdminUtils_helper::delete_priv('templates', $item->id);
 
 					$theme = $mod->get_var($item->id_theme, 'themes', 'name');
 					$msg->update = array(
@@ -327,7 +327,7 @@ class Templates_controller extends X3ui_controller
 		// contents
 		$view->content = new X4View_core('editor');
         // can user edit?
-        $submit = AdmUtils_helper::submit_btn(1, 'templates', $id, $item->xlock);
+        $submit = AdminUtils_helper::submit_btn(1, 'templates', $id, $item->xlock);
 		// form builder
 		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, $submit, 'buttons'), 'post', '',
         '@click="submitForm(\'editor\')"');
@@ -374,7 +374,7 @@ class Templates_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level(1, 'templates', $_post['id'], 'edit');
+		$msg = AdminUtils_helper::chk_priv_level(1, 'templates', $_post['id'], 'edit');
 
 		if (is_null($msg))
 		{
@@ -391,7 +391,7 @@ class Templates_controller extends X3ui_controller
 			chmod($file, 0755);
 
 			// set message
-			$msg = AdmUtils_helper::set_msg($result);
+			$msg = AdminUtils_helper::set_msg($result);
 
 			// set what update
 			if ($check)

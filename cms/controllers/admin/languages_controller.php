@@ -38,7 +38,7 @@ class Languages_controller extends X3ui_controller
 
 		$view = new X4View_core('page');
         $view->breadcrumb = array($this->site->get_bredcrumb($page));
-            $view->actions = AdmUtils_helper::link(
+            $view->actions = AdminUtils_helper::link(
                 'memo',
                 'languages:'.$page->lang,
                 [],
@@ -70,7 +70,7 @@ class Languages_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level(1, 'languages', $id, $what);
+		$msg = AdminUtils_helper::chk_priv_level(1, 'languages', $id, $what);
 		if (is_null($msg))
 		{
 			// do action
@@ -79,7 +79,7 @@ class Languages_controller extends X3ui_controller
 
 			// set message
 			$this->dict->get_words();
-			$msg = AdmUtils_helper::set_msg($result);
+			$msg = AdminUtils_helper::set_msg($result);
 
 			// set update
 			if ($result[1])
@@ -132,7 +132,7 @@ class Languages_controller extends X3ui_controller
 			: _ADD_LANG;
 
         $view->content = new X4View_core('editor');
-        $submit = AdmUtils_helper::submit_btn(1, 'languages', $id, $item->xlock);
+        $submit = AdminUtils_helper::submit_btn(1, 'languages', $id, $item->xlock);
 		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, $submit, 'buttons'), 'post', '',
             '@click="submitForm(\'editor\')"');
 		$view->render(true);
@@ -146,8 +146,8 @@ class Languages_controller extends X3ui_controller
 		$msg = null;
 		// check permission
 		$msg = ($id)
-            ? AdmUtils_helper::chk_priv_level(1, 'languages', $_post['id'], 'edit')
-            : AdmUtils_helper::chk_priv_level(1, '_language_creation', 0, 'create');
+            ? AdminUtils_helper::chk_priv_level(1, 'languages', $_post['id'], 'edit')
+            : AdminUtils_helper::chk_priv_level(1, '_language_creation', 0, 'create');
 
 		if (is_null($msg))
 		{
@@ -164,7 +164,7 @@ class Languages_controller extends X3ui_controller
 			$check = $lang->exists($post, $id);
 			if ($check)
             {
-				$msg = AdmUtils_helper::set_msg(false, '', $this->dict->get_word('_LANGUAGE_ALREADY_EXISTS', 'msg'));
+				$msg = AdminUtils_helper::set_msg(false, '', $this->dict->get_word('_LANGUAGE_ALREADY_EXISTS', 'msg'));
             }
 			else
 			{
@@ -174,14 +174,14 @@ class Languages_controller extends X3ui_controller
                     : $lang->insert($post);
 
 				// set message
-				$msg = AdmUtils_helper::set_msg($result);
+				$msg = AdminUtils_helper::set_msg($result);
 
 				// set what update
 				if ($result[1])
 				{
                     if (!$id)
                     {
-                        Admin_utils_helper::set_priv($_SESSION['xuid'], $result[0], 'languages', $post['id_area']);
+                        AdminUtils_helper::set_priv($_SESSION['xuid'], $result[0], 'languages', $post['id_area']);
                     }
 
 					$msg->update = array(
@@ -242,7 +242,7 @@ class Languages_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level(1, 'languages', $_post['id'], 'delete');
+		$msg = AdminUtils_helper::chk_priv_level(1, 'languages', $_post['id'], 'delete');
 		if (is_null($msg))
 		{
 			// action
@@ -250,12 +250,12 @@ class Languages_controller extends X3ui_controller
 			$result = $mod->delete_lang($_post['id']);
 
 			// set message
-			$msg = AdmUtils_helper::set_msg($result);
+			$msg = AdminUtils_helper::set_msg($result);
 
 			// clear useless permissions
 			if ($result[1])
 			{
-				AdmUtils_helper::delete_priv('languages', $_post['id']);
+				AdminUtils_helper::delete_priv('languages', $_post['id']);
 
 				// set what update
 				$msg->update = array(
@@ -340,7 +340,7 @@ class Languages_controller extends X3ui_controller
 
         $res = [0, 1];
          // set message
-        $msg = AdmUtils_helper::set_msg($res);
+        $msg = AdminUtils_helper::set_msg($res);
 
         // set what update
         $msg->update = array(

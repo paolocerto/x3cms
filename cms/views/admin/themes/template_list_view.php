@@ -28,25 +28,25 @@ if ($tpl_in)
 
 	foreach ($tpl_in as $i)
 	{
-        $statuses = AdmUtils_helper::statuses($i, ['xon', 'xlock']);
+        $statuses = AdminUtils_helper::statuses($i, ['xon', 'xlock']);
 
 		$actions = $uninstall = '';
 
 		// check permission
 		if (($i->level > 2 && $i->xlock == 0) || $i->level >= 3)
 		{
-            $actions = AdmUtils_helper::link('edit', 'templates/edit/template/'.$theme.'/'.$i->id);
+            $actions = AdminUtils_helper::link('edit', 'templates/edit/template/'.$theme.'/'.$i->id);
 
 			$actions .= '<a class="link" @click="pager(\''.BASE_URL.'templates/edit/css/'.$theme.'/'.$i->id.'\')" title="'._EDIT.' css">
                 <i class="fa-solid fa-paintbrush fa -lg"></i>
             </a>';
 
-            $actions .= AdmUtils_helper::link('xon', 'templates/set/xon/'.$i->id.'/'.(($i->xon+1)%2), $statuses);
+            $actions .= AdminUtils_helper::link('xon', 'templates/set/xon/'.$i->id.'/'.(($i->xon+1)%2), $statuses);
 
 			// admin user
 			if ($i->level >= 4)
 			{
-                $actions .= AdmUtils_helper::link('xlock', 'templates/set/xlock/'.$i->id.'/'.(($i->xlock+1)%2), $statuses);
+                $actions .= AdminUtils_helper::link('xlock', 'templates/set/xlock/'.$i->id.'/'.(($i->xlock+1)%2), $statuses);
 
 				$actions .= ($i->name != 'base')
 					? '<a class="link" @click="popup(\''.BASE_URL.'templates/uninstall/'.$i->id.'\')" title="'._UNINSTALL_TEMPLATE.'">

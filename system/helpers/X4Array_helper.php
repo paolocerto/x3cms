@@ -86,7 +86,7 @@ class X4Array_helper
 	public static function obj2array(array $array, string $key, string $value) : array
 	{
 		$a = array();
-		if (is_null($key))
+		if (empty($key))
 		{
 			foreach ($array as $i)
 			{

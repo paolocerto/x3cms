@@ -162,9 +162,16 @@ foreach ($sections as $i)
 	$settings = json_decode($i->settings, true);
 
     // handle cols subdivision
-    $csizes = isset($settings['col_sizes'])
-        ? explode('+', $settings['col_sizes'])
-        : array_fill(0, $settings['columns'], 1);
+    if (isset($settings['col_sizes']))
+    {
+        $csizes = explode('+', $settings['col_sizes']);
+    }
+    else
+    {
+        $csizes = array_fill(0, $settings['columns'], 1);
+        $settings['col_sizes'] = implode('+', $csizes);
+    }
+
     // this is the real number of columns with subdivion
     $nc = sizeof($csizes);
 

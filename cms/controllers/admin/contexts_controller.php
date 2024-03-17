@@ -49,7 +49,7 @@ class Contexts_controller extends X3ui_controller
 
         $view = new X4View_core('page');
         $view->breadcrumb = array($this->site->get_bredcrumb($page));
-		$view->actions = AdmUtils_helper::link(
+		$view->actions = AdminUtils_helper::link(
                 'memo',
                 'contexts:'.$lang,
                 [],
@@ -93,7 +93,7 @@ class Contexts_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level($id_area, 'contexts', $id, $what);
+		$msg = AdminUtils_helper::chk_priv_level($id_area, 'contexts', $id, $what);
 		if (is_null($msg))
 		{
 			// do action
@@ -107,7 +107,7 @@ class Contexts_controller extends X3ui_controller
 
 			// set message
 			$this->dict->get_words();
-			$msg = AdmUtils_helper::set_msg($result);
+			$msg = AdminUtils_helper::set_msg($result);
 
 			// set update
 			if ($result[1])
@@ -169,7 +169,7 @@ class Contexts_controller extends X3ui_controller
 		// content
 		$view->content = new X4View_core('editor');
         // can user edit?
-        $submit = AdmUtils_helper::submit_btn($id_area, 'contexts', $id, $item->xlock);
+        $submit = AdminUtils_helper::submit_btn($id_area, 'contexts', $id, $item->xlock);
 		// form builder
 		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, $submit, 'buttons'), 'post', '',
             '@click="submitForm(\'editor\')"');
@@ -185,8 +185,8 @@ class Contexts_controller extends X3ui_controller
 		$msg = null;
 		// check permission
 		$msg = ($id)
-			? AdmUtils_helper::chk_priv_level($_post['id_area'], 'contexts', $id, 'edit')
-			: AdmUtils_helper::chk_priv_level($_post['id_area'], '_context_creation', 0, 'create');
+			? AdminUtils_helper::chk_priv_level($_post['id_area'], 'contexts', $id, 'edit')
+			: AdminUtils_helper::chk_priv_level($_post['id_area'], '_context_creation', 0, 'create');
 
 		if (is_null($msg))
 		{
@@ -204,7 +204,7 @@ class Contexts_controller extends X3ui_controller
 			$check = $mod->exists($post, $id);
 			if ($check)
             {
-				$msg = AdmUtils_helper::set_msg(false, '', $this->dict->get_word('_CONTEXT_ALREADY_EXISTS', 'msg'));
+				$msg = AdminUtils_helper::set_msg(false, '', $this->dict->get_word('_CONTEXT_ALREADY_EXISTS', 'msg'));
             }
 			else
 			{
@@ -230,7 +230,7 @@ class Contexts_controller extends X3ui_controller
 					$result = $mod->insert($post);
 					if ($result[1])
 					{
-                        Admin_utils_helper::set_priv($_SESSION['xuid'], $result[0], 'contexts', $post['id_area']);
+                        AdminUtils_helper::set_priv($_SESSION['xuid'], $result[0], 'contexts', $post['id_area']);
 
 						// add item into dictionary
 						$mod->check_dictionary($post, 1);
@@ -238,7 +238,7 @@ class Contexts_controller extends X3ui_controller
 				}
 
 				// set message
-				$msg = AdmUtils_helper::set_msg($result);
+				$msg = AdminUtils_helper::set_msg($result);
 
 				// set what update
 				if ($result[1])
@@ -304,7 +304,7 @@ class Contexts_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permissions
-		$msg = AdmUtils_helper::chk_priv_level($item->id_area, 'contexts', $item->id, 'delete');
+		$msg = AdminUtils_helper::chk_priv_level($item->id_area, 'contexts', $item->id, 'delete');
 		if (is_null($msg))
 		{
 			// do action
@@ -312,12 +312,12 @@ class Contexts_controller extends X3ui_controller
 			$result = $mod->delete($item->id);
 
 			// set message
-			$msg = AdmUtils_helper::set_msg($result);
+			$msg = AdminUtils_helper::set_msg($result);
 
 			// clear useless permissions
 			if ($result[1])
             {
-				AdmUtils_helper::delete_priv('contexts', $item->id);
+				AdminUtils_helper::delete_priv('contexts', $item->id);
 
 				// set what update
 				$msg->update = array(

@@ -89,7 +89,7 @@ if (!empty($items[0]))
 	$what = array('img', 'files', 'media', 'template');
 	foreach ($items[0] as $i)
 	{
-		$statuses = AdmUtils_helper::statuses($i);
+		$statuses = AdminUtils_helper::statuses($i);
 		$actions = '';
         // for filter
         $tmp = $qs;
@@ -97,12 +97,12 @@ if (!empty($items[0]))
 		// check permission
 		if (($i->level > 1 && $i->xlock == 0) || $i->level >= 3)
 		{
-            $actions = AdmUtils_helper::link('edit', 'files/edit/'.$i->id);
+            $actions = AdminUtils_helper::link('edit', 'files/edit/'.$i->id);
 
             // manager or admin user
             if ($i->level > 2)
             {
-                $actions .= AdmUtils_helper::link('xon', 'files/set/xon/'.$id_area.'/'.$i->id.'/'.(($i->xon+1)%2), $statuses);
+                $actions .= AdminUtils_helper::link('xon', 'files/set/xon/'.$id_area.'/'.$i->id.'/'.(($i->xon+1)%2), $statuses);
             }
             // filter
             $tmp['xctg'] = $i->category;
@@ -114,8 +114,8 @@ if (!empty($items[0]))
             // admin user
             if ($i->level >= 4)
             {
-                $actions .= AdmUtils_helper::link('xlock', 'files/set/xlock/'.$id_area.'/'.$i->id.'/'.(($i->xlock+1)%2), $statuses);
-                $actions .= AdmUtils_helper::link('delete','files/delete/'.$i->id);
+                $actions .= AdminUtils_helper::link('xlock', 'files/set/xlock/'.$id_area.'/'.$i->id.'/'.(($i->xlock+1)%2), $statuses);
+                $actions .= AdminUtils_helper::link('delete','files/delete/'.$i->id);
             }
 		}
 

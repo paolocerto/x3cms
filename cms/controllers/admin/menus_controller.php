@@ -38,7 +38,7 @@ class Menus_controller extends X3ui_controller
 
         $view = new X4View_core('page');
         $view->breadcrumb = array($this->site->get_bredcrumb($page));
-		$view->actions = AdmUtils_helper::link(
+		$view->actions = AdminUtils_helper::link(
                 'memo',
                 'menus:'.$this->site->area->lang,
                 [],
@@ -73,7 +73,7 @@ class Menus_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level(1, 'menus', $id, $what);
+		$msg = AdminUtils_helper::chk_priv_level(1, 'menus', $id, $what);
 		if (is_null($msg))
 		{
 			// do action
@@ -81,7 +81,7 @@ class Menus_controller extends X3ui_controller
 			$result = $menus->update($id, array($what => $value));
 			// set message
 			$this->dict->get_words();
-			$msg = AdmUtils_helper::set_msg($result);
+			$msg = AdminUtils_helper::set_msg($result);
 
 			// set update
 			if ($result[1])
@@ -140,7 +140,7 @@ class Menus_controller extends X3ui_controller
 		// contents
 		$view->content = new X4View_core('editor');
         // can user edit?
-        $submit = AdmUtils_helper::submit_btn(1, 'menus', $id, $item->xlock);
+        $submit = AdminUtils_helper::submit_btn(1, 'menus', $id, $item->xlock);
 		// form builder
 		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, $submit, 'buttons'), 'post', '',
             '@click="submitForm(\'editor\')"');
@@ -155,8 +155,8 @@ class Menus_controller extends X3ui_controller
 		$msg = null;
 		// check permission
 		$msg = ($_post['id'])
-		    ? AdmUtils_helper::chk_priv_level(1, 'menus', $_post['id'], 'edit')
-            : AdmUtils_helper::chk_priv_level(1, '_menu_creation', 0, 'create');
+		    ? AdminUtils_helper::chk_priv_level(1, 'menus', $_post['id'], 'edit')
+            : AdminUtils_helper::chk_priv_level(1, '_menu_creation', 0, 'create');
 
 		if (is_null($msg))
 		{
@@ -175,13 +175,13 @@ class Menus_controller extends X3ui_controller
                 : $mod->insert($post);
 
 			// set message
-			$msg = AdmUtils_helper::set_msg($result);
+			$msg = AdminUtils_helper::set_msg($result);
 
 			if ($result[1])
 			{
                 if (!$id)
                 {
-                    Admin_utils_helper::set_priv($_SESSION['xuid'], $result[0], 'menus', 1);
+                    AdminUtils_helper::set_priv($_SESSION['xuid'], $result[0], 'menus', 1);
                 }
 
 				$theme = $mod->get_var($post['id_theme'], 'themes', 'name');
@@ -243,7 +243,7 @@ class Menus_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level(1, 'menus', $item->id, 'delete');
+		$msg = AdminUtils_helper::chk_priv_level(1, 'menus', $item->id, 'delete');
 		if (is_null($msg))
 		{
 			// action
@@ -251,12 +251,12 @@ class Menus_controller extends X3ui_controller
 			$result = $mod->delete($item->id);
 
 			// set message
-			$msg = AdmUtils_helper::set_msg($result);
+			$msg = AdminUtils_helper::set_msg($result);
 
 			// clear useless permissions
 			if ($result[1])
             {
-				AdmUtils_helper::delete_priv('menus', $item->id);
+				AdminUtils_helper::delete_priv('menus', $item->id);
 
 				// set what update
 				$theme = $mod->get_var($item->id_theme, 'themes', 'name');

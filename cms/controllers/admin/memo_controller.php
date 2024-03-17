@@ -102,7 +102,7 @@ class Memo_controller extends X3ui_controller
         // no permission each user can handle only his memos
         if ($item->xuid != 0 && $item->xuid != $_SESSION['xuid'])
         {
-            $msg = AdmUtils_helper::set_msg([0, 0]);
+            $msg = AdminUtils_helper::set_msg([0, 0]);
             $this->response($msg);
         }
 
@@ -130,7 +130,7 @@ class Memo_controller extends X3ui_controller
         }
 
         // set message
-        $msg = AdmUtils_helper::set_msg($result);
+        $msg = AdminUtils_helper::set_msg($result);
 
         if ($result[1])
         {

@@ -34,7 +34,7 @@ $bulk_url = 'articles/bulk/'.$id_area.'/'.$lang.'/'.$bid;
 <?php
 foreach ($history as $i)
 {
-    $statuses = AdmUtils_helper::statuses($i);
+    $statuses = AdminUtils_helper::statuses($i);
 
 	// define the end of the visibility window
 	$out = ($i->date_out)
@@ -55,14 +55,14 @@ foreach ($history as $i)
         // if user have write permission and object is unlocked or user is an administrator
         if (($i->level > 2 && $i->xlock == 0) || $i->level >= 3)
         {
-            $actions .= AdmUtils_helper::link('xon', 'articles/set_by_bid/xon/'.$i->id.'/'.(($i->xon+1)%2), $statuses);
+            $actions .= AdminUtils_helper::link('xon', 'articles/set_by_bid/xon/'.$i->id.'/'.(($i->xon+1)%2), $statuses);
 
             // administrator
             if ($i->level >= 4)
             {
-                $actions .= AdmUtils_helper::link('xlock', 'articles/set_by_bid/xlock/'.$i->id_area.'/'.$i->id.'/'.(($i->xlock+1)%2), $statuses);
+                $actions .= AdminUtils_helper::link('xlock', 'articles/set_by_bid/xlock/'.$i->id_area.'/'.$i->id.'/'.(($i->xlock+1)%2), $statuses);
 
-                $actions .= AdmUtils_helper::link('delete','articles/delete_version/'.$i->id);
+                $actions .= AdminUtils_helper::link('delete','articles/delete_version/'.$i->id);
             }
             $date_in = '<a class="link" @click="popup(\''.BASE_URL.'articles/setdate/'.$i->id.'\')" title="'._EDIT_DATE.'">'.date('Y-m-d', $i->date_in).'</a>';
             $date_out = '<a class="link" @click="popup(\''.BASE_URL.'articles/setdate/'.$i->id.'\')" title="'._EDIT_DATE.'">'.$out.'</a>';

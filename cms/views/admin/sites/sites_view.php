@@ -25,18 +25,18 @@ foreach ($items as $i)
     $actions = '';
     if ($_SESSION['level'] > 2)
     {
-        $statuses = AdmUtils_helper::statuses($i, ['xon']);
+        $statuses = AdminUtils_helper::statuses($i, ['xon']);
 
-        $actions .= AdmUtils_helper::link('settings', 'sites/config/'.$i->id);
+        $actions .= AdminUtils_helper::link('settings', 'sites/config/'.$i->id);
 
         // if caching
-        if (CACHE)
+        if (true || CACHE)
         {
             $actions .= '<a class="link" @click="setter(\''.BASE_URL.'sites/clear_cache\')" title="'._CLEAR_CACHE.'">
                 <i class="fa-solid fa-lg fa-eraser"></i>
             </a>';
         }
-        if (APC)
+        if (true || APC)
         {
             $actions .= ' <a class="link" @click="setter(\''.BASE_URL.'sites/clear_apc\')" title="'._CLEAR_CACHE.' APC">
                 <i class="fa-solid fa-lg fa-eraser"></i>
@@ -50,7 +50,7 @@ foreach ($items as $i)
     // admin user
     if ($_SESSION['level'] >= 4)
     {
-        $actions = AdmUtils_helper::link('edit', 'sites/edit/'.$i->id).$actions;
+        $actions = AdminUtils_helper::link('edit', 'sites/edit/'.$i->id).$actions;
     }
 
     // bold wau site

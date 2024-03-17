@@ -30,7 +30,7 @@ else
 
     foreach ($groups as $i)
     {
-        $statuses = AdmUtils_helper::statuses($i);
+        $statuses = AdminUtils_helper::statuses($i);
 
         $actions = '';
 
@@ -38,12 +38,12 @@ else
         if (($i->level > 1 && $i->xlock == 0) || $i->level >= 3)
         {
             // edit group
-            $actions = AdmUtils_helper::link('edit', 'groups/edit/'.$i->id);
+            $actions = AdminUtils_helper::link('edit', 'groups/edit/'.$i->id);
 
             // manager group but not admin
             if ($i->level > 2 && $i->id > 1)
             {
-                $actions .= AdmUtils_helper::link('xon', 'groups/set/xon/'.$i->id_area.'/'.$i->id.'/'.(($i->xon+1)%2), $statuses);
+                $actions .= AdminUtils_helper::link('xon', 'groups/set/xon/'.$i->id_area.'/'.$i->id.'/'.(($i->xon+1)%2), $statuses);
             }
 
             // new user
@@ -56,10 +56,10 @@ else
             {
                 if ($i->id > 1)
                 {
-                    $actions .= AdmUtils_helper::link('settings', 'groups/gperm/'.$i->id, [], _EDIT_GPRIV);
+                    $actions .= AdminUtils_helper::link('settings', 'groups/gperm/'.$i->id, [], _EDIT_GPRIV);
                 }
-                $actions .= AdmUtils_helper::link('xlock', 'groups/set/xlock/'.$i->id_area.'/'.$i->id.'/'.(($i->xlock+1)%2), $statuses);
-                $actions .= AdmUtils_helper::link('delete', 'groups/delete/'.$i->id);
+                $actions .= AdminUtils_helper::link('xlock', 'groups/set/xlock/'.$i->id_area.'/'.$i->id.'/'.(($i->xlock+1)%2), $statuses);
+                $actions .= AdminUtils_helper::link('delete', 'groups/delete/'.$i->id);
             }
         }
 

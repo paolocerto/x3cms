@@ -18,8 +18,8 @@ if (MULTILANGUAGE)
 	echo '<div class="text-sm flex justify-end py-1 space-x-4 border-b border-gray-200">';
 	foreach ($langs as $i)
 	{
-		$on = ($i->code == $page->lang) ? 'class="link"' : 'class="dark"';
-		echo '<a '.$on.' @click="pager(\''.BASE_URL.'pages/index/'.$page->id_area.'/'.$i->code.'\')" title="'._SWITCH_LANGUAGE.'">'.ucfirst($i->language).'</a>';
+		$on = ($i->code == $from->lang) ? 'class="link"' : 'class="dark"';
+		echo '<a '.$on.' @click="pager(\''.BASE_URL.'pages/index/'.$from->id_area.'/'.$i->code.'\')" title="'._SWITCH_LANGUAGE.'">'.ucfirst($i->language).'</a>';
 	}
 	echo '</div>';
 }
@@ -34,7 +34,7 @@ foreach ($areas as $i)
 echo '</div></div>';
 
 ?>
-<h1 class="mt-6"><?php echo _PAGE_LIST.' \''.$area.'\''._TRAIT_._LANGUAGE.' \''.$lang ?>'</h1>
+<h1 class="mt-6"><?php echo $page->icon.' '._PAGE_LIST.' \''.$area.'\''._TRAIT_._LANGUAGE.' \''.$lang ?>'</h1>
 
 <?php
 
@@ -44,19 +44,19 @@ $no_del = array('home', 'msg', 'search', 'logout', 'offline');
 // do not move pages
 $no_menu = array('home', 'msg', 'search', 'offline', 'x3admin');
 
-if (isset($page->url) && $page->url != 'home')
+if (isset($from->url) && $from->url != 'home')
 {
 	// parent page
-	$parent = str_replace('/', '§', $page->xfrom);
-	echo '<p><a class="link" @click="pager(\''.BASE_URL.'pages/index/'.$page->id_area.'/'.$page->lang.'/'.$parent.'/1\')" title="'._GO_BACK.'">
+	$parent = str_replace('/', '§', $from->xfrom);
+	echo '<p><a class="link" @click="pager(\''.BASE_URL.'pages/index/'.$from->id_area.'/'.$from->lang.'/'.$parent.'/1\')" title="'._GO_BACK.'">
         <i class="fa-solid fa-circle-arrow-left fa-lg"></i>
-        '.stripslashes($page->name).'</a>
+        '.stripslashes($from->name).'</a>
     </p>';
 }
 
 // menu arrangement
 $amenu = array();
-if ($page->url == 'home')
+if ($from->url == 'home')
 {
 	foreach ($menus as $i)
 	{
@@ -67,7 +67,7 @@ else
 {
 	foreach ($menus as $i)
 	{
-		if ($i->id == $page->id_menu) $amenu[$i->id] = $i->description;
+		if ($i->id == $from->id_menu) $amenu[$i->id] = $i->description;
 	}
 }
 
@@ -90,7 +90,7 @@ if (!empty($pages))
 	{
 		if ($i->url != 'x3admin')
         {
-			$statuses = AdmUtils_helper::statuses($i);
+			$statuses = AdminUtils_helper::statuses($i);
 
 			$actions = '';
 
@@ -115,13 +115,13 @@ if (!empty($pages))
                     }
                     else
                     {
-                        $actions .= AdmUtils_helper::link('xon', 'pages/set/xon/'.$page->id_area.'/'.$i->id.'/'.(($i->xon+1)%2), $statuses);
+                        $actions .= AdminUtils_helper::link('xon', 'pages/set/xon/'.$page->id_area.'/'.$i->id.'/'.(($i->xon+1)%2), $statuses);
                         $actions .= '<a class="link" @click="popup(\''.BASE_URL.'pages/move/'.$i->id.'\')" title="'._MENU_AND_ORDER.'">
                         <i class="fa-solid fa-lg fa-arrows-up-down-left-right"></i>
                             </a>';
                     }
 
-					$actions .= AdmUtils_helper::link('settings', 'pages/seo/'.$i->id);
+					$actions .= AdminUtils_helper::link('settings', 'pages/seo/'.$i->id);
 
                     // add sections editing
                     if (ADVANCED_EDITING)
@@ -131,10 +131,10 @@ if (!empty($pages))
                         </a>';
                     }
 
-                    $actions .= AdmUtils_helper::link('xlock', 'pages/set/xlock/'.$page->id_area.'/'.$i->id.'/'.(($i->xlock+1)%2), $statuses);
+                    $actions .= AdminUtils_helper::link('xlock', 'pages/set/xlock/'.$from->id_area.'/'.$i->id.'/'.(($i->xlock+1)%2), $statuses);
 
                     $actions .= (!in_array($i->url, $no_del))
-                        ? AdmUtils_helper::link('delete', 'pages/delete/'.$i->id)
+                        ? AdminUtils_helper::link('delete', 'pages/delete/'.$i->id)
                         : '<a><i class="fa-solid fa-lg fa-trash off"></i></a>';
 				}
 			}
@@ -174,17 +174,17 @@ else
 {
 	if ($_SESSION['level'] > 3)
 	{
-		if (!isset($page->url) || $page->url == 'home')
+		if (!isset($from->url) || $from->url == 'home')
 		{
-			echo '<p>'._NO_SUBPAGES._TRAIT_.'<a class="link" @click="setter(\''.BASE_URL.'pages/init/'.$id_area.'/'.$lang.'\')" title="'._INIZIALIZE_AREA.'">'._INIZIALIZE_AREA.'</a></p>';
+			echo '<p class="mt-4">'._NO_SUBPAGES._TRAIT_.'<a class="link" @click="setter(\''.BASE_URL.'pages/init/'.$id_area.'/'.$lang.'\')" title="'._INIZIALIZE_AREA.'">'._INIZIALIZE_AREA.'</a></p>';
 		}
 		else
 		{
-			echo '<p>'._NO_SUBPAGES.'</p>';
+			echo '<p class="mt-4">'._NO_SUBPAGES.'</p>';
 		}
 	}
 	else
 	{
-		echo '<p>'._NOT_PERMITTED.'</p>';
+		echo '<p class="mt-4">'._NOT_PERMITTED.'</p>';
 	}
 }

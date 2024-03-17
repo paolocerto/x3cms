@@ -86,7 +86,7 @@ class Page_model extends X4Model_core
 	/**
 	 * Get Page by URL
 	 */
-	public function get_page(string $url) : stdClass
+	public function get_page(string $url) : mixed
 	{
         return $this->db->query_row('SELECT p.*, a.name AS area
 			FROM pages p
@@ -315,7 +315,7 @@ class Page_model extends X4Model_core
 
             if ($res_article[1])
             {
-                Admin_utils_helper::set_priv($_SESSION['xuid'], $res_article[0], 'articles', $this->id_area);
+                AdminUtils_helper::set_priv($_SESSION['xuid'], $res_article[0], 'articles', $this->id_area);
             }
             // create sections
             $mod = new Section_model();
@@ -372,7 +372,7 @@ class Page_model extends X4Model_core
 	 * Initialize contexts
 	 * When we create a new area we must also create necessary default contexts
 	 */
-	public function initialize_context(int $id_area, string $lang) : array
+	public function initialize_context(int $id_area, string $lang) : void
 	{
 		$sql = array();
 		$sql[] = 'INSERT INTO contexts (updated, id_area, lang, xkey, name, code, xlock, xon)

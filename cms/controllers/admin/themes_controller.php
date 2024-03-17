@@ -39,7 +39,7 @@ class Themes_controller extends X3ui_controller
 		// content
 		$view = new X4View_core('page');
         $view->breadcrumb = array($this->site->get_bredcrumb($page));
-        $view->actions = AdmUtils_helper::link(
+        $view->actions = AdminUtils_helper::link(
             'memo',
             'themes:'.$page->lang,
             [],
@@ -65,7 +65,7 @@ class Themes_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level(1, 'themes', $id, $what);
+		$msg = AdminUtils_helper::chk_priv_level(1, 'themes', $id, $what);
 		if (is_null($msg))
 		{
 			// do action
@@ -73,7 +73,7 @@ class Themes_controller extends X3ui_controller
 			$result = $mod->update($id, array($what => $value));
 			// set message
 			$this->dict->get_words();
-			$msg = AdmUtils_helper::set_msg($result);
+			$msg = AdminUtils_helper::set_msg($result);
 
 			// set update
 			if ($result[1])
@@ -94,7 +94,7 @@ class Themes_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level(1, '_theme_install', 0, 'create');
+		$msg = AdminUtils_helper::chk_priv_level(1, '_theme_install', 0, 'create');
 		if (is_null($msg))
 		{
 			// perform the install
@@ -112,7 +112,7 @@ class Themes_controller extends X3ui_controller
 				// installed
 				// set message
 				$this->dict->get_words();
-				$msg = AdmUtils_helper::set_msg(true);
+				$msg = AdminUtils_helper::set_msg(true);
 
 				$msg->update = array(
 					'element' => 'page',
@@ -168,7 +168,7 @@ class Themes_controller extends X3ui_controller
 		$view->content = new X4View_core('editor');
         $view->content->msg = _THEME_EDIT_MSG;
         // can user edit?
-        $submit = AdmUtils_helper::submit_btn(1, 'themes', $id, $item->xlock);
+        $submit = AdminUtils_helper::submit_btn(1, 'themes', $id, $item->xlock);
 		// form builder
 		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, $submit, 'buttons'), 'post', 'enctype="multipart/form-data"',
             '@click="submitForm(\'editor\')"');
@@ -190,7 +190,7 @@ class Themes_controller extends X3ui_controller
         // load dictionaries
 		$this->dict->get_words();
 
-        $res = AdmUtils_helper::decompose($str, $this->$fields, $move, $echo);
+        $res = AdminUtils_helper::decompose($str, $this->$fields, $move, $echo);
 
 		if ($echo)
 		{
@@ -210,7 +210,7 @@ class Themes_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level(1, 'themes', $id, 'edit');
+		$msg = AdminUtils_helper::chk_priv_level(1, 'themes', $id, 'edit');
 		if (is_null($msg))
 		{
 			// handle _post
@@ -223,7 +223,7 @@ class Themes_controller extends X3ui_controller
 			$result = $mod->update($id, $post);
 
             // set message
-            $msg = AdmUtils_helper::set_msg($result);
+            $msg = AdminUtils_helper::set_msg($result);
 
             // set what update
             if ($result[1])
@@ -285,7 +285,7 @@ class Themes_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level(1, 'themes', $item->id, 'delete');
+		$msg = AdminUtils_helper::chk_priv_level(1, 'themes', $item->id, 'delete');
 		if (is_null($msg))
 		{
 			// do action
@@ -300,11 +300,11 @@ class Themes_controller extends X3ui_controller
 			else
 			{
 				// uninstalled
-$msg = AdmUtils_helper::set_msg(true);
+$msg = AdminUtils_helper::set_msg(true);
 
 				if ($result)
                 {
-                    AdmUtils_helper::delete_priv('themes', $item->id);
+                    AdminUtils_helper::delete_priv('themes', $item->id);
                 }
 
 				$msg->update = array(
@@ -323,7 +323,7 @@ $msg = AdmUtils_helper::set_msg(true);
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level(1, 'themes', $id_theme, 'xlock');
+		$msg = AdminUtils_helper::chk_priv_level(1, 'themes', $id_theme, 'xlock');
 		if (is_null($msg))
 		{
 			// do action
@@ -373,7 +373,7 @@ $msg = AdmUtils_helper::set_msg(true);
 			$result= array(0, $res);
 
 			$this->dict->get_words();
-			$msg = AdmUtils_helper::set_msg($result);
+			$msg = AdminUtils_helper::set_msg($result);
 
 			if ($result[1])
             {

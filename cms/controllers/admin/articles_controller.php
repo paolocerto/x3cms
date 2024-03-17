@@ -66,7 +66,7 @@ class Articles_controller extends X3ui_controller
 
         $view = new X4View_core('page');
         $view->breadcrumb = array($this->site->get_bredcrumb($page));
-		$view->actions = AdmUtils_helper::link(
+		$view->actions = AdminUtils_helper::link(
                 'memo',
                 'articles:mod:'.$lang,
                 [],
@@ -137,20 +137,20 @@ class Articles_controller extends X3ui_controller
             // NOTE: we here have only bulk_action = delete
             foreach ($_post['bulk'] as $i)
             {
-                $msg = AdmUtils_helper::chk_priv_level($id_area, 'articles', $i, 'delete');
+                $msg = AdminUtils_helper::chk_priv_level($id_area, 'articles', $i, 'delete');
                 if (is_null($msg))
                 {
                     $result = $mod->delete($i);
                     if ($result[1])
                     {
-                        AdmUtils_helper::delete_priv('articles', $i);
+                        AdminUtils_helper::delete_priv('articles', $i);
                     }
                 }
             }
 
             // set message
             $this->dict->get_words();
-            $msg = AdmUtils_helper::set_msg($result);
+            $msg = AdminUtils_helper::set_msg($result);
 
             // set update
             if ($result[1])
@@ -170,7 +170,7 @@ class Articles_controller extends X3ui_controller
 	public function set(string $what, int $id_area, int $id, int $value = 0) : void
 	{
 		// check permissions
-		$msg = AdmUtils_helper::chk_priv_level($id_area, 'articles', $id, $what);
+		$msg = AdminUtils_helper::chk_priv_level($id_area, 'articles', $id, $what);
 		if (is_null($msg))
 		{
 			// do action
@@ -179,7 +179,7 @@ class Articles_controller extends X3ui_controller
 
 			// set message
 			$this->dict->get_words();
-			$msg = AdmUtils_helper::set_msg($result);
+			$msg = AdminUtils_helper::set_msg($result);
 
 			// set update
 			if ($result[1])
@@ -200,7 +200,7 @@ class Articles_controller extends X3ui_controller
 	public function set_by_bid(string $what, int $id_area, int $id, int $value = 0) : void
 	{
 		// check permissions
-		$msg = AdmUtils_helper::chk_priv_level($id_area, 'articles', $id, $what);
+		$msg = AdminUtils_helper::chk_priv_level($id_area, 'articles', $id, $what);
 		if (is_null($msg))
 		{
 			// do action
@@ -209,7 +209,7 @@ class Articles_controller extends X3ui_controller
 
 			// set message
 			$this->dict->get_words();
-			$msg = AdmUtils_helper::set_msg($result);
+			$msg = AdminUtils_helper::set_msg($result);
 
 			// set update
 			if ($result[1])
@@ -360,7 +360,7 @@ class Articles_controller extends X3ui_controller
 
         $view = new X4View_core('page');
         $view->breadcrumb = array($this->site->get_bredcrumb($page), array('articles' => 'index/'.$id_area.'/'.$lang));
-		$view->actions = AdmUtils_helper::link(
+		$view->actions = AdminUtils_helper::link(
                 'memo',
                 'articles:edit:'.$lang,
                 [],
@@ -401,7 +401,7 @@ class Articles_controller extends X3ui_controller
 		}
 
         // can user edit?
-        $submit = AdmUtils_helper::submit_btn($item->id_area, 'articles', $item->id, $item->xlock);
+        $submit = AdminUtils_helper::submit_btn($item->id_area, 'articles', $item->id, $item->xlock);
 		// form builder
 		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, $submit, 'buttons'), 'post', '',
             '@click="submitForm(\'editor\')"');
@@ -460,7 +460,7 @@ class Articles_controller extends X3ui_controller
                 }
 
 				// set message
-				$msg = AdmUtils_helper::set_msg($result);
+				$msg = AdminUtils_helper::set_msg($result);
                 // update param
 				$msg->update = array(
                     'element' => 'field',
@@ -497,7 +497,7 @@ class Articles_controller extends X3ui_controller
 		// check permission
 		if ($item->id)
 		{
-			$msg = AdmUtils_helper::chk_priv_level($item->id_area, 'articles', $item->id, 'edit');
+			$msg = AdminUtils_helper::chk_priv_level($item->id_area, 'articles', $item->id, 'edit');
 		}
 
 		if (is_null($msg))
@@ -595,12 +595,12 @@ class Articles_controller extends X3ui_controller
 			}
 
 			// set message
-			$msg = AdmUtils_helper::set_msg($result);
+			$msg = AdminUtils_helper::set_msg($result);
 
 			// response
 			if ($result[1])
 			{
-                Admin_utils_helper::set_priv($_SESSION['xuid'], $result[0], 'articles', $post['id_area']);
+                AdminUtils_helper::set_priv($_SESSION['xuid'], $result[0], 'articles', $post['id_area']);
 
 				$from = (!empty($_post['from']))
                     ? urldecode($_post['from'])
@@ -630,7 +630,7 @@ class Articles_controller extends X3ui_controller
 
         $view = new X4View_core('page');
         $view->breadcrumb = array($this->site->get_bredcrumb($page), ['articles' => 'index/'.$id_area.'/'.$lang]);
-		$view->actions = AdmUtils_helper::link(
+		$view->actions = AdminUtils_helper::link(
             'memo',
             'artilces:history:'.$lang,
             [],
@@ -704,7 +704,7 @@ class Articles_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permissions
-		$msg = AdmUtils_helper::chk_priv_level($_post['id_area'], 'articles', $_post['id'], 'edit');
+		$msg = AdminUtils_helper::chk_priv_level($_post['id_area'], 'articles', $_post['id'], 'edit');
 		if (is_null($msg))
 		{
 			// handle _post
@@ -718,7 +718,7 @@ class Articles_controller extends X3ui_controller
 			$result = $mod->update($_post['id'], $post);
 
 			// set message
-			$msg = AdmUtils_helper::set_msg($result);
+			$msg = AdminUtils_helper::set_msg($result);
 
 			// set what update
 			if ($result[1])
@@ -786,7 +786,7 @@ class Articles_controller extends X3ui_controller
 		{
 			if (is_null($msg))
             {
-				$msg = AdmUtils_helper::chk_priv_level($item->id_area, 'articles', $i->id, 'delete');
+				$msg = AdminUtils_helper::chk_priv_level($item->id_area, 'articles', $i->id, 'delete');
             }
 		}
 
@@ -797,7 +797,7 @@ class Articles_controller extends X3ui_controller
 		{
 			if (is_null($msg))
             {
-				$msg = AdmUtils_helper::chk_priv_level($item->id_area, 'pages', $i->id, 'xon');
+				$msg = AdminUtils_helper::chk_priv_level($item->id_area, 'pages', $i->id, 'xon');
             }
 		}
 
@@ -807,7 +807,7 @@ class Articles_controller extends X3ui_controller
 			$result = $mod->delete_by_bid($item->id_area, $item->lang, $item->bid);
 
 			// set message
-			$msg = AdmUtils_helper::set_msg($result);
+			$msg = AdminUtils_helper::set_msg($result);
 
 			// set what update
 			if ($result[1])
@@ -868,7 +868,7 @@ class Articles_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permissions
-		$msg = AdmUtils_helper::chk_priv_level($item->id_area, 'articles', $item->id, 'delete');
+		$msg = AdminUtils_helper::chk_priv_level($item->id_area, 'articles', $item->id, 'delete');
 
 		if (is_null($msg))
 		{
@@ -879,11 +879,11 @@ class Articles_controller extends X3ui_controller
 			// clear useless permissions
 			if ($result[1])
 			{
-				AdmUtils_helper::delete_priv('articles', $item->id);
+				AdminUtils_helper::delete_priv('articles', $item->id);
 			}
 
 			// set message
-			$msg = AdmUtils_helper::set_msg($result);
+			$msg = AdminUtils_helper::set_msg($result);
 
 			// set what update
 			if ($result[1])

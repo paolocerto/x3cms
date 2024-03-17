@@ -165,7 +165,7 @@ class Area_model extends X4Model_core
 	 */
 	public function extra_areas() : void
 	{
-		$items = $this->db->query('SELECT id, name, private FROM areas WHERE id > 3 AND xon = 1 ORDER BY id ASC');
+		$items = $this->db->query('SELECT id, name, private FROM areas WHERE id > 4 AND xon = 1 ORDER BY id ASC');
 
 		$a = array();
 		foreach ($items as $i)

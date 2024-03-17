@@ -64,7 +64,7 @@ class Profile_controller extends X3ui_controller
 		// contents
 		$view = new X4View_core('page');
         $view->breadcrumb = array($this->site->get_bredcrumb($page));
-		$view->actions = AdmUtils_helper::link(
+		$view->actions = AdminUtils_helper::link(
             'memo',
             'profile:'.$page->lang,
             [],
@@ -91,7 +91,7 @@ class Profile_controller extends X3ui_controller
         // not for demouser
         if ($_SESSION['username'] == 'demouser')
         {
-            $msg = AdmUtils_helper::set_msg(false, '', $this->dict->get_word('_USER_CANNOT_BE_MODIFIED', 'msg'));
+            $msg = AdminUtils_helper::set_msg(false, '', $this->dict->get_word('_USER_CANNOT_BE_MODIFIED', 'msg'));
             $this->response($msg);
             die;
         }
@@ -116,7 +116,7 @@ class Profile_controller extends X3ui_controller
 		$check = (boolean) $user->exists($post['username'], $post['mail'], $_SESSION['xuid']);
 		if ($check)
         {
-			$msg = AdmUtils_helper::set_msg($false, '', $this->dict->get_word('_USER_ALREADY_EXISTS', 'msg'));
+			$msg = AdminUtils_helper::set_msg($false, '', $this->dict->get_word('_USER_ALREADY_EXISTS', 'msg'));
         }
 		else
 		{
@@ -138,7 +138,7 @@ class Profile_controller extends X3ui_controller
 
 			// set message
 			$this->dict->get_words();
-			$msg = AdmUtils_helper::set_msg($result);
+			$msg = AdminUtils_helper::set_msg($result);
 
 			// set update
 			if ($result[1])

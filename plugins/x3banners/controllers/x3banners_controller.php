@@ -53,7 +53,7 @@ class X3banners_controller extends X3ui_controller implements X3plugin_controlle
 
         $view = new X4View_core('page');
         $view->breadcrumb = array($this->site->get_bredcrumb($page), array('modules' => 'index/'.$id_area));
-		$view->actions = AdmUtils_helper::link(
+		$view->actions = AdminUtils_helper::link(
             'memo',
             'x3banners:mod:'.$lang,
             [],
@@ -103,7 +103,7 @@ class X3banners_controller extends X3ui_controller implements X3plugin_controlle
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level($id_area, 'x3_banners', $id, $what);
+		$msg = AdminUtils_helper::chk_priv_level($id_area, 'x3_banners', $id, $what);
 		if (is_null($msg))
 		{
 			// do action
@@ -112,7 +112,7 @@ class X3banners_controller extends X3ui_controller implements X3plugin_controlle
 
 			// set message
 			$this->dict->get_words();
-			$msg = AdmUtils_helper::set_msg($result);
+			$msg = AdminUtils_helper::set_msg($result);
 
 			// set update
 			if ($result[1])
@@ -171,7 +171,7 @@ class X3banners_controller extends X3ui_controller implements X3plugin_controlle
 		// content
 		$view->content = new X4View_core('editor');
         // can user edit?
-        $submit = AdmUtils_helper::submit_btn($item->id_area, 'x3_banners', $id, $item->xlock);
+        $submit = AdminUtils_helper::submit_btn($item->id_area, 'x3_banners', $id, $item->xlock);
 		// form builder
 		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, $submit, 'buttons'), 'post', '',
             '@click="submitForm(\'editor\')"');
@@ -187,8 +187,8 @@ class X3banners_controller extends X3ui_controller implements X3plugin_controlle
 		$msg = null;
 		// check permission
 		$msg = ($_post['id'])
-			? AdmUtils_helper::chk_priv_level($_post['id_area'], 'x3_banners', $_post['id'], 'edit')
-			: AdmUtils_helper::chk_priv_level($_post['id_area'], '_x3banners_creation', 0, 'create');
+			? AdminUtils_helper::chk_priv_level($_post['id_area'], 'x3_banners', $_post['id'], 'edit')
+			: AdminUtils_helper::chk_priv_level($_post['id_area'], '_x3banners_creation', 0, 'create');
 		if (is_null($msg))
 		{
 			// handle _post
@@ -219,14 +219,14 @@ class X3banners_controller extends X3ui_controller implements X3plugin_controlle
             }
 
             // set message
-            $msg = AdmUtils_helper::set_msg($result);
+            $msg = AdminUtils_helper::set_msg($result);
 
             // set what update
             if ($result[1])
             {
                 if (!$_post['id'])
                 {
-                    Admin_utils_helper::set_priv($_SESSION['xuid'], $result[0], 'x3_banners', $post['id_area']);
+                    AdminUtils_helper::set_priv($_SESSION['xuid'], $result[0], 'x3_banners', $post['id_area']);
                 }
 
                 $msg->update = array(
@@ -283,17 +283,17 @@ class X3banners_controller extends X3ui_controller implements X3plugin_controlle
 	private function deleting(stdClass $item) : void
 	{
 		$msg = null;
-		$msg = AdmUtils_helper::chk_priv_level($item->id_area, 'x3_banners', $item->id, 'delete');
+		$msg = AdminUtils_helper::chk_priv_level($item->id_area, 'x3_banners', $item->id, 'delete');
 		if (is_null($msg))
 		{
 			$mod = new X3banners_model($this->site->data->db);
 			$result = $mod->delete($item->id, 'x3_banners');
 
-			$msg = AdmUtils_helper::set_msg($result);
+			$msg = AdminUtils_helper::set_msg($result);
 
 			if ($result[1])
 			{
-				AdmUtils_helper::delete_priv('x3_banners', $item->id);
+				AdminUtils_helper::delete_priv('x3_banners', $item->id);
 
 				$msg->update = array(
 					'element' => 'page',

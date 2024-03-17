@@ -76,7 +76,7 @@ input[type="search"]::-webkit-search-decoration, input[type="search"]::-webkit-s
 .buttons {text-align:center;padding:1em;margin-top:1em;margin-bottom: 1.5rem;}
 .buttons button, button.btn, a.btn {border-radius: 1rem;--tw-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
     box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);font-size: 0.875rem;
-    font-weight:600;line-height: 1.25rem;padding:0.75rem 1.5rem 0.7rem;margin-left: 0.5rem;
+    font-weight:600;line-height: 1.25rem;padding:0.75rem 1.5rem 0.7rem;
 }
 .buttons button[type="submit"], .buttons button[type="button"], button.btn.link, a.btn.link {background-color:var(--link-color) !important;color:#fff !important}
 .buttons button[type="reset"], button.btn.gray, a.btn.gray {background-color:#d1d5db;color:#374151}

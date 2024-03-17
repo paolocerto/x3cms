@@ -73,7 +73,7 @@ class X3ui_controller extends X4Cms_controller
 		else
 		{
 		    // set message
-		    $msg = AdmUtils_helper::set_msg(false, $error_msg, $error_msg);
+		    $msg = AdminUtils_helper::set_msg(false, $error_msg, $error_msg);
 
             echo json_encode($msg);
 		}

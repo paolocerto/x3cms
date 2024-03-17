@@ -58,7 +58,7 @@ class Files_controller extends X3ui_controller
 
         $view = new X4View_core('page');
         $view->breadcrumb = array($this->site->get_bredcrumb($page));
-		$view->actions = AdmUtils_helper::link(
+		$view->actions = AdminUtils_helper::link(
                 'memo',
                 'files:'.$page->lang,
                 [],
@@ -131,20 +131,20 @@ class Files_controller extends X3ui_controller
             // NOTE: we here have only bulk_action = delete
             foreach ($_post['bulk'] as $i)
             {
-                $msg = AdmUtils_helper::chk_priv_level($id_area, 'files', $i, 'delete');
+                $msg = AdminUtils_helper::chk_priv_level($id_area, 'files', $i, 'delete');
                 if (is_null($msg))
                 {
                     $result = $mod->delete_file($i);
                     if ($result[1])
                     {
-                        AdmUtils_helper::delete_priv('files', $i);
+                        AdminUtils_helper::delete_priv('files', $i);
                     }
                 }
             }
 
             // set message
             $this->dict->get_words();
-            $msg = AdmUtils_helper::set_msg($result);
+            $msg = AdminUtils_helper::set_msg($result);
 
             // set update
             if ($result[1])
@@ -165,7 +165,7 @@ class Files_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level($id_area, 'files', $id, $what);
+		$msg = AdminUtils_helper::chk_priv_level($id_area, 'files', $id, $what);
 		if (is_null($msg))
 		{
 			// do action
@@ -174,7 +174,7 @@ class Files_controller extends X3ui_controller
 
 			// set message
 			$this->dict->get_words();
-			$msg = AdmUtils_helper::set_msg($result);
+			$msg = AdminUtils_helper::set_msg($result);
 
 			// set update
 			if ($result[1])
@@ -257,7 +257,7 @@ class Files_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level($_post['id_area'][0], '_file_upload', 0, 'create');
+		$msg = AdminUtils_helper::chk_priv_level($_post['id_area'][0], '_file_upload', 0, 'create');
 		if (is_null($msg))
 		{
             $mod = new File_model();
@@ -306,7 +306,7 @@ class Files_controller extends X3ui_controller
 				$result = $mod->insert_file($post);
 
 				// set message
-				$msg = AdmUtils_helper::set_msg($result);
+				$msg = AdminUtils_helper::set_msg($result);
 
 				// set what update
 				if ($result[1])
@@ -315,7 +315,7 @@ class Files_controller extends X3ui_controller
                     $perm = new Permission_model();
                     foreach ($_post['id_area'] as $ii)
                     {
-                        Admin_utils_helper::set_priv($_SESSION['xuid'], $result[0], 'files', $ii);
+                        AdminUtils_helper::set_priv($_SESSION['xuid'], $result[0], 'files', $ii);
                     }
 
                     $qs = [
@@ -343,7 +343,7 @@ class Files_controller extends X3ui_controller
 						$str[] = $file_array[$k]._TRAIT_.$this->dict->get_word(strtoupper($i), 'msg');
 					}
 				}
-				$msg = AdmUtils_helper::set_msg(false, '', implode('<br />', $str));
+				$msg = AdminUtils_helper::set_msg(false, '', implode('<br />', $str));
 			}
 		}
 		$this->response($msg);
@@ -415,7 +415,7 @@ class Files_controller extends X3ui_controller
 		$view->content = new X4View_core('editor');
 
         // can user edit?
-        $submit = AdmUtils_helper::submit_btn($file->id_area, 'files', $id, $file->xlock);
+        $submit = AdminUtils_helper::submit_btn($file->id_area, 'files', $id, $file->xlock);
 		// form builder
 		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, $submit, 'buttons'), 'post', '',
             '@click="submitForm(\'editor\')"');
@@ -430,7 +430,7 @@ class Files_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level($_post['id_area'], 'files', $_post['id'], 'edit');
+		$msg = AdminUtils_helper::chk_priv_level($_post['id_area'], 'files', $_post['id'], 'edit');
 		if (is_null($msg))
 		{
 			// handle _post
@@ -445,7 +445,7 @@ class Files_controller extends X3ui_controller
 			$result = $mod->update($_post['id'], $post);
 
 			// set message
-			$msg = AdmUtils_helper::set_msg($result);
+			$msg = AdminUtils_helper::set_msg($result);
 
 			// set what update
 			if ($result[1])
@@ -510,7 +510,7 @@ class Files_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level($item->id_area, 'files', $item->id, 'delete');
+		$msg = AdminUtils_helper::chk_priv_level($item->id_area, 'files', $item->id, 'delete');
 		if (is_null($msg))
 		{
 			// action
@@ -518,11 +518,11 @@ class Files_controller extends X3ui_controller
 			$result = $mod->delete_file($item->id);
 
 			// set message
-			$msg = AdmUtils_helper::set_msg($result);
+			$msg = AdminUtils_helper::set_msg($result);
 
 			if ($result[1])
 			{
-				AdmUtils_helper::delete_priv('files', $item->id);
+				AdminUtils_helper::delete_priv('files', $item->id);
 
                 $qs = [
                     'xxtype' => -1,
@@ -565,7 +565,7 @@ class Files_controller extends X3ui_controller
 
         $view = new X4View_core('page');
         $view->breadcrumb = array($this->site->get_bredcrumb($page));
-		$view->actions = AdmUtils_helper::link(
+		$view->actions = AdminUtils_helper::link(
             'memo',
             'files:editor:'.$page->lang,
             [],
@@ -924,7 +924,7 @@ class Files_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permissions
-		$msg = AdmUtils_helper::chk_priv_level($_post['id_area'], 'files', $id_file, 'edit');
+		$msg = AdminUtils_helper::chk_priv_level($_post['id_area'], 'files', $id_file, 'edit');
 
 		if (is_null($msg))
 		{
@@ -974,7 +974,7 @@ class Files_controller extends X3ui_controller
 							// create permissions
 							if ($result[1])
 							{
-                                Admin_utils_helper::set_priv($_SESSION['xuid'], $result[0], 'files', $file->id_area);
+                                AdminUtils_helper::set_priv($_SESSION['xuid'], $result[0], 'files', $file->id_area);
 
 								if ($rotation)
 								{
@@ -1071,7 +1071,7 @@ class Files_controller extends X3ui_controller
 								// create permissions
 								if ($result[1])
 								{
-                                    Admin_utils_helper::set_priv($_SESSION['xuid'], $result[0], 'files', $file->id_area);
+                                    AdminUtils_helper::set_priv($_SESSION['xuid'], $result[0], 'files', $file->id_area);
 								}
 							}
 						}
@@ -1132,7 +1132,7 @@ class Files_controller extends X3ui_controller
 									// create permissions
 									if ($result[1])
 									{
-                                        Admin_utils_helper::set_priv($_SESSION['xuid'], $result[0], 'files', $file->id_area);
+                                        AdminUtils_helper::set_priv($_SESSION['xuid'], $result[0], 'files', $file->id_area);
 									}
 								}
 							}
@@ -1184,7 +1184,7 @@ class Files_controller extends X3ui_controller
 				}
 
 				// set message
-				$msg = AdmUtils_helper::set_msg($result, _MSG_OK, $ko);
+				$msg = AdminUtils_helper::set_msg($result, _MSG_OK, $ko);
 
 				// set what update
 				if ($result[1])
@@ -1200,7 +1200,7 @@ class Files_controller extends X3ui_controller
 			{
 				// file not found
 				// set message
-				$msg = AdmUtils_helper::set_msg(array(0, 0));
+				$msg = AdminUtils_helper::set_msg(array(0, 0));
 			}
 		}
 		$this->response($msg);

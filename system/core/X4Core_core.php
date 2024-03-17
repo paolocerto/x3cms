@@ -80,7 +80,7 @@ final class X4Core_core
 			// Make sure the controller class exists
 			try
 			{
-				// Start validation of the controller
+                // Start validation of the controller
 				$class = new ReflectionClass(ucfirst(str_replace('-', '_', X4Route_core::$control).'_controller'));
 			}
 			catch (ReflectionException $e)

@@ -46,7 +46,7 @@ class Sites_controller extends X3ui_controller
 
 		$view = new X4View_core('page');
         $view->breadcrumb = array($this->site->get_bredcrumb($page));
-		$view->actions = AdmUtils_helper::link(
+		$view->actions = AdminUtils_helper::link(
             'memo',
             'sites:'.$page->lang,
             [],
@@ -83,7 +83,7 @@ class Sites_controller extends X3ui_controller
 
 		$view = new X4View_core('page');
         $view->breadcrumb = array($this->site->get_bredcrumb($page));
-		$view->actions = AdmUtils_helper::link(
+		$view->actions = AdminUtils_helper::link(
                 'memo',
                 'sites:'.$page->lang,
                 [],
@@ -106,7 +106,7 @@ class Sites_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permissions
-		$msg = AdmUtils_helper::chk_priv_level(1, 'sites', $this->site->data->id, 'xlock');
+		$msg = AdminUtils_helper::chk_priv_level(1, 'sites', $this->site->data->id, 'xlock');
 		if (is_null($msg))
 		{
 			// do action
@@ -115,7 +115,7 @@ class Sites_controller extends X3ui_controller
 
 			// set message
 			$this->dict->get_words();
-			$msg = AdmUtils_helper::set_msg($result);
+			$msg = AdminUtils_helper::set_msg($result);
 
 			// set update
 			if ($result[1])
@@ -138,7 +138,7 @@ class Sites_controller extends X3ui_controller
 
 		$msg = null;
 		// check permissions
-		$msg = AdmUtils_helper::chk_priv_level(1, 'sites', $id, 'xlock');
+		$msg = AdminUtils_helper::chk_priv_level(1, 'sites', $id, 'xlock');
 		if (is_null($msg))
 		{
 			// do action
@@ -147,7 +147,7 @@ class Sites_controller extends X3ui_controller
 			APC && apcu_clear_cache();
 
 			// set message
-			$msg = AdmUtils_helper::set_msg($result);
+			$msg = AdminUtils_helper::set_msg($result);
 
 			// set update
 			if ($result[1])
@@ -223,7 +223,7 @@ class Sites_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level(1, 'sites', $_post['id'], 'edit');
+		$msg = AdminUtils_helper::chk_priv_level(1, 'sites', $_post['id'], 'edit');
 		if (is_null($msg))
 		{
             $mod = new Site_model();
@@ -262,7 +262,7 @@ class Sites_controller extends X3ui_controller
 			APC && apcu_delete(SITE.'param'.$_post['id']);
 
 			// set message
-			$msg = AdmUtils_helper::set_msg($result);
+			$msg = AdminUtils_helper::set_msg($result);
 
 			// set what update
 			if ($result[1])
@@ -319,7 +319,7 @@ class Sites_controller extends X3ui_controller
         // contents
         $view->content = new X4View_core('editor');
         // can user edit?
-        $submit = AdmUtils_helper::submit_btn(1, 'sites', $id, 1);
+        $submit = AdminUtils_helper::submit_btn(1, 'sites', $id, 1);
 		// form builder
 		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, $submit, 'buttons'), 'post', '',
             '@click="submitForm(\'editor\')"');
@@ -334,8 +334,8 @@ class Sites_controller extends X3ui_controller
 		$msg = null;
 		// check permission
 		$msg = $_post['id']
-		    ? AdmUtils_helper::chk_priv_level(1, 'sites', $_post['id'], 'edit')
-		    : AdmUtils_helper::chk_priv_level(1, '_site_creation', $_post['id'], 'create');
+		    ? AdminUtils_helper::chk_priv_level(1, 'sites', $_post['id'], 'edit')
+		    : AdminUtils_helper::chk_priv_level(1, '_site_creation', $_post['id'], 'create');
 
 		if (is_null($msg))
 		{
@@ -351,7 +351,7 @@ class Sites_controller extends X3ui_controller
                 : $this->site->insert($post);
 
 			// set message
-			$msg = AdmUtils_helper::set_msg($result);
+			$msg = AdminUtils_helper::set_msg($result);
 
 			// set what update
 			if ($result[1])
@@ -378,7 +378,7 @@ class Sites_controller extends X3ui_controller
 
 		// set message
 		$this->dict->get_words();
-		$msg = AdmUtils_helper::set_msg(true);
+		$msg = AdminUtils_helper::set_msg(true);
 		$msg->update = array(
 			'element' => 'page',
 			'url' => $_SERVER['HTTP_REFERER']
@@ -396,7 +396,7 @@ class Sites_controller extends X3ui_controller
 
 		// set message
 		$this->dict->get_words();
-		$msg = AdmUtils_helper::set_msg(true);
+		$msg = AdminUtils_helper::set_msg(true);
 		$msg->update = array(
 			'element' => 'page',
 			'url' => $_SERVER['HTTP_REFERER']

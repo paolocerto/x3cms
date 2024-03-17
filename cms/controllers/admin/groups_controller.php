@@ -32,7 +32,7 @@ class Groups_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level($id_area, 'xgroups', $id, $what);
+		$msg = AdminUtils_helper::chk_priv_level($id_area, 'xgroups', $id, $what);
 		if (is_null($msg))
 		{
 			// do action
@@ -41,7 +41,7 @@ class Groups_controller extends X3ui_controller
 
 			// set message
 			$this->dict->get_words();
-			$msg = AdmUtils_helper::set_msg($result);
+			$msg = AdminUtils_helper::set_msg($result);
 
 			// set update
 			if ($result[1])
@@ -101,7 +101,7 @@ class Groups_controller extends X3ui_controller
 		// contents
 		$view->content = new X4View_core('editor');
         // can user edit?
-        $submit = AdmUtils_helper::submit_btn($item->id_area, 'xgroups', $id, $item->xlock);
+        $submit = AdminUtils_helper::submit_btn($item->id_area, 'xgroups', $id, $item->xlock);
 		// form builder
 		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, $submit, 'buttons'), 'post', '',
             '@click="submitForm(\'editor\')"');
@@ -116,8 +116,8 @@ class Groups_controller extends X3ui_controller
 		$msg = null;
 		// check permission
 		$msg = ($_post['id'])
-			? AdmUtils_helper::chk_priv_level($_post['id_area'], 'groups', $_post['id'], 'edit')
-			: AdmUtils_helper::chk_priv_level($_post['id_area'], '_group_creation', 0, 'create');
+			? AdminUtils_helper::chk_priv_level($_post['id_area'], 'groups', $_post['id'], 'edit')
+			: AdminUtils_helper::chk_priv_level($_post['id_area'], '_group_creation', 0, 'create');
 
 		if (is_null($msg))
 		{
@@ -135,14 +135,14 @@ class Groups_controller extends X3ui_controller
                 : $mod->insert($post);
 
 			// set message
-			$msg = AdmUtils_helper::set_msg($result);
+			$msg = AdminUtils_helper::set_msg($result);
 
 			// set what update
 			if ($result[1])
 			{
                 if (!$_post['id'])
                 {
-                    Admin_utils_helper::set_priv($_SESSION['xuid'], $result[0], 'xgroups', $post['id_area']);
+                    AdminUtils_helper::set_priv($_SESSION['xuid'], $result[0], 'xgroups', $post['id_area']);
                 }
 
 				$msg->update = array(
@@ -216,7 +216,7 @@ class Groups_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level($id_area, 'xgroups', $_post['id'], 'edit');
+		$msg = AdminUtils_helper::chk_priv_level($id_area, 'xgroups', $_post['id'], 'edit');
 
 		if (is_null($msg))
 		{
@@ -253,7 +253,7 @@ class Groups_controller extends X3ui_controller
 			$result = $perm->update_gprivs($_post['id'], $insert, $update, $delete);
 
 			// set message
-			$msg = AdmUtils_helper::set_msg($result);
+			$msg = AdminUtils_helper::set_msg($result);
 
 			// set what update
 			if ($result[1])
@@ -314,7 +314,7 @@ class Groups_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permissions
-		$msg = AdmUtils_helper::chk_priv_level($item->id_area, 'xgroups', $item->id, 'delete');
+		$msg = AdminUtils_helper::chk_priv_level($item->id_area, 'xgroups', $item->id, 'delete');
 
 		if (is_null($msg))
 		{
@@ -323,12 +323,12 @@ class Groups_controller extends X3ui_controller
 			$result = $group->delete($item->id);
 
 			// set message
-			$msg = AdmUtils_helper::set_msg($result);
+			$msg = AdminUtils_helper::set_msg($result);
 
 			// clear useless permissions
 			if ($result[1])
 			{
-				AdmUtils_helper::delete_priv('xgroups', $item->id);
+				AdminUtils_helper::delete_priv('xgroups', $item->id);
 
 				// set what update
 				$msg->update = array(

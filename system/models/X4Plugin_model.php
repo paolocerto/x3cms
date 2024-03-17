@@ -172,7 +172,7 @@ class X4Plugin_model extends X4Model_core
 	 * @param string	plugin name (is the same name of the folder)
 	 * @return mixed	integer if all runs fine, else an array of error strings
 	 */
-	public function install(int $id_area, string $plugin_name) : array
+	public function install(int $id_area, string $plugin_name) : mixed
 	{
 		$error = array();
 		if ($this->exists($plugin_name, $id_area))
@@ -180,7 +180,7 @@ class X4Plugin_model extends X4Model_core
             $error[] = array('error' => array('_already_installed'), 'label' => $plugin_name);
         }
 
-        if (!file_exists(PATH.'plugins/'.$name.'/install.php'))
+        if (!file_exists(PATH.'plugins/'.$plugin_name.'/install.php'))
         {
             $error[] = array('error' => array('_missing_plugin_installer'), 'label' => $plugin_name);
         }

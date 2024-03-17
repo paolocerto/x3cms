@@ -59,23 +59,23 @@ if (!empty($items[0]))
 
 	foreach ($items[0] as $i)
 	{
-		$statuses = AdmUtils_helper::statuses($i);
+		$statuses = AdminUtils_helper::statuses($i);
 
 		$actions = '';
 		if (($i->level > 1 && $i->xlock == 0) || $i->level >= 3)
 		{
-			$actions = AdmUtils_helper::link('edit', 'x3form_builder/edit/'.$i->id_area.'/'.$i->lang.'/'.$i->id);
+			$actions = AdminUtils_helper::link('edit', 'x3form_builder/edit/'.$i->id_area.'/'.$i->lang.'/'.$i->id);
 
 			if ($i->level > 2)
 			{
-                $actions .= AdmUtils_helper::link('xon', 'x3form_builder/set/forms/xon/'.$i->id_area.'/'.$i->id.'/'.intval(!$i->xon), $statuses);
+                $actions .= AdminUtils_helper::link('xon', 'x3form_builder/set/forms/xon/'.$i->id_area.'/'.$i->id.'/'.intval(!$i->xon), $statuses);
 
-                $actions .= AdmUtils_helper::link('duplicate', 'x3form_builder/duplicate/'.$i->id_area.'/'.$i->lang.'/'.$i->id);
+                $actions .= AdminUtils_helper::link('duplicate', 'x3form_builder/duplicate/'.$i->id_area.'/'.$i->lang.'/'.$i->id);
 
 				if ($i->level >= 4)
 				{
-                    $actions .= AdmUtils_helper::link('xlock', 'x3form_builder/set/forms/xlock/'.$i->id_area.'/'.$i->id.'/'.intval(!$i->xlock), $statuses);
-                    $actions .= AdmUtils_helper::link('delete', 'x3form_builder/delete/'.$i->id_area.'/'.$i->id);
+                    $actions .= AdminUtils_helper::link('xlock', 'x3form_builder/set/forms/xlock/'.$i->id_area.'/'.$i->id.'/'.intval(!$i->xlock), $statuses);
+                    $actions .= AdminUtils_helper::link('delete', 'x3form_builder/delete/'.$i->id_area.'/'.$i->id);
 				}
 			}
 		}

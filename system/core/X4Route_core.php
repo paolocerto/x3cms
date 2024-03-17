@@ -46,7 +46,8 @@ final class X4Route_core
 	    'x3cli' => 0,    // for PHP CLI
         'admin' => 1,
         'public' => 2,
-        'private' => 3
+        'private' => 3,
+        'apwa' => 4
     );
 
 	/*

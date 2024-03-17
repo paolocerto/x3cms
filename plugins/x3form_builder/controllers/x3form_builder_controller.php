@@ -45,7 +45,7 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
 
         $view = new X4View_core('page');
         $view->breadcrumb = array($this->site->get_bredcrumb($page), array('modules' => 'index/'.$id_area));
-		$view->actions = AdmUtils_helper::link(
+		$view->actions = AdminUtils_helper::link(
             'memo',
             'x3form_builder:mod:'.$lang,
             [],
@@ -121,7 +121,7 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
             $this->site->get_bredcrumb($page),
             array('modules' => 'index/'.$id_area, 'x3form-builder/mod' => $id_area.'/'.$lang)
         );
-		$view->actions = AdmUtils_helper::link(
+		$view->actions = AdminUtils_helper::link(
                 'memo',
                 'x3form_builder:fields:'.$lang,
                 [],
@@ -163,7 +163,7 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
                 'x3form-builder/mod' => $id_area.'/'.$lang
             )
         );
-		$view->actions = AdmUtils_helper::link(
+		$view->actions = AdminUtils_helper::link(
             'memo',
             'x3form_builder:results:'.$lang,
             [],
@@ -207,7 +207,7 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
             $this->site->get_bredcrumb($page),
             array('modules' => 'index/'.$id_area, 'x3form-builder/mod' => $id_area.'/'.$lang)
         );
-		$view->actions = AdmUtils_helper::link(
+		$view->actions = AdminUtils_helper::link(
             'memo',
             'x3form_builder:blacklist:'.$lang,
             [],
@@ -243,14 +243,14 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
 		$table = ($table == 'forms')
             ? ''
             : '_'.$table;
-		$msg = AdmUtils_helper::chk_priv_level($id_area, 'x3_forms'.$table, $id, $what);
+		$msg = AdminUtils_helper::chk_priv_level($id_area, 'x3_forms'.$table, $id, $what);
 		if (is_null($msg))
 		{
 			$mod = new X3form_builder_model($this->site->data->db);
 			$result = $mod->update($id, array($what => $value), 'x3_forms'.$table);
 
 			$this->dict->get_words();
-			$msg = AdmUtils_helper::set_msg($result);
+			$msg = AdminUtils_helper::set_msg($result);
 
 			if ($result[1])
             {
@@ -301,7 +301,7 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
 			? _X3FB_EDIT_FORM
 			: _X3FB_NEW_FORM;
 		$view->content = new X4View_core('editor');
-        $submit = AdmUtils_helper::submit_btn($item->id_area, 'x3_forms', $id, $item->xlock);
+        $submit = AdminUtils_helper::submit_btn($item->id_area, 'x3_forms', $id, $item->xlock);
 		$view->content->form = X4Form_helper::doform(
             'editor',
             $_SERVER["REQUEST_URI"],
@@ -321,8 +321,8 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
 	{
 		$msg = null;
 		$msg = ($_post['id'])
-			? AdmUtils_helper::chk_priv_level($_post['id_area'], 'x3_forms', $_post['id'], 'edit')
-			: AdmUtils_helper::chk_priv_level($_post['id_area'], '_x3form_creation', 0, 'create');
+			? AdminUtils_helper::chk_priv_level($_post['id_area'], 'x3_forms', $_post['id'], 'edit')
+			: AdminUtils_helper::chk_priv_level($_post['id_area'], '_x3form_creation', 0, 'create');
 
 		if (!is_null($msg))
 		{
@@ -357,7 +357,7 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
         $check = (boolean) $mod->form_exists($post['id_area'], $post['lang'], $post['name'], $_post['id']);
         if ($check)
         {
-            $msg = AdmUtils_helper::set_msg(false, '', $this->dict->get_word('_X3FB_FORM_ALREADY_EXISTS', 'msg'));
+            $msg = AdminUtils_helper::set_msg(false, '', $this->dict->get_word('_X3FB_FORM_ALREADY_EXISTS', 'msg'));
             $this->response($msg);
         }
 
@@ -365,13 +365,13 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
             ? $mod->update($_post['id'], $post)
             : $mod->insert($post);
 
-        $msg = AdmUtils_helper::set_msg($result);
+        $msg = AdminUtils_helper::set_msg($result);
 
         if ($result[1])
         {
             if (!$_post['id'])
             {
-                Admin_utils_helper::set_priv($_SESSION['xuid'], $result[0], 'x3_forms', $post['id_area']);
+                AdminUtils_helper::set_priv($_SESSION['xuid'], $result[0], 'x3_forms', $post['id_area']);
             }
 
             $msg->update = array(
@@ -428,7 +428,7 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
 	private function duplicating(array $_post) : void
 	{
 		$msg = null;
-		$msg = AdmUtils_helper::chk_priv_level($_post['id_area'], '_x3form_creation', 0, 'create');
+		$msg = AdminUtils_helper::chk_priv_level($_post['id_area'], '_x3form_creation', 0, 'create');
 		if (is_null($msg))
 		{
 			$mod = new X3form_builder_model($this->site->data->db);
@@ -452,7 +452,7 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
 				$check = (boolean) $mod->form_exists($post['id_area'], $post['lang'], $post['name']);
 				if ($check)
                 {
-					$msg = AdmUtils_helper::set_msg(false, '', $this->dict->get_word('_X3FB_FORM_ALREADY_EXISTS', 'msg'));
+					$msg = AdminUtils_helper::set_msg(false, '', $this->dict->get_word('_X3FB_FORM_ALREADY_EXISTS', 'msg'));
                 }
                 else
 				{
@@ -460,7 +460,7 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
 
 					if ($result[1])
 					{
-                        Admin_utils_helper::set_priv($_SESSION['xuid'], $result[0], 'x3_forms', $post['id_area']);
+                        AdminUtils_helper::set_priv($_SESSION['xuid'], $result[0], 'x3_forms', $post['id_area']);
 
 						$id_form = $result[0];
 
@@ -486,12 +486,12 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
 
                             if ($result[1])
                             {
-                                Admin_utils_helper::set_priv($_SESSION['xuid'], $result[0], 'x3_forms_fields', $post['id_area']);
+                                AdminUtils_helper::set_priv($_SESSION['xuid'], $result[0], 'x3_forms_fields', $post['id_area']);
                             }
 						}
 					}
 
-					$msg = AdmUtils_helper::set_msg($result);
+					$msg = AdminUtils_helper::set_msg($result);
 
 					if ($result[1])
 					{
@@ -591,7 +591,7 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
 
 		$view->content = new X4View_core('editor');
 		$view->content->id = $id;
-        $submit = AdmUtils_helper::submit_btn($item->id_area, 'x3_forms_fields', $id, $item->xlock);
+        $submit = AdminUtils_helper::submit_btn($item->id_area, 'x3_forms_fields', $id, $item->xlock);
 		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, $submit, 'buttons'), 'post', '',
             '@click="submitForm(\'editor\')"');
 
@@ -611,7 +611,7 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
 	public function decompose(string $str = '', string $fields = '', int $move = 0, int $echo = 0) : mixed
 	{
         $this->dict->get_words();
-        $res = AdmUtils_helper::decompose($str, $this->$fields, $move, $echo);
+        $res = AdminUtils_helper::decompose($str, $this->$fields, $move, $echo);
 
 		if ($echo)
 		{
@@ -677,8 +677,8 @@ function checkRule(item) {
 	{
 		$msg = null;
 		$msg = ($_post['id'])
-			? AdmUtils_helper::chk_priv_level($_post['id_area'], 'x3_forms_fields', $_post['id'], 'edit')
-			: AdmUtils_helper::chk_priv_level($_post['id_area'], '_x3form_field_creation', 0, 'create');
+			? AdminUtils_helper::chk_priv_level($_post['id_area'], 'x3_forms_fields', $_post['id'], 'edit')
+			: AdminUtils_helper::chk_priv_level($_post['id_area'], '_x3form_field_creation', 0, 'create');
 
 		if (is_null($msg))
 		{
@@ -701,7 +701,7 @@ function checkRule(item) {
 			$check = (boolean) $mod->field_exists($post['id_form'], $post['name'], $_post['id']);
 			if ($check)
             {
-				$msg = AdmUtils_helper::set_msg(false, '', $this->dict->get_word('_X3FB_FIELD_ALREADY_EXISTS', 'msg'));
+				$msg = AdminUtils_helper::set_msg(false, '', $this->dict->get_word('_X3FB_FIELD_ALREADY_EXISTS', 'msg'));
             }
 			else
 			{
@@ -716,7 +716,7 @@ function checkRule(item) {
 					$post['xpos'] = $xpos;
 					$result = $mod->insert($post, 'x3_forms_fields');
 				}
-				$msg = AdmUtils_helper::set_msg($result);
+				$msg = AdminUtils_helper::set_msg($result);
 
 				if ($result[1])
 				{
@@ -736,7 +736,7 @@ function checkRule(item) {
 	public function ordering(int $id_area, string $lang, int $id_form) : void
 	{
 		$msg = null;
-		$msg = AdmUtils_helper::chk_priv_level($id_area, 'x3_forms', $id_form, 'manage');
+		$msg = AdminUtils_helper::chk_priv_level($id_area, 'x3_forms', $id_form, 'manage');
 		if (is_null($msg) && X4Route_core::$input)
 		{
 		    $_post = X4Route_core::$input;
@@ -763,7 +763,7 @@ function checkRule(item) {
 			}
 
 			$this->dict->get_words();
-			$msg = AdmUtils_helper::set_msg($result);
+			$msg = AdminUtils_helper::set_msg($result);
 		}
 		$this->response($msg);
 	}
@@ -811,7 +811,7 @@ function checkRule(item) {
 	public function export(int $id_area, string $lang, int $id_form) : void
 	{
         $this->dict->get_wordarray(array('x3form_builder'));
-        $level = AdmUtils_helper::chk_priv_level($id_area, 'x3_forms', $id_form, 'delete');
+        $level = AdminUtils_helper::chk_priv_level($id_area, 'x3_forms', $id_form, 'delete');
 		if (is_null($level))
         {
             $mod = new X3form_builder_model($this->site->data->db);
@@ -918,19 +918,19 @@ function checkRule(item) {
             $result = [0, 1];
             foreach ($_post['bulk'] as $i)
             {
-                $msg = AdmUtils_helper::chk_priv_level($id_area, 'x3_forms_results', $i, 'delete');
+                $msg = AdminUtils_helper::chk_priv_level($id_area, 'x3_forms_results', $i, 'delete');
                 if (is_null($msg))
                 {
                     $result = $mod->delete($i, 'x3_forms_results');
                     if ($result[1])
                     {
-                        AdmUtils_helper::delete_priv('x3_forms_results', $i);
+                        AdminUtils_helper::delete_priv('x3_forms_results', $i);
                     }
                 }
             }
 
             $this->dict->get_words();
-            $msg = AdmUtils_helper::set_msg($result);
+            $msg = AdminUtils_helper::set_msg($result);
 
             if ($result[1])
             {
@@ -982,7 +982,7 @@ function checkRule(item) {
 			: _X3FB_BLACKLIST_NEW;
 
 		$view->content = new X4View_core('editor');
-		$submit = AdmUtils_helper::submit_btn($item->id_area, 'x3_forms_blacklist', $id, $item->xlock);
+		$submit = AdminUtils_helper::submit_btn($item->id_area, 'x3_forms_blacklist', $id, $item->xlock);
 		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, $submit, 'buttons'), 'post', '',
             '@click="submitForm(\'editor\')"');
 
@@ -996,8 +996,8 @@ function checkRule(item) {
 	{
 		$msg = null;
 		$msg = ($_post['id'])
-			? AdmUtils_helper::chk_priv_level($_post['id_area'], 'x3_forms_blacklist', $_post['id'], 'edit')
-			: AdmUtils_helper::chk_priv_level($_post['id_area'], '_x3form_blacklist_creation', 0, 'create');
+			? AdminUtils_helper::chk_priv_level($_post['id_area'], 'x3_forms_blacklist', $_post['id'], 'edit')
+			: AdminUtils_helper::chk_priv_level($_post['id_area'], '_x3form_blacklist_creation', 0, 'create');
 
 		if (is_null($msg))
 		{
@@ -1041,11 +1041,11 @@ function checkRule(item) {
             if ($counter == $n)
             {
                 // all items are already in
-                $msg = AdmUtils_helper::set_msg(false, '', $this->dict->get_word('_X3FB_BLACKITEMS_ALREADY_EXISTS', 'msg'));
+                $msg = AdminUtils_helper::set_msg(false, '', $this->dict->get_word('_X3FB_BLACKITEMS_ALREADY_EXISTS', 'msg'));
             }
             else
             {
-				$msg = AdmUtils_helper::set_msg($result);
+				$msg = AdminUtils_helper::set_msg($result);
 
 				if ($result[1])
 				{
@@ -1103,17 +1103,17 @@ function checkRule(item) {
         $table = ($table == 'forms')
             ? ''
             : '_'.$table;
-		$msg = AdmUtils_helper::chk_priv_level($item->id_area, 'x3_forms'.$table, $item->id, 'delete');
+		$msg = AdminUtils_helper::chk_priv_level($item->id_area, 'x3_forms'.$table, $item->id, 'delete');
 		if (is_null($msg))
 		{
 			$mod = new X3form_builder_model($this->site->data->db);
 			$result = $mod->delete($item->id, 'x3_forms'.$table);
 
-			$msg = AdmUtils_helper::set_msg($result);
+			$msg = AdminUtils_helper::set_msg($result);
 
 			if ($result[1])
 			{
-				AdmUtils_helper::delete_priv('x3_forms'.$table, $item->id);
+				AdminUtils_helper::delete_priv('x3_forms'.$table, $item->id);
 
 				$msg->update = array(
 					'element' => 'page',

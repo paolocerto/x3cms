@@ -110,7 +110,7 @@ class Dictionary_model extends X4Model_core
 		$res = array_merge($sections, $areas);
 
 		// to array
-		$res = X4Array_helper::obj2array($res, null, 'lang_what');
+		$res = X4Array_helper::obj2array($res, '', 'lang_what');
 		sort($res);
 
 		// to obj

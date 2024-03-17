@@ -53,7 +53,7 @@ class Categories_controller extends X3ui_controller
 
         $view = new X4View_core('page');
         $view->breadcrumb = array($this->site->get_bredcrumb($page));
-		$view->actions = AdmUtils_helper::link(
+		$view->actions = AdminUtils_helper::link(
                 'memo',
                 'categories:'.$lang,
                 [],
@@ -102,7 +102,7 @@ class Categories_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level($id_area, 'categories', $id, $what);
+		$msg = AdminUtils_helper::chk_priv_level($id_area, 'categories', $id, $what);
 		if (is_null($msg))
 		{
 			// do action
@@ -111,7 +111,7 @@ class Categories_controller extends X3ui_controller
 
 			// set message
 			$this->dict->get_words();
-			$msg = AdmUtils_helper::set_msg($result);
+			$msg = AdminUtils_helper::set_msg($result);
 
 			// set update
 			if ($result[1])
@@ -175,7 +175,7 @@ class Categories_controller extends X3ui_controller
 		$view->content = new X4View_core('editor');
 
         // can user edit?
-        $submit = AdmUtils_helper::submit_btn($id_area, 'categories', $id, $item->xlock);
+        $submit = AdminUtils_helper::submit_btn($id_area, 'categories', $id, $item->xlock);
 
 		// form builder
 		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, $submit, 'buttons'), 'post', '',
@@ -192,8 +192,8 @@ class Categories_controller extends X3ui_controller
 		$msg = null;
 		// check permission
 		$msg = ($id)
-			? AdmUtils_helper::chk_priv_level($_post['id_area'], 'categories', $_post['id'], 'edit')
-			: AdmUtils_helper::chk_priv_level($_post['id_area'], '_category_creation', 0, 'create');
+			? AdminUtils_helper::chk_priv_level($_post['id_area'], 'categories', $_post['id'], 'edit')
+			: AdminUtils_helper::chk_priv_level($_post['id_area'], '_category_creation', 0, 'create');
 
 		if (is_null($msg))
 		{
@@ -212,7 +212,7 @@ class Categories_controller extends X3ui_controller
 			$check = $mod->exists($post, $id);
 			if ($check)
             {
-				$msg = AdmUtils_helper::set_msg(false, '', $this->dict->get_word('_CATEGORY_ALREADY_EXISTS', 'msg'));
+				$msg = AdminUtils_helper::set_msg(false, '', $this->dict->get_word('_CATEGORY_ALREADY_EXISTS', 'msg'));
             }
 			else
 			{
@@ -222,14 +222,14 @@ class Categories_controller extends X3ui_controller
                     : $mod->insert($post);
 
 				// set message
-				$msg = AdmUtils_helper::set_msg($result);
+				$msg = AdminUtils_helper::set_msg($result);
 
 				// set what update
 				if ($result[1])
 				{
                     if (!$id)
                     {
-                        Admin_utils_helper::set_priv($_SESSION['xuid'], $result[0], 'categories', $post['id_area']);
+                        AdminUtils_helper::set_priv($_SESSION['xuid'], $result[0], 'categories', $post['id_area']);
                     }
 
 					$msg->update = array(
@@ -284,7 +284,7 @@ class Categories_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permissions
-		$msg = AdmUtils_helper::chk_priv_level($item->id_area, 'categories', $item->id, 'delete');
+		$msg = AdminUtils_helper::chk_priv_level($item->id_area, 'categories', $item->id, 'delete');
 
 		if (is_null($msg))
 		{
@@ -293,12 +293,12 @@ class Categories_controller extends X3ui_controller
 			$result = $mod->delete($item->id);
 
 			// set message
-			$msg = AdmUtils_helper::set_msg($result);
+			$msg = AdminUtils_helper::set_msg($result);
 
 			// clear useless permissions
 			if ($result[1])
             {
-				AdmUtils_helper::delete_priv('categories', $item->id);
+				AdminUtils_helper::delete_priv('categories', $item->id);
 
 				// set what update
 				$msg->update = array(

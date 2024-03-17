@@ -38,4 +38,4 @@ $sql[] = 'DELETE FROM privs WHERE id_area = \''.$area->id.'\' AND what = \''.$i.
 }
 
 $sql[] = 'DELETE FROM modules WHERE id = '.intval($id);
-$sql[] = 'DELETE FROM param WHERE xrif = \''.$mod_name.'\' AND area = \''.$area->name.'\'';
+$sql[] = 'DELETE FROM param WHERE xrif = \''.$mod_name.'\' AND id_area = \''.$area->id.'\'';

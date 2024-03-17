@@ -114,7 +114,7 @@ class Language_model extends X4Model_core
 	 * Each area can have many languages
 	 * If an user call a page without language code then X3CMS will serve the default language
 	 */
-	public function set_alang(int $id_area, array $languages, string $default) : array
+	public function set_alang(int $id_area, array $languages, string $default) : void
 	{
 		// get languages setted
 		$setted = $this->db->query('SELECT id, code FROM alang WHERE id_area = '.$id_area.' ORDER BY language ASC');
@@ -148,7 +148,10 @@ class Language_model extends X4Model_core
 		$sql[] = 'UPDATE alang SET xdefault = 1 WHERE id_area = '.$id_area.' AND code = '.$this->db->escape($default);
 
 		// delete not confirmed languages
-		foreach ($set as $k => $v) $sql[] = 'DELETE FROM alang WHERE id = '.$v;
+		foreach ($set as $k => $v)
+        {
+            $sql[] = 'DELETE FROM alang WHERE id = '.$v;
+        }
 		$this->db->multi_exec($sql);
 	}
 

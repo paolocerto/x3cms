@@ -64,6 +64,7 @@ class X4Page_controller extends X4Cms_controller
 	public function plugin(string $module, string $control = '', $a = '', $b = '', $c = '', $d = '')
 	{
 		$mod = new X4Plugin_model();
+
 		if ($mod->exists($module, $this->site->area->id) && file_exists(PATH.'plugins/'.$module.'/'.$module.'_plugin.php'))
 		{
 			X4Core_core::auto_load($module.'/'.$module.'_plugin');
@@ -121,19 +122,19 @@ class X4Page_controller extends X4Cms_controller
 
 			// check login if area is private
 			if ($this->site->area->private && !in_array($method, $this->admitted))
-			{
+            {
                 $login_page = $this->site->get_page('login');
-				if ($login_page !== false && file_exists(APATH.'controllers/'.X4Route_core::$area.'/login.php'))
-				{
-					X4Utils_helper::logged($page->id_area, X4Route_core::$area.'/login');
-				}
-				else
-				{
+                if ($login_page !== false && file_exists(APATH.'controllers/'.$this->site->area->folder.'/login.php'))
+                {
+                    X4Utils_helper::logged($page->id_area, X4Route_core::$area.'/login');
+                }
+                else
+                {
                     // get default public for this site
                     $id_area = $this->site->data->default_area;
-					X4Utils_helper::logged($page->id_area, X4Route_core::get_area_by_id($id_area).'/home');
-				}
-			}
+                    X4Utils_helper::logged($page->id_area, X4Route_core::get_area_by_id($id_area).'/home');
+                }
+            }
 
 			// set view
 			$view = new X4View_core(X4Theme_helper::set_tpl($page->tpl));
@@ -154,4 +155,64 @@ class X4Page_controller extends X4Cms_controller
             header('Location: '.BASE_URL.'msg/message/_page_not_found');
 		}
 	}
+
+    /**
+     * Load controller
+     */
+    private function loadController()
+    {
+        // load dictionary
+		$this->dict->get_words();
+
+		// get page
+		$page = $this->get_page('msg');
+		$view = new X4View_core(X4Theme_helper::set_tpl($page->tpl));
+		$view->page = $page;
+
+		// get menus
+		$view->navbar = array($this->site->get_bredcrumb($page));
+		$view->menus = $this->site->get_menus();
+
+		// content
+		$view->args = X4Route_core::$args;
+
+		$qs = (!empty(X4Route_core::$query_string))
+		    ? X4Route_core::get_query_string()
+		    : array();
+
+		// set title
+		if (isset($qs['ok']))
+		{
+		    switch($qs['ok'])
+		    {
+            case 0:
+                $title = _WARNING;
+                break;
+		    case 1:
+		        $title = _CONGRATULATIONS;
+		        break;
+		    case 2:
+		        $title = _MSG_OK;
+		        break;
+		    }
+		}
+		else
+		{
+			$title = _WARNING;
+		}
+
+		//check personal message
+		$checked_msg = strip_tags(urldecode($personal_msg));
+
+		// get message
+		$msg = (empty($personal_msg) || empty($checked_msg))
+			? $this->dict->get_message($title, strtoupper($what), 'msg')
+			: $this->dict->build_message($title, $checked_msg);
+
+		$sections = $this->site->get_sections($page->id);
+
+		$sections[1]['a'] = array($msg);
+		$view->sections = $sections;
+		$view->render(true);
+    }
 }

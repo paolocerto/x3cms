@@ -31,27 +31,27 @@ else
 
 	foreach ($langs as $i)
 	{
-        $statuses = AdmUtils_helper::statuses($i);
+        $statuses = AdminUtils_helper::statuses($i);
 		$actions = '';
 
 		// check permission
 		if (($i->level > 2 && $i->xlock == 0) || $i->level >= 3)
 		{
-			$actions = AdmUtils_helper::link('edit', 'languages/edit/'.$i->id);
+			$actions = AdminUtils_helper::link('edit', 'languages/edit/'.$i->id);
 
             // status
             $actions .= ($i->code != $this->site->area->lang)
-				? AdmUtils_helper::link('xon', 'languages/set/xon/'.$i->id.'/'.(($i->xon+1)%2), $statuses)
+				? AdminUtils_helper::link('xon', 'languages/set/xon/'.$i->id.'/'.(($i->xon+1)%2), $statuses)
 				: '<a><i class="far fa-lightbulb fa-lg '.$statuses['xon']['class'].'"></i></a>';
 
 			// admin user
 			if ($i->level >= 4)
 			{
-				$actions .= AdmUtils_helper::link('xlock', 'languages/set/xlock/'.$i->id.'/'.(($i->xlock+1)%2), $statuses);
+				$actions .= AdminUtils_helper::link('xlock', 'languages/set/xlock/'.$i->id.'/'.(($i->xlock+1)%2), $statuses);
 
 				$actions .= ($i->code == X4Route_core::$lang)
 					? '<a><i class="fa-solid fa-lg fa-trash off"></i></a>'
-					: AdmUtils_helper::link('delete', 'languages/delete/'.$i->id);
+					: AdminUtils_helper::link('delete', 'languages/delete/'.$i->id);
 			}
 		}
 

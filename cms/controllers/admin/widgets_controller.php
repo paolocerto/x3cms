@@ -41,7 +41,7 @@ class Widgets_controller extends X3ui_controller
 		// contents
 		$view = new X4View_core('page');
         $view->breadcrumb = array($this->site->get_bredcrumb($page));
-		$view->actions = AdmUtils_helper::link(
+		$view->actions = AdminUtils_helper::link(
                 'memo',
                 'widgets:'.$page->lang,
                 [],
@@ -86,7 +86,7 @@ class Widgets_controller extends X3ui_controller
 
 			// set message
 			$this->dict->get_words();
-			$msg = AdmUtils_helper::set_msg($result);
+			$msg = AdminUtils_helper::set_msg($result);
 
 			// set update
 			if ($result[1])
@@ -182,7 +182,7 @@ class Widgets_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permissions
-		$msg = AdmUtils_helper::chk_priv_level(1, 'modules', $_post['id'], 'edit');
+		$msg = AdminUtils_helper::chk_priv_level(1, 'modules', $_post['id'], 'edit');
 		if (is_null($msg))
 		{
 			// get obj
@@ -205,12 +205,12 @@ class Widgets_controller extends X3ui_controller
 			$result = $mod->insert($post);
 
 			// set message
-			$msg = AdmUtils_helper::set_msg($result);
+			$msg = AdminUtils_helper::set_msg($result);
 
 			// set what update
 			if ($result[1])
 			{
-                Admin_utils_helper::set_priv($_SESSION['xuid'], $result[0], 'widgets', $post['id_area']);
+                AdminUtils_helper::set_priv($_SESSION['xuid'], $result[0], 'widgets', $post['id_area']);
 
 				$msg->update = array(
 					'element' => 'page',
@@ -256,7 +256,7 @@ class Widgets_controller extends X3ui_controller
 
 			// set message
 			$this->dict->get_words();
-			$msg = AdmUtils_helper::set_msg($result);
+			$msg = AdminUtils_helper::set_msg($result);
 		}
 		$this->response($msg);
 	}
@@ -307,18 +307,18 @@ class Widgets_controller extends X3ui_controller
 	private function deleting(array $_post) : void
 	{
 		$msg = null;
-		$msg = AdmUtils_helper::chk_priv_level(1, 'widgets', $_post['id'], 'delete');
+		$msg = AdminUtils_helper::chk_priv_level(1, 'widgets', $_post['id'], 'delete');
 
 		if (is_null($msg))
 		{
 			$mod = new Widget_model();
 			$result = $mod->my_delete($_post['id']);
 
-			$msg = AdmUtils_helper::set_msg($result);
+			$msg = AdminUtils_helper::set_msg($result);
 
 			if ($result[1])
 			{
-				AdmUtils_helper::delete_priv('widgets', $_post['id']);
+				AdminUtils_helper::delete_priv('widgets', $_post['id']);
 
 				$msg->update = array(
 					'element' => 'page',

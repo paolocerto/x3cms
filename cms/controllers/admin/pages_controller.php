@@ -58,7 +58,7 @@ class Pages_controller extends X3ui_controller
 
         $view = new X4View_core('page');
         $view->breadcrumb = array($this->site->get_bredcrumb($page), array('areas' => 'index'));
-		$view->actions = AdmUtils_helper::link(
+		$view->actions = AdminUtils_helper::link(
                 'memo',
                 'pages:'.$lang,
                 [],
@@ -66,7 +66,7 @@ class Pages_controller extends X3ui_controller
             ).$this->actions($id_area, $lang, $xfrom);
 
 		$view->content = new X4View_core('pages/pages');
-
+        $view->content->page = $page;
 		// content
 		$mod = new Page_model($id_area, $lang);
 		$view->content->id_area = $id_area;
@@ -75,7 +75,7 @@ class Pages_controller extends X3ui_controller
 		$view->content->area = $mod->get_var($id_area, 'areas', 'name');
 
 		$obj = $mod->get_page($xfrom);
-		$view->content->page = ($obj)
+		$view->content->from = ($obj)
 			? $obj
 			: new Page_obj($id_area, $lang);
 
@@ -112,7 +112,7 @@ class Pages_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level($id_area, 'pages', $id, $what);
+		$msg = AdminUtils_helper::chk_priv_level($id_area, 'pages', $id, $what);
 		if (is_null($msg))
 		{
 			// do action
@@ -121,7 +121,7 @@ class Pages_controller extends X3ui_controller
 
 			// set message
 			$this->dict->get_words();
-			$msg = AdmUtils_helper::set_msg($result);
+			$msg = AdminUtils_helper::set_msg($result);
 
 			// set update
 			$msg->update = array(
@@ -191,7 +191,7 @@ class Pages_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permissions
-		$msg = AdmUtils_helper::chk_priv_level($_post['id_area'], '_page_creation', 0, 'create');
+		$msg = AdminUtils_helper::chk_priv_level($_post['id_area'], '_page_creation', 0, 'create');
 		if (is_null($msg))
 		{
 			// remove slash from url
@@ -219,7 +219,7 @@ class Pages_controller extends X3ui_controller
 			$check = (boolean) $mod->exists($post['url']);
 			if ($check)
 			{
-				$msg = AdmUtils_helper::set_msg(
+				$msg = AdminUtils_helper::set_msg(
                     false,
                     '',
                     $this->dict->get_word('_PAGE_ALREADY_EXISTS', 'msg')
@@ -245,12 +245,12 @@ class Pages_controller extends X3ui_controller
 				$result = $mod->insert_page($post, $this->site->data->domain);
 
 				// set message
-				$msg = AdmUtils_helper::set_msg($result);
+				$msg = AdminUtils_helper::set_msg($result);
 
 				// set what update
 				if ($result[1])
 				{
-                    Admin_utils_helper::set_priv($_SESSION['xuid'], $result[0], 'pages', $post['id_area']);
+                    AdminUtils_helper::set_priv($_SESSION['xuid'], $result[0], 'pages', $post['id_area']);
 
 					$msg->update = array(
 						'element' => 'page',
@@ -320,7 +320,7 @@ class Pages_controller extends X3ui_controller
         $view->content->from = $from;
 
         // can user edit?
-        $submit = AdmUtils_helper::submit_btn($page->id_area, 'pages', $id, $page->xlock);
+        $submit = AdminUtils_helper::submit_btn($page->id_area, 'pages', $id, $page->xlock);
 		// form builder
 		$view->content->form = X4Form_helper::doform(
             'editor',
@@ -367,7 +367,7 @@ class Pages_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permissions
-		$msg = AdmUtils_helper::chk_priv_level($_post['id_area'], 'pages', $_post['id'], 'edit');
+		$msg = AdminUtils_helper::chk_priv_level($_post['id_area'], 'pages', $_post['id'], 'edit');
 		if (is_null($msg))
 		{
 			// get object
@@ -409,7 +409,7 @@ class Pages_controller extends X3ui_controller
             APC && apcu_clear_cache();
 
             // set message
-            $msg = AdmUtils_helper::set_msg($result);
+            $msg = AdminUtils_helper::set_msg($result);
 
             // set what update
             if ($result[1])
@@ -466,7 +466,7 @@ class Pages_controller extends X3ui_controller
 		// contents
 		$view->content = new X4View_core('editor');
         // can user edit?
-        $submit = AdmUtils_helper::submit_btn($page->id_area, 'pages', $id, $page->xlock);
+        $submit = AdminUtils_helper::submit_btn($page->id_area, 'pages', $id, $page->xlock);
 		// form builder
 		$view->content->form = X4Form_helper::doform(
             'editor',
@@ -487,7 +487,7 @@ class Pages_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permissions
-		$msg = AdmUtils_helper::chk_priv_level($_post['id_area'], 'pages', $_post['id'], 'edit');
+		$msg = AdminUtils_helper::chk_priv_level($_post['id_area'], 'pages', $_post['id'], 'edit');
 
 		if (is_null($msg))
 		{
@@ -524,7 +524,7 @@ class Pages_controller extends X3ui_controller
 			$check = (boolean) $mod->exists($post['url'], $_post['id']);
 			if ($check)
 			{
-				$msg = AdmUtils_helper::set_msg(
+				$msg = AdminUtils_helper::set_msg(
                     false,
                     '',
                     $this->dict->get_word('_PAGE_ALREADY_EXISTS', 'msg')
@@ -550,7 +550,7 @@ class Pages_controller extends X3ui_controller
 				APC && apcu_clear_cache();
 
 				// set message
-				$msg = AdmUtils_helper::set_msg($result);
+				$msg = AdminUtils_helper::set_msg($result);
 
 				// set what update
 				if ($result[1])
@@ -621,7 +621,7 @@ class Pages_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permissions
-		$msg = AdmUtils_helper::chk_priv_level($item->id_area, 'pages', $item->id, 'delete');
+		$msg = AdminUtils_helper::chk_priv_level($item->id_area, 'pages', $item->id, 'delete');
 		if (is_null($msg))
 		{
 			// action
@@ -631,11 +631,11 @@ class Pages_controller extends X3ui_controller
 			// clear useless permissions
 			if ($result[1])
 			{
-				AdmUtils_helper::delete_priv('pages', $item->id);
+				AdminUtils_helper::delete_priv('pages', $item->id);
 			}
 
 			// set message
-			$msg = AdmUtils_helper::set_msg($result);
+			$msg = AdminUtils_helper::set_msg($result);
 
 			// set what update
 			if ($result[1])
@@ -656,7 +656,7 @@ class Pages_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permissions
-		$msg = AdmUtils_helper::chk_priv_level($id_area, '_page_creation', 0, 'create');
+		$msg = AdminUtils_helper::chk_priv_level($id_area, '_page_creation', 0, 'create');
 
 		if (is_null($msg))
 		{
@@ -703,7 +703,7 @@ class Pages_controller extends X3ui_controller
 
 			// set message
 			$this->dict->get_words();
-			$msg = AdmUtils_helper::set_msg($result);
+			$msg = AdminUtils_helper::set_msg($result);
 
 			if ($result[1])
 			{

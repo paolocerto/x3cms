@@ -35,7 +35,7 @@ if (!empty($items))
 
 	foreach ($items as $i)
 	{
-		$statuses = AdmUtils_helper::statuses($i);
+		$statuses = AdminUtils_helper::statuses($i);
 		$actions = '';
 
 		if (($i->level > 1 && $i->xlock == 0) || $i->level >= 3)
@@ -50,11 +50,11 @@ if (!empty($items))
 
             if ($i->level > 2)
 			{
-                $actions .= AdmUtils_helper::link('xon', 'x3form_builder/set/fields/xon/'.$i->id_area.'/'.$i->id.'/'.intval(!$i->xon), $statuses);
+                $actions .= AdminUtils_helper::link('xon', 'x3form_builder/set/fields/xon/'.$i->id_area.'/'.$i->id.'/'.intval(!$i->xon), $statuses);
 				if ($i->level >= 4)
 				{
-                    $actions .= AdmUtils_helper::link('xlock', 'x3form_builder/set/fields/xlock/'.$i->id_area.'/'.$i->id.'/'.intval(!$i->xlock), $statuses);
-                    $actions .= AdmUtils_helper::link('delete', 'x3form_builder/delete_field/'.$i->id_area.'/'.$i->id);
+                    $actions .= AdminUtils_helper::link('xlock', 'x3form_builder/set/fields/xlock/'.$i->id_area.'/'.$i->id.'/'.intval(!$i->xlock), $statuses);
+                    $actions .= AdminUtils_helper::link('delete', 'x3form_builder/delete_field/'.$i->id_area.'/'.$i->id);
 				}
 			}
 		}

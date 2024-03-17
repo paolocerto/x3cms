@@ -47,7 +47,7 @@ class Areas_controller extends X3ui_controller
 		// contents
 		$view = new X4View_core('page');
         $view->breadcrumb = array($this->site->get_bredcrumb($page));
-		$view->actions = AdmUtils_helper::link(
+		$view->actions = AdminUtils_helper::link(
                 'memo',
                 'areas:'.$page->lang,
                 [],
@@ -86,7 +86,7 @@ class Areas_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permissions
-		$msg = AdmUtils_helper::chk_priv_level($id, 'areas', $id, $what);
+		$msg = AdminUtils_helper::chk_priv_level($id, 'areas', $id, $what);
 		if (is_null($msg))
 		{
 			// do action
@@ -95,7 +95,7 @@ class Areas_controller extends X3ui_controller
 
 			// set message
 			$this->dict->get_words();
-			$msg = AdmUtils_helper::set_msg($result);
+			$msg = AdminUtils_helper::set_msg($result);
 
 			// set update
 			if ($result[1])
@@ -158,7 +158,7 @@ class Areas_controller extends X3ui_controller
 		$view->content = new X4View_core('editor');
 
         // can user edit?
-        $submit = AdmUtils_helper::submit_btn($id, 'areas', $id, $item->xlock);
+        $submit = AdminUtils_helper::submit_btn($id, 'areas', $id, $item->xlock);
         // form builder
 		$view->content->form = X4Form_helper::doform('editor', BASE_URL.'areas/edit/'.$id, $fields, array(_RESET, $submit, 'buttons'), 'post', '',
 			'@click="submitForm(\'editor\')"');
@@ -174,13 +174,12 @@ class Areas_controller extends X3ui_controller
 		$msg = null;
 		// check permissions
 		$msg = ($id_area)
-			? AdmUtils_helper::chk_priv_level($id_area, 'areas', $id_area, 'edit')
-			: AdmUtils_helper::chk_priv_level(1, '_area_creation', 0, 'create');
+			? AdminUtils_helper::chk_priv_level($id_area, 'areas', $id_area, 'edit')
+			: AdminUtils_helper::chk_priv_level(1, '_area_creation', 0, 'create');
 		if (is_null($msg))
 		{
 			// handle _post
 			$post = array(
-				'lang' => $_post['lang'],
 				'name' => X4Utils_helper::slugify($_post['name']),
 				'title' => $_post['title'],
 				'description' => $_post['description'],
@@ -197,12 +196,10 @@ class Areas_controller extends X3ui_controller
 			$check = (boolean) $mod->exists($post['name'], $id_area);
 			if ($check)
 			{
-				$msg = AdmUtils_helper::set_msg(false, '', $this->dict->get_word('_AREA_ALREADY_EXISTS', 'msg'));
+				$msg = AdminUtils_helper::set_msg(false, '', $this->dict->get_word('_AREA_ALREADY_EXISTS', 'msg'));
 			}
 			else
 			{
-				// Redirect checker
-				$redirect = false;
 				// enable logs
 				if (LOGS && DEVEL)
 				{
@@ -213,10 +210,6 @@ class Areas_controller extends X3ui_controller
 				if ($id_area)
 				{
 					$result = $mod->update($id_area, $post);
-					if ($_post['id'] == 1 && X4Route_core::$lang != $post['lang'])
-					{
-						$redirect = true;
-					}
 				}
 				else
 				{
@@ -230,14 +223,14 @@ class Areas_controller extends X3ui_controller
 				if ($result[1])
 				{
 					// update lang and  theme settings
-                    $this->update_lang_and_theme_settings($_post);
+                    $this->update_lang_and_theme_settings($result[0], $_post);
 
                     // clear cache
 					APC && apcu_clear_cache();
 				}
 
 				// set message
-				$msg = AdmUtils_helper::set_msg($result);
+				$msg = AdminUtils_helper::set_msg($result);
 
 				// set what update
 				if ($result[1])
@@ -248,22 +241,10 @@ class Areas_controller extends X3ui_controller
                         $mod->reset_xdefault($post['id_site'], $id_area);
                     }
 
-					if ($redirect)
-					{
-                        // reload
-						$msg->update = array(
-							'element' => 'page',
-							'url' => BASE_URL.'home/start'
-						);
-					}
-					else
-					{
-                        // come back
-						$msg->update = array(
-							'element' => 'page',
-							'url' => BASE_URL.'areas',
-						);
-					}
+                    $msg->update = array(
+                        'element' => 'page',
+                        'url' => BASE_URL.'areas',
+                    );
 				}
 			}
 		}
@@ -278,7 +259,7 @@ class Areas_controller extends X3ui_controller
         $perm = new Permission_model();
 
         // aprivs permissions
-        $domain = X4Array_helper::obj2array($perm->get_aprivs($_SESSION['xuid']), null, 'id_area');
+        $domain = X4Array_helper::obj2array($perm->get_aprivs($_SESSION['xuid']), '', 'id_area');
         $domain[] = $id_area;
         $perm->set_aprivs($_SESSION['xuid'], $domain);
         // uprivs premissions
@@ -288,27 +269,27 @@ class Areas_controller extends X3ui_controller
     /**
 	 * Update lang and theme settings
 	 */
-    private function update_lang_and_theme_settings(array $_post) : void
+    private function update_lang_and_theme_settings(int $id_area, array $_post) : void
     {
         // refresh languages related to area
         $lang = new Language_model();
-        $lang->set_alang($_post['id'], $_post['languages'], $_post['lang']);
+        $lang->set_alang($id_area, $_post['languages'], $_post['lang']);
 
-        if ($_post['id'] && $_post['id_theme'] != $_post['old_id_theme'])
+        if ($id_area && $_post['id_theme'] != $_post['old_id_theme'])
         {
             $menu = new Menu_model();
             // reset tpl, css, id_menu, ordinal
-            $menu->reset($_post['id']);
+            $menu->reset($id_area);
             $langs = $lang->get_languages();
             // restore ordinal
             foreach ($langs as $i)
             {
-                $menu->ordinal($_post['id'], $i->code, 'home', 'A');
+                $menu->ordinal($id_area, $i->code, 'home', 'A');
             }
             // reset section settings
             $section = new Section_model();
             // reset section settings
-            $section->reset($_post['id']);
+            $section->reset($id_area);
         }
     }
 
@@ -368,7 +349,7 @@ class Areas_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level($id_area, 'areas', $id_area, 'edit');
+		$msg = AdminUtils_helper::chk_priv_level($id_area, 'areas', $id_area, 'edit');
 
 		if (is_null($msg))
 		{
@@ -394,7 +375,7 @@ class Areas_controller extends X3ui_controller
             }
 			$result = $mod->update_seo_data($post);
 
-			$msg = AdmUtils_helper::set_msg($result);
+			$msg = AdminUtils_helper::set_msg($result);
 
 			// set what update
 			if ($result[1])
@@ -455,7 +436,7 @@ class Areas_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permissions
-		$msg = AdmUtils_helper::chk_priv_level($item->id, 'areas', $item->id, 'delete');
+		$msg = AdminUtils_helper::chk_priv_level($item->id, 'areas', $item->id, 'delete');
 		if (is_null($msg))
 		{
 			// action
@@ -463,12 +444,12 @@ class Areas_controller extends X3ui_controller
 			$result = $area->delete_area($item->id, $item->name);
 
 			// set message
-			$msg = AdmUtils_helper::set_msg($result);
+			$msg = AdminUtils_helper::set_msg($result);
 
 			// clear useless permissions
 			if ($result[1])
 			{
-                AdmUtils_helper::delete_priv('areas', $item->id);
+                AdminUtils_helper::delete_priv('areas', $item->id);
 
 				// set what update
 				$msg->update = array(
@@ -493,7 +474,7 @@ class Areas_controller extends X3ui_controller
 
 		// content
 		$view->content = new X4View_core('areas/map');
-        
+
 		$mod = new Page_model($id_area, $lang);
 		$view->content->area = $mod->get_by_id($id_area, 'areas');
 		$view->content->lang = $lang;

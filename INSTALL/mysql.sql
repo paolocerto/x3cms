@@ -64,7 +64,6 @@ INSERT INTO `aprivs` (`updated`, `id_user`, `id_area`, `area`, `xon`) VALUES
 CREATE TABLE IF NOT EXISTS `areas` (
   `id` int(11) NOT NULL auto_increment,
   `updated` datetime NOT NULL,
-  `lang` char(2) NOT NULL,
   `name` varchar(128) NOT NULL,
   `title` varchar(128) NOT NULL,
   `description` varchar(255) NOT NULL,
@@ -82,10 +81,11 @@ CREATE TABLE IF NOT EXISTS `areas` (
 -- Dumping data for table `areas`
 --
 
-INSERT INTO `areas` (`id`, `updated`, `lang`, `name`, `title`, `description`, `folder`, `id_theme`, `xdefault`, `private`,`xlock`, `xon`) VALUES
-(1, NOW(), 'it', 'admin', 'Administration', 'Control panel', 'admin', 1, 1, 0, 1, 0, 1),
-(2, NOW(), 'it', 'public', 'Public area', 'Web site', 'public', 1, 2, 1, 0, 0, 1),
-(3, NOW(), 'it', 'private', 'Private area', 'Web private area', 'private', 1, 2, 0, 1, 0, 1);
+INSERT INTO `areas` (`id`, `updated`, `name`, `title`, `description`, `folder`, `id_theme`, `xdefault`, `private`,`xlock`, `xon`) VALUES
+(1, NOW(), 'admin', 'Administration', 'Control panel', 'admin', 1, 1, 0, 1, 0, 1),
+(2, NOW(), 'public', 'Public area', 'Web site', 'public', 1, 2, 1, 0, 0, 1),
+(3, NOW(), 'private', 'Private area', 'Web private area', 'private', 1, 2, 0, 1, 0, 1),
+(4, NOW(), 'pwa', 'PWA area', 'Progressive Web App area', 'private', 1, 2, 0, 1, 0, 1);
 
 -- --------------------------------------------------------
 

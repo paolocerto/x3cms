@@ -74,24 +74,24 @@ if ($items)
 
 	foreach ($items as $i)
 	{
-		$statuses = AdmUtils_helper::statuses($i);
+		$statuses = AdminUtils_helper::statuses($i);
 		$actions = '';
 
 		// check permission
 		if (($i->level > 2 && $i->xlock == 0) || $i->level >= 3)
 		{
-            $actions = AdmUtils_helper::link('edit', 'dictionary/edit/'.$i->lang.'/'.$i->area.'/'.$i->id);
+            $actions = AdminUtils_helper::link('edit', 'dictionary/edit/'.$i->lang.'/'.$i->area.'/'.$i->id);
 
 			// manager or admin user
 			if ($i->level > 2 || $i->level == 4)
 			{
-				$actions .= AdmUtils_helper::link('xon', 'dictionary/set/xon/'.$i->area.'/'.$i->id.'/'.(($i->xon+1)%2), $statuses);
+				$actions .= AdminUtils_helper::link('xon', 'dictionary/set/xon/'.$i->area.'/'.$i->id.'/'.(($i->xon+1)%2), $statuses);
 			}
 			// admin user
 			if ($i->level >= 4)
 			{
-				$actions .= AdmUtils_helper::link('xlock', 'dictionary/set/xlock/'.$i->area.'/'.$i->id.'/'.(($i->xlock+1)%2), $statuses);
-                $actions .= AdmUtils_helper::link('delete', 'dictionary/delete/'.$i->id);
+				$actions .= AdminUtils_helper::link('xlock', 'dictionary/set/xlock/'.$i->area.'/'.$i->id.'/'.(($i->xlock+1)%2), $statuses);
+                $actions .= AdminUtils_helper::link('delete', 'dictionary/delete/'.$i->id);
 			}
 		}
 

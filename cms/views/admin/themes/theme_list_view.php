@@ -10,7 +10,7 @@
 
 // theme manager
 
-echo '<h1 class="mt-6">'.$page->icon' '.$page->title.'</h1>';
+echo '<h1 class="mt-6">'.$page->icon.' '.$page->title.'</h1>';
 
 if (empty($theme_in))
 {
@@ -37,7 +37,7 @@ else
         $tmp = 0;
         foreach ($theme_in as $i)
         {
-            $statuses = AdmUtils_helper::statuses($i, ['xon', 'xlock']);
+            $statuses = AdminUtils_helper::statuses($i, ['xon', 'xlock']);
 
             $actions = $area = '';
 
@@ -46,14 +46,14 @@ else
                 if ($i->id > 1)
                 {
                     // not for admin theme
-                    $actions .= AdmUtils_helper::link('edit', 'themes/edit/'.$i->id);
+                    $actions .= AdminUtils_helper::link('edit', 'themes/edit/'.$i->id);
                 }
 
-                $actions .= AdmUtils_helper::link('xon', 'themes/set/xon/'.$i->id.'/'.(($i->xon+1)%2), $statuses);
+                $actions .= AdminUtils_helper::link('xon', 'themes/set/xon/'.$i->id.'/'.(($i->xon+1)%2), $statuses);
 
                 if ($i->level >= 4)
                 {
-                    $actions .= AdmUtils_helper::link('xlock', 'themes/set/xlock/'.$i->id.'/'.(($i->xlock+1)%2), $statuses);
+                    $actions .= AdminUtils_helper::link('xlock', 'themes/set/xlock/'.$i->id.'/'.(($i->xlock+1)%2), $statuses);
 
                     // templates
                     $actions .= '<a class="link" @click="pager(\''.BASE_URL.'templates/index/'.$i->id.'/'.$i->name.'\')" title="'._TEMPLATES.'">
@@ -82,7 +82,7 @@ else
                 $tmp = $i->id;
 
                 $actions .= ($i->level >= 4)
-                    ? AdmUtils_helper::link('refresh', 'themes/set/minimize/'.$i->id, [], _MINIMIZE)
+                    ? AdminUtils_helper::link('refresh', 'themes/set/minimize/'.$i->id, [], _MINIMIZE)
                     : '';
 
                 echo '<tr>

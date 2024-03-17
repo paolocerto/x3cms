@@ -73,7 +73,7 @@ class Dictionary_controller extends X3ui_controller
 
         $view = new X4View_core('page');
         $view->breadcrumb = array($this->site->get_bredcrumb($page));
-            $view->actions = AdmUtils_helper::link(
+            $view->actions = AdminUtils_helper::link(
                 'memo',
                 'dictionary:keys:'.$lang,
                 [],
@@ -140,7 +140,7 @@ class Dictionary_controller extends X3ui_controller
 	{
 		$msg = null;
 		// check permission
-		$msg = AdmUtils_helper::chk_priv_level($id_area, 'dictionary', $id, $what);
+		$msg = AdminUtils_helper::chk_priv_level($id_area, 'dictionary', $id, $what);
 		if (is_null($msg))
 		{
 			// do action
@@ -149,7 +149,7 @@ class Dictionary_controller extends X3ui_controller
 
 			// set message
 			$this->dict->get_words();
-			$msg = AdmUtils_helper::set_msg($result);
+			$msg = AdminUtils_helper::set_msg($result);
 
 			// set update
 			if ($result[1])
@@ -210,7 +210,7 @@ class Dictionary_controller extends X3ui_controller
 		// content
 		$view->content = new X4View_core('editor');
         // can user edit?
-        $submit = AdmUtils_helper::submit_btn($id_area, 'dictionary', $id, $item->xlock);
+        $submit = AdminUtils_helper::submit_btn($id_area, 'dictionary', $id, $item->xlock);
 		// form builder
 		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, $submit, 'buttons'), 'post', '',
             '@click="submitForm(\'editor\')"');
@@ -225,8 +225,8 @@ class Dictionary_controller extends X3ui_controller
 		$msg = null;
         // check permissions
         $msg = ($id)
-            ? AdmUtils_helper::chk_priv_level($id_area, 'dictionary', $id_area, 'edit')
-            : AdmUtils_helper::chk_priv_level($id_area, '_word_creation', 0, 'create');
+            ? AdminUtils_helper::chk_priv_level($id_area, 'dictionary', $id_area, 'edit')
+            : AdminUtils_helper::chk_priv_level($id_area, '_word_creation', 0, 'create');
 
 		if (is_null($msg))
 		{
@@ -254,7 +254,7 @@ class Dictionary_controller extends X3ui_controller
 			$check = $mod->exists($id, $post);
 			if ($check)
             {
-				$msg = AdmUtils_helper::set_msg(false, '', $this->dict->get_word('_XKEY_ALREADY_EXISTS', 'msg'));
+				$msg = AdminUtils_helper::set_msg(false, '', $this->dict->get_word('_XKEY_ALREADY_EXISTS', 'msg'));
             }
 			else
 			{
@@ -270,12 +270,12 @@ class Dictionary_controller extends X3ui_controller
 
                     if ($result[1])
                     {
-                        Admin_utils_helper::set_priv($_SESSION['xuid'], $result[0], 'dictionary', $post['id_area']);
+                        AdminUtils_helper::set_priv($_SESSION['xuid'], $result[0], 'dictionary', $post['id_area']);
                     }
                 }
 
                 // set message
-                $msg = AdmUtils_helper::set_msg($result);
+                $msg = AdminUtils_helper::set_msg($result);
 
                 // set what update
                 if ($result[1])
@@ -341,7 +341,7 @@ class Dictionary_controller extends X3ui_controller
 		$msg = null;
 		// check permission
         $id_area = X4Route_core::get_id_area($item->area);
-		$msg = AdmUtils_helper::chk_priv_level($id_area, 'dictionary', $item->id, 'delete');
+		$msg = AdminUtils_helper::chk_priv_level($id_area, 'dictionary', $item->id, 'delete');
 
 		if (is_null($msg))
 		{
@@ -350,12 +350,12 @@ class Dictionary_controller extends X3ui_controller
 			$result = $mod->delete($id);
 
 			// set message
-			$msg = AdmUtils_helper::set_msg($result);
+			$msg = AdminUtils_helper::set_msg($result);
 
 			// clear useless permissions
 			if ($result[1])
             {
-				AdmUtils_helper::delete_priv('dictionary', $id);
+				AdminUtils_helper::delete_priv('dictionary', $id);
 
 				// set what update
 				$msg->update = array(
@@ -412,7 +412,7 @@ class Dictionary_controller extends X3ui_controller
 		$msg = null;
 		// check permission
         $id_area = X4Route_core::get_id_area($area);
-		$msg = AdmUtils_helper::chk_priv_level($id_area, '_word_creation', 0, 'create');
+		$msg = AdminUtils_helper::chk_priv_level($id_area, '_word_creation', 0, 'create');
 
 		if (is_null($msg))
 		{
@@ -421,7 +421,7 @@ class Dictionary_controller extends X3ui_controller
 			$result = $mod->remove_duplicates();
 
 			// set message
-			$msg = AdmUtils_helper::set_msg($result);
+			$msg = AdminUtils_helper::set_msg($result);
 
 			// clear useless permissions
 			if ($result[1])
@@ -491,7 +491,7 @@ class Dictionary_controller extends X3ui_controller
 		$msg = null;
 		// check permission
         $id_area = X4Route_core::get_id_area($_post['area']);
-		$msg = AdmUtils_helper::chk_priv_level($id_area, '_key_import', 0, 'create');
+		$msg = AdminUtils_helper::chk_priv_level($id_area, '_key_import', 0, 'create');
 
 		if (is_null($msg))
 		{
@@ -557,7 +557,7 @@ class Dictionary_controller extends X3ui_controller
 				}
 			}
 
-			$msg = AdmUtils_helper::set_msg($result);
+			$msg = AdminUtils_helper::set_msg($result);
 
 			// set what update
 			if ($result[1])

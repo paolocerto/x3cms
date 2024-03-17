@@ -301,7 +301,7 @@ If you want to fully use this method you have to create:</p>
 		$page = $this->get_page(\''.$name.'\');
 		$view = new X4View_core(\'page\');
         $view->breadcrumb = array($this->site->get_bredcrumb($page));
-		$view->actions = AdmUtils_helper::link(
+		$view->actions = AdminUtils_helper::link(
             \'memo\',
             \''.$name.'\':\'.$lang,
             [],
@@ -364,14 +364,14 @@ If you want to fully use this method you have to create:</p>
 	public function set(string $what, int $id_area, int $id, int $value = 0) : void
 	{
 		$msg = null;
-		$msg = AdmUtils_helper::chk_priv_level($id_area, \''.$name.'\', $id, $what);
+		$msg = AdminUtils_helper::chk_priv_level($id_area, \''.$name.'\', $id, $what);
 		if (is_null($msg))
 		{
 			$mod = new '.$uname.'_model();
 			$result = $mod->update($id, array($what => $value));
 
 			$this->dict->get_words();
-			$msg = AdmUtils_helper::set_msg($result);
+			$msg = AdminUtils_helper::set_msg($result);
 
 			if ($result[1])
             {
@@ -449,7 +449,7 @@ If you want to fully use this method you have to create:</p>
 
 		$view->content = new X4View_core(\'editor\');
         // can user edit?
-        $submit = AdmUtils_helper::submit_btn($item->id_area, \'x3_plugins\', $id, $item->xlock);
+        $submit = AdminUtils_helper::submit_btn($item->id_area, \'x3_plugins\', $id, $item->xlock);
 		$view->content->form = X4Form_helper::doform(\'editor\', BASE_URL.\''.$name.'/edit/\'.$id_area.\'/\'.$lang.\'/\'.$id, $fields, array(_RESET, $submit, \'buttons\'), \'post\', \'\',
             \'@click="submitForm(\\\'editor\\\')"\');
 
@@ -467,8 +467,8 @@ If you want to fully use this method you have to create:</p>
 	{
 		$msg = null;
 		$msg = ($id)
-		    ? AdmUtils_helper::chk_priv_level($_post[\'id_area\'], \''.$name.'\', $id, \'edit\')
-		    : AdmUtils_helper::chk_priv_level($_post[\'id_area\'], \'_'.$name.'_creation\', 0, \'create\');
+		    ? AdminUtils_helper::chk_priv_level($_post[\'id_area\'], \''.$name.'\', $id, \'edit\')
+		    : AdminUtils_helper::chk_priv_level($_post[\'id_area\'], \'_'.$name.'_creation\', 0, \'create\');
 
 		if (is_null($msg))
 		{
@@ -496,7 +496,7 @@ If you want to fully use this method you have to create:</p>
 			    $result = $mod->insert($post);
 			}
 
-			$msg = AdmUtils_helper::set_msg($result);
+			$msg = AdminUtils_helper::set_msg($result);
 
 			if ($result[1])
 			{
@@ -559,17 +559,17 @@ If you want to fully use this method you have to create:</p>
 	private function deleting(stdClass $item) : void
 	{
 		$msg = null;
-		$msg = AdmUtils_helper::chk_priv_level($item->id_area, \''.$name.'\', $item->id, \'delete\');
+		$msg = AdminUtils_helper::chk_priv_level($item->id_area, \''.$name.'\', $item->id, \'delete\');
 
 		if (is_null($msg))
 		{
 			$mod = new '.$uname.'_model();
 			$result = $mod->delete($item->id);
 
-			$msg = AdmUtils_helper::set_msg($result);
+			$msg = AdminUtils_helper::set_msg($result);
 
 			if ($result[1]) {
-				AdmUtils_helper::delete_priv(\''.$name.'\', $item->id);
+				AdminUtils_helper::delete_priv(\''.$name.'\', $item->id);
 
 				$msg->update = array(
 					\'element\' => \'page\',
@@ -614,7 +614,7 @@ If you want to fully use this method you have to create:</p>
 			}
 
 			$this->dict->get_words();
-			$msg = AdmUtils_helper::set_msg($result);
+			$msg = AdminUtils_helper::set_msg($result);
 		}
 		$this->response($msg);
 	}
@@ -1237,21 +1237,21 @@ if (!empty($list))
 
 	foreach ($list as $i)
 	{
-		$statuses = AdmUtils_helper::statuses($i);
+		$statuses = AdminUtils_helper::statuses($i);
 
         $actions = \'\';
         if (($i->level > 1 && $i->xlock == 0) || $i->level >= 3)
         {
-            $actions = AdmUtils_helper::link(\'edit\', \''.$name.'/edit/\'.$i->id_area.\'/\'.$i->lang.\'/\'.$i->id);
+            $actions = AdminUtils_helper::link(\'edit\', \''.$name.'/edit/\'.$i->id_area.\'/\'.$i->lang.\'/\'.$i->id);
 
             if ($i->level > 2)
             {
-                $actions .= AdmUtils_helper::link(\'xon\', \''.$name.'/set/xon/\'.$i->id.\'/\'.intval(!$i->xon), $statuses);
+                $actions .= AdminUtils_helper::link(\'xon\', \''.$name.'/set/xon/\'.$i->id.\'/\'.intval(!$i->xon), $statuses);
 
                 if ($i->level >= 4)
                 {
-                    $actions .= AdmUtils_helper::link(\'xlock\', \''.$name.'/set/xlock/\'.$i->id.\'/\'.intval(!$i->xlock), $statuses);
-                    $actions .= AdmUtils_helper::link(\'delete\', \''.$name.'/delete/\'.$i->id);
+                    $actions .= AdminUtils_helper::link(\'xlock\', \''.$name.'/set/xlock/\'.$i->id.\'/\'.intval(!$i->xlock), $statuses);
+                    $actions .= AdminUtils_helper::link(\'delete\', \''.$name.'/delete/\'.$i->id);
                 }
             }
         }

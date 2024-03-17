@@ -49,7 +49,7 @@ $fields[] = array(
 $fields[] = array(
     'label' => _ICON,
     'type' => 'text',
-    'value' => htmlentities($page->icon),
+    'value' => '',
     'name' => 'icon',
     'suggestion' => _ICON_MSG,
     'extra' => 'class="w-full"'

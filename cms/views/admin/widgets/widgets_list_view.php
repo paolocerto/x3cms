@@ -27,10 +27,10 @@ if ($items)
 	$n = sizeof($items);
 	foreach ($items as $i)
 	{
-		$statuses = AdmUtils_helper::statuses($i);
+		$statuses = AdminUtils_helper::statuses($i);
 
-        $actions = AdmUtils_helper::link('xon', 'widgets/set/xon/'.$i->id.'/'.intval(!$i->xon), $statuses);
-        $actions .= AdmUtils_helper::link('delete', 'widgets/delete/'.$i->id);
+        $actions = AdminUtils_helper::link('xon', 'widgets/set/xon/'.$i->id.'/'.intval(!$i->xon), $statuses);
+        $actions .= AdminUtils_helper::link('delete', 'widgets/delete/'.$i->id);
 
 		echo '<div class="sort-item" id="'.$i->id.'"><table class="my-0"><tr>
                 <td>'.$i->area._TRAIT_.'<b>'.$i->description.'</b></td>

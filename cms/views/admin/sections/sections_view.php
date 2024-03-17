@@ -35,23 +35,23 @@ $parent = str_replace('/', '§', $xpage->xfrom);
 $sort = false;
 foreach ($items as $i)
 {
-    $statuses = AdmUtils_helper::statuses($i);
+    $statuses = AdminUtils_helper::statuses($i);
     $actions = '';
 
     // check permissions
     if (($i->level > 1 && $i->xlock == 0) || $i->level >= 3)
     {
-        $actions = AdmUtils_helper::link('edit', 'sections/edit/'.$i->id_area.'/'.$i->id_page.'/'.$i->id);
+        $actions = AdminUtils_helper::link('edit', 'sections/edit/'.$i->id_area.'/'.$i->id_page.'/'.$i->id);
 
         if ($i->level > 2)
         {
-            $actions .= AdmUtils_helper::link('xon', 'sections/set/xon/'.$i->id_area.'/'.$i->id.'/'.(($i->xon+1)%2), $statuses);
+            $actions .= AdminUtils_helper::link('xon', 'sections/set/xon/'.$i->id_area.'/'.$i->id.'/'.(($i->xon+1)%2), $statuses);
 
             if ($i->level >= 4)
             {
-                $actions .= AdmUtils_helper::link('xlock', 'sections/set/xlock/'.$i->id_area.'/'.$i->id.'/'.(($i->xlock+1)%2), $statuses);
+                $actions .= AdminUtils_helper::link('xlock', 'sections/set/xlock/'.$i->id_area.'/'.$i->id.'/'.(($i->xlock+1)%2), $statuses);
 
-                $actions .= AdmUtils_helper::link('delete', 'sections/delete/'.$i->id);
+                $actions .= AdminUtils_helper::link('delete', 'sections/delete/'.$i->id);
             }
         }
     }

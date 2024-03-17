@@ -89,8 +89,8 @@ class Permission_model extends X4Model_core
 	{
 		return $this->db->query_row('SELECT IF(p.id IS NULL, 0, p.id) AS id, IF(p.id IS NULL, u.level, p.level) AS level
 			FROM uprivs u
-			LEFT JOIN privs p ON p.id_who = u.id_user AND p.id_area = u.id_area AND p.what = u.privtype
-			WHERE u.id_user = '.$id_user.' AND u.id_area = '.$id_area.' AND u.privtype = '.$this->db->escape($what).' AND p.id_what = '.$id_what);
+			LEFT JOIN privs p ON p.id_who = u.id_user AND p.id_area = u.id_area AND p.what = u.privtype AND p.id_what = '.$id_what.'
+			WHERE u.id_user = '.$id_user.' AND u.id_area = '.$id_area.' AND u.privtype = '.$this->db->escape($what));
 	}
 
 	/**
@@ -333,9 +333,11 @@ class Permission_model extends X4Model_core
 	private function sync_upriv(int $id_user, array $areas) : array
 	{
 		// get group's privilege types
-		$group = new Group_model();
-		$g = $group->get_group_by_user($id_user);
+		$mod = new Group_model();
+		$g = $mod->get_group_by_user($id_user);
 		$gp = X4Array_helper::obj2array($this->get_gprivs($g->id), 'what', 'level');
+
+        $user_level = $mod->get_var($id_user, 'users', 'level');
 
 		$sql = array();
 		foreach ($areas as $i)
@@ -351,7 +353,7 @@ class Permission_model extends X4Model_core
 					// if user have a group's privilege do none
 					unset($up[$k]);
 				}
-				elseif ($i->id_area == 1 || !in_array($k, $this->admin_privtypes))
+				elseif ($user_level == 5 || $i->id_area == 1 || !in_array($k, $this->admin_privtypes))
 				{
 					// if user don't have then add the missing privilege type
 					$sql[] = 'INSERT INTO uprivs
@@ -369,6 +371,7 @@ class Permission_model extends X4Model_core
 					WHERE u.id = '.$v.' AND u.id_user = '.$id_user.' AND u.privtype = \''.$k.'\' AND u.id_area = '.$i->id_area;
 			}
 		}
+
 		return (empty($sql))
 			? array(0,1)
 			: $this->db->multi_exec($sql);

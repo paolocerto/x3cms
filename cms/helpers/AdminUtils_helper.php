@@ -13,7 +13,7 @@
  *
  * @package X3CMS
  */
-class AdmUtils_helper
+class AdminUtils_helper
 {
 	/**
 	 * Put the message into a session variable
