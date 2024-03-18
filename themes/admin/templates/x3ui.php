@@ -92,10 +92,18 @@ echo (!DEVEL && file_exists(PATH.'themes/'.$this->site->area->theme.'/js/x3ui.mi
     <script src="<?php echo ROOT ?>files/js/croppie.js"></script>
 
 </head>
-<body class="w-full h-screen">
+<body class="w-full h-screen" x-data="openMenu()" @keypress="open($event)">
 
-    <div id="working" x-data="spinner_box()" @mouseover="menu()" class="py-3">
+    <div
+        id="working"
+        x-data="spinner_box()"
+        @click="menu()"
+        @mouseover="over()"
+        @mouseleave="leave()"
+        class="text-center py-1 my-2 cursor-pointer rounded"
+    >
         <i
+            id="working_icon"
             class="fa-solid fa-lg fa-slash text-gray-600"
             :class="{'fa-spin text-amber-500': working}"
             x-on:working.window="run($event.detail)"
@@ -106,13 +114,27 @@ echo (!DEVEL && file_exists(PATH.'themes/'.$this->site->area->theme.'/js/x3ui.mi
     <header id="head" class="relative flex bg-gray-700 px-3 py-2">
         <div class="flex-none w-18">
             <a href="<?php echo BASE_URL ?>" title="Home page">
-                <img src="<?php echo THEME_URL ?>img/x3cms_light_small.png" class="max-h-8 inline-block align-bottom " alt="X3 CMS"/> <span class="text-gray-100">&nbsp;CMS</span>
+                <img
+                    src="<?php echo THEME_URL ?>img/x3cms_light_small.png"
+                    class="max-h-8 inline-block align-bottom"
+                    alt="X3 CMS"
+                />
+                <span class="text-gray-100">&nbsp;CMS</span>
             </a>
         </div>
 
         <div class="flex-auto text-right text-gray-100 text-xs pr-4">
-            <?php echo _PUBLIC_SIDE ?>: <a class="link" target="_blank" href="<?php echo $this->site->data->domain ?>" title="<?php echo _PUBLIC_SIDE ?>"><?php echo $this->site->data->domain ?></a><br />
-            <?php echo _LOGGED_AS ?>: <b><?php echo $_SESSION['username'] ?></b>
+            <?php echo _PUBLIC_SIDE ?>:
+            <a
+                class="link"
+                target="_blank"
+                href="<?php echo $this->site->data->domain ?>"
+                title="<?php echo _PUBLIC_SIDE ?>"
+            >
+                <?php echo $this->site->data->domain ?>
+            </a><br />
+            <?php echo _LOGGED_AS ?>:
+            <b><?php echo $_SESSION['username'] ?></b>
         </div>
     </header>
 <?php
@@ -130,10 +152,12 @@ if (!$this->site->data->xon)
     x-transition:leave="transition ease-in duration-300"
     x-transition:leave-start="translate-y-0"
     x-transition:leave-end="-translate-y-10"
-    x-init="
-        setTimeout(()=>{ bannerVisible = true }, bannerVisibleAfter);
-    "
-    class="h-auto duration-300 ease-out w-full failed text-right px-4 py-2 text-sm" x-cloak>'._MAINTENANCE_MODE.'</div>';
+    x-init="setTimeout(()=>{ bannerVisible = true }, bannerVisibleAfter);"
+    class="h-auto duration-300 ease-out w-full failed text-right px-4 py-2 text-sm"
+    x-cloak
+    >
+        '._MAINTENANCE_MODE.'
+    </div>';
 }
 ?>
     <main id="main" class="flex flex-row items-stretch bg-gray-300 text-gray-600">
@@ -169,7 +193,14 @@ echo $view->render(false);
         </div>
     </main>
     <footer class="text-center py-4 text-gray-200 text-xs z-10">
-        <p><a href="https://www.x3cms.net" title="X3 CMS">X3 CMS</a> powered by <a href="https://www.cblu.net" title="Cblu.net - Web solutions">Cblu.net</a></p>
+        <p>
+            <a href="https://www.x3cms.net" title="X3 CMS">
+                X3 CMS
+            </a> powered by
+            <a href="https://www.cblu.net" title="Cblu.net - Web solutions">
+                Cblu.net
+            </a>
+        </p>
     </footer>
 
     <div

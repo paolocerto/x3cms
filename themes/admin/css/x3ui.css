@@ -280,7 +280,7 @@ div.sort_item table {margin:0}
 /* CONTAINERS */
 
 /* SPINNER */
-#working {position:absolute;top:0;left:0;right:0;margin-left:auto;margin-right:auto;width:20px;z-index:100}
+#working {position:absolute;top:0;left:0;right:0;margin-left:auto;margin-right:auto;width:6em;z-index:100}
 
 /* fix min-width */
 #head, #main, #footer, #modal, .xmodal {min-width:320px}

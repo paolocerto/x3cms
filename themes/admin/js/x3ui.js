@@ -234,6 +234,17 @@ const validate = function(e, v) {
     return res;
 }
 
+function openMenu() {
+    return {
+        open(evt) {
+            if (evt.key == "o" && evt.ctrlKey == true) {
+                let event = new CustomEvent("menu", {detail: root + "home/menu"});
+                window.dispatchEvent(event);
+            }
+        }
+    }
+}
+
 function spinner_box() {
     return {
         working:false,
@@ -241,8 +252,21 @@ function spinner_box() {
             this.working = status;
         },
         menu() {
+            console.log('m');
             let event = new CustomEvent("menu", {detail: root + "home/menu"});
             window.dispatchEvent(event);
+        },
+        over() {
+            let box = document.getElementById("working");
+            box.classList.add("bg-slate-400");
+            let icon = document.getElementById("working_icon");
+            icon.classList.add("fa-bars");
+        },
+        leave() {
+            let box = document.getElementById("working");
+            box.classList.remove("bg-slate-400");
+            let icon = document.getElementById("working_icon");
+            icon.classList.add("fa-slash");
         }
     }
 }
