@@ -23,7 +23,7 @@ final class X4Core_core
 	// The final output that will displayed
 	public static $output = '';
 	// Db connections data
-	public static $db = array();
+	public static $db = [];
 	// Caching active
 	private static $caching = false;
 	// Return instance
@@ -129,7 +129,7 @@ final class X4Core_core
 	final public static function caching()
 	{
         // only if area is public and _POST is empty
-        if (CACHE && X4Route_core::$folder == 'public' && !X4Route_core::$post)
+        if (CACHE && X4Route_core::$folder == 'public' && !X4Route_core::$post && empty(X4Route_core::$query_string))
         {
             X4Cache_core::setPrefix(COOKIE);
             X4Cache_core::setStore(APATH.'files/tmp/');
@@ -152,7 +152,7 @@ final class X4Core_core
 
 	/**
 	 * output handler.
-	*/
+	 */
 	final public static function output_buffer(string $output) : string
 	{
 		// Set final output
@@ -211,7 +211,8 @@ final class X4Core_core
 		case 'helper':
 			$dirs = array(
 				SPATH.'helpers/',
-				APATH.'helpers/'
+				APATH.'helpers/',
+                PATH.'plugins/'.strtolower(str_replace('_helper', '', $class)).'/helper/'
 			);
 			break;
 		case 'library':
@@ -245,7 +246,7 @@ final class X4Core_core
         {
             if (file_exists($d.$class.'.php'))
             {
-                require_once($d.$class.'.php');
+                require_once $d.$class.'.php';
                 return true;
             }
         }

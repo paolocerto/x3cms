@@ -58,7 +58,7 @@ if ($tpl_in)
 		echo '<tr>
 				<td><strong>'.$i->name.'</strong></td>
 				<td>'.$i->description.' ['.$i->sections.']</td>
-				<td class="space-x-2 text-right">'.$actions.'</td>
+				<td class="text-right">'.$actions.'</td>
 			</tr>';
 	}
 }
@@ -71,7 +71,7 @@ if (!empty($tpl_out) && $_SESSION['level'] >= 4)
 	foreach ($tpl_out as $i)
 	{
 		$name = preg_replace('/(.*)\/(.*)/is', '$2', $i, 1);
-		$install = '<a class="link" @click="setter(\''.BASE_URL.'templates/install/'.$id_theme.'/'.$name.'\')" title="'._INSTALL.'">
+		$install = '<a class="link" @click="popup(\''.BASE_URL.'templates/install/'.$id_theme.'/'.$name.'\')" title="'._INSTALL.'">
             <i class="fa-solid fa-upload fa-lg"></i>
         </a>';
 

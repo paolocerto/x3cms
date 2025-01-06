@@ -104,8 +104,6 @@ class X4cookie_plugin extends X4Plugin_core implements X3plugin
             },
             setup() {
                 let str = JSON.stringify({tech: true, thirdy: this.thirdy});
-                console.log(str);
-                console.log(btoa(str));
                 document.cookie="'.COOKIE.'_policy="+btoa(str)+";expires='.gmdate(DATE_COOKIE, strtotime('next year')).';path='.$this->site->data->domain.BASE_URL.';SameSite=Strict";
             },
             close() {

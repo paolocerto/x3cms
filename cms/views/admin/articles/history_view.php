@@ -13,12 +13,13 @@ $bulk_url = 'articles/bulk/'.$id_area.'/'.$lang.'/'.$bid;
 ?>
 
 <h1 class="mt-6"><?php echo $page->icon.' '._ARTICLE_HISTORY.': '.$art->name ?></h1>
-<div x-data="bulkable()" x-init='setup("<?php echo $bulk_url ?>")' >
-
+<div x-data="bulkable()" x-init='setup("<?php echo $bulk_url ?>", {"delete": "<?php echo _BULK_DELETE ?>"})' >
+<form id="bulk_form">
     <div x-show="bulk.length > 0" class="buttons">
-        <input type="hidden" id="bulk_action" x-model="xaction" value="delete" />
-        <button type="button" @click="execute()" class="link"><?php echo _DELETE_BULK ?></button>
+        <input type="hidden" name="bulk_action" id="bulk_action" x-model="xaction" value="delete" />
+        <button type="button" @click="execute()" class="link" x-text="xbtns[xaction]"></button>
     </div>
+</form>
 
     <table>
         <thead>
@@ -79,7 +80,7 @@ foreach ($history as $i)
 				'._START_DATE.' '.$date_in.'<br />
 				'._END_DATE.' '.$date_out.'
 			</td>
-			<td class="space-x-2 text-right">'.$actions.'</td>
+			<td class="text-right">'.$actions.'</td>
 			<td class="text-center"><input type="checkbox" class="bulkable" x-model="bulk" value="'.$i->id.'" /></td>
 		</tr>';
 }

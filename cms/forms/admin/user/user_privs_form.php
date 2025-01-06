@@ -30,7 +30,7 @@ $xdata = '{
 }';
 
 // build the form
-$fields = array();
+$fields = [];
 $fields[] = array(
     'label' => null,
     'type' => 'hidden',
@@ -76,7 +76,7 @@ $exclude = (ADVANCED_EDITING)
 $fields[] = array(
     'label' => null,
     'type' => 'html',
-    'value' => '<div class="grid grid-cols-1 md:grid-cols-2 gap-4"><div>'
+    'value' => '<div class="grid grid-cols-1 md:grid-cols-2 gap-x-4"><div>'
 );
 
 
@@ -157,7 +157,8 @@ foreach ($what as $t)
                     $fields[] = array(
                         'label' => null,
                         'type' => 'html',
-                        'value' => '<div x-show="filter(\''.$t->privtype.'\')">'
+                        'value' => '<div class="col-span-2" x-show="filter(\''.$t->privtype.'\')">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4"><div>'
                     );
 
                     $fields[] = array(
@@ -175,9 +176,11 @@ foreach ($what as $t)
                         'label' => null,
                         'type' => 'html',
                         'value' => '</div>
-                            <div class="place-self-center">
+                            <div class="place-self-center pt-8">
                                 '.$detail_link.'
-                            </div>'
+                            </div>
+                        </div>
+                        </div>'
                     );
                 }
                 else

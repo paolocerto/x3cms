@@ -65,7 +65,7 @@
 			}
 
 			if (!$this -> BOMLength)
-			{			
+			{
 				fseek($this -> Handle, 0);
 				$BOM32 = bin2hex(fread($this -> Handle, 4));
 				if ($BOM32 == '0000feff')
@@ -152,10 +152,10 @@
 		}
 
 		// !Iterator interface methods
-		/** 
+		/**
 		 * Rewind the Iterator to the first element.
 		 * Similar to the reset() function for arrays in PHP
-		 */ 
+		 */
 		public function rewind()
 		{
 			fseek($this -> Handle, $this -> BOMLength);
@@ -179,13 +179,13 @@
 			return $this -> CurrentRow;
 		}
 
-		/** 
-		 * Move forward to next element. 
-		 * Similar to the next() function for arrays in PHP 
-		 */ 
+		/**
+		 * Move forward to next element.
+		 * Similar to the next() function for arrays in PHP
+		 */
 		public function next()
 		{
-			$this -> CurrentRow = array();
+			$this -> CurrentRow = [];
 
 			// Finding the place the next line starts for UTF-16 encoded files
 			// Line breaks could be 0x0D 0x00 0x0A 0x00 and PHP could split lines on the
@@ -242,23 +242,23 @@
 			return $this -> CurrentRow;
 		}
 
-		/** 
+		/**
 		 * Return the identifying key of the current element.
 		 * Similar to the key() function for arrays in PHP
 		 *
 		 * @return mixed either an integer or a string
-		 */ 
+		 */
 		public function key()
 		{
 			return $this -> Index;
 		}
 
-		/** 
+		/**
 		 * Check if there is a current element after calls to rewind() or next().
 		 * Used to check if we've iterated to the end of the collection
 		 *
 		 * @return boolean FALSE if there's nothing more to iterate over
-		 */ 
+		 */
 		public function valid()
 		{
 			return ($this -> CurrentRow || !feof($this -> Handle));

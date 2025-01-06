@@ -96,20 +96,25 @@ class Menu_model extends X4Model_core
 				xfrom = '.$this->db->escape($xfrom).' AND url <> \'home\'
 			ORDER BY id_menu ASC');
 
-		$sql = array();
+		$sql = [];
 		if ($pages)
 		{
 			// get deep
 			$deep = ($xfrom == 'home')
 				? 0
-				: $this->db->query_var('SELECT deep FROM pages WHERE id_area = '.$id_area.' AND lang = '.$this->db->escape($lang).' AND url = '.$this->db->escape($xfrom));
+				: $this->db->query_var('SELECT (deep + 1) AS deep
+                    FROM pages
+                    WHERE
+                        id_area = '.$id_area.' AND
+                        lang = '.$this->db->escape($lang).' AND
+                        url = '.$this->db->escape($xfrom));
 
 			// refresh xpos and deep on the pages concerned
-			$this->deeper($id_area, $lang, 'home', $deep);
+			$this->deeper($id_area, $lang, $xfrom, $deep);
 
 			foreach ($pages as $i)
 			{
-				// exclude home page
+				// to exclude home page
 				if ($i->url != $xfrom)
 				{
 					// build base token
@@ -151,7 +156,7 @@ class Menu_model extends X4Model_core
 			? 1
 			: $deep++;
 
-		$sql = $pos = array();
+		$sql = $pos = [];
 		foreach ($pages as $i)
 		{
 			// initialize pos counter
@@ -170,7 +175,13 @@ class Menu_model extends X4Model_core
 				}
 				else {
 					// a new page
-					$max = $this->db->query_var('SELECT MAX(xpos) FROM pages WHERE id_menu = '.$i->id_menu.' AND id_area = '.$id_area.' AND lang = '.$this->db->escape($lang).' AND xfrom = '.$this->db->escape($xfrom));
+					$max = $this->db->query_var('SELECT MAX(xpos)
+                        FROM pages
+                        WHERE
+                            id_menu = '.$i->id_menu.' AND
+                            id_area = '.$id_area.' AND
+                            lang = '.$this->db->escape($lang).' AND
+                            xfrom = '.$this->db->escape($xfrom));
 					$max++;
 					$xpos = $max;
 				}
@@ -240,6 +251,7 @@ class Menu_obj
 	public $name;
 	public $description;
     public $xlock = 0;
+    public $mode = 0;
 
 	/**
 	 * Constructor

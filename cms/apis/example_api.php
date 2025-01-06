@@ -17,6 +17,11 @@
  */
 class Example
 {
+    /**
+     * Required by restler
+     */
+    public $restler;
+    
 	/**
 	 * Model to use
 	 */
@@ -91,7 +96,7 @@ class Example
 	 */
 	private function _validate($data) : array
 	{
-		$a = array();
+		$a = [];
 		foreach ($this->fields as $i)
 		{
 			//you may also vaildate the data here
@@ -111,18 +116,18 @@ class Example
  * just for a test
  * URL to call http://localhost/x3cms/api/example?key=my_secret
  *
- */
+ * /
 class SimpleAuth implements iAuthenticate
 {
 	/**
 	 * The secret key
-	 */
+	 * /
 	const KEY = null;	// 'my_secret';
 
 	/**
 	 * Check the key
 	 * Required method
-	 */
+	 * /
 	function __isAuthenticated()
 	{
 		return isset($_GET['key']) && !is_null(SimpleAuth::KEY) && $_GET['key']==SimpleAuth::KEY ? TRUE : FALSE;
@@ -130,9 +135,10 @@ class SimpleAuth implements iAuthenticate
 
 	/**
 	 * Return the key
-	 */
+	 * /
 	function key()
 	{
 		return SimpleAuth::KEY;
 	}
 }
+*/

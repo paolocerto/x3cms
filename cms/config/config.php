@@ -21,11 +21,10 @@
 define('SPREFIX', 'x3_');
 
 /**
- * Define FPATH: the path to files folder
+ * Define FMPATH: the path to filemanager folder
  * Relative path
  */
-define('FPATH', ROOT.'cms/files/'.SPREFIX.'/filemanager/');
-
+define('FMPATH', ROOT.'files/'.SPREFIX.'/filemanager/');
 
 // set file_folder_prefix used by filemanager
 if (!isset($_SESSION['ffprefix']) || $_SESSION['ffprefix'] != SPREFIX)
@@ -33,7 +32,7 @@ if (!isset($_SESSION['ffprefix']) || $_SESSION['ffprefix'] != SPREFIX)
     $_SESSION['ffprefix'] = SPREFIX;
 }
 
-$default = array();
+$default = [];
 // extra config file
 // here we store info about extra areas
 define('SECRET', md5($_SERVER['DOCUMENT_ROOT']));
@@ -84,9 +83,10 @@ define('APC', false);					// if true the most frequently executed queries will b
 
 // Flmngr API Key for TinyMCE
 define('FLMNGR_API_KEY', 'FLMNFLMN');   // default API key
+define('FLMNGR_SCRIPT', '<script src="//cdn.public.flmngr.com/'.FLMNGR_API_KEY.'/widgets.js"></script>');
 
 // database configuration array
-$db_config = array();
+$db_config = [];
 
 // default database
 $db_config['default'] = array(

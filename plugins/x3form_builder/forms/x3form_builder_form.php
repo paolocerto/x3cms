@@ -11,7 +11,7 @@
 // Form builder form
 
 // build the form
-$fields = array();
+$fields = [];
 $fields[] = array(
     'label' => null,
     'type' => 'hidden',
@@ -39,7 +39,7 @@ $fields[] = array(
 $fields[] = array(
     'label' => null,
     'type' => 'html',
-    'value' => '<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    'value' => '<div class="grid grid-cols-1 md:grid-cols-2 gap-x-4">
                 <div>'
 );
 
@@ -117,7 +117,7 @@ $fields[] = array(
 $fields[] = array(
     'label' => null,
     'type' => 'html',
-    'value' => '<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    'value' => '<div class="grid grid-cols-1 md:grid-cols-2 gap-x-4">
                 <div>'
 );
 

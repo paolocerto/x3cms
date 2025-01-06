@@ -42,8 +42,8 @@ class Sections_controller extends X3ui_controller
         $view->breadcrumb = array($this->site->get_bredcrumb($page));
 		$view->actions = AdminUtils_helper::link(
                 'memo',
-                'sections:'.$lang,
-                [],
+                'sections:'.$page->lang,
+                $this->memo('sections:'.$page->lang, $_SESSION['xuid']),
                 _MEMO
             ).$this->actions($id_area, $lang, $id_page, '');
 
@@ -99,20 +99,15 @@ class Sections_controller extends X3ui_controller
 	 */
 	public function set(string $what, int $id_area, int $id, int $value = 0) : void
 	{
-		$msg = null;
-		// check permission
 		$msg = AdminUtils_helper::chk_priv_level($id_area, 'sections', $id, $what);
 		if (is_null($msg))
 		{
-			// do action
 			$mod = new Section_model();
 			$result = $mod->update($id, array($what => $value));
 
-			// set message
 			$this->dict->get_words();
 			$msg = AdminUtils_helper::set_msg($result);
 
-			// set update
 			if ($result[1])
             {
                 $msg->update = array(
@@ -129,13 +124,9 @@ class Sections_controller extends X3ui_controller
 	 */
 	public function edit(int $id_area, int $id_page, int $id = 0) : void
 	{
-		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'sections'));
 
-		// get object
 		$mod = new Section_model();
-
-        // get theme styles
         $theme_styles = $mod->get_theme_styles($id_page);
 
 		if ($id)
@@ -171,23 +162,16 @@ class Sections_controller extends X3ui_controller
 			$item = new Section_obj($id_area, $id_page, $settings);
 		}
 
-		// build the form
 		$form_fields = new X4Form_core('section/section_edit');
 		$form_fields->id = $id;
 		$form_fields->item = $item;
         $form_fields->mod_settings = $mod->settings;
 		$form_fields->theme_styles = $theme_styles;
-		// get the fields array
 		$fields = $form_fields->render();
 
-		// get the file_array
 		$file_array = $form_fields->__get('file_array');
 
-        // get js array
-        //$js_array = $form_fields->__get('js_array');
-
-		// if submitted
-		if (X4Route_core::$post)
+        if (X4Route_core::$post)
 		{
 			$e = X4Validation_helper::form($fields, 'editor');
 			if ($e)
@@ -206,12 +190,11 @@ class Sections_controller extends X3ui_controller
 			? _SECTION_EDIT.' - #'.$item->progressive
 			: _SECTION_NEW;
         $view->wide = 'md:w-2/3 lg:w-2/3';
-		// content
-		$view->content = new X4View_core('editor');
+
+        $view->content = new X4View_core('editor');
         $view->content->msg = _SECTION_EDIT_MSG;
-        // can user edit?
+
         $submit = AdminUtils_helper::submit_btn($item->id_area, 'sections', $id, $item->xlock);
-		// form builder
 		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, $submit, 'buttons'), 'post', 'enctype="multipart/form-data"',
             '@click="submitForm(\'editor\')"');
         $view->render(true);
@@ -222,14 +205,11 @@ class Sections_controller extends X3ui_controller
 	 */
 	private function editing($id, $_post, $file_array) : void
 	{
-		$msg = null;
-		// check permission
 		$msg = ($id)
 			? AdminUtils_helper::chk_priv_level($_post['id_area'], 'sections', $id, 'edit')
 			: AdminUtils_helper::chk_priv_level($_post['id_area'], '_section_creation', 0, 'create');
 		if (is_null($msg))
 		{
-			// handle _post
 			$post = array(
 				'id_area' => $_post['id_area'],
 				'name' => strtolower($_post['name']),
@@ -237,9 +217,10 @@ class Sections_controller extends X3ui_controller
 			);
 
 			// used only with files
-			$error = array();
+			$error = [];
 			$mod = new Section_model();
 
+            /*
             // get the previuos
             if ($id)
             {
@@ -264,6 +245,7 @@ class Sections_controller extends X3ui_controller
                     $settings = $mod->settings;
                 }
             }
+            */
 
 			// get data for settings
             $settings = array(
@@ -286,7 +268,7 @@ class Sections_controller extends X3ui_controller
 
             // handle column settings
             $nc = sizeof(explode('+', $settings['col_sizes']));
-            $tmp = array();
+            $tmp = [];
             for ($i = 0; $i < $nc; $i++)
             {
                 if (isset($_post['bg'.$i]))
@@ -326,7 +308,10 @@ class Sections_controller extends X3ui_controller
             // delete previous
             if (isset($_post['delete_img_h']))
             {
-                if (!empty($settings['img_h'])) unlink($path.'img/'.$settings['img_h']);
+                if (!empty($settings['img_h']))
+                {
+                    unlink($path.'img/'.$settings['img_h']);
+                }
                 $settings['img_h'] = '';
             }
 
@@ -350,7 +335,10 @@ class Sections_controller extends X3ui_controller
             // delete previous
             if (isset($_post['delete_img_v']))
             {
-                if (!empty($settings['img_v'])) unlink($path.'img/'.$settings['img_v']);
+                if (!empty($settings['img_v']))
+                {
+                    unlink($path.'img/'.$settings['img_v']);
+                }
                 $settings['img_v'] = '';
             }
 
@@ -373,13 +361,13 @@ class Sections_controller extends X3ui_controller
 
 			if (empty($error))
 			{
-				// update or insert
 				if ($id)
 				{
 					$result = $mod->update($id, $post);
 				}
 				else
 				{
+                    $post['articles'] = '[]';
 					// get the progressive of the new section
 					$post['progressive'] = $mod->get_max_pos($post['id_area'], $post['id_page']) + 1;
 
@@ -388,10 +376,8 @@ class Sections_controller extends X3ui_controller
 					$result = $mod->insert($post);
 				}
 
-				// set message
 				$msg = AdminUtils_helper::set_msg($result);
 
-				// set what update
 				if ($result[1])
 				{
                     if (!$id)
@@ -400,15 +386,15 @@ class Sections_controller extends X3ui_controller
                     }
 
 					$msg->update = array(
-						'element' => 'page',
-						'url' => BASE_URL.'sections/index/'.$post['id_area'].'/'.$post['id_page']
-					);
+                        'element' => 'page',
+                        'url' => $_SERVER['HTTP_REFERER']
+                    );
 				}
 			}
 			else
 			{
 				// build msg
-				$str = array();
+				$str = [];
 				foreach ($error as $k => $v)
 				{
 					// each field
@@ -429,15 +415,12 @@ class Sections_controller extends X3ui_controller
 	 */
 	public function delete(int $id) : void
 	{
-		// get object
+        $this->dict->get_wordarray(array('form', 'sections'));
+
 		$mod = new Section_model();
 		$item = $mod->get_by_id($id, 'sections', 'id, id_area, name, progressive, id_page');
 
-		// load dictionaries
-		$this->dict->get_wordarray(array('form', 'sections'));
-
-		// build the form
-		$fields = array();
+		$fields = [];
 		$fields[] = array(
 			'label' => null,
 			'type' => 'hidden',
@@ -445,7 +428,6 @@ class Sections_controller extends X3ui_controller
 			'name' => 'id'
 		);
 
-		// if submitted
 		if (X4Route_core::$post)
 		{
 			$this->deleting($item);
@@ -453,12 +435,9 @@ class Sections_controller extends X3ui_controller
 		}
         $view = new X4View_core('modal');
         $view->title = _SECTION_DELETE;
-		// contents
+
 		$view->content = new X4View_core('delete');
-
 		$view->content->item = '#'.$item->progressive.' - '.$item->name;
-
-		// form builder
 		$view->content->form = X4Form_helper::doform('delete', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
             '@click="submitForm(\'delete\')"');
 		$view->render(true);
@@ -469,8 +448,6 @@ class Sections_controller extends X3ui_controller
 	 */
 	private function deleting(stdClass $item) : void
 	{
-		$msg = null;
-		// check permissions
 		$msg = AdminUtils_helper::chk_priv_level($item->id_area, 'sections', $item->id, 'delete');
 
 		if (is_null($msg))
@@ -498,16 +475,13 @@ class Sections_controller extends X3ui_controller
 	 */
 	public function ordering(int $id_area, int $id_page) : void
 	{
-		$msg = null;
-        $msg = AdminUtils_helper::chk_priv_level($id_area, 'pages', $id_page, 'order');
+		$msg = AdminUtils_helper::chk_priv_level($id_area, 'pages', $id_page, 'order');
 		if (is_null($msg) && X4Route_core::$input)
 		{
-            // handle post
             $_post = X4Route_core::$input;
 			$elements = $_post['sort_order'];
 
-            // do action
-		    $mod = new Section_model();
+            $mod = new Section_model();
             $items = $mod->get_items($id_page);
 
 			// get fixed sections
@@ -530,7 +504,6 @@ class Sections_controller extends X3ui_controller
 				}
 			}
 
-			// set message
 			$this->dict->get_words();
 			$msg = AdminUtils_helper::set_msg($result);
 		}
@@ -542,10 +515,8 @@ class Sections_controller extends X3ui_controller
 	 */
 	public function compose(int $id_page, string $by = 'name') : void
 	{
-		// load dictionaries
 		$this->dict->get_wordarray(array('sections', 'form', 'articles'));
 
-		// get object
 		$mod = new Page_model(2, X4Route_core::$lang);
         // page to edit
 		$epage = $mod->get_page_by_id($id_page);
@@ -557,12 +528,11 @@ class Sections_controller extends X3ui_controller
         $view->breadcrumb = array($this->site->get_bredcrumb($page));
 		$view->actions = AdminUtils_helper::link(
                 'memo',
-                'sections:compose:'.X4Route_core::$lang,
-                [],
+                'sections:compose:'.$page->lang,
+                $this->memo('sections:compose:'.$page->lang, $_SESSION['xuid']),
                 _MEMO
             ).$this->actions($epage->id_area, $epage->lang, $id_page, 'compose');
 
-		// content
 		$view->content = new X4View_core('sections/compose');
         $view->content->page = $page;
 		$view->content->pagetoedit = $epage;
@@ -606,14 +576,11 @@ class Sections_controller extends X3ui_controller
 	 */
 	public function get_article(int $id_page, string $destination, string $bid) : void
 	{
-		// load dictionary
 		$this->dict->get_wordarray(array('articles'));
 
-		// get object
 		$mod = new Section_model();
 		$art = $mod->get_by_bid($bid);
 
-        // page
         $page = $mod->get_by_id($id_page, 'pages', 'id_area, lang');
 
         // target
@@ -651,14 +618,11 @@ class Sections_controller extends X3ui_controller
 	 */
 	public function compositing() : void
 	{
-		$msg = null;
-		// check permission
 		$msg = AdminUtils_helper::chk_priv_level($_POST['id_area'], 'pages', $_POST['id_page'], 'edit');
-
 		if (is_null($msg) && X4Route_core::$post)
 		{
 			// handle _POST
-			$sections = array();
+			$sections = [];
 			$post = array(
 				'id_area' => $_POST['id_area'],
 				'id_page' => $_POST['id_page'],
@@ -702,11 +666,9 @@ class Sections_controller extends X3ui_controller
 			$result = $mod->compose($sections);
 			APC && apcu_delete(SITE.'sections'.$post['id_page']);
 
-			// set message
 			$this->dict->get_words();
 			$msg = AdminUtils_helper::set_msg($result);
 
-			// add permissions on new sections
 			if ($result[1])
 			{
 				$msg->update = array(

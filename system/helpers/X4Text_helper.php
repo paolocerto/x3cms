@@ -62,6 +62,14 @@ class X4Text_helper
 	}
 
     /**
+     * Replace <br> with new lines
+     */
+    public static function br2nl(string $str) : string
+    {
+        return preg_replace('/<br(\s+)?\/?>/i', "\n", $str);
+    }
+
+    /**
 	 * Replace first occurrence of a substring in a string
 	 */
     public static function str_replace_first(string $search, string $replace, string $string) : string
@@ -70,21 +78,7 @@ class X4Text_helper
         return preg_replace($search, $replace, $string, 1);
     }
 
-    /**
-	 * Remove empty rows from string
-	 */
-	public static function empty_rows(string $str) : string
-	{
-		return preg_replace_callback(
-				"/(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+/iu",
-				function($m)
-				{
-					return "\n";
-				},
-				$str);
-	}
-
-	/**
+    	/**
 	 * Remove empty tags from html string
 	 */
 	public static function empty_tags(string $html) : string
@@ -98,19 +92,30 @@ class X4Text_helper
 		return $html;
 	}
 
+    /**
+	 * Remove empty rows from string
+	 */
+	public static function empty_rows(string $str) : string
+	{
+        return implode("\n", array_filter(explode("\n", $str)));
+	}
+
 	/**
-	 * Remove from a string duplicate spaces or tabs
+	 * Remove from a string duplicate spaces and tabs and keep newlines
 	 */
 	public static function collapse_white_space(string $str) : string
 	{
-		$str = str_replace("\t", '', $str);
-        return preg_replace_callback(
-            '/\\s+/iu',
-            function($m)
-            {
-                return ' ';
-            },
-            $str);
+		$str = str_replace("\t", ' ', $str);
+        return preg_replace("/[[:blank:]]+/", " ", $str);
+	}
+
+    /**
+     * Clean text
+     */
+    public static function clean_text(string $str) : string
+	{
+		$str = strip_tags(X4Text_helper::empty_rows($str));
+        return X4Text_helper::collapse_white_space($str);
 	}
 
 	/**
@@ -122,6 +127,18 @@ class X4Text_helper
 		$rpl = array('</li>', '</ul>', '</blockquote>', '<br />', '<br/>');
 		$str = str_replace($src, $rpl, $str);
 		return strip_tags($str, '<a><b><i><br/><strong><em><ul><ol><li><blockquote><pre>');
+	}
+
+    /**
+	 * code farmatter
+	 */
+	public static function code_formatter(string $str) : string
+	{
+		$src = array('<pre><span id="_mce_caret"><code>', '</code></span></pre>', '</code><code>');
+		$rpl = array('<pre><code>', '</code></pre>', '');
+		$str = str_replace($src, $rpl, $str);
+
+        return preg_replace_callback( '|<pre.*><code>(.*)</code></pre|isU' , '_convert_pre_entities', $str );
 	}
 
     /**
@@ -268,7 +285,7 @@ class X4Text_helper
         {
             // get each column by tag name
             $cols = $row->getElementsByTagName('td');
-            $tmp = array();
+            $tmp = [];
             $i = 0;
             foreach ($cols as $node)
             {
@@ -293,7 +310,7 @@ class X4Text_helper
                 }
                 else
                 {
-                    $a = array();
+                    $a = [];
                     foreach ($tmp as $k => $v)
                     {
                         $a[] = '<b>'.$k.'</b>: '.$v;
@@ -335,7 +352,7 @@ class X4Text_helper
             $attr = ' '.$key.'="'.htmlentities($val).'"';
         }
 
-        $links = array();
+        $links = [];
 
         // Extract existing links and tags
         $value = preg_replace_callback(
@@ -510,7 +527,7 @@ class X4Text_helper
 	 */
 	public static function write_address(mixed $address, string $nl = BR) : string
 	{
-		$a = $b = array();
+		$a = $b = [];
         // address could be an array or an object
 		if (is_array($address))
 		{
@@ -523,7 +540,11 @@ class X4Text_helper
 			{
 				$a[] = 'C/O '.$address->co;
 			}
-			$a[] = $address->address;
+
+            $civic =  (isset($address->civic) && !empty($address->civic))
+			    ? ', '.$address->civic
+                : '';
+			$a[] = $address->address.$civic;
 
             // middle block
             if (isset($address->zip_code) && !empty($address->zip_code))
@@ -625,6 +646,44 @@ class X4Text_helper
         array_walk($array, '_combine_array', $header);
         return $array;
     }
+
+    /**
+     * Decode JSON string
+     */
+    public static function decode($data) : array
+    {
+        $decoded = json_decode ($data);
+        if (function_exists ('json_last_error')) {
+            $message = '';
+            switch (json_last_error ()) {
+                case JSON_ERROR_NONE:
+                    return (array) ($decoded);
+                    break;
+                case JSON_ERROR_DEPTH:
+                    $message = 'maximum stack depth exceeded';
+                    break;
+                case JSON_ERROR_STATE_MISMATCH:
+                    $message = 'underflow or the modes mismatch';
+                    break;
+                case JSON_ERROR_CTRL_CHAR:
+                    $message = 'unexpected control character found';
+                    break;
+                case JSON_ERROR_SYNTAX:
+                    $message = 'malformed JSON';
+                    break;
+                case JSON_ERROR_UTF8:
+                    $message = 'malformed UTF-8 characters, possibly incorrectly encoded';
+                    break;
+                default:
+                    $message = 'unknown error';
+                    break;
+            }
+            throw new Exception ('Error parsing JSON, ' . $message, 400);
+        } elseif (strlen ($data) && $decoded === NULL || $decoded === $data) {
+            throw new Exception ('Error parsing JSON', 400);
+        }
+        return (array) $decoded;
+    }
 }
 
 /**
@@ -635,3 +694,10 @@ function _combine_array(array &$row, string $header)
     $row = array_combine($header, $row);
 }
 
+/**
+ * convert HTML entities for code
+ */
+function _convert_pre_entities( $matches )
+{
+    return str_replace($matches[1], htmlentities(X4Text_helper::br2nl($matches[1])), $matches[0] );
+}

@@ -74,7 +74,7 @@ foreach ($areas as $i)
 	echo '<tr>
 			<td>#'.$i->id.'</td>
 			<td><a class="link" href="'.BASE_URL.'pages/index/'.$i->id.'/'.X4Route_core::$lang.'/home/1" title="">'.$i->name.'</a> <span class="hidden md:inline-block">'._TRAIT_.$i->description.$private.'</span></td>
-			<td class="space-x-2 text-right">'.$actions.'</td>
+			<td class="text-right">'.$actions.'</td>
 			</tr>';
 }
 ?>

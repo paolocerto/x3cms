@@ -8,39 +8,8 @@
  * @package		X3CMS
  */
 
+ // form builder list view
 
-echo '<div class="switcher">';
-// lang switcher
-if (MULTILANGUAGE)
-{
-	echo '<div class="text-sm flex justify-end py-1 space-x-4 border-b border-gray-200">';
-	foreach ($langs as $i)
-	{
-		$on = ($i->code == $lang)
-			? 'class="link"'
-            : 'class="dark"';
-		echo '<a '.$on.' @click="pager(\''.BASE_URL.'x3form_builder/mod/'.$id_area.'/'.$i->code.'\')" title="'._SWITCH_LANGUAGE.'">'.ucfirst($i->language).'</a>';
-	}
-	echo '</div>';
-}
-
-// area switcher
-if (MULTIAREA)
-{
-	echo '<div class="text-sm flex justify-end py-1 space-x-4 border-b border-gray-200">';
-	foreach ($areas as $i)
-	{
-        if ($i->id > 1)
-        {
-            $on = ($i->id == $id_area)
-                ? 'class="link"'
-                : 'class="dark"';
-            echo '<a '.$on.' @click="pager(\''.BASE_URL.'x3form_builder/mod/'.$i->id.'/'.$lang.'\')" title="'._SWITCH_AREA.'">'.ucfirst($i->name).'</a></li>';
-        }
-	}
-	echo '</div>';
-}
-echo '</div>';
 ?>
 <h1 class="mt-6"><?php echo $page->icon.' '._X3FB_MANAGE ?></h1>
 <?php
@@ -98,7 +67,7 @@ if (!empty($items[0]))
                     </a>
                     <span class="xsmall">[ '.$i->n.' ]</span> '.$export.'
                 </td>
-                <td class="space-x-2 text-right">'.$actions.'</td>
+                <td class="text-right">'.$actions.'</td>
             </tr>';
 	}
 

@@ -11,7 +11,7 @@
 // Output JSON, including the correct content-type
 header('Content-type: application/json');
 
-$a = array();
+$a = [];
 foreach ($result as $i)
 {
 	$a[] = $i->what;

@@ -52,7 +52,7 @@ class Modules_controller extends X3ui_controller
 		$view->actions = AdminUtils_helper::link(
             'memo',
             'modules:'.$page->lang,
-            [],
+            $this->memo('modules:'.$page->lang, $_SESSION['xuid']),
             _MEMO
         );
 
@@ -69,7 +69,7 @@ class Modules_controller extends X3ui_controller
 
 		$chk = AdminUtils_helper::get_ulevel(1, $_SESSION['xuid'], '_module_install');
 		$view->content->pluggable = (!$chk || $chk->level < 4)
-		    ? array()
+		    ? []
 		    : $mod->get_installable($id_area);
 
 		// area switcher
@@ -83,22 +83,15 @@ class Modules_controller extends X3ui_controller
 	 */
 	public function set(string $what, int $id_area, int $id, int $value = 0) : void
 	{
-		$msg = null;
-		// check permission
 		$msg = AdminUtils_helper::chk_priv_level($id_area, 'modules', $id, $what);
 		if (is_null($msg))
 		{
-			$qs = X4Route_core::get_query_string();
-
-			// do action
 			$plugin = new X4Plugin_model();
 			$result = $plugin->update($id, array($what => $value));
 
-			// set message
 			$this->dict->get_words();
 			$msg = AdminUtils_helper::set_msg($result);
 
-			// set update
 			if ($result[1])
             {
 				$msg->update = array(
@@ -115,25 +108,17 @@ class Modules_controller extends X3ui_controller
 	 */
 	public function config(int $id) : void
 	{
-		// load dictionaries
 		$this->dict->get_wordarray(array('modules', 'form'));
 
-		// get object
 		$mod = new X4Plugin_model();
 		$item = $mod->get_by_id($id);
 
-		// get params
-		$params = $mod->get_param($item->name, $item->id_area);
-
-		// build the form
-        $form_fields = new X4Form_core('module/module_config');
+		$form_fields = new X4Form_core('module/module_config');
 		$form_fields->item = $item;
-        $form_fields->params = $params;
+        $form_fields->params = $mod->get_param($item->name, $item->id_area);
 
-		// get the fields array
 		$fields = $form_fields->render();
 
-		// if submitted
 		if (X4Route_core::$post)
 		{
 			$e = X4Validation_helper::form($fields, 'configure');
@@ -151,10 +136,7 @@ class Modules_controller extends X3ui_controller
         $view = new X4View_core('modal');
         $view->title = _MODULE_CONFIG.': '.$item->name;
 
-		// contents
 		$view->content = new X4View_core('editor');
-
-		// form builder
 		$view->content->form = X4Form_helper::doform('configure', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
             '@click="submitForm(\'configure\')"');
 
@@ -166,8 +148,6 @@ class Modules_controller extends X3ui_controller
 	 */
 	private function configure(stdClass $item, array $_post) : void
 	{
-		$msg = null;
-		// check permission
 		$msg = AdminUtils_helper::chk_priv_level(
             $item->id_area,
             str_replace(array('x3', 'x4'), array('x3_', 'x4_'), $_post['xrif']),
@@ -177,12 +157,10 @@ class Modules_controller extends X3ui_controller
 
 		if (is_null($msg))
 		{
-			// get parama
 			$mod = new X4Plugin_model();
 			$params = $mod->get_param($_post['xrif'], $_post['id_area']);
 
-			// build queries
-			$sql = array();
+			$sql = [];
 			foreach ($params as $i)
 			{
 				// handle type
@@ -192,6 +170,7 @@ class Modules_controller extends X3ui_controller
 				        // do nothing
 				        break;
 					case '0|1':
+                    case 'BOOL':
 					case 'BOOLEAN':
 						$val = intval(isset($_post[$i->name]));
 						break;
@@ -211,15 +190,12 @@ class Modules_controller extends X3ui_controller
 				}
 			}
 
-			// update params
 			$result = $mod->update_param($sql);
             // reset APC
 			APC && apcu_delete(SITE.'mod_param'.$item->name.$item->id_area);
 
-			// set message
 			$msg = AdminUtils_helper::set_msg($result);
 
-			// set what update
 			if ($result[1])
 			{
 				$msg->update = array(
@@ -236,15 +212,11 @@ class Modules_controller extends X3ui_controller
 	 */
 	public function install(int $id_area, string $plugin_name) : void
 	{
-		$msg = null;
-		// check permission
 		$msg = AdminUtils_helper::chk_priv_level($id_area, '_module_install', 0, 'create');
 		if (is_null($msg))
 		{
-			// load global dictionary
 			$this->dict->get_words();
 
-			// install the plugin
 			$mod = new X4Plugin_model();
 			$result = $mod->install($id_area, $plugin_name);
 
@@ -252,7 +224,7 @@ class Modules_controller extends X3ui_controller
 			if (is_array($result) && !empty($result))
 			{
 				// build msg
-				$str = array();
+				$str = [];
 				foreach ($result as $i)
 				{
 					$str[] = $i['label']._TRAIT_.$this->dict->get_word(strtoupper($i['error'][0]), 'msg');
@@ -261,7 +233,6 @@ class Modules_controller extends X3ui_controller
 			}
 			else
 			{
-				// set message
 				$msg = AdminUtils_helper::set_msg(true);
 				// installed
 				if ($result)
@@ -294,15 +265,12 @@ class Modules_controller extends X3ui_controller
 	 */
 	public function uninstall(int $id) : void
 	{
-		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'modules'));
 
-		// get obj
 		$mod = new X4Plugin_model();
 		$item = $mod->get_by_id($id, 'modules', 'id, id_area, name');
 
-		// build the form
-		$fields = array();
+		$fields = [];
 		$fields[] = array(
 			'label' => null,
 			'type' => 'hidden',
@@ -310,7 +278,6 @@ class Modules_controller extends X3ui_controller
 			'name' => 'id'
 		);
 
-		// if submitted
 		if (X4Route_core::$post)
 		{
 			$this->uninstalling($item);
@@ -318,11 +285,10 @@ class Modules_controller extends X3ui_controller
 		}
         $view = new X4View_core('modal');
         $view->title = _UNINSTALL_PLUGIN;
-		// contents
+
 		$view->content = new X4View_core('uninstall');
 		$view->content->item = $item->name;
 
-		// form builder
 		$view->content->form = X4Form_helper::doform('uninstall', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
             '@click="submitForm(\'uninstall\')"');
 		$view->render(true);
@@ -333,27 +299,22 @@ class Modules_controller extends X3ui_controller
 	 */
 	private function uninstalling(stdClass $item) : void
 	{
-		$msg = null;
-		// check permission
 		$msg = AdminUtils_helper::chk_priv_level($item->id_area, 'modules', $item->id, 'delete');
 		if (is_null($msg))
 		{
-			// do action
 			$mod = new X4Plugin_model();
 			$result = $mod->uninstall($item->id);
 
 			// check uninstalling
 			if (is_array($result))
 			{
-				$this->notice(false, '_plugin_not_uninstalled');
+				$this->notice([['error' => '_plugin_not_uninstalled']], '_plugin_not_uninstalled');
 				die;
 			}
 			else
 			{
-				// set message
 				$msg = AdminUtils_helper::set_msg(true);
 
-				// uninstalled
 				if ($result)
 				{
 					AdminUtils_helper::delete_priv('modules', $item->id);
@@ -373,14 +334,12 @@ class Modules_controller extends X3ui_controller
 	 */
 	public function help(string $module, string $lang) : void
 	{
-		// load dictionary
 		$this->dict->get_wordarray(array('modules'));
 
         $view = new X4View_core('modal');
         $view->title = _MODULE_INSTRUCTIONS.': '.$module;
         $view->wide = ' xl:w-2/3';
 
-		// contents
 		$view->content = new X4View_core('editor');
 		$view->content->form = '<div class="bg-white text-gray-700 md:px-8 md:pb-8 px-4 pb-4" style="border:1px solid white">
             <pre class="text-sm">'.nl2br(htmlspecialchars(file_get_contents(PATH.'plugins/'.$module.'/instructions_'.$lang.'.txt'))).'</pre>
@@ -401,7 +360,6 @@ class Modules_controller extends X3ui_controller
 
 		$mod = new X4Plugin_model();
 
-		// duplicate
 		$res = $mod->duplicate_modules_lang($id_area, $old_lang, $new_lang);
 
         if ($res)

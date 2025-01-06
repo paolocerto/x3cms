@@ -30,7 +30,7 @@ class X4site_map_model extends X4Model_core
 	 */
 	public function configurator(int $id_area, string $lang, int $id_page, string $param) : array
 	{
-	    $fields = array();
+	    $fields = [];
 
         $fields[] = array(
             'label' => null,

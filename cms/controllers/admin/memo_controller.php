@@ -118,7 +118,7 @@ class Memo_controller extends X3ui_controller
                 'lang' => $_post['lang'],
                 'url' => $_post['url'],
                 'title' => $_post['title'],
-                'description' => str_replace('<script src="//cdn.public.flmngr.com/pM7MjiPd/widgets.js"></script>', '', $_post['description']),
+                'description' => AdminUtils_helper::flmngr($_post['memo']),
                 'personal' => intval(isset($_post['personal'])),
                 'xon' => 1
             );

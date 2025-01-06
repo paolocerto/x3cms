@@ -182,7 +182,7 @@ class X3form_builder_plugin extends X4Plugin_core implements X3plugin
 
 		if (!empty($error))
         {
-            $str = array();
+            $str = [];
             foreach ($error as $k => $v)
             {
                 // each field
@@ -249,7 +249,7 @@ class X3form_builder_plugin extends X4Plugin_core implements X3plugin
         }
 
         $mails = explode('|', $form->mailto);
-        $attachments = array();
+        $attachments = [];
         foreach ($mails as $i)
         {
             $recipients['to'][] = array('mail' => $i, 'name' => $i);
@@ -280,7 +280,7 @@ class X3form_builder_plugin extends X4Plugin_core implements X3plugin
 			? PPATH.$conf['folder'].'/'
 			: PPATH.'tmp/';
 
-		$a = array();
+		$a = [];
 		foreach ($files as $v)
 		{
 			if (!empty($v))
@@ -332,7 +332,7 @@ class X3form_builder_plugin extends X4Plugin_core implements X3plugin
 	 */
 	private function upload_files($id_area, $fields) : array
 	{
-		$files = $error = array();
+		$files = $error = [];
 		foreach ($fields as $i)
 		{
 			if ($i['type'] == 'file')

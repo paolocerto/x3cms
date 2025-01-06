@@ -11,12 +11,11 @@
 // drag and drop examples
 // library https://github.com/bevacqua/dragula
 
-echo '<div class="switcher">';
 // language switcher
-if (MULTILANGUAGE)
+if (MULTILANGUAGE && sizeof($languages) > 1)
 {
-	echo '<div class="text-sm flex justify-end py-1 space-x-4 border-b border-gray-200">';
-	foreach ($langs as $i)
+	echo '<div class="switcher text-sm flex justify-end py-1 space-x-4 border-b border-gray-200">';
+	foreach ($languages as $i)
 	{
 		$on = ($i->code == $from->lang) ? 'class="link"' : 'class="dark"';
 		echo '<a '.$on.' @click="pager(\''.BASE_URL.'pages/index/'.$from->id_area.'/'.$i->code.'\')" title="'._SWITCH_LANGUAGE.'">'.ucfirst($i->language).'</a>';
@@ -25,13 +24,13 @@ if (MULTILANGUAGE)
 }
 
 // area switcher
-echo '<div class="text-sm flex justify-end py-1 space-x-4 border-b border-gray-200">';
+echo '<div class="switcher text-sm flex justify-end py-1 space-x-4 border-b border-gray-200">';
 foreach ($areas as $i)
 {
 	$on = ($i->id == $id_area) ? 'class="link"' : 'class="dark"';
 	echo '<a '.$on.' @click="pager(\''.BASE_URL.'pages/index/'.$i->id.'/'.$lang.'\')" title="'._SWITCH_AREA.'">'.ucfirst($i->name).'</a>';
 }
-echo '</div></div>';
+echo '</div>';
 
 ?>
 <h1 class="mt-6"><?php echo $page->icon.' '._PAGE_LIST.' \''.$area.'\''._TRAIT_._LANGUAGE.' \''.$lang ?>'</h1>
@@ -47,15 +46,15 @@ $no_menu = array('home', 'msg', 'search', 'offline', 'x3admin');
 if (isset($from->url) && $from->url != 'home')
 {
 	// parent page
-	$parent = str_replace('/', '§', $from->xfrom);
-	echo '<p><a class="link" @click="pager(\''.BASE_URL.'pages/index/'.$from->id_area.'/'.$from->lang.'/'.$parent.'/1\')" title="'._GO_BACK.'">
+	$parent = str_replace('/', '$', $from->xfrom);
+	echo '<p class="pt-4"><a class="link" @click="pager(\''.BASE_URL.'pages/index/'.$from->id_area.'/'.$from->lang.'/'.$parent.'/1\')" title="'._GO_BACK.'">
         <i class="fa-solid fa-circle-arrow-left fa-lg"></i>
         '.stripslashes($from->name).'</a>
     </p>';
 }
 
 // menu arrangement
-$amenu = array();
+$amenu = [];
 if ($from->url == 'home')
 {
 	foreach ($menus as $i)
@@ -74,7 +73,7 @@ else
 if (!empty($pages))
 {
     $width = (ADVANCED_EDITING)
-        ? 'w-60'
+        ? 'w-64'
         : 'w-56';
 
     echo '<table>
@@ -99,10 +98,10 @@ if (!empty($pages))
             {
 				$actions = (ADVANCED_EDITING)
                     ? '<a class="link" @click="pager(\''.BASE_URL.'sections/compose/'.$i->id.'\')" title="'._EDIT.'">
-                            <i class="fa-solid fa-lg fa-pen-to-square"></i>
+                            <i class="fa-solid fa-lg fa-fw fa-pen-to-square"></i>
                         </a>'
                     : '<a class="link" @click="pager(\''.BASE_URL.'articles/edit/'.$i->id_area.'/'.$i->lang.'/1/0/'.$i->id.'\')" title="'._EDIT.'">
-                            <i class="fa-solid fa-lg fa-pen-to-square"></i>
+                            <i class="fa-solid fa-lg fa-fw fa-pen-to-square"></i>
                         </a>';
 
 				// manager user
@@ -111,13 +110,13 @@ if (!empty($pages))
 					if (in_array($i->url, $no_del))
                     {
                         $actions .= '<a><i class="far fa-lightbulb fa-lg on"></i></a>
-                            <a><i class="fa-solid fa-lg fa-arrows-up-down-left-right off"></i></a>';
+                            <a><i class="fa-solid fa-lg fa-fw fa-arrows-up-down-left-right off"></i></a>';
                     }
                     else
                     {
                         $actions .= AdminUtils_helper::link('xon', 'pages/set/xon/'.$page->id_area.'/'.$i->id.'/'.(($i->xon+1)%2), $statuses);
                         $actions .= '<a class="link" @click="popup(\''.BASE_URL.'pages/move/'.$i->id.'\')" title="'._MENU_AND_ORDER.'">
-                        <i class="fa-solid fa-lg fa-arrows-up-down-left-right"></i>
+                        <i class="fa-solid fa-lg fa-fw fa-arrows-up-down-left-right"></i>
                             </a>';
                     }
 
@@ -127,7 +126,7 @@ if (!empty($pages))
                     if (ADVANCED_EDITING)
                     {
                         $actions .= '<a class="link" @click="pager(\''.BASE_URL.'sections/index/'.$i->id_area.'/'.$i->id.'\')" title="'._SECTIONS.'">
-                            <i class="fa-regular fa-object-group fa-lg"></i>
+                            <i class="fa-regular fa-object-group fa-lg fa-fw"></i>
                         </a>';
                     }
 
@@ -135,7 +134,7 @@ if (!empty($pages))
 
                     $actions .= (!in_array($i->url, $no_del))
                         ? AdminUtils_helper::link('delete', 'pages/delete/'.$i->id)
-                        : '<a><i class="fa-solid fa-lg fa-trash off"></i></a>';
+                        : '<a><i class="fa-solid fa-lg  fa-fwfa-trash off"></i></a>';
 				}
 			}
 
@@ -151,8 +150,8 @@ if (!empty($pages))
 			}
 
             echo '<tr>
-                    <td><a class="link" @click="pager(\''.BASE_URL.'pages/index/'.$i->id_area.'/'.$i->lang.'/'.str_replace('/', '§', $i->url).'/1\')"  title="'._SUBPAGES.'">'.stripslashes($i->name).'</a></td>
-                    <td class="space-x-2 text-right">'.$actions.'</td>
+                    <td><a class="link" @click="pager(\''.BASE_URL.'pages/index/'.$i->id_area.'/'.$i->lang.'/'.str_replace('/', '$', $i->url).'/1\')"  title="'._SUBPAGES.'">'.stripslashes($i->name).'</a></td>
+                    <td class="text-right">'.$actions.'</td>
                 </tr>';
 		}
 	}

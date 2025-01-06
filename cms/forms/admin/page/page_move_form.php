@@ -11,7 +11,7 @@
 // page move form
 
 // build the form
-$fields = array();
+$fields = [];
 $fields[] = array(
     'label' => null,
     'type' => 'hidden',
@@ -26,45 +26,42 @@ $fields[] = array(
     'name' => 'id_area'
 );
 
+$xdata = '{
+        xid_area: '.$page->id_area.',
+        xlang: "'.$page->lang.'",
+        xxfrom: "'.$page->xfrom.'",
+        xfrom_menu: '.$from->id_menu.',
+        xid_menu: '.$page->id_menu.',
+        xin_menu: '.intval($page->id_menu > 0).',
+        xxpos: '.$page->xpos.',
+        xsiblings: "'.str_replace(array(NL, '"'), array('', '\"'), $siblings).'",
+        subpages_menu() {
+            this.xid_menu = this.xfrom_menu;
+            this.subpages();
+        },
+        subpages() {
+            //console.log([this.xid_area, this.xlang, this.xxfrom, this.xfrom_menu]);
+            fetch(root+"pages/subpages/"+this.xid_area+"/"+this.xlang+"/"+this.xxfrom+"/"+this.xid_menu+"/1", {
+                method: "GET",
+                headers: { "Content-Type": "text/html" }
+            })
+            .then(res => res.json())
+            .then(json => {
+                this.xfrom_menu = json.from_menu;
+                this.xsiblings = json.subpages;
+                this.xxpos = 1;
+            })
+            .catch(() => {
+
+            });
+        }
+    }';
 $fields[] = array(
     'label' => null,
     'type' => 'html',
     'value' => '<div
                 class="bg-white text-gray-700 md:px-8 md:pb-8 px-4 pb-4" style="border:1px solid white"
-                x-data=\'{
-                    xid_area: '.$page->id_area.',
-                    xlang: "'.$page->lang.'",
-                    xxfrom: "'.$page->xfrom.'",
-                    xfrom_menu: '.$from->id_menu.',
-                    xid_menu: '.$page->id_menu.',
-                    xin_menu: '.(($page->id_menu > 0) ? 'true' : 'false').',
-                    xxpos: '.$page->xpos.',
-                    xsiblings: "'.str_replace(array(NL, '"'), array('', '\"'), $siblings).'",
-                    subpages_menu() {
-                        if (this.xin_menu) {
-                            this.xid_menu = this.xfrom_menu;
-                        } else {
-                            this.xid_menu = 0;
-                        }
-                        this.subpages();
-                    },
-                    subpages() {
-                        //console.log([this.xid_area, this.xlang, this.xxfrom, this.xfrom_menu]);
-                        fetch(root+"pages/subpages/"+this.xid_area+"/"+this.xlang+"/"+this.xxfrom+"/"+this.xid_menu+"/1", {
-                            method: "GET",
-                            headers: { "Content-Type": "text/html" }
-                        })
-                        .then(res => res.json())
-                        .then(json => {
-                            this.xfrom_menu = json.from_menu;
-                            this.xsiblings = json.subpages;
-                            this.xxpos = 1;
-                        })
-                        .catch(() => {
-
-                        });
-                    }
-                }\'
+                x-data=\''.$xdata.'\'
                 x-cloak
             >'
 );
@@ -82,7 +79,7 @@ $fields[] = array(
     'type' => 'html',
     'value' => '
         <div
-            class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            class="grid grid-cols-1 md:grid-cols-2 gap-x-4">
             <div>'
 );
 
@@ -136,7 +133,7 @@ $fields[] = array(
 
     // else you have only the option in menù or not in menù
     $fields[] = array(
-        'label' => 'In menu',
+        'label' => _IN_MENU,
         'type' => 'checkbox',
         'value' => 1,
         'name' => 'in_menu',
@@ -151,7 +148,7 @@ $fields[] = array(
 );
 
     $fields[] = array(
-        'label' => 'After',
+        'label' => _PAGE_POSITION,
         'type' => 'select',
         'value' => 0,
         'options' => array(),
@@ -172,8 +169,24 @@ $fields[] = array(
     'value' => $page->fake,
     'name' => 'fake',
     'checked' => $page->fake,
+    'rule' => 'requiredif§action§!',
     'suggestion' => _FAKE_PAGE_MSG
 );
+
+$fields[] = array(
+    'label' => null,
+    'type' => 'html',
+    'value' => '</div><div x-show="xin_menu">'
+);
+
+    $fields[] = array(
+        'label' => _ACTION_PAGE,
+        'type' => 'text',
+        'value' => $page->action,
+        'name' =>'action',
+        'extra' => 'class="w-full"',
+        'suggestion' => _ACTION_PAGE_MSG
+    );
 
 $fields[] = array(
     'label' => null,

@@ -32,7 +32,7 @@ class X3form_builder_model extends X4Model_core
 	 */
 	public function configurator(int $id_area, string $lang, int $id_page, string $param) : array
 	{
-	    $fields = array();
+	    $fields = [];
 
         $fields[] = array(
             'label' => null,
@@ -257,6 +257,18 @@ class X3form_builder_model extends X4Model_core
 		return $str;
 	}
 
+    /**
+	 * Delete form
+	 */
+	public function delete_form(int $id) : array
+	{
+        $sql = [];
+		$sql[] = 'DELETE FROM x3_forms_results WHERE id_form = '.$id;
+        $sql[] = 'DELETE FROM x3_forms_fields WHERE id_form = '.$id;
+		$sql[] = 'DELETE FROM x3_forms WHERE id = '.$id;
+		return $this->db->multi_exec($sql);
+	}
+
 	/**
 	 * Build the widget
 	 */
@@ -321,7 +333,7 @@ class X3form_builder_model extends X4Model_core
 	/**
 	 * Get a form by name
 	 */
-	public function get_form_by_name(int $id_area, string $lang, string $form) : stdClass
+	public function get_form_by_name(int $id_area, string $lang, string $form) : mixed
 	{
 		return $this->db->query_row('SELECT *
 			FROM x3_forms
@@ -428,7 +440,7 @@ class X3form_builder_model extends X4Model_core
         );
 
         $words = implode('|', array_keys($bad_words));
-        $matches = array();
+        $matches = [];
         $match_found = preg_match_all(
                         "/(" . $words . ")/i",
                         $string,
@@ -454,7 +466,7 @@ class X3form_builder_model extends X4Model_core
 	 * build message xml format
      * for special needs but not used here
 	 */
-	public function messagize_xml($form,  $fields, $files = array()) : string
+	public function messagize_xml($form,  $fields, $files = []) : string
 	{
 		$str = '<form>'.$form.'</form>
 			<date>'.date('Y-m-d H:i:s').'</date>';
@@ -485,7 +497,10 @@ class X3form_builder_model extends X4Model_core
 		{
 			foreach ($files as $k => $v)
 			{
-				if (!empty($v)) $str .= '<'.strtolower($k).'>'.$v.'</'.strtolower($k).'>';
+				if (!empty($v))
+                {
+                    $str .= '<'.strtolower($k).'>'.$v.'</'.strtolower($k).'>';
+                }
 			}
 		}
 		return mb_convert_encoding($str, 'ISO-8859-1', 'auto');

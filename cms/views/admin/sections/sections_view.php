@@ -65,7 +65,7 @@ foreach ($items as $i)
                 <td class="w-8">'.$i->progressive.'</td>
                 <td>'.$i->name.'</td>
                 <td style="width:15em;">'.$set['columns'].'/'.$set['col_sizes'].'</td>
-                <td class="w-40 space-x-2 text-right">'.$actions.'</td>
+                <td class="w-40 text-right">'.$actions.'</td>
             </tr>';
 
     }
@@ -76,7 +76,7 @@ foreach ($items as $i)
                 <td class="w-8">'.$i->progressive.'</td>
                 <td>'.$i->name.'</td>
                 <td style="width:15em;">'.$set['columns'].'/'.$set['col_sizes'].'</td>
-                <td class="w-40 space-x-2 text-right">'.$actions.'</td>
+                <td class="w-40 text-right">'.$actions.'</td>
             </tr>
             </tbody>
             </table>
@@ -93,7 +93,7 @@ foreach ($items as $i)
             <td class="w-8">'.$i->progressive.'</td>
             <td>'.$i->name.'</td>
             <td style="width:15em;">'.$set['columns'].'/'.$set['col_sizes'].'</td>
-            <td class="w-40 space-x-2 text-right">'.$actions.'</td>
+            <td class="w-40 text-right">'.$actions.'</td>
         </tr></table>
         </div>';
     }

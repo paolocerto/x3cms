@@ -91,18 +91,18 @@ class X4Theme_helper
 	/**
 	 * Set an existent template
 	 */
-	public static function set_tpl(string $template, string $alternative_theme_url = '') : string
+	public static function set_tpl(string $template, string $alternative_theme = '') : string
 	{
         if (empty($alternative_theme_url))
         {
-            return (!empty($template) && file_exists($_SERVER['DOCUMENT_ROOT'].THEME_URL.'templates/'.$template.'.php'))
-                ? THEME_URL.'templates/'.$template
-                : THEME_URL.'templates/base';
+            return (!empty($template) && file_exists(TPATH.THEME.'templates/'.$template.'.php'))
+                ? TPATH.THEME.'templates/'.$template
+                : TPATH.THEME.'templates/base';
         }
         else
         {
-            return (!empty($template) && file_exists($_SERVER['DOCUMENT_ROOT'].$alternative_theme_url.'templates/'.$template.'.php'))
-                ? $alternative_theme_url.'templates/'.$template
+            return (!empty($template) && file_exists(TPATH.$alternative_theme.'templates/'.$template.'.php'))
+                ? TPATH.$alternative_theme.'templates/'.$template
                 : '';
         }
     }
@@ -199,7 +199,7 @@ class X4Theme_helper
 			// additional URL params
 			$url_params = (isset($pages[1]))
 				? $pages[1]
-				: array();
+				: [];
 
 			foreach ($pages[0] as $i)
 			{
@@ -417,56 +417,62 @@ class X4Theme_helper
                     $url = $i->redirect;
                 }
 
-                // is a menu item or a subitem?
-                if ($i->deep == 1)  // is a menù
+                if (!$c && $home)
                 {
-                    if (!$c && $home)
-                    {
-                        $menu[] = array(
-                            'url' => BASE_URL,
-                            'title' => 'Home page',
-                            'name' => HOME_PAGE,
-                            'active' => ($ordinal == 'A'),
-                            'fake' => false
-                        );
-                    }
+                    list($name, $mobile) = self::mode($i);
 
-                    // detect active pages
-                    $active = (
-                        $i->ordinal == $ordinal || // is the active page
-                        substr($i->ordinal, 0, $min) == substr($ordinal, 0, $min) // with the same ordinal prefix
+                    $menu[] = array(
+                        'key' => 'home',
+                        'url' => BASE_URL,
+                        'title' => 'Home page',
+                        'name' => $name,
+                        'mobile' => $mobile,
+                        'active' => ($ordinal == 'A'),
+                        'fake' => false,
+                        'action' => ''
                     );
+                }
 
+                // detect active pages
+                $active = (
+                    $i->ordinal == $ordinal || // is the active page
+                    substr($i->ordinal, 0, $min) == substr($ordinal, 0, $min) // with the same ordinal prefix
+                );
+
+                list($name, $mobile) = self::mode($i);
+
+                if ($i->deep == 1)
+                {
                     $menu[] = array(
                         'key' => $i->url,   // used to link submenus
                         'url' => $url,
                         'title' => $i->title,
-                        'name' => $i->name,
+                        'name' => $name,
+                        'mobile' => $mobile,
+                        'mode' => $i->mode,
                         'active' => $active,
-                        'fake' => $i->fake
+                        'fake' => $i->fake,
+                        'action' => $i->action,
+                        'class' => $i->xclass
                     );
                 }
                 else
                 {
-                    // is a submenù
-
-                    // init
+                    // is a submenù?
                     if (!isset($sub[$i->xfrom]))
                     {
-                        $sub[$i->xfrom] = array();
+                        $sub[$i->xfrom] = [];
                     }
-
-                    // detect active pages
-                    $active = (
-                        $i->ordinal == $ordinal || // is the active page
-                        substr($i->ordinal, 0, $min) == substr($ordinal, 0, $min) // with the same ordinal prefix
-                    );
 
                     $sub[$i->xfrom][] = array(
                         'url' => $url,
                         'title' => $i->title,
-                        'name' => $i->name,
+                        'name' => $name,
+                        'mobile' => $mobile,
+                        'mode' => $i->mode,
                         'active' => $active,
+                        'fake' => $i->fake,
+                        'action' => $i->action
                     );
                 }
                 $c++;
@@ -474,6 +480,38 @@ class X4Theme_helper
         }
         return array($menu, $sub);
 	}
+
+    /**
+     * Menù mode
+     * returned array [mobile, screen]
+     */
+    public static function mode(stdClass $item) : array
+    {
+        if (!$item->mode || empty($item->icon))
+        {
+            // only text
+            $tmp = str_replace(' ', '&nbsp;', stripslashes($item->name));
+            return [$tmp, $tmp];
+        }
+
+        $icon = substr($item->icon, 0, 1) == '<'
+            ? $item->icon
+            : '<img src="'.THEME_URL.'img/'.$item->icon.'" />';
+
+        if ($item->mode == 1)
+        {
+            // only icon
+            // we have two to handle cases like submenu in navbar where menù is only icons and submenù not
+            return [$icon, $icon.'&nbsp;&nbsp;'.str_replace(' ', '&nbsp;', stripslashes($item->name))];
+        }
+        else
+        {
+            // icon + text
+            // requires CSS
+            $tmp = $icon.'<span>&nbsp;&nbsp;'.str_replace(' ', '&nbsp;', stripslashes($item->name)).'</span>';
+            return [$tmp, $tmp];
+        }
+    }
 
 	/**
 	 * Create options for article
@@ -485,7 +523,7 @@ class X4Theme_helper
             return '';
         }
 
-        $a = array();
+        $a = [];
         // show_author, show_date
         if ($block->show_date)
         {
@@ -585,7 +623,7 @@ class X4Theme_helper
             // anchor + section
             $tmp = '<a name="a'.($index).'"></a>
 <section class="'.implode(' ',  $class).'" id="sn'.($index).'">
-'.$content.'
+'.AdminUtils_helper::flmngr($content).'
 </section>
 <style>
 '.implode(NL, $css).'
@@ -829,7 +867,7 @@ class X4Theme_helper
         $tmp = '';
         if ($article_index == 0)
         {
-            $tmp = '<div class="'.$grid.' gap-6 px-4 pb-2">';
+            $tmp = '<div class="'.$grid.' gap-6 px-2 md:px-4 pb-2">';
 
             // handle width
             if ($section['width'] != 'fullwidth')
@@ -846,7 +884,7 @@ class X4Theme_helper
         {
             // close the grid for each row
             // is this a good idea???
-            $tmp = '</div>'.NL.'<div class="'.$grid.' pt-4 pb-2 gap-6 px-4">';
+            $tmp = '</div>'.NL.'<div class="'.$grid.' pt-4 pb-2 gap-6 px-2 md:px-4">';
         }
         return $tmp;
     }
@@ -870,7 +908,7 @@ class X4Theme_helper
         x-transition:leave="transition ease-in duration-75"
         x-transition:leave-start="transform opacity-100 scale-100"
         x-transition:leave-end="transform opacity-0 scale-95"
-        class="absolute right-0 w-full mt-2 origin-top-right rounded-md shadow-lg md:w-48"
+        class="absolute w-full -ml-14 mt-2 -translate-x-2/3 z-20"
         x-cloak';
 
         if (empty($menu))
@@ -879,75 +917,75 @@ class X4Theme_helper
         }
 
         $menu_items = '';
-        // builde the menu items
+        // build the menu items
         foreach ($menu as $i)
         {
             $active = ($i['active'])
                 ? $active_style
                 : $inactive_style;
 
+            // is a dropdown
             if (isset($dropdowns[$i['key']]))
             {
                 $key = str_replace('-', '_', $i['key']);
 
+                $svg = '<svg
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                            :class="{\'rotate-180\': '.$key.', \'rotate-0\': !'.$key.'}"
+                            class="inline w-4 h-4 mt-1 ml-1 transition-transform duration-200 transform md:-mt-1"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                            clip-rule="evenodd">
+                            </path>
+                        </svg>';
+
                 // build sub
-                $sub = '';
+                $sub_screen = $sub_mobile = '';
                 foreach ($dropdowns[$i['key']] as $ii)
                 {
-                    $sub .= '<a
-                                class="block px-4 py-2 mt-2 focus:outline-none focus:shadow-outline '.$style.'"
-                                href="'.$ii['url'].'">'.$ii['name'].'
+                    $action = empty($ii['action'])
+                        ? 'href="'.$ii['url'].'"'
+                        : '@click="'.$ii['action'].'"';
+
+                    $sub_screen .= '<a
+                                class="block px-4 py-2 '.$style.' cursor-pointer"
+                                '.$action.'
+                            >
+                                '.$ii['mobile'].'
                             </a>';
+
+                    $sub_mobile .= '<div class="w-full inline-flex md:hidden pb-1 lg:py-0 border-t border-b-gray-200">
+                                    <a
+                                        class="px-2 pt-2 '.$style.' cursor-pointer"
+                                        '.$action.'
+                                    >
+                                        '.$ii['mobile'].'
+                                    </a>
+                            </div>';
                 }
 
-                $svg = '<svg
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                    :class="{\'rotate-180\': '.$key.', \'rotate-0\': !'.$key.'}"
-                    class="inline w-4 h-4 mt-1 ml-1 transition-transform duration-200 transform md:-mt-1"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                    clip-rule="evenodd">
-                    </path>
-                </svg>';
 
-                // is a dropdown
                 if ($i['fake'])
                 {
-                    // with no link
-                    $menu_items .= ' <div @click.away="'.$key.' = false" class="relative hidden md:inline" x-data="{ '.$key.': false }">
-                                        <button
-                                            @click="'.$key.' = !'.$key.'"
-                                            class="focus:outline-none pt-2 '.$style.'"
-                                        >
-                                            <span>'.stripslashes($i['name']).'</span>
-                                            '.$svg.'
-                                        </button>
+                    list($link, $mobile) = self::link($i, $style, $active, $svg, $key);
 
+                    // with no link
+                    $menu_items .= ' <div @click.away="'.$key.' = false" class="relative hidden md:inline-flex" x-data="{ '.$key.': false }">
+                                        '.$link.'
                                         <div
                                             x-show="'.$key.'"
                                             '.$transition.'
                                         >
-                                            <div class="px-2 py-2 bg-white shadow">
-                                                '.$sub.'
+                                            <div class="sub rounded-md shadow-lg w-64 mt-10 pb-4">
+                                                '.$sub_screen.'
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="w-full inline-flex md:inline-flex py-2 lg:py-0 flex flex-col">
-                                        <a
-                                            href="'.$i['url'].'"
-                                            title="'.stripslashes($i['title']).'"
-                                            class="focus:outline-none px-2 pt-2 '.$style.' '.$active.'"
-                                        >
-                                            '.str_replace(' ', '&nbsp;', stripslashes($i['name'])).'
-                                        </a>
-                                        <div class="block w-full flex flex-col bg-gray-200">
-                                            '.$sub.'
-                                        </div>
-                                    </div>';
+                                    '.$sub_mobile;
                 }
                 else
                 {
                     // with link
-                    $menu_items .= ' <div @click.away="'.$key.' = false" class="relative hidden md:inline" x-data="{ '.$key.': false }">
+                    $menu_items .= ' <div @click.away="'.$key.' = false" class="relative hidden md:inline-flex" x-data="{ '.$key.': false }">
                                         <button
                                             x-on:mouseover="'.$key.' = true"
                                             x-on:ontouchstart="'.$key.' = true"
@@ -966,46 +1004,211 @@ class X4Theme_helper
                                             class="z-50"
                                         >
                                             <div class="px-2 py-2 bg-white shadow">
-                                                '.$sub.'
+                                                '.$sub_screen.'
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="w-full inline-flex md:hidden py-2 lg:py-0 flex flex-col">
-                                        <a
-                                            href="'.$i['url'].'"
-                                            title="'.stripslashes($i['title']).'"
-                                            class="focus:outline-none px-2 pt-2 '.$style.' '.$active.'"
-                                        >
-                                            '.str_replace(' ', '&nbsp;', stripslashes($i['name'])).'
-                                        </a>
-                                        <div class="block w-full flex flex-col bg-gray-200">
-                                            '.$sub.'
-                                        </div>
-                                    </div>';
+                                    '.$sub_mobile;
                 }
 
             }
             else
             {
-                // normal item
-                $link = '<a
-                    href="'.$i['url'].'"
-                    title="'.stripslashes($i['title']).'"
-                    class="focus:outline-none px-2 pt-2 '.$style.' '.$active.'"
-                >
-                    '.str_replace(' ', '&nbsp;', stripslashes($i['name'])).'
-                </a>';
+                list($link, $mobile) = self::link($i, $style, $active, '');
 
                 // for screens and mobile
                 $menu_items .= '<div class="hidden md:inline-flex">
                                 '.$link.'
                             </div>
-                            <div class="w-full inline-flex md:hidden py-2 lg:py-0 border-b border-b-gray-300">
-                                '.$link.'
+                            <div class="w-full inline-flex md:hidden pb-1 lg:py-0 border-t border-b-gray-200">
+                                '.$mobile.'
                             </div>';
             }
         }
         return $menu_items;
+    }
+
+    /**
+	 * tailwind sidebar
+     * build menù items WITHOUT dropdowns
+	 */
+	public static function tailwind_sidebar(
+        array $menu,
+        array $dropdowns,
+        string $style,
+        string $active_style,
+        string $inactive_style
+    ) : string
+	{
+
+        // TODO
+        $transition = '
+        x-transition:enter="transition ease-out duration-100"
+        x-transition:enter-start="transform opacity-0 scale-95"
+        x-transition:enter-end="transform opacity-100 scale-100"
+        x-transition:leave="transition ease-in duration-75"
+        x-transition:leave-start="transform opacity-100 scale-100"
+        x-transition:leave-end="transform opacity-0 scale-95"
+        class="absolute w-full -ml-14 mt-2 -translate-x-2/3 z-20"
+        x-cloak';
+
+        if (empty($menu))
+        {
+            return '';
+        }
+
+        $menu_items = '';
+        // build the menu items
+        foreach ($menu as $i)
+        {
+            $active = ($i['active'])
+                ? $active_style
+                : $inactive_style;
+
+            // is a dropdown
+            if (isset($dropdowns[$i['key']]))
+            {
+                $key = str_replace('-', '_', $i['key']);
+
+                $svg = '<svg
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                            :class="{\'rotate-180\': '.$key.', \'rotate-0\': !'.$key.'}"
+                            class="inline w-4 h-4 mt-1 ml-1 transition-transform duration-200 transform md:-mt-1"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                            clip-rule="evenodd">
+                            </path>
+                        </svg>';
+
+                if ($i['fake'])
+                {
+                    list($link, $mobile) = self::link($i, $style, $active, $svg, $key);
+
+                    // with no link
+                    $menu_items .= ' <div @click.away="'.$key.' = false" class="relative hidden md:inline-flex" x-data="{ '.$key.': false }">
+                                        '.$link.'
+                                        <div
+                                            x-show="'.$key.'"
+                                            '.$transition.'
+                                        >
+                                            <div class="sub rounded-md shadow-lg w-64 mt-10 pb-4">
+                                                '.$sub_screen.'
+                                            </div>
+                                        </div>
+                                    </div>
+                                    '.$sub_mobile;
+                }
+                else
+                {
+                    // with link
+                    $menu_items .= ' <div @click.away="'.$key.' = false" class="relative hidden md:inline-flex" x-data="{ '.$key.': false }">
+                                        <button
+                                            x-on:mouseover="'.$key.' = true"
+                                            x-on:ontouchstart="'.$key.' = true"
+                                            onclick="window.location.href=\''.$i['url'].'\';"
+                                            class="focus:outline-none pt-2 '.$style.'"
+                                        >
+                                            <span>'.str_replace(' ', '&nbsp;', stripslashes($i['name'])).'</span>
+                                            '.$svg.'
+                                        </button>
+
+                                        <div
+                                            x-show="'.$key.'"
+                                            x-on:mouseleave="'.$key.' = false"
+                                            x-on:ontouchend="'.$key.' = false"
+                                            '.$transition.'
+                                            class="z-50"
+                                        >
+                                            <div class="px-2 py-2 bg-white shadow">
+                                                '.$sub_screen.'
+                                            </div>
+                                        </div>
+                                    </div>
+                                    '.$sub_mobile;
+                }
+
+            }
+            else
+            {
+                list($link, $mobile) = self::link($i, $style, $active, '');
+
+                // for screens and mobile
+                $menu_items .= '<div class="hidden md:inline-flex">
+                                '.$link.'
+                            </div>
+                            <div class="w-full inline-flex md:hidden pb-1 lg:py-0 border-t border-b-gray-200">
+                                '.$mobile.'
+                            </div>';
+            }
+        }
+        return $menu_items;
+    }
+
+    /**
+     * Navbar link
+     */
+    public static function link(array $item, string $style, string $active, string $svg, string $key = '') : array
+    {
+        if (empty($key))
+        {
+            if (empty($item['action']))
+            {
+                // normal menu item
+                $btn_click = 'onclick="window.location.href=\''.$item['url'].'\'"';
+                $mobile_click = 'href="'.$item['url'].'"';
+                $btn_label = $item['name'];
+                $mobile_label = $item['mobile'];
+            }
+            else
+            {
+                // menu item with action
+                $btn_click = $mobile_click = '@click="'.$item['action'].'"';
+                $btn_label = $item['name'];
+                $mobile_label = $item['mobile'];
+            }
+        }
+        else
+        {
+            // submenu button
+            $btn_click = $mobile_click = '@click="'.$key.' = !'.$key.'"';
+            $btn_label = '<span>'.stripslashes($item['name']).'</span><span class="btn_info">'.$svg.'</span>';
+            $mobile_label = '<span>'.stripslashes($item['mobile']).'</span><span class="btn_info">'.$svg.'</span>';
+        }
+
+        // personalized style for menu item
+        $btn_style = isset($item['class']) && !empty($item['class'])
+            ? $item['class']
+            : $style;
+
+        $btn = '<button
+                type="button"
+                '.$btn_click.'
+                title="'.stripslashes($item['title']).'"
+                class="'.$btn_style.' '.$active.'"
+            >
+                '.$btn_label.'
+            </button>';
+
+        $mobile = '<a
+            '.$mobile_click.'
+            title="'.stripslashes($item['title']).'"
+            class="px-2 pt-2 '.$btn_style.' '.$active.'"
+        >
+            '.$btn_label.'
+        </a>';
+
+        $link = ($item['mode'] == 1)
+            ? $btn
+            : $mobile;
+
+        $mobile = '<a
+            '.$mobile_click.'
+            title="'.stripslashes($item['title']).'"
+            class="px-2 pt-2 '.$style.' '.$active.'"
+        >
+            '.$mobile_label.'
+        </a>';
+
+        return [$link, $mobile];
     }
 
     /**

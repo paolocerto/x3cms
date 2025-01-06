@@ -141,9 +141,9 @@ $context_accordion = '{
 
 // to setup pageComposer Alpine componenet
 // containers
-$containers = array();
+$containers = [];
 // columns subdivision
-$sizes = array();
+$sizes = [];
 
 // sections
 $left = '';
@@ -151,9 +151,9 @@ $left = '';
 $right = '';
 
 // to store articles order in each section
-$artts = array();
+$artts = [];
 // to hide already in the page
-$published = array();
+$published = [];
 
 // SECTIONS
 foreach ($sections as $i)
@@ -162,13 +162,14 @@ foreach ($sections as $i)
 	$settings = json_decode($i->settings, true);
 
     // handle cols subdivision
-    if (isset($settings['col_sizes']))
+    if (isset($settings['col_sizes']) && isset($settings['columns']))
     {
         $csizes = explode('+', $settings['col_sizes']);
     }
     else
     {
-        $csizes = array_fill(0, $settings['columns'], 1);
+        $csizes = array_fill(0, 1, 1);
+        $settings['columns'] = 1;
         $settings['col_sizes'] = implode('+', $csizes);
     }
 
@@ -297,8 +298,11 @@ foreach ($codes as $i)
         </div>';
 }
 ?>
-<div x-data='<?php echo $page_composer ?>' x-init='setup(<?php echo $pagetoedit->id ?>, <?php echo json_encode($containers) ?>, <?php echo json_encode($sizes) ?>)' class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
-
+<div
+    x-data='<?php echo $page_composer ?>'
+    x-init='setup(<?php echo $pagetoedit->id ?>, <?php echo json_encode($containers) ?>, <?php echo json_encode($sizes) ?>)'
+    class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4"
+>
 	<div class="md:col-span-2 lg:col-span-3">
 		<h1>
             <span class="hidden md:inline-block">
@@ -340,7 +344,7 @@ if (!empty($layout))
         <button @click="open = !open" class="cursor-pointer bg2 rounded flex items-center justify-between w-full py-2 px-4 text-left select-none mb-1">
             '._SECTIONS.'
         </button>
-        <div x-show="open" x-cloak><img src="'.$layout.'" alt="layout"  class="mt-4 mx-auto" /></div>
+        <div x-show="open" x-collapse x-cloak><img src="'.$layout.'" alt="layout"  class="mt-4 mx-auto" /></div>
     </div>';
 }
 ?>

@@ -52,7 +52,7 @@ class X4Xls_helper
                 $flag = true;
             }
             // filter data
-            array_walk($row, 'self::filterData');
+            array_walk($row, ['X4Xls_helper', 'filterData']);
             echo implode("\t", array_values($row)) . "\n";
         }
         exit;

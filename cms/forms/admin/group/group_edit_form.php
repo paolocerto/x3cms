@@ -11,7 +11,7 @@
 // group edit form
 
 // build the form
-$fields = array();
+$fields = [];
 
 $fields[] = array(
     'label' => null,

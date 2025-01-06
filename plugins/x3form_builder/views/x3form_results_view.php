@@ -18,13 +18,13 @@ $bulk_url = 'x3form_builder/bulk/'.$id_area.'/'.$lang;
     <?php echo _TRAIT_._X3FB_RESULTS.': '.$form->name ?>
 </h1>
 
-<div x-data="bulkable()" x-init='setup("<?php echo $bulk_url ?>")' >
-
+<div x-data="bulkable()" x-init='setup("<?php echo $bulk_url ?>", {"delete": "<?php echo _BULK_DELETE ?>"})' >
+<form id="bulk_form">
 <div x-show="bulk.length > 0" class="buttons">
-    <input type="hidden" id="bulk_action" x-model="xaction" value="delete" />
-    <button type="button" @click="execute()" class="link"><?php echo _DELETE_BULK ?></button>
+    <input type="hidden" name="bulk_action" id="bulk_action" x-model="xaction" value="delete" />
+    <button type="button" @click="execute()" class="link" x-text="xbtns[xaction]"></button>
 </div>
-
+</form>
 <?php
 if (!empty($items[0]))
 {
@@ -57,7 +57,7 @@ if (!empty($items[0]))
 		echo '<tr>
 				<td class="text-sm">'.$i->updated.'</td>
                 <td>'.$mod->show_message($i->result).'</td>
-				<td class="space-x-2 text-right">'.$actions.'</td>
+				<td class="text-right">'.$actions.'</td>
                 <td class="text-center"><input type="checkbox" class="bulkable" x-model="bulk" value="'.$i->id.'" /></td>
 			</tr>';
 	}

@@ -19,9 +19,9 @@ class Memo_model extends X4Model_core
 	 * Constructor
 	 * set the default table
 	 */
-	public function __construct()
+	public function __construct(string $db = 'default')
 	{
-		parent::__construct('memos');
+		parent::__construct('memos', $db);
 	}
 
     /**
@@ -35,9 +35,24 @@ class Memo_model extends X4Model_core
 			FROM memos m
             LEFT JOIN users u ON u.id = m.xuid
 			WHERE m.url = '.$this->db->escape($url).' AND
-                (m.personal = 0 OR m.xuid = '.$id_user.')
-			ORDER BY m.likes DESC');
+                (m.personal = 0 OR m.xuid = '.$id_user.')');
 	}
+
+    /**
+	 * Count memos for a page
+	 */
+	public function count_memos(string $url, int $id_user) : array
+	{
+        $n = (int) $this->db->query_var('SELECT COUNT(*) AS n
+			FROM memos
+            WHERE url = '.$this->db->escape($url).' AND (personal = 0 OR xuid = '.$id_user.')');
+
+        return $n > 0
+            ? ['n' => 'note']
+            : ['n' => ''];
+	}
+
+
 }
 
 /**

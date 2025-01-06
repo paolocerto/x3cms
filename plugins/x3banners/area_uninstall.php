@@ -14,10 +14,10 @@
 // plugin name
 $mod_name = 'x3banners';
 
-$sql = array();
+$sql = [];
 
 // required
-$required = array();
+$required = [];
 
 $a = new Area_model();
 $area = $a->get_by_id($plugin->id_area);

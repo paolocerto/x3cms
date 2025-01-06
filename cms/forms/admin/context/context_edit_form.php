@@ -11,7 +11,7 @@
 // context edit form
 
 // build the form
-$fields = array();
+$fields = [];
 
 $fields[] = array(
     'label' => null,
@@ -24,7 +24,7 @@ $fields[] = array(
     'label' => null,
     'type' => 'html',
     'value' => '<div class="bg-white text-gray-700 md:px-8 md:pb-8 px-4 pb-4" style="border:1px solid white">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4">
             <div>'
 );
 

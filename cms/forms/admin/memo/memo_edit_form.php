@@ -16,12 +16,12 @@ $xdata = '{
             // reset
             tinymce.remove();
         }
-        setTimeout(function(){tiny(id_area, lang, api_key);},200);
+        setTimeout(function(){small_tiny(id_area, lang, api_key);},200);
     }
 }';
 
 // build the form
-$fields = array();
+$fields = [];
 
 $fields[] = array(
     'label' => null,
@@ -89,7 +89,7 @@ $fields[] = array(
     'label' => _MEMO,
     'type' => 'textarea',
     'value' => $item->description,
-    'name' => 'description',
+    'name' => 'memo',
     'rule' => 'required',
     'extra' => 'class="w-full tinymce"'
 );

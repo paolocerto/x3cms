@@ -56,7 +56,7 @@ class User_model extends X4Model_core
             LEFT JOIN privs p ON p.id_who = up.id_user AND p.what = up.privtype AND p.id_what = u.id
             JOIN aprivs ap ON ap.id_user = '.intval($_SESSION['xuid']).' AND ap.id_area != 1
             JOIN aprivs ap2 ON ap2.id_user = u.id AND ap2.id_area = ap.id_area
-            WHERE u.id_group = '.$id_group.' AND (u.hidden = 0 OR '.intval($_SESSION['level']).' >= 4)
+            WHERE u.id_group = '.$id_group.' AND (u.hidden = 0 OR '.intval($_SESSION['level']).' > 4)
             GROUP BY u.id
             ORDER BY u.username ASC');
 	}

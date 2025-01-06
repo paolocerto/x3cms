@@ -9,5 +9,3 @@
  */
 
 // insert here scripts to inject at the end of the template
-
-?>

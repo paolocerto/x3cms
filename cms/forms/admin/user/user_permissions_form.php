@@ -10,7 +10,7 @@
 
 // user permissions form
 
-$fields = array();
+$fields = [];
 $fields[] = array(
     'label' => null,
     'type' => 'hidden',
@@ -33,15 +33,21 @@ $fields[] = array(
 $fields[] = array(
     'label' => null,
     'type' => 'html',
-    'value' => '<div
-        x-data="{xval: document.getElementById(\'resetter\').value,sync(){setForAll(this.xval);}}"
-        class="bg-white text-gray-700 md:px-8 md:pb-8 px-4 pb-4" style="border:1px solid white">'
+    'value' => '<div class="bg-white text-gray-700 md:px-8 md:pb-8 px-4 pb-4" style="border:1px solid white">'
 );
 
 $c = 0;
 // if table is not empty
 if ($what)
 {
+    $fields[] = array(
+        'label' => null,
+        'type' => 'html',
+        'value' => '<div
+            x-data="{xval: document.getElementById(\'resetter\').value,sync(){setForAll(this.xval);}}"
+        >'
+    );
+
     $fields[] = array(
         'label' => _ALL_DETAIL_PRIV,
         'type' => 'select',
@@ -54,7 +60,7 @@ if ($what)
     $fields[] = array(
         'label' => null,
         'type' => 'html',
-        'value' => '<div class="grid grid-cols-1 md:grid-cols-2 gap-4">'
+        'value' => '<div class="grid grid-cols-1 md:grid-cols-2 gap-x-4">'
     );
 
     // each record
@@ -100,7 +106,15 @@ if ($what)
     $fields[] = array(
         'label' => null,
         'type' => 'html',
-        'value' => '</div>'
+        'value' => '</div></div>'
+    );
+}
+else
+{
+    $fields[] = array(
+        'label' => null,
+        'type' => 'html',
+        'value' => '<p class="text-center py-10">'._NO_ITEMS.'</p>'
     );
 }
 

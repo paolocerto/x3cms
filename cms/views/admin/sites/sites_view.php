@@ -15,7 +15,7 @@
 <thead>
 	<tr class="first">
 		<th class="text-left pl-4"><?php echo _DOMAIN ?></th>
-		<th class="w-40"><?php echo _ACTIONS ?></th>
+		<th class="w-48"><?php echo _ACTIONS ?></th>
 	</tr>
 </thead>
 <tbody>
@@ -30,13 +30,13 @@ foreach ($items as $i)
         $actions .= AdminUtils_helper::link('settings', 'sites/config/'.$i->id);
 
         // if caching
-        if (true || CACHE)
+        if (CACHE)
         {
             $actions .= '<a class="link" @click="setter(\''.BASE_URL.'sites/clear_cache\')" title="'._CLEAR_CACHE.'">
                 <i class="fa-solid fa-lg fa-eraser"></i>
             </a>';
         }
-        if (true || APC)
+        if (APC)
         {
             $actions .= ' <a class="link" @click="setter(\''.BASE_URL.'sites/clear_apc\')" title="'._CLEAR_CACHE.' APC">
                 <i class="fa-solid fa-lg fa-eraser"></i>
@@ -60,7 +60,7 @@ foreach ($items as $i)
 
     echo '<tr>
             <td>'.$domain.'</td>
-            <td class="space-x-2 text-right">'.$actions.'</td>
+            <td class="text-right">'.$actions.'</td>
         </tr>';
 }
 ?>

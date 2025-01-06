@@ -18,7 +18,7 @@ if (isset($js))
 
 if (isset($super_title))
 {
-	echo '<h1>'.$super_title.'</h1>';
+	echo '<h1 class="mt-6">'.$super_title.'</h1>';
 }
 // show title
 if (isset($title))
@@ -28,7 +28,7 @@ if (isset($title))
 
 if (isset($loader))
 {
-    echo '<div id="formloader" class="hidden"><i class="fas fa-sync fa-spin fa-5x on" aria-hidden="true"></i></div>';
+    echo '<div id="formloader" class="hidden"><i class="fa-solid fa-sync fa-spin fa-5x on"></i></div>';
 }
 
 // show optional message
@@ -49,9 +49,3 @@ else
 }
 
 echo $form;
-
-// load tinyMCE
-if (isset($tinymce))
-{
-   // echo $tinymce;
-}

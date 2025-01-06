@@ -80,7 +80,6 @@ class Home_controller extends X3ui_controller
 	{
 		// load dictionaries
 		$this->dict->get_wordarray(array('widgets', 'home'));
-
 		// get page
 		$page = $this->get_page('home');
 
@@ -90,7 +89,7 @@ class Home_controller extends X3ui_controller
 		$view->actions = AdminUtils_helper::link(
             'memo',
             'home:'.$page->lang,
-            [],
+            $this->memo('home:'.$page->lang, $_SESSION['xuid']),
             _MEMO
         );
 
@@ -99,7 +98,7 @@ class Home_controller extends X3ui_controller
 		$view->content->notices = (NOTICES) ? $this->get_notices($page->lang) : '';
 		// widgets
 		$mod = new Widget_model();
-		$view->content->widgets = $mod->widgets();
+		$view->content->widgets = $mod->widgets($this->site->data->db);
 
 		$view->render(true);
 	}

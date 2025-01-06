@@ -56,32 +56,30 @@ class Categories_controller extends X3ui_controller
 		$view->actions = AdminUtils_helper::link(
                 'memo',
                 'categories:'.$lang,
-                [],
+                $this->memo('categories:'.$page->lang, $_SESSION['xuid']),
                 _MEMO
             ).$this->actions($id_area, $lang, $tag);
 
 		$mod = new Category_model();
 		$tags = $mod->get_tags($id_area, $lang);
 
+        // switchers
+        $view->id_area = $id_area;
+        $view->lang = $lang;
+        $view->areas = $areas;
+        $view->url = 'categories/index/XAREAX/XLANGX';
+
         // contents
 		$view->content = new X4View_core('categories/category_list');
+        $view->content->page = $page;
 		$view->content->items = $mod->get_categories($id_area, $lang, $tag);
 
 		// tag switcher
 		$view->content->tag = $tag;
 		$view->content->tags = $tags;
 
-		// area switcher
 		$view->content->id_area = $id_area;
-		$view->content->areas = $areas;
-
-		// language switcher
 		$view->content->lang = $lang;
-        if (MULTILANGUAGE)
-        {
-            $lang = new Language_model();
-            $view->content->langs = $lang->get_languages();
-        }
 		$view->render(true);
 	}
 
@@ -100,20 +98,15 @@ class Categories_controller extends X3ui_controller
 	 */
 	public function set(string $what, int $id_area, int $id, int $value = 0) : void
 	{
-		$msg = null;
-		// check permission
 		$msg = AdminUtils_helper::chk_priv_level($id_area, 'categories', $id, $what);
 		if (is_null($msg))
 		{
-			// do action
 			$mod = new Category_model();
 			$result = $mod->update($id, array($what => $value));
 
-			// set message
 			$this->dict->get_words();
 			$msg = AdminUtils_helper::set_msg($result);
 
-			// set update
 			if ($result[1])
             {
                 $msg->update = array(
@@ -130,10 +123,8 @@ class Categories_controller extends X3ui_controller
 	 */
 	public function edit(int $id_area, string $lang, string $tag = '', int $id = 0) : void
 	{
-		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'categories'));
 
-		// get object
 		$mod = new Category_model();
 		$item = ($id)
 			? $mod->get_by_id($id)
@@ -149,10 +140,8 @@ class Categories_controller extends X3ui_controller
         $mod = new Language_model();
         $form_fields->languages = $mod->get_languages();
 
-		// get the fields array
 		$fields = $form_fields->render();
 
-		// if submitted
 		if (X4Route_core::$post)
 		{
 			$e = X4Validation_helper::form($fields, 'editor');
@@ -171,13 +160,9 @@ class Categories_controller extends X3ui_controller
 			? _EDIT_CATEGORY
 			: _ADD_CATEGORY;
 
-		// content
 		$view->content = new X4View_core('editor');
 
-        // can user edit?
         $submit = AdminUtils_helper::submit_btn($id_area, 'categories', $id, $item->xlock);
-
-		// form builder
 		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, $submit, 'buttons'), 'post', '',
             '@click="submitForm(\'editor\')"');
 
@@ -189,15 +174,12 @@ class Categories_controller extends X3ui_controller
 	 */
 	private function editing(int $id, array $_post) : void
 	{
-		$msg = null;
-		// check permission
 		$msg = ($id)
 			? AdminUtils_helper::chk_priv_level($_post['id_area'], 'categories', $_post['id'], 'edit')
 			: AdminUtils_helper::chk_priv_level($_post['id_area'], '_category_creation', 0, 'create');
 
 		if (is_null($msg))
 		{
-			// handle _post
 			$post = array(
 				'id_area' => $_post['id_area'],
 				'lang' => $_post['lang'],
@@ -208,7 +190,6 @@ class Categories_controller extends X3ui_controller
 
 			$mod = new Category_model();
 
-			// check if category already exists
 			$check = $mod->exists($post, $id);
 			if ($check)
             {
@@ -216,15 +197,12 @@ class Categories_controller extends X3ui_controller
             }
 			else
 			{
-				// update or insert
 				$result = ($id)
 					? $mod->update($_post['id'], $post)
                     : $mod->insert($post);
 
-				// set message
 				$msg = AdminUtils_helper::set_msg($result);
 
-				// set what update
 				if ($result[1])
 				{
                     if (!$id)
@@ -252,7 +230,7 @@ class Categories_controller extends X3ui_controller
 		$mod = new Category_model();
 		$item = $mod->get_by_id($id, 'categories', 'id, id_area, lang, tag, title');
 
-		$fields = array();
+		$fields = [];
 		$fields[] = array(
 			'label' => null,
 			'type' => 'hidden',
@@ -282,25 +260,19 @@ class Categories_controller extends X3ui_controller
 	 */
 	private function deleting(stdClass $item) : void
 	{
-		$msg = null;
-		// check permissions
 		$msg = AdminUtils_helper::chk_priv_level($item->id_area, 'categories', $item->id, 'delete');
 
 		if (is_null($msg))
 		{
-			// do action
 			$mod = new Category_model();
 			$result = $mod->delete($item->id);
 
-			// set message
 			$msg = AdminUtils_helper::set_msg($result);
 
-			// clear useless permissions
 			if ($result[1])
             {
 				AdminUtils_helper::delete_priv('categories', $item->id);
 
-				// set what update
 				$msg->update = array(
 					'element' => 'page',
 					'url' => BASE_URL.'categories/index/'.$item->id_area.'/'.$item->lang.'/'.$item->tag

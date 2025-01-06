@@ -40,8 +40,8 @@ class Info_controller extends X3ui_controller
         $view->breadcrumb = array($this->site->get_bredcrumb($page));
 		$view->actions = AdminUtils_helper::link(
             'memo',
-            'inf0:'.$page->lang,
-            [],
+            'info:'.$page->lang,
+            $this->memo('info:'.$page->lang, $_SESSION['xuid']),
             _MEMO
         );
 
@@ -49,7 +49,7 @@ class Info_controller extends X3ui_controller
         $view->content->title = $page->icon.' '._SITE_INFO;
         $view->content->tabs = array(
             'Default' => ['view', 'sites/info'],
-            'Apache' => ['view', 'sites/apache'],
+            'Web server' => ['view', 'sites/web_server'],
             'Mysql' => ['view', 'sites/mysql'],
             'Php' => ['view', 'sites/php'],
         );

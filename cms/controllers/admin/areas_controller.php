@@ -50,7 +50,7 @@ class Areas_controller extends X3ui_controller
 		$view->actions = AdminUtils_helper::link(
                 'memo',
                 'areas:'.$page->lang,
-                [],
+                $this->memo('areas:'.$page->lang, $_SESSION['xuid']),
                 _MEMO
             ).$this->actions();
 
@@ -74,7 +74,7 @@ class Areas_controller extends X3ui_controller
 	 */
 	private function actions() : string
 	{
-		return '<a class="link" href="javascript:void(0)" @click="popup(\''.BASE_URL.'areas/edit\')" title="'._NEW_AREA.'">
+		return '<a class="link" @click="popup(\''.BASE_URL.'areas/edit\')" title="'._NEW_AREA.'">
             <i class="fa-solid fa-lg fa-circle-plus"></i>
         </a>';
 	}
@@ -84,8 +84,6 @@ class Areas_controller extends X3ui_controller
 	 */
 	public function set(string $what, int $id, int  $value = 0) : void
 	{
-		$msg = null;
-		// check permissions
 		$msg = AdminUtils_helper::chk_priv_level($id, 'areas', $id, $what);
 		if (is_null($msg))
 		{
@@ -171,8 +169,6 @@ class Areas_controller extends X3ui_controller
 	 */
 	private function editing(int $id_area, array $_post) : void
 	{
-		$msg = null;
-		// check permissions
 		$msg = ($id_area)
 			? AdminUtils_helper::chk_priv_level($id_area, 'areas', $id_area, 'edit')
 			: AdminUtils_helper::chk_priv_level(1, '_area_creation', 0, 'create');
@@ -280,9 +276,9 @@ class Areas_controller extends X3ui_controller
             $menu = new Menu_model();
             // reset tpl, css, id_menu, ordinal
             $menu->reset($id_area);
-            $langs = $lang->get_languages();
+            $languages = $lang->get_languages();
             // restore ordinal
-            foreach ($langs as $i)
+            foreach ($languages as $i)
             {
                 $menu->ordinal($id_area, $i->code, 'home', 'A');
             }
@@ -347,15 +343,12 @@ class Areas_controller extends X3ui_controller
 	 */
 	private function editing_seo_data(int $id_area, array $_post) : void
 	{
-		$msg = null;
-		// check permission
 		$msg = AdminUtils_helper::chk_priv_level($id_area, 'areas', $id_area, 'edit');
-
 		if (is_null($msg))
 		{
 			// handle _POST
 			$c = 0;
-			$post = array();
+			$post = [];
 			while (isset($_post['id_'.$c]))
 			{
 				$post[$_post['id_'.$c]] = array(
@@ -394,15 +387,12 @@ class Areas_controller extends X3ui_controller
 	 */
 	public function delete(int $id) : void
 	{
-		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'areas'));
 
-		// get object
 		$area = new Area_model();
 		$item = $area->get_by_id($id, 'areas', 'id, name');
 
-		// build the form
-		$fields = array();
+		$fields = [];
 		$fields[] = array(
 			'label' => null,
 			'type' => 'hidden',
@@ -410,7 +400,6 @@ class Areas_controller extends X3ui_controller
 			'name' => 'id'
 		);
 
-		// if submitted
 		if (X4Route_core::$post)
 		{
 			$this->deleting($item);
@@ -419,11 +408,10 @@ class Areas_controller extends X3ui_controller
 
 		$view = new X4View_core('modal');
         $view->title = _DELETE_AREA;
-        // contents
+
         $view->content = new X4View_core('delete');
 		$view->content->item = $item->name;
 
-		// form builder
 		$view->content->form = X4Form_helper::doform('delete', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
             '@click="submitForm(\'delete\')"');
 		$view->render(true);
@@ -434,24 +422,18 @@ class Areas_controller extends X3ui_controller
 	 */
 	private function deleting(stdClass $item) : void
 	{
-		$msg = null;
-		// check permissions
 		$msg = AdminUtils_helper::chk_priv_level($item->id, 'areas', $item->id, 'delete');
 		if (is_null($msg))
 		{
-			// action
 			$area = new Area_model();
 			$result = $area->delete_area($item->id, $item->name);
 
-			// set message
 			$msg = AdminUtils_helper::set_msg($result);
 
-			// clear useless permissions
 			if ($result[1])
 			{
                 AdminUtils_helper::delete_priv('areas', $item->id);
 
-				// set what update
 				$msg->update = array(
 					'element' => 'page',
 					'url' => BASE_URL.'areas',
@@ -466,13 +448,11 @@ class Areas_controller extends X3ui_controller
 	 */
 	public function map(int $id_area, string $lang) : void
 	{
-		// load the dictionary
 		$this->dict->get_wordarray(array('areas'));
 
         $view = new X4View_core('modal');
         $view->title = _AREA_LANG_MAP;
 
-		// content
 		$view->content = new X4View_core('areas/map');
 
 		$mod = new Page_model($id_area, $lang);

@@ -25,7 +25,7 @@
 		/**
 		 * @var SpreadsheetReader_* Handle for the reader object
 		 */
-		private $Handle = array();
+		private $Handle = [];
 
 		/**
 		 * @var TYPE_* Type of the contained spreadsheet
@@ -226,10 +226,10 @@
 
 		// !Iterator interface methods
 
-		/** 
+		/**
 		 * Rewind the Iterator to the first element.
 		 * Similar to the reset() function for arrays in PHP
-		 */ 
+		 */
 		public function rewind()
 		{
 			$this -> Index = 0;
@@ -239,7 +239,7 @@
 			}
 		}
 
-		/** 
+		/**
 		 * Return the current element.
 		 * Similar to the current() function for arrays in PHP
 		 *
@@ -254,10 +254,10 @@
 			return null;
 		}
 
-		/** 
-		 * Move forward to next element. 
-		 * Similar to the next() function for arrays in PHP 
-		 */ 
+		/**
+		 * Move forward to next element.
+		 * Similar to the next() function for arrays in PHP
+		 */
 		public function next()
 		{
 			if ($this -> Handle)
@@ -269,12 +269,12 @@
 			return null;
 		}
 
-		/** 
+		/**
 		 * Return the identifying key of the current element.
 		 * Similar to the key() function for arrays in PHP
 		 *
 		 * @return mixed either an integer or a string
-		 */ 
+		 */
 		public function key()
 		{
 			if ($this -> Handle)
@@ -284,12 +284,12 @@
 			return null;
 		}
 
-		/** 
+		/**
 		 * Check if there is a current element after calls to rewind() or next().
 		 * Used to check if we've iterated to the end of the collection
 		 *
 		 * @return boolean FALSE if there's nothing more to iterate over
-		 */ 
+		 */
 		public function valid()
 		{
 			if ($this -> Handle)

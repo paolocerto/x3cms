@@ -11,7 +11,7 @@
 // area SEO form
 
 // build the form
-$fields = array();
+$fields = [];
 $fields[] = array(
     'label' => null,
     'type' => 'hidden',
@@ -25,6 +25,21 @@ $fields[] = array(
     'value' => '<div class="relative w-full mx-auto px-6 py-6 overflow-hidden bg-white">'
 );
 
+$xdata = '{
+    activeAccordion: \'\',
+    setActiveAccordion(id) {
+        this.activeAccordion = (this.activeAccordion == id) ? \'\' : id
+    }
+}';
+
+$fields[] = array(
+    'label' => null,
+    'type' => 'html',
+    'value' => '<div x-data="'.$xdata.'"
+            class="relative w-full mx-auto overflow-hidden font-normal divide-y divide-gray-200 rounded-md"
+        >'
+);
+
 $c = 0;
 // for each enabled language
 foreach ($items as $i)
@@ -32,12 +47,25 @@ foreach ($items as $i)
     $fields[] = array(
         'label' => null,
         'type' => 'html',
-        'value' => '<div x-data="{ open: false }" class="cursor-pointer group">
-        <button @click="open = !open" class="bg2 rounded flex items-center justify-between w-full p-4 text-left select-none mb-1">
+        'value' => '<div x-data="{ id: $id(\'accordion\') }" class="cursor-pointer group">
+        <button @click="setActiveAccordion(id)" class="bg2 rounded flex items-center justify-between w-full p-4 text-left select-none mb-1">
             <span>'.ucfirst($i->language).'</span>
-            <svg class="w-4 h-4 duration-200 ease-out" :class="{ \'rotate-180\': open }" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            <svg
+                class="w-4 h-4
+                duration-200 ease-out"
+                :class="{ \'rotate-180\': activeAccordion==id }"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+            >
+                <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
         </button>
-        <div x-show="open" @click.away="open = false" x-transition:enter.duration.300ms x-transition:leave.duration.50ms x-cloak>
+        <div x-show="activeAccordion==id" x-collapse x-cloak>
             <div class="p-4 pt-0">'
     );
 
@@ -80,5 +108,5 @@ foreach ($items as $i)
 $fields[] = array(
     'label' => null,
     'type' => 'html',
-    'value' => '</div>'
+    'value' => '</div></div>'
 );

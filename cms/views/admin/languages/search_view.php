@@ -70,7 +70,7 @@ if ($items)
 			if ($i->level == 4)
 			{
 				$delete = '<a class="btl" href="'.BASE_URL.'dictionary/set/xlock/'.$i->id.'/'.(($i->xlock+1)%2).'" title="'._STATUS.' '.$lock.'"><i class="fas fa-'.$lock_status.' fa-lg"></i></a>
-					<a class="bta" href="'.BASE_URL.'dictionary/delete/'.$i->id.'" title="'._STATUS.'"><i class="fas fa-trash fa-lg red"></i></a>';
+					<a class="bta" href="'.BASE_URL.'dictionary/delete/'.$i->id.'" title="'._STATUS.'"><i class="fas fa-trash fa-lg warn"></i></a>';
 			}
 		}
 

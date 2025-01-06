@@ -88,7 +88,7 @@ else
                 echo '<tr>
                         <td class="w-6">'.$area.'</td>
                         <td><strong>'.$i->name.'</strong> <span class="xs-hidden"> - '.$i->description.'</span></td>
-                        <td class="space-x-2 text-right">'.$actions.$uninstall.'</td>
+                        <td class="text-right">'.$actions.$uninstall.'</td>
                         </tr>';
             }
             else
@@ -115,7 +115,7 @@ else
             echo '<tr>
                     <td></td>
                     <td>'.$name.'</td>
-                    <td class="space-x-2 text-right">'.$install.'</td>
+                    <td class="text-right">'.$install.'</td>
                 </tr>';
         }
     }

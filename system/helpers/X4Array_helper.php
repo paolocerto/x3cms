@@ -20,12 +20,11 @@ class X4Array_helper
 	 */
 	public static function simplearray2obj(array $array, string $val = 'value', string $opt = 'option') : array
 	{
-		$a = array();
+		$a = [];
 		foreach ($array as $i)
 		{
 			$a[] = array('value' => $i, 'option' => $i);
 		}
-
 		return self::array2obj($a, 'value', 'option');
 	}
 
@@ -34,13 +33,12 @@ class X4Array_helper
 	 */
 	public static function sequentialarray2obj(array $array) : array
 	{
-		$a = array();
+		$a = [];
 		foreach ($array as $k => $v)
 		{
 			$a[] = array('value' => $k, 'option' => $v);
 		}
-
-		return self::array2obj($a, 'value', 'option');
+		return self::array2obj($a, 'value', 'option', true);
 	}
 
 	/**
@@ -48,7 +46,7 @@ class X4Array_helper
 	 */
 	public static function array2obj(array $array, mixed $val = null, mixed $opt = null, bool $assoc = false) : array
 	{
-		$o = array();
+		$o = [];
 		if (is_null($opt) || is_null($val))
 		{
 			if (!$assoc && array_values($array) === $array)
@@ -85,7 +83,7 @@ class X4Array_helper
 	 */
 	public static function obj2array(array $array, string $key, string $value) : array
 	{
-		$a = array();
+		$a = [];
 		if (empty($key))
 		{
 			foreach ($array as $i)
@@ -109,7 +107,7 @@ class X4Array_helper
 	 */
 	public static function str2array(string $str, string $row_sep = '§', string $value_sep = '|', array $fields = []) : array
 	{
-		$a = array();
+		$a = [];
 		$rows = explode($row_sep, $str);
 		foreach ($rows as $r)
 		{
@@ -161,7 +159,7 @@ class X4Array_helper
 	 */
 	public static function array2str(array $array, string $row_sep = '§', string $value_sep = '|') : string
 	{
-		$rows = array();
+		$rows = [];
 		foreach ($array as $k => $v)
 		{
 		    $rows[] = $k.$value_sep.str_replace(array('<span class="AM">', '<', '>', '"'), array('<spam>', 'XLTX', 'XGTX', 'XQTX'), $v);
@@ -174,7 +172,7 @@ class X4Array_helper
 	 */
 	public static function indicize(array $array, string $indexes) : array
 	{
-		$a = array();
+		$a = [];
 		$ii = explode(':', $indexes);
 		if (is_array($array))
 		{
@@ -187,7 +185,7 @@ class X4Array_helper
 				else
 				{
 					// to handle null values
-					$fi = array();
+					$fi = [];
 					foreach ($ii as $tmp)
 					{
 						$fi[] = (is_null($i->$tmp))
@@ -203,12 +201,70 @@ class X4Array_helper
 		return $a;
 	}
 
+    /**
+	 * Indicize array creating sub arrays for each value of index
+	 */
+	public static function indicize2array(array $array, string $index) : array
+	{
+		$a = [];
+		if (is_array($array))
+		{
+			foreach ($array as $i)
+			{
+                if (!isset($a[$i->$index]))
+                {
+                    $a[$i->$index] = [];
+                }
+				$a[$i->$index][] = $i;
+			}
+		}
+		return $a;
+	}
+
+    /**
+     * From json iDs array to array of strings
+     */
+    public static function ids2strings(array $items, string $ids, string $title = 'title') : array
+	{
+		$a = [];
+		if (!empty($ids) && $ids != '[""]' && !empty($items))
+		{
+            $indexed = X4Array_helper::indicize($items, 'id');
+            $ids = json_decode($ids, true);
+			foreach ($ids as $i)
+			{
+                if (isset($indexed[$i]))
+                {
+                    $a[$i] = $indexed[$i]->$title;
+                }
+			}
+		}
+		return $a;
+	}
+
+    /**
+     * From json array to associative array
+     */
+    public static function json2assoc(string $json, string $key = 'id', $value = 'title') : array
+	{
+		$a = [];
+		if (!empty($json) && $json != '[""]')
+		{
+            $items = json_decode($json);
+			foreach ($items as $i)
+			{
+                $a[$i->$key] = $i->$value;
+			}
+		}
+		return $a;
+	}
+
 	/**
 	 * Extract from array by index
 	 */
 	public static function extractize(array $array, string $index) : array
 	{
-		$a = array();
+		$a = [];
 		foreach ($array as $i)
 		{
 		    // to handle null values

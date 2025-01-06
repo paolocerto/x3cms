@@ -13,8 +13,14 @@
 $xdata = '{
     xfilter: "",
     xsetter: -1,
-    filter(str) {
-        return (this.xfilter == "" || str.includes(this.xfilter));
+    xonly: false,
+    filter(id) {
+        let v = 1;
+        if (this.xonly) {
+            v = document.getElementById(id).value;
+            return v > 0;
+        }
+        return (this.xfilter == "" || id.includes(this.xfilter));
     },
     setter() {
         if (this.xsetter != -1) {
@@ -34,7 +40,7 @@ $xdata = '{
 $tmp = array_pop($levels);
 
 // build the form
-$fields = array();
+$fields = [];
 
 $fields[] = array(
     'label' => null,
@@ -58,7 +64,7 @@ $fields[] = array(
 $fields[] = array(
     'label' => null,
     'type' => 'html',
-    'value' => '<div class="grid grid-cols-1 md:grid-cols-2 gap-4"><div>'
+    'value' => '<div class="grid grid-cols-1 md:grid-cols-2 gap-x-4"><div>'
 );
 
 $fields[] = array(
@@ -72,7 +78,7 @@ $fields[] = array(
 $fields[] = array(
     'label' => null,
     'type' => 'html',
-    'value' => '</div><div>'
+    'value' => '</div><div class="grid grid-cols-1 md:grid-cols-2 gap-x-4"><div>'
 );
 
 $fields[] = array(
@@ -87,7 +93,22 @@ $fields[] = array(
 $fields[] = array(
     'label' => null,
     'type' => 'html',
-    'value' => '</div>'
+    'value' => '</div><div>'
+);
+
+$fields[] = array(
+    'label' => _SHOW_ONLY_WITH_PRIVS,
+    'type' => 'checkbox',
+    'value' => 1,
+    'name' => 'all',
+    'checked' => 0,
+    'extra' => 'x-model="xonly"'
+);
+
+$fields[] = array(
+    'label' => null,
+    'type' => 'html',
+    'value' => '</div></div>'
 );
 
 foreach ($types as $i)

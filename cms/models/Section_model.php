@@ -190,6 +190,7 @@ class Section_model extends X4Model_core
                             'id_page' => $id_page,
                             'progressive' => $i,
                             'settings' => json_encode($settings['s'.$i]),
+                            'articles' => '[]',
                             'xon' => 1
                         );
                         $result = $this->insert($post);
@@ -226,7 +227,7 @@ class Section_model extends X4Model_core
 	 */
 	public function compose(array $sections) : array
 	{
-		$a = array();
+		$a = [];
 		foreach ($sections as $i)
 		{
 			// get existing sections
@@ -258,7 +259,7 @@ class Section_model extends X4Model_core
 	 */
 	public function get_pages_by_bid(string $bid) : array
 	{
-		return $this->db->query('SELECT id_page FROM sections WHERE articles LIKE '.$this->db->escape('%'.$bid.'%'));
+		return $this->db->query('SELECT id_page FROM sections WHERE JSON_CONTAINS(articles, \'one\', '.$this->db->escape($bid).')');
 	}
 
 	/**
@@ -371,6 +372,7 @@ class Section_obj
 	public $name;
 	public $progressive = 1;
 	public $settings = '';
+    public $articles = '[]';
     public $xlock = 0;
 
 	/**

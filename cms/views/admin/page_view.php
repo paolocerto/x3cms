@@ -12,11 +12,11 @@ defined('ROOT') or die('No direct script access.');
 // page view
 ?>
 <div id="actions-bar" class="flex">
-    <div class="flex-auto px-4 py-3 text-sm text-gray-600">
+    <div class="flex-1 px-4 py-3 text-sm text-gray-600">
         <?php echo X4Theme_helper::navbar($breadcrumb, ' . ') ?>
     </div>
 
-    <div class="flex-auto px-6 py-3 text-sm text-gray-600 ">
+    <div class="flex-1 px-6 py-3 text-sm text-gray-600 ">
         <div class="text-right space-x-2">
             <?php echo $actions ?>
         </div>
@@ -27,10 +27,20 @@ defined('ROOT') or die('No direct script access.');
     id="topic"
     class="px-4 md:px-8 py-3 md:py-5 bg-white rounded-l"
 >
-    <?php echo $content ?>
-
-
 <?php
+
+if (MULTILANGUAGE && isset($url))   // isset($id_area) && isset($lang) &&
+{
+    echo AdminUtils_helper::lang_switcher($id_area, $lang, $url);
+}
+
+if (MULTIAREA && isset($areas) && sizeof($areas) > 1 && isset($url))  // isset($id_area) && isset($lang) &&
+{
+    echo AdminUtils_helper::area_switcher($id_area, $lang, $areas, $url);
+}
+
+    echo $content;
+
 if (DEBUG || DEVEL)
 {
     echo X4Bench_core::info('<p class="text-center text-xs mt-8">X4WebApp v. {x4wa_version} &copy; Cblu.net - execution time: {execution_time} - memory usage: {memory_usage} - queries: {queries} - included files: {included_files}</p>');
@@ -39,7 +49,7 @@ if (DEBUG || DEVEL)
     <button
             type="button"
 
-            class="btn link fixed focus:outline-none bottom-6 right-6 md:bottom-20 md:right-6 text-xl md:text-4xl"
+            class="btn link fixed focus:outline-none bottom-6 right-6 md:bottom-20 md:right-6 text-xl md:text-4xl z-50"
             x-show="go_top"
             @click="scrollToItem('working')"
             x-cloak

@@ -8,48 +8,11 @@
  * @package		X3CMS
  */
 
-$xdata = '{
-    open: true,
-    nc: parseInt(document.getElementById("old_cols_num").value),
-    setup() {
-        this.checkSize();
-        var bg = new JSColor("#bgcolor");
-        var fg = new JSColor("#fgcolor");
-
-        for (var i = 0; i < this.nc; i++) {
-            eval("var bg"+i+"= new JSColor(\"#bg"+i+"\");");
-            eval("var fg"+i+"= new JSColor(\"#fg"+i+"\");");
-        }
-    },
-    checkSize() {
-        // using x-model values do not update
-        var columns = document.getElementById("columns").value;
-        var sizes = document.getElementById("col_sizes").value;
-
-        document.getElementById("col_sizes").classList.remove("softwarn");
-        document.getElementById("rotide").disabled = false;
-        // this.cleanSizes();
-        let tmp = sizes.replace(/[^1-5+]/gi, "");
-        let lastChar = tmp.slice(-1);
-        if (lastChar === "+") {
-            tmp = tmp.substring(0, tmp.length - 1);
-        }
-        sizes = tmp;
-        // end clean sizes
-        if (sizes != "") {
-            eval("n=parseInt("+sizes+");");
-            if (n != parseInt(columns)) {
-                document.getElementById("col_sizes").classList.add("softwarn");
-                document.getElementById("rotide").disabled = true;
-            }
-        }
-    }
-}';
 
 // build the form
-$fields = array();
-$file_array = array();
-$js_array = array();
+$fields = [];
+$file_array = [];
+$js_array = [];
 
 $fields[] = array(
     'label' => null,
@@ -106,7 +69,7 @@ $options = array(
 if ($_SESSION['level'] < 3)
 {
     // display settings
-    $tmp = array();
+    $tmp = [];
     foreach ($settings as $k => $v)
     {
         $tmp[] = '<li><b>'.$options[$k].'</b>: '.$v.'</li>';
@@ -131,6 +94,21 @@ else
         }
     }
 
+    $accordion_xdata = '{
+        activeAccordion: \'\',
+        setActiveAccordion(id) {
+            this.activeAccordion = (this.activeAccordion == id) ? \'\' : id
+        }
+    }';
+
+    $fields[] = array(
+        'label' => null,
+        'type' => 'html',
+        'value' => '<div x-data="'.$accordion_xdata.'"
+                class="relative w-full mx-auto overflow-hidden font-normal divide-y divide-gray-200 rounded-md"
+            >'
+    );
+
     // sort by model to grant order
     foreach ($mod_settings as $k => $v)
     {
@@ -138,22 +116,66 @@ else
         {
             case 'columns':
 
-                $fields[] = array(
-                    'label' => null,
-                    'type' => 'html',
-                    'value' => '<br><div class="relative w-full mx-auto overflow-hidden">'
-                );
+                $xdata = '{
+                    nc: parseInt(document.getElementById("old_cols_num").value),
+                    setup() {
+                        this.checkSize();
+                        var bg = new JSColor("#bgcolor");
+                        var fg = new JSColor("#fgcolor");
+
+                        for (var i = 0; i < this.nc; i++) {
+                            eval("var bg"+i+"= new JSColor(\"#bg"+i+"\");");
+                            eval("var fg"+i+"= new JSColor(\"#fg"+i+"\");");
+                        }
+                    },
+                    checkSize() {
+                        // using x-model values do not update
+                        var columns = document.getElementById("columns").value;
+                        var sizes = document.getElementById("col_sizes").value;
+
+                        document.getElementById("col_sizes").classList.remove("softwarn");
+                        document.getElementById("rotide").disabled = false;
+                        // this.cleanSizes();
+                        let tmp = sizes.replace(/[^1-5+]/gi, "");
+                        let lastChar = tmp.slice(-1);
+                        if (lastChar === "+") {
+                            tmp = tmp.substring(0, tmp.length - 1);
+                        }
+                        sizes = tmp;
+                        // end clean sizes
+                        if (sizes != "") {
+                            eval("n=parseInt("+sizes+");");
+                            if (n != parseInt(columns)) {
+                                document.getElementById("col_sizes").classList.add("softwarn");
+                                document.getElementById("rotide").disabled = true;
+                            }
+                        }
+                    }
+                }';
 
                 $fields[] = array(
                     'label' => null,
                     'type' => 'html',
-                    'value' => '<div x-data=\''.$xdata.'\' x-init="setup()">
-                    <button @click="open = !open" class="cursor-pointer bg2 rounded flex items-center justify-between w-full p-4 text-left select-none mb-1">
+                    'value' => '<div x-data="{ id: $id(\'accordion\') }">
+                    <button @click="setActiveAccordion(id)" class="cursor-pointer bg2 rounded flex items-center justify-between w-full p-4 text-left select-none mb-1">
                         <span>'._SECTION_SETTINGS.': '._SECTION_COL_SIZES.'</span>
-                        <svg class="w-4 h-4 duration-200 ease-out" :class="{ \'rotate-180\': open }" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        <svg
+                            class="w-4 h-4
+                            duration-200 ease-out"
+                            :class="{ \'rotate-180\': activeAccordion==id }"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
                     </button>
-                    <div x-show="open" x-transition:enter.duration.300ms x-transition:leave.duration.50ms x-cloak>
-                        <div class="p-4 pt-0">'
+                    <div x-show="activeAccordion==id" x-collapse x-cloak>
+                        <div x-data=\''.$xdata.'\' x-init="setup()" class="p-4 pt-0">'
                 );
 
                 $nc = sizeof(explode('+', $settings['col_sizes']));
@@ -167,7 +189,7 @@ else
                 $fields[] = array(
                     'label' => null,
                     'type' => 'html',
-                    'value' => '<div class="grid grid-cols-1 md:grid-cols-2 gap-4">'
+                    'value' => '<div class="grid grid-cols-1 md:grid-cols-2 gap-x-4">'
                 );
 
                 $fields[] = array(
@@ -233,19 +255,32 @@ else
                 $fields[] = array(
                     'label' => null,
                     'type' => 'html',
-                    'value' => '<div x-data="{ open: false }">
-                    <button @click="open = !open" class="cursor-pointer bg2 rounded flex items-center justify-between w-full p-4 text-left select-none mb-1">
+                    'value' => '<div x-data="{ id: $id(\'accordion\') }">
+                    <button @click="setActiveAccordion(id)" class="cursor-pointer bg2 rounded flex items-center justify-between w-full p-4 text-left select-none mb-1">
                         <span>'._SECTION_SETTINGS.': '._SECTION_SIZES_AND_COLORS.'</span>
-                        <svg class="w-4 h-4 duration-200 ease-out" :class="{ \'rotate-180\': open }" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        <svg
+                            class="w-4 h-4
+                            duration-200 ease-out"
+                            :class="{ \'rotate-180\': activeAccordion==id }"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
                     </button>
-                    <div x-show="open" x-transition:enter.duration.300ms x-transition:leave.duration.50ms x-cloak>
+                    <div x-show="activeAccordion==id" x-collapse x-cloak>
                         <div class="p-4 pt-0">'
                 );
 
                 $fields[] = array(
                     'label' => null,
                     'type' => 'html',
-                    'value' => '<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    'value' => '<div class="grid grid-cols-1 md:grid-cols-2 gap-x-4">
                         <div>'
                 );
 
@@ -489,12 +524,25 @@ else
                 $fields[] = array(
                     'label' => null,
                     'type' => 'html',
-                    'value' => '<div x-data="{ open : false }">
-                    <button @click="open = !open" class="cursor-pointer bg2 rounded flex items-center justify-between w-full p-4 text-left select-none mb-1">
+                    'value' => '<div x-data="{ id: $id(\'accordion\') }">
+                    <button @click="setActiveAccordion(id)" class="cursor-pointer bg2 rounded flex items-center justify-between w-full p-4 text-left select-none mb-1">
                         <span>'._SECTION_SETTINGS.': '._SECTION_COLUMNS_STYLE.'</span>
-                        <svg class="w-4 h-4 duration-200 ease-out" :class="{ \'rotate-180\': open }" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        <svg
+                            class="w-4 h-4
+                            duration-200 ease-out"
+                            :class="{ \'rotate-180\': activeAccordion==id }"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
                     </button>
-                    <div x-show="open" @click.away="open = false" x-transition:enter.duration.300ms x-transition:leave.duration.50ms x-cloak>
+                    <div x-show="activeAccordion==id" x-collapse x-cloak>
                         <div class="p-4 pt-0">'
                 );
 

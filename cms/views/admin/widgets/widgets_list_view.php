@@ -16,14 +16,14 @@ if ($items)
         <thead>
 	        <tr>
                 <th>'._WIDGETS_ITEMS.'</th>
-                <th class="w-20">'._ACTIONS.'</th>
+                <th class="w-28">'._ACTIONS.'</th>
             </tr>
         </thead>
     </table>
 	<div x-data="xsortable()" x-init="setup(\'sortable\', \'widgets/ordering\')">
         <div id="sortable">';
 
-	$order = array();
+	$order = [];
 	$n = sizeof($items);
 	foreach ($items as $i)
 	{
@@ -34,7 +34,7 @@ if ($items)
 
 		echo '<div class="sort-item" id="'.$i->id.'"><table class="my-0"><tr>
                 <td>'.$i->area._TRAIT_.'<b>'.$i->description.'</b></td>
-                <td class="w-20 space-x-2 text-right">'.$actions.'</td>
+                <td class="w-28 text-right">'.$actions.'</td>
             </tr>
         </table></div>';
 

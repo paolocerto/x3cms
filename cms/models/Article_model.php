@@ -89,7 +89,7 @@ class Article_model extends X4Model_core
 		$where = '';
 		if (!empty($qs['xstr']))
 		{
-			$w = array();
+			$w = [];
 			$tok = explode(' ', urldecode($qs['xstr']));
 			foreach ($tok as $i)
 			{
@@ -117,6 +117,7 @@ class Article_model extends X4Model_core
         {
             $where .= ' AND xkeys = '.$this->db->escape($qs['xkey']);
         }
+
         if ($qs['xcnt'] >= 0)
         {
             $where .= ' AND code_context = '.intval($qs['xcnt']);
@@ -396,7 +397,7 @@ class Article_model extends X4Model_core
 	 */
 	public function delete_by_bid(int $id_area, string $lang, string $bid) : array
 	{
-		$sql = array();
+		$sql = [];
 		// delete from sections
 		$sql[] = 'UPDATE sections SET articles = REPLACE(articles, '.$this->db->escape('|'.$bid.'|').', \'|\' ) WHERE id_area = '.$id_area.' AND lang = '.$this->db->escape($lang);
 		$sql[] = 'UPDATE sections SET articles = REPLACE(articles, '.$this->db->escape($bid.'|').', \'\' )  WHERE id_area = '.$id_area.' AND lang = '.$this->db->escape($lang);
@@ -477,7 +478,7 @@ class Article_model extends X4Model_core
 			ORDER BY a.date_in DESC, a.id DESC
 			');
 
-		$a = array();
+		$a = [];
 		foreach ($tags as $i)
 		{
 			$tmp = explode(',', $i->tags);
@@ -513,7 +514,7 @@ class Article_model extends X4Model_core
                 ) b ON b.id = a.id AND b.bid = a.bid
 			JOIN contexts c ON c.id_area = a.id_area AND c.lang = a.lang AND c.code = a.code_context AND c.xkey = '.$this->db->escape($context).'
 			ORDER BY a.xkeys ASC');
-		$a = array();
+		$a = [];
 		foreach ($ctgs as $i)
 		{
 			$a[] = trim(strtolower($i->category));

@@ -12,7 +12,7 @@
 
 echo '<h1 class="mt-6">'.$page->icon.' '._LANGUAGES_MANAGER.'</h1>';
 
-if (empty($langs))
+if (empty($languages))
 {
     // user cannot see this contents
     echo '<p>'._NOT_PERMITTED.'</p>';
@@ -24,12 +24,12 @@ else
         <tr>
             <th class="w-4"></th>
             <th class="text-left pl-4">'.ucfirst(_LANGUAGE).'</th>
-            <th class="w-36">'._ACTIONS.'</th>
+            <th class="w-40">'._ACTIONS.'</th>
         </tr>
     </thead>
     <tbody>';
 
-	foreach ($langs as $i)
+	foreach ($languages as $i)
 	{
         $statuses = AdminUtils_helper::statuses($i);
 		$actions = '';
@@ -58,7 +58,7 @@ else
 		echo '<tr>
 				<td><strong>['.$i->code.']</strong></td>
 				<td><a class="link" @click="pager(\''.BASE_URL.'dictionary/keys/'.$i->code.'\')" title="'._SHOW_LANG_KEYS.'">'.$i->language.'</a></td>
-                <td class="space-x-2 text-right">'.$actions.'</td>
+                <td class="text-right">'.$actions.'</td>
             </tr>';
     }
     echo '</tbody>

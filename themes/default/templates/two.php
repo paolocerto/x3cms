@@ -225,7 +225,7 @@ else
     $index = 0;
 
     // extra css rules
-    $css = array();
+    $css = [];
 
 
     echo '<div class="small_container mx-auto">

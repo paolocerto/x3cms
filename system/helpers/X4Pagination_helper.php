@@ -172,7 +172,7 @@ class X4Pagination_helper
 			? ''
 			: '?'.X4Route_core::$query_string;
 
-		$link = array();
+		$link = [];
 
 		// previous
 		$link[0] = ($info[1] > 0)

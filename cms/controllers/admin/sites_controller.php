@@ -49,7 +49,7 @@ class Sites_controller extends X3ui_controller
 		$view->actions = AdminUtils_helper::link(
             'memo',
             'sites:'.$page->lang,
-            [],
+            $this->memo('sites:'.$page->lang, $_SESSION['xuid']),
             _MEMO
         );
 
@@ -86,7 +86,7 @@ class Sites_controller extends X3ui_controller
 		$view->actions = AdminUtils_helper::link(
                 'memo',
                 'sites:'.$page->lang,
-                [],
+                $this->memo('sites:'.$page->lang, $_SESSION['xuid']),
                 _MEMO
             ).$this->actions();
 
@@ -104,20 +104,15 @@ class Sites_controller extends X3ui_controller
 	 */
 	public function set(string $what, int  $value = 0) : void
 	{
-		$msg = null;
-		// check permissions
 		$msg = AdminUtils_helper::chk_priv_level(1, 'sites', $this->site->data->id, 'xlock');
 		if (is_null($msg))
 		{
-			// do action
 			$plugin = new X4Plugin_model();
 			$result = $plugin->update_param_by_name(1, 'site', $what, $value);
 
-			// set message
 			$this->dict->get_words();
 			$msg = AdminUtils_helper::set_msg($result);
 
-			// set update
 			if ($result[1])
 			{
 				$msg->update = array(
@@ -136,20 +131,14 @@ class Sites_controller extends X3ui_controller
 	{
 	    $this->dict->get_words();
 
-		$msg = null;
-		// check permissions
 		$msg = AdminUtils_helper::chk_priv_level(1, 'sites', $id, 'xlock');
 		if (is_null($msg))
 		{
-			// do action
 			$result = $this->site->update($id, array('xon' => $value));
-			// clear cache
 			APC && apcu_clear_cache();
 
-			// set message
 			$msg = AdminUtils_helper::set_msg($result);
 
-			// set update
 			if ($result[1])
             {
 				$msg->update = array(
@@ -166,12 +155,10 @@ class Sites_controller extends X3ui_controller
 	 */
 	public function config(int $id) : void
 	{
-		// load dictionaries
 		$this->dict->get_wordarray(array('sites', 'form'));
 
 		$mod = new Site_model();
 
-		// get params
 		$params = $mod->get_params($id);
         // not initialized?
 		if (empty($params))
@@ -180,16 +167,13 @@ class Sites_controller extends X3ui_controller
 		}
 		$site = $mod->get_by_id($id);
 
-		// build the form
 		$form_fields = new X4Form_core('site/site_config');
 		$form_fields->id = $id;
 		$form_fields->site = $site;
         $form_fields->params = $params;
 
-		// get the fields array
 		$fields = $form_fields->render();
 
-		// if submitted
 		if (X4Route_core::$post)
 		{
 			$e = X4Validation_helper::form($fields, 'editor');
@@ -207,9 +191,7 @@ class Sites_controller extends X3ui_controller
         $view = new X4View_core('modal');
 		$view->title = _SITE_CONFIG.': '.$site->domain;
 
-        // contents
         $view->content = new X4View_core('editor');
-		// form builder
 		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
             '@click="submitForm(\'editor\')"');
 
@@ -221,8 +203,6 @@ class Sites_controller extends X3ui_controller
 	 */
 	private function configure(array $_post) : void
 	{
-		$msg = null;
-		// check permission
 		$msg = AdminUtils_helper::chk_priv_level(1, 'sites', $_post['id'], 'edit');
 		if (is_null($msg))
 		{
@@ -232,7 +212,7 @@ class Sites_controller extends X3ui_controller
 			$params = $mod->get_params($_post['id']);
 
 			// build update array
-			$sql = array();
+			$sql = [];
 			foreach ($params as $i)
 			{
 				// handle _post
@@ -256,15 +236,12 @@ class Sites_controller extends X3ui_controller
                 }
 			}
 
-			// do update
 			$plugin = new X4Plugin_model();
 			$result = $plugin->update_param($sql);
 			APC && apcu_delete(SITE.'param'.$_post['id']);
 
-			// set message
 			$msg = AdminUtils_helper::set_msg($result);
 
-			// set what update
 			if ($result[1])
 			{
 				$msg->update = array(
@@ -281,12 +258,10 @@ class Sites_controller extends X3ui_controller
 	 */
 	public function edit($id = 0) : void
 	{
-		// load dictionary
 		$this->dict->get_wordarray(array('form', 'sites'));
 
         $mod = new Site_model();
 
-		// get object
 		$site = ($id)
 		    ? $mod->get_by_id($id)
 		    : new Obj_site();
@@ -295,10 +270,8 @@ class Sites_controller extends X3ui_controller
         $form_fields->id = $id;
         $form_fields->site = $site;
 
-        // get the fields array
-		$fields = $form_fields->render();
+       $fields = $form_fields->render();
 
-		// if submitted
 		if (X4Route_core::$post)
 		{
 			$e = X4Validation_helper::form($fields, 'editor');
@@ -316,11 +289,8 @@ class Sites_controller extends X3ui_controller
 		$view = new X4View_core('modal');
 		$view->title = _EDIT_SITE;
 
-        // contents
         $view->content = new X4View_core('editor');
-        // can user edit?
         $submit = AdminUtils_helper::submit_btn(1, 'sites', $id, 1);
-		// form builder
 		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, $submit, 'buttons'), 'post', '',
             '@click="submitForm(\'editor\')"');
 		$view->render(true);
@@ -331,15 +301,12 @@ class Sites_controller extends X3ui_controller
 	 */
 	private function editing(array $_post) : void
 	{
-		$msg = null;
-		// check permission
 		$msg = $_post['id']
 		    ? AdminUtils_helper::chk_priv_level(1, 'sites', $_post['id'], 'edit')
 		    : AdminUtils_helper::chk_priv_level(1, '_site_creation', $_post['id'], 'create');
 
 		if (is_null($msg))
 		{
-			// handle _post
 			$post = array(
 				'xcode' => X4Utils_helper::slugify($_post['xcode']),
 				'domain' => $_post['domain'],
@@ -350,10 +317,8 @@ class Sites_controller extends X3ui_controller
                 ? $this->site->update($_post['id'], $post)
                 : $this->site->insert($post);
 
-			// set message
 			$msg = AdminUtils_helper::set_msg($result);
 
-			// set what update
 			if ($result[1])
 			{
 				$msg->update = array(
@@ -391,10 +356,8 @@ class Sites_controller extends X3ui_controller
 	 */
 	public function clear_apc() : void
 	{
-		// clear cache
 		APC && apcu_clear_cache();
 
-		// set message
 		$this->dict->get_words();
 		$msg = AdminUtils_helper::set_msg(true);
 		$msg->update = array(

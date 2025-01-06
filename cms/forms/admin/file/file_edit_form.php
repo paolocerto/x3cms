@@ -11,7 +11,7 @@
 // file edit form
 
 // build the form
-$fields = array();
+$fields = [];
 $fields[] = array(
     'label' => null,
     'type' => 'hidden',
@@ -43,8 +43,8 @@ switch ($file->xtype)
     case 0:
         // image
         $folder = X4Files_helper::get_type_by_name($file->name, true);
-        $action = (file_exists(APATH.'files/'.SPREFIX.'/filemanager/img/'.$file->name))
-            ? '<div class="grid grid-cols-1 md:grid-cols-2 gap-4"><div>
+        $action = (file_exists(FFPATH.SPREFIX.'/filemanager/img/'.$file->name))
+            ? '<div class="grid grid-cols-1 md:grid-cols-2 gap-x-4"><div>
                     <img class="thumb" src="'.FPATH.$folder.'/'.$file->name.'?t='.time().'" alt="'.$file->alt.'" />
                 </div><div>
                     <a class="link" @click="pager(\''.BASE_URL.'files/editor/'.$file->id.'\');modal=false" title="'._IMAGE_EDIT.'"><i class="fa-solid fa-file-image fa-lg"></i> '._IMAGE_EDIT.'</a>
@@ -53,7 +53,7 @@ switch ($file->xtype)
         break;
     case 2:
         // video
-        $action = (file_exists(APATH.'files/'.SPREFIX.'/filemanager/media/'.$file->name))
+        $action = (file_exists(FFPATH.SPREFIX.'/filemanager/media/'.$file->name))
             ? '<div class="w-full">
                     <a class="link" @click="pager(\''.BASE_URL.'files/editor/'.$file->id.'\')" title="'._VIDEO_EDIT.'"><i class="fa-solid fa-file-video fa-lg"></i> '._VIDEO_EDIT.'</a>
                 </div>'
@@ -61,7 +61,7 @@ switch ($file->xtype)
         break;
     case 3:
         // template
-        $action = (file_exists(APATH.'files/'.SPREFIX.'/filemanager/template/'.$file->name))
+        $action = (file_exists(FFPATH.SPREFIX.'/filemanager/template/'.$file->name))
             ? '<div class="w-full">
                 <a class="link" @click="pager(\''.BASE_URL.'files/editor/'.$file->id.'\')" title="'._TEMPLATE_EDIT.'"><i class="fa-solid fa-file-code fa-lg"></i> '._TEMPLATE_EDIT.'</a>
             </div>'
@@ -69,7 +69,7 @@ switch ($file->xtype)
         break;
     default:
         // generic files
-        $ext = pathinfo(APATH.'files/'.SPREFIX.'/filemanager/files/'.$file->name, PATHINFO_EXTENSION);
+        $ext = pathinfo(FFPATH.SPREFIX.'/filemanager/files/'.$file->name, PATHINFO_EXTENSION);
         if ($ext == 'txt' || $ext == 'csv')
         {
             $action = '<p><a class="link" @click="pager(\''.BASE_URL.'files/editor/'.$file->id.'\')" title="'._TEXT_EDIT.'"><i class="fa-solid fa-file-alt fa-lg"></i> '._TEXT_EDIT.'</a></p>';
@@ -90,7 +90,7 @@ $fields[] = array(
 $fields[] = array(
     'label' => null,
     'type' => 'html',
-    'value' => '<div class="grid grid-cols-1 md:grid-cols-2 gap-4"><div>'
+    'value' => '<div class="grid grid-cols-1 md:grid-cols-2 gap-x-4"><div>'
 );
 
 $fields[] = array(

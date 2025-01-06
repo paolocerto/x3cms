@@ -1,11 +1,14 @@
 .htaccess
 cms/config/*
-cms/files
 cms/files/*
 
 # Global to ignore
 DOCS/*
 composer.lock
+public/files/x3_/*
+public/node_modules/*
+public/package-lock.json
+public/robot.txt
 vendor/*
 
 # Trash boxes

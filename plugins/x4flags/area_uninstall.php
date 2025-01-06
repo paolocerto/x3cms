@@ -11,8 +11,8 @@
 // x4flags area_uninstall
 
 $mod_name = 'x4flags';
-$required = array();
-$sql = array();
+$required = [];
+$sql = [];
 
 $a = new Area_model();
 $area = $a->get_by_id($plugin->id_area);

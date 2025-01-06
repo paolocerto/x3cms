@@ -40,11 +40,11 @@ class X4Utils_helper
                 switch ($users_table)
                 {
                     case 'users':
-                        $mod = new X4Auth_model($users);
+                        $mod = new X4Auth_model($users_table);
                         $chk = $mod->rehash($_COOKIE[COOKIE.'_hash']);
                         break;
                     default:
-                        $model = ucfirst($users.'_model');
+                        $model = ucfirst($users_table.'_model');
                         $mod = new $model();
                         $chk = $mod->rehash($_COOKIE[COOKIE.'_hash']);
                         break;
@@ -123,7 +123,7 @@ class X4Utils_helper
 		$msg = $dict->get_word($title, 'form');
 		$fields = self::normalize_form($fields);
 
-        $errors = array();
+        $errors = [];
 		foreach ($fields as $i)
 		{
 			if (isset($i['error']))
@@ -145,7 +145,7 @@ class X4Utils_helper
 					{
 						// for related fields
 						$src = array('XXXRELATEDXXX');
-						$rpl = array();
+						$rpl = [];
 
 						$related = $e['related'];
 						if (isset($fields[$related]))
@@ -204,7 +204,7 @@ class X4Utils_helper
 	 */
 	public static function normalize_form(array $array) : array
 	{
-		$a = array();
+		$a = [];
 		foreach ($array as $i)
 		{
 			if (isset($i['name']))
@@ -393,4 +393,67 @@ class X4Utils_helper
 			return $_SERVER['REMOTE_ADDR'];
 		}
 	}
+
+    /**
+     * Build unique code for buyer
+     */
+    public static function UUID(string $name_space, string $string) : string
+    {
+        $n_hex = bin2hex(str_replace(array('-','{','}', ':'), '', $name_space)); // Getting hexadecimal components of namespace
+        $binray_str = ''; // Binary value string
+        //Namespace UUID to bits conversion
+        for($i = 0; $i < strlen($n_hex); $i+=2)
+        {
+            try {
+                $binray_str .= chr(
+                    hexdec($n_hex[$i].$n_hex[$i+1])
+                );
+            }
+            catch (Exception $e)
+            {
+                echo $e->getMessage('Wrong string is '.$n_hex[$i].$n_hex[$i+1]);
+                die;
+            }
+
+        }
+        //hash value
+        $hashing = sha1($binray_str . $string);
+
+        return sprintf('%08s-%04s-%04x-%04x-%12s',
+          // 32 bits for the time_low
+          substr($hashing, 0, 8),
+          // 16 bits for the time_mid
+          substr($hashing, 8, 4),
+          // 16 bits for the time_hi,
+          (hexdec(substr($hashing, 12, 4)) & 0x0fff) | 0x5000,
+          // 8 bits and 16 bits for the clk_seq_hi_res,
+          // 8 bits for the clk_seq_low,
+          (hexdec(substr($hashing, 16, 4)) & 0x3fff) | 0x8000,
+          // 48 bits for the node
+          substr($hashing, 20, 12)
+        );
+    }
+
+    /**
+     * Set buyer
+     */
+    public static function buyer(bool $force = false, string $buyer = '') : void
+    {
+        if (!empty($buyer))
+        {
+            // external buyer
+            $_SESSION['buyer'] = $buyer;
+		    setcookie(COOKIE, $_SESSION['buyer'], time()+(86400*15), '/');
+        }
+        elseif (!$force && isset($_COOKIE[COOKIE]))
+        {
+            // from previous visit
+            $_SESSION['buyer'] = $_COOKIE[COOKIE];
+        }
+        else
+        {
+            $_SESSION['buyer'] = self::UUID(SALT, time().$_SERVER['REMOTE_ADDR'].mt_rand());
+            setcookie(COOKIE, $_SESSION['buyer'], time()+(86400*15), '/');
+        }
+    }
 }

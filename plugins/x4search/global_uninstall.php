@@ -11,9 +11,9 @@
 // x4search global_uninstall
 
 $mod_name = 'x4search';
-$required = array();
+$required = [];
 
-$sql = array();
+$sql = [];
 $sql[] = 'DELETE FROM param WHERE xrif = \''.$mod_name.'\'';
 $sql[] = 'DELETE FROM dictionary WHERE what = \''.$mod_name.'\'';
 

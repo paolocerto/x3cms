@@ -41,7 +41,7 @@ class Pages_controller extends X3ui_controller
 	 */
 	public function index(int $id_area, string $lang = '', string $xfrom = 'home') : void
 	{
-	    $area = new Area_model();
+        $area = new Area_model();
 	    list($id_area, $areas) = $area->get_my_areas(0, $id_area);
 
 		// initialize parameters
@@ -49,25 +49,24 @@ class Pages_controller extends X3ui_controller
 			? X4Route_core::$lang
 			: $lang;
 
-		$xfrom = str_replace('§', '/', urldecode($xfrom));
+		$xfrom = str_replace('$', '/', urldecode($xfrom));
 
-		// load dictionary
 		$this->dict->get_wordarray(array('pages', 'sections', 'msg'));
-        // get page
+
         $page = $this->get_page('pages');
 
         $view = new X4View_core('page');
         $view->breadcrumb = array($this->site->get_bredcrumb($page), array('areas' => 'index'));
 		$view->actions = AdminUtils_helper::link(
                 'memo',
-                'pages:'.$lang,
-                [],
+                'pages:'.$page->lang,
+                $this->memo('pages:'.$page->lang, $_SESSION['xuid']),
                 _MEMO
             ).$this->actions($id_area, $lang, $xfrom);
 
 		$view->content = new X4View_core('pages/pages');
         $view->content->page = $page;
-		// content
+
 		$mod = new Page_model($id_area, $lang);
 		$view->content->id_area = $id_area;
 		$view->content->lang = $lang;
@@ -75,20 +74,28 @@ class Pages_controller extends X3ui_controller
 		$view->content->area = $mod->get_var($id_area, 'areas', 'name');
 
 		$obj = $mod->get_page($xfrom);
-		$view->content->from = ($obj)
-			? $obj
-			: new Page_obj($id_area, $lang);
+        $view->content->from = ($obj)
+            ? $obj
+            : new Page_obj($id_area, $lang);
 
-		// pages to show
-		$view->content->pages = $mod->get_pages($xfrom, $view->content->page->deep);
-		// available menus
-		$mod = new Menu_model();
-		$view->content->menus = $mod->get_menus($id_area, '', 'id');
-		// language switcher
+        if (is_object($obj))
+        {
+            // pages to show
+            $view->content->pages = $mod->get_pages($xfrom, $obj->deep);
+            // available menus
+            $mod = new Menu_model();
+            $view->content->menus = $mod->get_menus($id_area, '', 'id');
+        }
+        else
+        {
+            $view->content->pages = [];
+            $view->content->menus = [];
+        }
+
         if (MULTILANGUAGE)
         {
-		    $lang = new Language_model();
-		    $view->content->langs = $lang->get_languages();
+            $mod = new Language_model();
+            $view->content->languages = $mod->get_alanguages($id_area);
         }
 		// area switcher
 		$view->content->areas = $areas;
@@ -101,8 +108,12 @@ class Pages_controller extends X3ui_controller
 	 */
 	private function actions(int $id_area, string $lang, string $xfrom = '') : string
 	{
-		return '<a class="link" @click="popup(\''.BASE_URL.'areas/map/'.$id_area.'/'.$lang.'\')" title="'._SITE_MAP.'"><i class="fa-solid fa-lg fa-location-dot"></i></i></a>
-				<a class="link" @click="popup(\''.BASE_URL.'pages/add/'.$id_area.'/'.$lang.'/'.$xfrom.'\')" title="'._NEW_PAGE.'"><i class="fa-solid fa-lg fa-circle-plus"></i></a>';
+		return '<a class="link" @click="popup(\''.BASE_URL.'areas/map/'.$id_area.'/'.$lang.'\')" title="'._SITE_MAP.'">
+                    <i class="fa-solid fa-lg fa-location-dot"></i>
+                </a>
+				<a class="link" @click="popup(\''.BASE_URL.'pages/add/'.$id_area.'/'.$lang.'/'.$xfrom.'\')" title="'._NEW_PAGE.'">
+                    <i class="fa-solid fa-lg fa-circle-plus"></i>
+                </a>';
 	}
 
 	/**
@@ -110,20 +121,20 @@ class Pages_controller extends X3ui_controller
 	 */
 	public function set(string $what, int $id_area, int $id, int $value = 0) : void
 	{
-		$msg = null;
-		// check permission
 		$msg = AdminUtils_helper::chk_priv_level($id_area, 'pages', $id, $what);
 		if (is_null($msg))
 		{
-			// do action
 			$mod = new Page_model($id_area, X4Route_core::$lang, $id);
 			$result = $mod->update($id, array($what => $value), 'pages');
 
-			// set message
+            if ($what == 'xon' && $result[1])
+            {
+                $mod->update_sitemap($this->site->data->domain, $mod->get_id_area(), $mod->get_lang());
+            }
+
 			$this->dict->get_words();
 			$msg = AdminUtils_helper::set_msg($result);
 
-			// set update
 			$msg->update = array(
 				'element' => 'page',
 				'url' => $_SERVER['HTTP_REFERER']
@@ -137,20 +148,16 @@ class Pages_controller extends X3ui_controller
 	 */
 	public function add(int $id_area, string $lang, string $xfrom) : void
 	{
-		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'pages'));
 
-		// build the form
 		$form_fields = new X4Form_core('page/page_add');
 		$form_fields->id_area = $id_area;
 		$form_fields->lang = $lang;
         $form_fields->xfrom = $xfrom;
         $form_fields->mod = new Page_model($id_area, $lang);
 
-		// get the fields array
 		$fields = $form_fields->render();
 
-		// if submitted
 		if (X4Route_core::$post)
 		{
 			$e = X4Validation_helper::form($fields, 'editor');
@@ -168,9 +175,7 @@ class Pages_controller extends X3ui_controller
         $view = new X4View_core('modal');
         $view->title = _ADD_PAGE;
 
-		// contents
 		$view->content = new X4View_core('editor');
-		// form builder
 		$view->content->form = X4Form_helper::doform(
             'editor',
             BASE_URL.'pages/add/'.$id_area.'/'.$lang.'/'.$xfrom,
@@ -189,8 +194,6 @@ class Pages_controller extends X3ui_controller
 	 */
 	private function adding(array $_post) : void
 	{
-		$msg = null;
-		// check permissions
 		$msg = AdminUtils_helper::chk_priv_level($_post['id_area'], '_page_creation', 0, 'create');
 		if (is_null($msg))
 		{
@@ -212,12 +215,9 @@ class Pages_controller extends X3ui_controller
 				'tpl' => $_post['tpl']
 			);
 
-			// load model
 			$mod = new Page_model($_post['id_area'], $_post['lang']);
 
-			// check if a page with the same URL already exists
-			$check = (boolean) $mod->exists($post['url']);
-			if ($check)
+			if ($mod->exists($post['url']) > 0)
 			{
 				$msg = AdminUtils_helper::set_msg(
                     false,
@@ -241,13 +241,10 @@ class Pages_controller extends X3ui_controller
 					 ? 'pages'
 					 : '';
 
-				// insert the new page
 				$result = $mod->insert_page($post, $this->site->data->domain);
 
-				// set message
 				$msg = AdminUtils_helper::set_msg($result);
 
-				// set what update
 				if ($result[1])
 				{
                     AdminUtils_helper::set_priv($_SESSION['xuid'], $result[0], 'pages', $post['id_area']);
@@ -267,14 +264,11 @@ class Pages_controller extends X3ui_controller
 	 */
 	public function move(int $id) : void
 	{
-		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'pages'));
 
-		// get object
 		$mod = new Page_model(2, X4Route_core::$lang, $id);
 		$page = $mod->get_by_id($id);
 
-		// build the form
 		$form_fields = new X4Form_core('page/page_move');
 		$form_fields->id = $id;
 		$form_fields->page = $page;
@@ -293,10 +287,8 @@ class Pages_controller extends X3ui_controller
             [1, 'As first']
         );
 
-		// get the fields array
 		$fields = $form_fields->render();
 
-		// if submitted
 		if (X4Route_core::$post)
 		{
 			$e = X4Validation_helper::form($fields, 'editor');
@@ -314,14 +306,11 @@ class Pages_controller extends X3ui_controller
         $view = new X4View_core('modal');
         $view->title = $page->name.': '._MENU_AND_ORDER;
 
-		// contents
 		$view->content = new X4View_core('pages/page_move');
         $view->content->page = $page;
         $view->content->from = $from;
 
-        // can user edit?
         $submit = AdminUtils_helper::submit_btn($page->id_area, 'pages', $id, $page->xlock);
-		// form builder
 		$view->content->form = X4Form_helper::doform(
             'editor',
             BASE_URL.'pages/move/'.$id,
@@ -365,12 +354,9 @@ class Pages_controller extends X3ui_controller
 	 */
 	private function moving(array $_post) : void
 	{
-		$msg = null;
-		// check permissions
 		$msg = AdminUtils_helper::chk_priv_level($_post['id_area'], 'pages', $_post['id'], 'edit');
 		if (is_null($msg))
 		{
-			// get object
 			$mod = new Page_model(2, X4Route_core::$lang, $_post['id']);
 			$page = $mod->get_by_id(
                 $_post['id'],
@@ -393,25 +379,27 @@ class Pages_controller extends X3ui_controller
                     : 0;
             }
 
-			// handle _post
 			$post = array(
 				'xfrom' => (!in_array($page->url, $no_change)) ? $_post['xfrom'] : $page->xfrom,
 				'hidden' => intval(isset($_post['hidden'])),
                 'id_menu' => $id_menu,
 				'fake' => intval($_post['id_menu'] > 0 && isset($_post['fake'])),
+                'action' => $_post['action'],
                 'xpos' => $_post['xpos']
 			);
 
-            // update page data
+            // checks for xpos
+            if ($_post['xfrom'] == $page->xfrom && $post['xpos'] > $page->xpos)
+            {
+                $post['xpos']--;
+            }
+
             $result = $mod->update_page($page, $post, $this->site->data->domain);
 
-            // clear cache
-            APC && apcu_clear_cache();
+             APC && apcu_clear_cache();
 
-            // set message
             $msg = AdminUtils_helper::set_msg($result);
 
-            // set what update
             if ($result[1])
             {
                 $msg->update = array(
@@ -429,23 +417,18 @@ class Pages_controller extends X3ui_controller
 	 */
 	public function seo(int $id) : void
 	{
-		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'pages'));
 
-		// get object
 		$mod = new Page_model(2, X4Route_core::$lang, $id);
 		$page = $mod->get_page_by_id($id);
 
-		// build the form
 		$form_fields = new X4Form_core('page/page_seo');
 		$form_fields->id = $id;
 		$form_fields->page = $page;
         $form_fields->mod = $mod;
 
-		// get the fields array
 		$fields = $form_fields->render();
 
-		// if submitted
 		if (X4Route_core::$post)
 		{
 			$e = X4Validation_helper::form($fields, 'editor');
@@ -463,11 +446,8 @@ class Pages_controller extends X3ui_controller
         $view = new X4View_core('modal');
         $view->title = _SEO_TOOLS;
 
-		// contents
 		$view->content = new X4View_core('editor');
-        // can user edit?
         $submit = AdminUtils_helper::submit_btn($page->id_area, 'pages', $id, $page->xlock);
-		// form builder
 		$view->content->form = X4Form_helper::doform(
             'editor',
             BASE_URL.'pages/seo/'.$id,
@@ -485,13 +465,10 @@ class Pages_controller extends X3ui_controller
 	 */
 	private function reg_seo(array $_post) : void
 	{
-		$msg = null;
-		// check permissions
 		$msg = AdminUtils_helper::chk_priv_level($_post['id_area'], 'pages', $_post['id'], 'edit');
 
 		if (is_null($msg))
 		{
-			// get object
 			$mod = new Page_model(2, X4Route_core::$lang, $_post['id']);
 			$page = $mod->get_by_id($_post['id'], 'pages');
 
@@ -504,7 +481,6 @@ class Pages_controller extends X3ui_controller
 				$_post['url'] = str_replace('/', '-', $_post['url']);
             }
 
-			// handle _post
 			$post = array(
 				'url' => (!in_array($page->url, $no_change))
                     ? X4Utils_helper::slugify($_post['url'])
@@ -513,16 +489,16 @@ class Pages_controller extends X3ui_controller
 				'title' => $_post['title'],
 				'description' => $_post['description'],
                 'icon' => html_entity_decode($_post['icon']),
+                'xclass' => $_post['xclass'],
 				'xkeys' => $_post['xkeys'],
 				'robot' => $_post['robot'],
 				'redirect_code' => $_post['redirect_code'],
 				'redirect' => $_post['redirect'],
 				'tpl' => $_post['tpl'],
+                'xpos' => $page->xpos
 			);
 
-			// check if a page with the same URL already exists
-			$check = (boolean) $mod->exists($post['url'], $_post['id']);
-			if ($check)
+			if ($mod->exists($post['url'], $_post['id']) > 0)
 			{
 				$msg = AdminUtils_helper::set_msg(
                     false,
@@ -543,16 +519,12 @@ class Pages_controller extends X3ui_controller
 					$tmod->reset_sections($page->id_area, $page->id, $post['tpl']);
 				}
 
-				// update page data
 				$result = $mod->update_page($page, $post, $this->site->data->domain);
 
-				// clear cache
 				APC && apcu_clear_cache();
 
-				// set message
 				$msg = AdminUtils_helper::set_msg($result);
 
-				// set what update
 				if ($result[1])
 				{
 					$msg->update = array(
@@ -570,15 +542,12 @@ class Pages_controller extends X3ui_controller
 	 */
 	public function delete(int $id) : void
 	{
-		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'pages'));
 
-		// get object
 		$mod = new Page_model(2, X4Route_core::$lang, $id);
 		$item = $mod->get_by_id($id, 'pages', 'id, id_area, lang, name');
 
-		// build the form
-		$fields = array();
+		$fields = [];
 		$fields[] = array(
 			'label' => null,
 			'type' => 'hidden',
@@ -586,7 +555,6 @@ class Pages_controller extends X3ui_controller
 			'name' =>'id'
 		);
 
-		// if submitted
 		if (X4Route_core::$post)
 		{
 			$this->deleting($item);
@@ -596,12 +564,8 @@ class Pages_controller extends X3ui_controller
         $view = new X4View_core('modal');
         $view->title = _DELETE_PAGE;
 
-		// contents
 		$view->content = new X4View_core('delete');
-
 		$view->content->item = $item->name;
-
-		// form builder
 		$view->content->form = X4Form_helper::doform(
             'delete',
             $_SERVER["REQUEST_URI"],
@@ -619,25 +583,19 @@ class Pages_controller extends X3ui_controller
 	 */
 	private function deleting(stdClass $item) : void
 	{
-		$msg = null;
-		// check permissions
 		$msg = AdminUtils_helper::chk_priv_level($item->id_area, 'pages', $item->id, 'delete');
 		if (is_null($msg))
 		{
-			// action
 			$mod = new Page_model($item->id_area, $item->lang, $item->id);
 			$result = $mod->delete_page($item->id, $this->site->data->domain);
 
-			// clear useless permissions
 			if ($result[1])
 			{
 				AdminUtils_helper::delete_priv('pages', $item->id);
 			}
 
-			// set message
 			$msg = AdminUtils_helper::set_msg($result);
 
-			// set what update
 			if ($result[1])
 			{
 				$msg->update = array(
@@ -654,13 +612,10 @@ class Pages_controller extends X3ui_controller
 	 */
 	public function init(int $id_area, string $lang) : void
 	{
-		$msg = null;
-		// check permissions
 		$msg = AdminUtils_helper::chk_priv_level($id_area, '_page_creation', 0, 'create');
 
 		if (is_null($msg))
 		{
-			// get object: the area
 			$area = new Area_model();
 			$a = $area->get_by_id($id_area);
 
@@ -668,8 +623,7 @@ class Pages_controller extends X3ui_controller
 
 			if ($id_area == 1)
 			{
-				// admin area
-                $post = $this->init_admin($id_area, $lang);
+				$post = $this->init_admin($id_area, $lang);
 			}
 			else
 			{
@@ -698,23 +652,18 @@ class Pages_controller extends X3ui_controller
 				}
 			}
 
-			// create default articles
 			$result = $mod->initialize_area($id_area, $lang, $post);
 
-			// set message
 			$this->dict->get_words();
 			$msg = AdminUtils_helper::set_msg($result);
 
 			if ($result[1])
 			{
-				// create default contexts
 				$mod->initialize_context($id_area, $lang);
 
-				// refactory permissions
 				$mod = new Permission_model();
 				$mod->refactory($_SESSION['xuid']);
 
-				// set update
 				$msg->update = array(
 					'element' => 'page',
 					'url' => $_SERVER['HTTP_REFERER']
@@ -777,7 +726,6 @@ class Pages_controller extends X3ui_controller
 
         if ($res[1])
         {
-			// refactory permissions
 			$mod = new Permission_model();
 			$mod->refactory($_SESSION['xuid']);
 

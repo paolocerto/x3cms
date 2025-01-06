@@ -14,10 +14,10 @@
 // plugin name
 $mod_name = 'x4cookie';
 
-$sql = array();
+$sql = [];
 
 // required
-$required = array();
+$required = [];
 
 // dictionary
 $sql[] = 'DELETE FROM dictionary WHERE what = \''.$mod_name.'\'';

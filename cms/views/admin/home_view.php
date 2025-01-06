@@ -25,7 +25,7 @@ $xdata = '{
             if (txt.length <= 5) {
                 this.xload = txt;
             } else {
-                thi.xload = 0;
+                this.xload = 0;
             }
         });
     }

@@ -15,6 +15,7 @@ echo '<h1 class="mt-6">'.$page->icon.' '.$theme._TRAIT_._MENU_LIST.'</h1>';
 echo '<table>
 	<thead>
         <tr>
+            <th class="w-28">'._MENU_MODE.'</th>
             <th class="w-40">'._MENUS.'</th>
             <th></th>
             <th class="w-40">'._ACTIONS.'</th>
@@ -43,10 +44,17 @@ foreach ($menus as $i)
         }
 	}
 
+    $icons = [
+        _ONLY_TEXT,
+        _ONLY_ICON,
+        _TEXT_ICON
+    ];
+
 	echo '<tr>
+            <td class="text-sm">'.$icons[$i->mode].'</td>
 			<td><strong>'.$i->name.'</strong></td>
             <td><span class="hidden md:inline-block">'.$i->description.'</span></td>
-			<td class="space-x-2 text-right">'.$actions.'</td>
+			<td class="text-right">'.$actions.'</td>
 		</tr>';
 }
 

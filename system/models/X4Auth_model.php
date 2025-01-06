@@ -35,7 +35,7 @@ class X4Auth_model extends X4Model_core
 	/**
 	 * Find user
 	 */
-	public function log_in(array $conditions, array $fields) : stdClass
+	public function log_in(array $conditions, array $fields) : stdClass|bool
 	{
 		// fields values to get from the user record
 		$keys = implode(', u.', array_keys($fields));
@@ -94,7 +94,7 @@ class X4Auth_model extends X4Model_core
 		}
 		else
 		{
-            // id_area = '.intval($id_area).' AND
+            // id_area = '.$id_area.' AND
 			return $this->db->query_row('SELECT * FROM '.$this->table.' WHERE email = '.$this->db->escape($email));
 		}
 	}
@@ -124,7 +124,7 @@ class X4Auth_model extends X4Model_core
 	public function rehash(string $hash) : bool
 	{
         // get user data
-		$u = $this->db->query_row('SELECT * FROM users WHERE id_area = 1 AND xon = 1 AND hashkey = '.$this->db->escape($hash));
+		$u = $this->db->query_row('SELECT * FROM users WHERE xon = 1 AND hashkey = '.$this->db->escape($hash));
 
 		if (!is_object($u) || !isset($u->id))
 		{

@@ -10,7 +10,7 @@
 
 // Default theme uninstaller
 
-$sql = array();
+$sql = [];
 
 // theme
 $sql[] = "DELETE FROM themes WHERE id = ".$id_theme;

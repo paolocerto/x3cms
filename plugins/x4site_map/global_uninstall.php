@@ -11,7 +11,7 @@
 // x4site_map global_uninstall
 
 $mod_name = 'x4site_map';
-$required = array();
+$required = [];
 
-$sql = array();
+$sql = [];
 $sql[] = 'DELETE FROM modules WHERE id = '.intval($id);

@@ -303,7 +303,11 @@ class X4Form_helper
 			// for removal
 			if (isset($e['delete']) && $req != ' *')
 			{
-				$tmp .= '<label class="inline" for="delete_'.$e['name'].'"><input type="checkbox" class="check" name="delete_'.$e['name'].'" id="delete_'.$e['name'].'" value="1" /> '.$e['delete'].'</label><br>';
+				$tmp .= '<label class="inline" for="delete_'.$e['name'].'">
+                            <input type="checkbox" class="check" name="delete_'.$e['name'].'" id="delete_'.$e['name'].'" value="1" />
+                            '.$e['delete'].'
+                        </label>
+                        <br>';
 			}
 			$tmp .= '<span class="xsmall">';
 			// can display the file only if knowns his path
@@ -312,7 +316,7 @@ class X4Form_helper
 				switch($e['folder'])
 				{
 					case 'img';
-						$tmp .= '<br /><img class="mthumb dblock" src="'.FPATH.$e['folder'].'/'.$e['old'].'" alt="thumb" />';
+						$tmp .= '<br /><img class="max-w-60" src="'.FMPATH.$e['folder'].'/'.$e['old'].'" alt="thumb" />';
 						break;
 					default:
 						// check if exists a efolder directory
@@ -323,7 +327,7 @@ class X4Form_helper
                             if (getimagesize($e['folder'].'/'.$e['old']))
                             {
                                 // is an image
-							    $tmp .= '<br /><img class="mthumb dblock" src="'.str_replace(PATH, ROOT, $e['folder']).'/'.$e['old'].'" alt="thumb" />';
+							    $tmp .= '<br /><img class="max-w-60" src="'.str_replace(PATH, ROOT, $e['folder']).'/'.$e['old'].'" alt="thumb" />';
                             }
                             else
                             {
@@ -334,7 +338,7 @@ class X4Form_helper
                         elseif (is_dir(FFPATH.$e['folder']) && file_exists(FFPATH.$e['folder'].'/'.$e['old']))
                         {
                             // is a special folder
-                            $tmp .= ' <a href="'.ROOT.'cms/files/'.$e['folder'].'/'.$e['old'].'" title="">'.$e['old'].'</a>';
+                            $tmp .= ' <a href="'.FMPATH.$e['folder'].'/'.$e['old'].'" title="">'.$e['old'].'</a>';
                         }
 						break;
 				}
@@ -379,29 +383,40 @@ class X4Form_helper
 
 		if (isset($e['extra']))
 		{
-			$class = (strstr($e['extra'], 'class="'))
-				? str_replace('class="', 'class="check ', $e['extra'])
-				: 'class="check" '.$e['extra'];
-
 			// is inline?
 			$inline = (strstr($e['extra'], 'xinline') != '');
-		}
-		else
-		{
-			$class = 'class="check"';
+            $e['extra'] = str_replace('xinline', '', $e['extra']);
 		}
 
-		if ($inline && is_null($e['label']) && isset($e['suggestion']))
+        $iextra = (isset($e['extra']))
+			? $e['extra']
+			: '';
+
+		if ($inline && is_null($e['label']) && isset($e['alabel']))
 		{
 			$label_class = isset($e['error'])
-				? 'class="xinline error"'
-				: 'class="xinline"';
+				? ' error'
+				: '';
 
-			$tmp = '<div class="check"><label '.$label_class.' for="'.$e['name'].'"><input type="checkbox" '.$class.' name="'.$e['name'].'" id="'.$e['name'].'" value="'.$e['value'].'" '.$checked.' /> &nbsp;&nbsp;<span>'.stripslashes($e['suggestion']).'</span></label></div>';
+			$tmp = '<div class="checkbox">
+                        <label class="flex flex-col md:flex-row gap-2'.$label_class.' items-center" for="'.$e['name'].'">
+                            <div class="flex-none">
+                                <input type="checkbox" '.$iextra.' name="'.$e['name'].'" id="'.$e['name'].'" value="'.$e['value'].'" '.$checked.' />
+                            </div>
+                            <div class="flex-1">'.stripslashes($e['alabel']).'</div>
+                        </label>
+                    </div>'.self::suggestion($e);
 		}
 		else
 		{
-			$tmp = '<input type="checkbox" '.$class.' name="'.$e['name'].'" id="'.$e['name'].'" value="'.$e['value'].'" '.$checked.' />'.self::suggestion($e);
+			$tmp = '<div class="flex flex-row items-center">
+                <div class="flex-none">
+                    <input type="checkbox" '.$iextra.' name="'.$e['name'].'" id="'.$e['name'].'" value="'.$e['value'].'" '.$checked.' />
+                </div>
+                <div class="flex-1">
+                    '.self::suggestion($e, true).'
+                </div>
+            </div>';
 		}
 		return $tmp;
 	}
@@ -412,48 +427,81 @@ class X4Form_helper
 	public static function mcheckbox(array $e, string $req = '') : string
 	{
 		$inline = false;
-
+        $extra = '';
+        $class = 'checkbox';
+        $container = 'flex flex-col md:flex-row gap-4';
 		if (isset($e['extra']))
 		{
-			$class = (strstr($e['extra'], 'class="'))
-				? str_replace('class="', 'class="check ', $e['extra'])
-				: 'class="check" '.$e['extra'];
-
 			// is inline?
 			$inline = (strstr($e['extra'], 'xinline') != '');
-		}
-		else
-		{
-			$class = 'class="check"';
+            $e['extra'] = str_replace('xinline', '', $e['extra']);
+            if ($inline && !isset($e['columns']))
+            {
+                $class .= ' flex-1 rounded bg-slate-100 px-6 pb-2';
+            }
+            $extra = $e['extra'];
 		}
 
+        if (isset($e['columns']))
+        {
+            $container = 'grid '. $e['columns'].' gap-x-4';
+        }
+
 		$tmp = '';
-		if (!empty($e['options'][0]))
-		{
-			$error = isset($e['error'])
+
+        $c = 0;
+
+        $error = isset($e['error'])
 				? 'class="error"'
 				: '';
 
+        // empty option
+        if (isset($e['options'][3]) && is_array($e['options'][3]))
+        {
+            $checked = (isset($e['checked']) && in_array($e['options'][3][0], $e['checked']))
+                ? 'checked="checked"'
+                : '';
+
+            $tmp .= '<div class="'.$class.'">
+                        <label '.$error.' for="'.$e['name'].'_'.$c.'">
+                            <input type="checkbox" name="'.$e['name'].'[]" id="'.$e['name'].'_'.$c.'" value="'.$e['options'][3][0].'" '.$checked.' />
+                            &nbsp;&nbsp;<span>'.stripslashes($e['options'][3][1]).'</span>
+                        </label>
+                    </div>';
+            $c++;
+        }
+
+		if (!empty($e['options'][0]))
+		{
 			$v = $e['options'][1];
 			$o = $e['options'][2];
 
-			$c = 0;
-			foreach ($e['options'][0] as $i)
+            $n = sizeof($e['options'][0]);
+			foreach ($e['options'][0] as $k => $i)
 			{
 				$checked = (isset($e['checked']) && in_array($i->$v, $e['checked']))
 					? 'checked="checked"'
 					: '';
 
-				if ($inline && is_null($e['label']))
-				{
-					$tmp .= '<div class="checkbox"><input type="checkbox" '.$class.' name="'.$e['name'].'[]" id="'.$e['name'].'_'.$c.'" value="'.$i->$v.'" '.$checked.' /><label '.$error.' for="'.$e['name'].'_'.$c.'">'.stripslashes($i->$v).'</label></div>';
-				}
-				else
-				{
-					$tmp .= '<div class="check"><label '.$error.' for="'.$e['name'].'_'.$c.'"><input type="checkbox" '.$class.' name="'.$e['name'].'[]" id="'.$e['name'].'_'.$c.'" value="'.$i->$v.'" '.$checked.' />'.stripslashes($i->$o).'</label></div>';
-				}
+                if ($n > 10 && $k == round($n/2) && isset($e['separator']))
+                {
+                    $tmp .= $e['separator'];
+                }
+
+				$tmp .= '<div class="'.$class.'">
+                            <label '.$error.' for="'.$e['name'].'_'.$c.'">
+                                <input type="checkbox" name="'.$e['name'].'[]" id="'.$e['name'].'_'.$c.'" '.$extra.' value="'.$i->$v.'" '.$checked.' />
+                                &nbsp;&nbsp;<span>'.stripslashes($i->$o).'</span>
+                            </label>
+                        </div>';
 				$c++;
 			}
+		}
+
+        if ($inline)
+		{
+            // NOTE: this works only with TailwindCSS
+			$tmp = '<div class="'.$container.' mt-2">'.$tmp.'</div>';
 		}
 		return $tmp.self::suggestion($e);
 	}
@@ -471,29 +519,43 @@ class X4Form_helper
 
 		if (isset($e['extra']))
 		{
-			$class = (strstr($e['extra'], 'class="'))
-				? str_replace('class="', 'class="radio ', $e['extra'])
-				: 'class="radio" '.$e['extra'];
-
 			// is inline
-			if (strstr($e['extra'], 'inline') != '')
-			{
-				$inline = true;
-				$br = '';
-			}
+            $inline = (strstr($e['extra'], 'xinline') != '');
+            $e['extra'] = str_replace('xinline', '', $e['extra']);
 		}
-		else
-		{
-			$class = 'class="radio"';
-		}
+
+        $iextra = (isset($e['extra']) && !empty($e['extra']))
+			? $e['extra']
+			: '';
 
 		$tmp = '';
+        $c = 0;
+        // empty option
+        if (isset($e['options'][3]) && is_array($e['options'][3]))
+        {
+            if ($inline)
+            {
+                $tmp .= '<div class="flex-1 rounded bg-slate-100 px-4 py-1">
+                            <input type="radio" '.$iextra.' name="'.$e['name'].'" id="'.$e['name'].'_'.$c.'" value="'.$e['options'][3][0].'"  />
+                            <label class="inline mt-0" for="'.$e['name'].'_'.$c.'">'.stripslashes($e['options'][3][1]).'</label>
+                        </div>';
+            }
+            else
+            {
+                $tmp .= '<div class="radio_list">
+                            <label for="'.$e['name'].'_'.$c.'">
+                                <input type="radio" '.$iextra.' name="'.$e['name'].'" id="'.$e['name'].'_'.$c.'" value="'.$e['options'][3][0].'"  /> '.stripslashes($e['options'][3][1]).'
+                            </label>
+                        </div>';
+            }
+            $c++;
+        }
+
 		if (!empty($e['options'][0]))
 		{
 			$v = $e['options'][1];
 			$o = $e['options'][2];
 
-			$c = 0;
 			foreach ($e['options'][0] as $i)
 			{
 				$checked = (isset($e['checked']) && $e['checked'] == $i->$v)
@@ -502,11 +564,18 @@ class X4Form_helper
 
 				if ($inline)
 				{
-					$tmp .= '<div class="radiobox"><input type="radio" '.$class.' name="'.$e['name'].'" id="'.$e['name'].'_'.$c.'" value="'.$i->$v.'" '.$checked.' /> <label for="'.$e['name'].'_'.$c.'" '.$error.'>'.stripslashes($i->$o).'</label></div>';
+					$tmp .= '<div class="flex-1 rounded bg-slate-100 px-4 py-1">
+                                <input type="radio" '.$iextra.' name="'.$e['name'].'" id="'.$e['name'].'_'.$c.'" value="'.$i->$v.'" '.$checked.' />
+                                <label class="inline mt-0" for="'.$e['name'].'_'.$c.'" '.$error.'>'.stripslashes($i->$o).'</label>
+                            </div>';
 				}
 				else
 				{
-					$tmp .= '<div class="radiobox"><label for="'.$e['name'].'_'.$c.'" '.$error.'><input type="radio" '.$class.' name="'.$e['name'].'" id="'.$e['name'].'_'.$c.'" value="'.$i->$v.'" '.$checked.' /> '.stripslashes($i->$o).'</label> </div>';
+					$tmp .= '<div class="radio_list">
+                                <label for="'.$e['name'].'_'.$c.'" '.$error.'>
+                                    <input type="radio" '.$iextra.' name="'.$e['name'].'" id="'.$e['name'].'_'.$c.'" value="'.$i->$v.'" '.$checked.' /> '.stripslashes($i->$o).'
+                                </label>
+                            </div>';
 				}
 				$c++;
 			}
@@ -515,7 +584,7 @@ class X4Form_helper
 		if ($inline)
 		{
             // NOTE: this works only with TailwindCSS
-			$tmp = '<div class="flex flex-col md:flex-row gap-4">'.$tmp.'</div>';
+			$tmp = '<div class="w-full flex flex-col items-center sm:flex-row gap-2 mt-2">'.$tmp.'</div>';
 		}
 		return $tmp.self::suggestion($e);
 	}
@@ -595,7 +664,8 @@ class X4Form_helper
             $e['options'] = array([], '', '');
         }
 
-        if ($e['options'][0] == 'template')
+        // for Alpine.js template
+        elseif ($e['options'][0] == 'template')
         {
             $empty = (isset($e['options'][5]) && !is_null($e['options'][5]))
                 ? $e['options'][5]
@@ -645,7 +715,7 @@ class X4Form_helper
 	/**
 	 * Return suggestion field
 	 */
-	public static function suggestion(array $e) : string
+	public static function suggestion(array $e, bool $inline = false) : string
 	{
 		if (isset($e['suggestion']) && !empty($e['suggestion']))
 		{
@@ -653,10 +723,16 @@ class X4Form_helper
 			$br = ($e['type'] == 'textarea' && !isset($e['nobr']))
 				? BR
 				: ' ';
-
-			return (isset($e['nobrackets']))
-                ? $br.'<span class="suggestion"> '.stripslashes($e['suggestion']).'</span>'
-                : $br.'<span class="suggestion"> ('.stripslashes($e['suggestion']).')</span>';
+            if ($inline)
+            {
+                return '<div class="suggestion_inline">'.stripslashes($e['suggestion']).'</div>';
+            }
+            else
+            {
+                return (isset($e['nobrackets']))
+                    ? $br.'<span class="suggestion"> '.stripslashes($e['suggestion']).'</span>'
+                    : $br.'<span class="suggestion"> ('.stripslashes($e['suggestion']).')</span>';
+            }
 		}
 		return '';
 	}
@@ -814,12 +890,13 @@ class X4Form_helper
      * $disabled is an array with [field to check, relation, value]
 	 */
 	public static function get_options(
-        array $o,
+        array $options,
         string $value,
         string $option,
         mixed $selected = '',
         mixed $empty = null,
-        array $disabled = ['']
+        array $disabled = [''],
+        array $extra = []   // to add alpine.js code (e.g. ['x-show="xvalue==XXXFIELD1XXX"', $field])
     ) : string
 	{
 		$str = '';
@@ -848,22 +925,10 @@ class X4Form_helper
 		}
 
 		// other options
-		if (!empty($o))
+		if (!empty($options))
 		{
-			foreach ($o as $i)
+			foreach ($options as $i)
 			{
-				$sign = $dis = ' ';
-				if (!empty($disabled[0]) && $disabled[0] != 'NOT_SELECTED')
-				{
-                    $field = $disabled[0];
-                    eval('$chk = '.$i->$field.$disabled[1].$disabled[2].';');
-					if ($chk)
-					{
-						$dis = ' disabled = "disabled"';
-						$sign = 'x';
-					}
-				}
-
 				// check for selected value
 				if (is_array($selected))
 				{
@@ -878,20 +943,48 @@ class X4Form_helper
 						: '';
 				}
 
-				// to disable all not selected options
-				if (empty($sel) && $disabled[0] == 'NOT_SELECTED')
-				{
-					$dis = ' disabled = "disabled"';
+                $sign = $dis = ' ';
+				if (empty($sel) && !empty($disabled[0]))
+                {
+                    // to disable all not selected options
+                    if ($disabled[0] == 'NOT_SELECTED')
+                    {
+                        $dis = ' disabled = "disabled"';
+                    }
+                    else
+                    {
+                        $field = $disabled[0];
+                        eval('$chk = '.$i->$field.$disabled[1].$disabled[2].';');
+                        if ($chk)
+                        {
+                            $dis = ' disabled = "disabled"';
+                            $sign = 'x';
+                        }
+                    }
 				}
 
                 if (isset($i->$value) && isset($i->$option))
                 {
+                    $js = '';
+                    if (!empty($extra))
+                    {
+                        $src = $rpl = [];
+                        for ($ii = 1; $ii < sizeof($extra); $ii++)
+                        {
+                            $src[] = 'XXXFIELD'.$ii.'XXX';
+                            $tmp = $extra[$ii];
+                            $rpl[] = $i->$tmp;
+                        }
+
+                        $js = str_replace($src, $rpl, $extra[0]);
+                    }
+
                     $str .= '
-                    <option value="'.$i->$value.'" '.$sel.$dis.'>'.$sign.' '.stripslashes($i->$option).'</option>';
+                    <option value="'.$i->$value.'" '.$sel.$dis.' '.$js.'>'.$sign.' '.stripslashes($i->$option).'</option>';
                 }
 			}
 		}
-		return $str;
+		return X4Text_helper::collapse_white_space($str);
 	}
 
     /**

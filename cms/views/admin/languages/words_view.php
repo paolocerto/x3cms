@@ -12,10 +12,10 @@
 
 echo '<div class="switcher">';
 // language switcher
-if (MULTILANGUAGE)
+if (MULTILANGUAGE && sizeof($languages) > 1)
 {
 	echo '<div class="text-sm flex justify-end py-1 space-x-4 border-b border-gray-200">';
-	foreach ($langs as $i)
+	foreach ($languages as $i)
 	{
 		$on = ($i->code == $lang) ? 'class="link"' : 'class="dark"';
 		echo '<a '.$on.' @click="pager(\''.BASE_URL.'dictionary/keys/'.$i->code.'/'.$area.'?xwhat='.$what.'\')" title="'._SWITCH_LANGUAGE.'">'.ucfirst($i->language).'</a></li>';
@@ -67,7 +67,7 @@ if ($items)
                 <th class="w-4"></th>
 				<th class="md:w-60 text-left pl-4">'._KEY.'</th>
 				<th class="text-left pl-4">'._WORD.'</th>
-				<th class="w-36">'._ACTIONS.'</th>
+				<th class="w-40">'._ACTIONS.'</th>
 			</tr>
         </thead>
         <tbody>';
@@ -99,7 +99,7 @@ if ($items)
             <td>'.$i->lang.'</td>
 			<td>'.$i->xkey.'</td>
 			<td>'.$i->xval.'</td>
-			<td class="space-x-2 text-right">'.$actions.'</td>
+			<td class="text-right">'.$actions.'</td>
 		</tr>';
 	}
 	echo '</tbody></table>';

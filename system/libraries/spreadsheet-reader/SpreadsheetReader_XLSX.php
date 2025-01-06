@@ -60,7 +60,7 @@
 		/**
 		 * @var array Shared strings cache, if the number of shared strings is low enough
 		 */
-		private $SharedStringCache = array();
+		private $SharedStringCache = [];
 
 		// Workbook data
 		/**
@@ -76,10 +76,10 @@
 		/**
 		 * @var array Container for cell value style data
 		 */
-		private $Styles = array();
+		private $Styles = [];
 
 		private $TempDir = '';
-		private $TempFiles = array();
+		private $TempFiles = [];
 
 		private $CurrentRow = false;
 
@@ -153,7 +153,7 @@
 			69 => 't# ?/?',
 			70 => 't# ??/??'
 		);
-		private $Formats = array();
+		private $Formats = [];
 
 		private static $DateReplacements = array(
 			'All' => array(
@@ -192,7 +192,7 @@
 		/**
 		 * @var array Cache for already processed format strings
 		 */
-		private $ParsedFormatCache = array();
+		private $ParsedFormatCache = [];
 
 		/**
 		 * @param string Path to file
@@ -278,7 +278,7 @@
 						}
 					}
 				}
-				
+
 				if ($this -> StylesXML -> numFmts && $this -> StylesXML -> numFmts -> numFmt)
 				{
 					foreach ($this -> StylesXML -> numFmts -> numFmt as $Index => $NumFmt)
@@ -367,7 +367,7 @@
 		{
 			if ($this -> Sheets === false)
 			{
-				$this -> Sheets = array();
+				$this -> Sheets = [];
 				foreach ($this -> WorkbookXML -> sheets -> sheet as $Index => $Sheet)
 				{
 					$Attributes = $Sheet -> attributes('r', true);
@@ -549,7 +549,7 @@
 					else
 					{
 						$this -> SSOpen = true;
-	
+
 						if ($this -> SharedStringIndex < $Index)
 						{
 							$this -> SSOpen = false;
@@ -631,7 +631,7 @@
 				return $this -> GeneralFormat($Value);
 			}
 
-			$Format = array();
+			$Format = [];
 
 			if (isset($this -> ParsedFormatCache[$Index]))
 			{
@@ -662,7 +662,7 @@
 				{
 					$Sections = explode(';', $Format['Code']);
 					$Format['Code'] = $Sections[0];
-	
+
 					switch (count($Sections))
 					{
 						case 2:
@@ -731,7 +731,7 @@
 
 					// Scaling (Commas indicate the power)
 					$Scale = 1;
-					$Matches = array();
+					$Matches = [];
 					if (preg_match('{(0|#)(,+)}', $Format['Code'], $Matches))
 					{
 						$Scale = pow(1000, strlen($Matches[2]));
@@ -749,7 +749,7 @@
 					{
 						$Format['Code'] = str_replace('#', '', $Format['Code']);
 
-						$Matches = array();
+						$Matches = [];
 						if (preg_match('{(0+)(\.?)(0*)}', preg_replace('{\[[^\]]+\]}', '', $Format['Code']), $Matches))
 						{
 							$Integer = $Matches[1];
@@ -763,7 +763,7 @@
 						}
 					}
 
-					$Matches = array();
+					$Matches = [];
 					if (preg_match('{\[\$(.*)\]}u', $Format['Code'], $Matches))
 					{
 						$CurrFormat = $Matches[0];
@@ -866,7 +866,7 @@
 						$AdjDecimalDivisor = $DecimalDivisor/$GCD;
 
 						if (
-							strpos($Format['Code'], '0') !== false || 
+							strpos($Format['Code'], '0') !== false ||
 							strpos($Format['Code'], '#') !== false ||
 							substr($Format['Code'], 0, 3) == '? ?'
 						)
@@ -913,7 +913,7 @@
 						$Value = preg_replace('', $Format['Currency'], $Value);
 					}
 				}
-				
+
 			}
 
 			return $Value;
@@ -937,10 +937,10 @@
 		}
 
 		// !Iterator interface methods
-		/** 
+		/**
 		 * Rewind the Iterator to the first element.
 		 * Similar to the reset() function for arrays in PHP
-		 */ 
+		 */
 		public function rewind()
 		{
 			// Removed the check whether $this -> Index == 0 otherwise ChangeSheet doesn't work properly
@@ -980,15 +980,15 @@
 			return $this -> CurrentRow;
 		}
 
-		/** 
-		 * Move forward to next element. 
-		 * Similar to the next() function for arrays in PHP 
-		 */ 
+		/**
+		 * Move forward to next element.
+		 * Similar to the next() function for arrays in PHP
+		 */
 		public function next()
 		{
 			$this -> Index++;
 
-			$this -> CurrentRow = array();
+			$this -> CurrentRow = [];
 
 			if (!$this -> RowOpen)
 			{
@@ -1117,23 +1117,23 @@
 			return $this -> CurrentRow;
 		}
 
-		/** 
+		/**
 		 * Return the identifying key of the current element.
 		 * Similar to the key() function for arrays in PHP
 		 *
 		 * @return mixed either an integer or a string
-		 */ 
+		 */
 		public function key()
 		{
 			return $this -> Index;
 		}
 
-		/** 
+		/**
 		 * Check if there is a current element after calls to rewind() or next().
 		 * Used to check if we've iterated to the end of the collection
 		 *
 		 * @return boolean FALSE if there's nothing more to iterate over
-		 */ 
+		 */
 		public function valid()
 		{
 			return $this -> Valid;
@@ -1158,7 +1158,7 @@
 		 */
 		public static function IndexFromColumnLetter($Letter)
 		{
-			$Powers = array();
+			$Powers = [];
 
 			$Letter = strtoupper($Letter);
 

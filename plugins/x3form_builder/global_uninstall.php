@@ -11,8 +11,8 @@
 // x3form_builder global_uninstall
 
 $mod_name = 'x3form_builder';
-$required = array();
-$sql = array();
+$required = [];
+$sql = [];
 
 
 $sql[] = 'DROP TABLE x3_forms';

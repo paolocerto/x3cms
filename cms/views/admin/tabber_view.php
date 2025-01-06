@@ -12,7 +12,7 @@
 
 if (isset($title))
 {
-    echo '<h1>'.$title.'</h1>';
+    echo '<h1 class="mt-6">'.$title.'</h1>';
 }
 
 if (!empty($tabs))

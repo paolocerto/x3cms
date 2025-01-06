@@ -21,9 +21,9 @@ $compatibility = '0.9.0 STABLE';
 $mod_name = 'x3banners';
 
 // requirements
-$required = array();
+$required = [];
 
-$sql0 = $sql1 = array();
+$sql0 = $sql1 = [];
 
 // table
 $sql0[] = 'CREATE TABLE IF NOT EXISTS x3_banners (
@@ -37,7 +37,9 @@ $sql0[] = 'CREATE TABLE IF NOT EXISTS x3_banners (
 	id_page int(11) NOT NULL,
 	start_date datetime NOT NULL,
 	end_date datetime NOT NULL,
-	bg_color char(7) NOT NULL,
+	bg_color1 char(7) NOT NULL,
+    bg_color2 char(7) NOT NULL,
+    gradient tinyint(1) NOT NULL,
 	fg_color char(7) NOT NULL,
 	link_color char(7) NOT NULL,
 	auto_hide smallint(4) NOT NULL,
@@ -107,6 +109,9 @@ $sql0[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock,
 
 // en
 $sql0[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'en', 'admin', 'x3banners', '_X3BANNERS_BG_COLOR', 'Background color', 0, 1)";
+$sql0[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'en', 'admin', 'x3banners', '_X3BANNERS_GRADIENT', 'NO gradiente', 0, 1)";
+$sql0[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'en', 'admin', 'x3banners', '_X3BANNERS_BG_COLOR_MSG', 'Use both to create a gradient', 0, 1)";
+
 $sql0[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'en', 'admin', 'x3banners', '_X3BANNERS_FG_COLOR', 'Foreground color', 0, 1)";
 $sql0[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'en', 'admin', 'x3banners', '_X3BANNERS_LINK_COLOR', 'Link color', 0, 1)";
 $sql0[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'en', 'admin', 'x3banners', '_X3BANNERS_AUTO_HIDE', 'Seconds before auto hide', 0, 1)";
@@ -114,6 +119,9 @@ $sql0[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock,
 
 // it
 $sql0[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'it', 'admin', 'x3banners', '_X3BANNERS_BG_COLOR', 'Colore sfondo', 0, 1)";
+$sql0[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'it', 'admin', 'x3banners', '_X3BANNERS_GRADIENT', 'Gradiente', 0, 1)";
+$sql0[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'it', 'admin', 'x3banners', '_X3BANNERS_BG_COLOR_MSG', 'Usa entrambi per creare un gradiente', 0, 1)";
+
 $sql0[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'it', 'admin', 'x3banners', '_X3BANNERS_FG_COLOR', 'Colore testo', 0, 1)";
 $sql0[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'it', 'admin', 'x3banners', '_X3BANNERS_LINK_COLOR', 'Colore link', 0, 1)";
 $sql0[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'it', 'admin', 'x3banners', '_X3BANNERS_AUTO_HIDE', 'Secondi prima di chiusura', 0, 1)";

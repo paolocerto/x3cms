@@ -8,27 +8,7 @@
  * @package		X3CMS
  */
 
-echo '<div class="switcher">';
-// language switcher
-if (MULTILANGUAGE)
-{
-	echo '<div class="text-sm flex justify-end py-1 space-x-4 border-b border-gray-200">';
-	foreach ($langs as $i)
-	{
-		$on = ($i->code == $lang) ? 'class="link"' : 'class="dark"';
-		echo '<a '.$on.' @click="pager(\''.BASE_URL.'articles/index/'.$id_area.'/'.$i->code.'\')" title="'._SWITCH_LANGUAGE.'">'.ucfirst($i->language).'</a>';
-	}
-	echo '</div>';
-}
-
-// area switcher
-echo '<div class="text-sm flex justify-end py-1 space-x-4 border-b border-gray-200">';
-foreach ($areas as $i)
-{
-	$on = ($i->id == $id_area) ? 'class="link"' : 'class="dark"';
-	echo '<a '.$on.' @click="pager(\''.BASE_URL.'articles/index/'.$i->id.'/'.$lang.'\')" title="'._SWITCH_AREA.'">'.ucfirst($i->name).'</a>';
-}
-echo '</div></div>';
+// articles list view
 
 // filter selector
 echo '<form name="xfilter" id="xfilter" action="'.BASE_URL.'articles/index/'.$id_area.'/'.$lang.'" method="GET" onsubmit="return false">
@@ -121,12 +101,12 @@ if ($items[0]) {
 		{
 			// edit in full page
             $actions = '<a class="link" @click="pager(\''.BASE_URL.'articles/edit/'.$i->id_area.'/'.$i->lang.'/'.$i->code_context.'/'.$i->bid.'\')" title="'._EDIT.'">
-                <i class="fa-solid fa-lg fa-pen-to-square"></i>
+                <i class="fa-solid fa-lg fa-fw fa-pen-to-square"></i>
                 </a>';
 
 			// duplicate
 			$actions .= '<a class="link" @click="pager(\''.BASE_URL.'articles/edit/'.$i->id_area.'/'.$i->lang.'/'.$i->code_context.'/'.$i->bid.'/0/1\')" title="'._DUPLICATE.'">
-                <i class="fa-solid fa-copy fa-lg"></i>
+                <i class="fa-solid fa-copy fa-lg fa-fw"></i>
                 </a>';
 
 			if ($i->level > 2)
@@ -134,7 +114,7 @@ if ($items[0]) {
                 $actions .= AdminUtils_helper::link('xon', 'articles/set_by_bid/xon/'.$i->id_area.'/'.$i->id.'/'.(($i->xon+1)%2), $statuses);
 
                 $actions .= '<a class="link" @click="pager(\''.BASE_URL.'articles/history/'.$id_area.'/'.$lang.'/'.$i->bid.'\')" title="'._ARTICLE_HISTORY.'">
-                        <i class="fa-solid fa-clock-rotate-left fa-lg"></i>
+                        <i class="fa-solid fa-clock-rotate-left fa-lg fa-fw"></i>
                     </a>';
 
 				if ($i->level >= 4)
@@ -159,7 +139,7 @@ if ($items[0]) {
                     <strong>'.$i->name.'</strong><br>
                     <span class="text-xs">'.$i->context.' '.$link.'</span>
                 </td>
-				<td class="space-x-2 text-right">
+				<td class="text-right">
                     '.$actions.'<br>&nbsp;
 				</td>
 			</tr>';

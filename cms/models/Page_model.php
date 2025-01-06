@@ -19,12 +19,12 @@ class Page_model extends X4Model_core
 	/**
 	 * Area ID
 	 */
-	protected $id_area;
+	private $id_area;
 
 	/**
 	 * Language code
 	 */
-	protected $lang;
+	private $lang;
 
 	/**
 	 * URL of parent page
@@ -64,6 +64,22 @@ class Page_model extends X4Model_core
 		$this->xfrom = $from;
 		$this->menu = new Menu_model();
 	}
+
+    /**
+     * get id_area
+     */
+    public function get_id_area() : int
+    {
+        return $this->id_area;
+    }
+
+    /**
+     * get lang
+     */
+    public function get_lang() : string
+    {
+        return $this->lang;
+    }
 
 	/**
 	 * Check if a page with the same URL already exists
@@ -170,7 +186,7 @@ class Page_model extends X4Model_core
 	 */
 	public function get_subpages(string $xfrom, int $id_menu) : array
 	{
-		return $this->db->query('SELECT (xpos+1) AS xpos, name
+		return $this->db->query('SELECT (xpos+1) AS xpos, CONCAT(xpos, \' - \', name) AS name
 			FROM pages
 			WHERE
 				id_area = '.$this->id_area.' AND
@@ -194,7 +210,7 @@ class Page_model extends X4Model_core
 		{
 			$update .= ', '.addslashes($k).' = '.$this->db->escape($v);
 		}
-		$sql = array();
+		$sql = [];
 		$sql[] = 'UPDATE pages SET updated = NOW() '.$update.' WHERE id = '.$page->id;
 
 		// if the Page URL is changed we need to update subpages data
@@ -208,8 +224,7 @@ class Page_model extends X4Model_core
 		}
 
 		// if the parent page is changed we need to update xpos and deep
-        $deep = $page->deep;
-		if (isset($post['xfrom']) && $post['xfrom'] != $page->xfrom)
+        if (isset($post['xfrom']) && $post['xfrom'] != $page->xfrom)
 		{
             // handle id_menu, xpos and deep
 			if ($post['xfrom'] == 'home')
@@ -269,6 +284,24 @@ class Page_model extends X4Model_core
                 url != '.$this->db->escape($page->url).' AND
                 xpos >= '.$post['xpos'];
 		}
+        elseif ($page->xpos != $post['xpos'])
+        {
+            // move between siblings
+            // shift xpos for sibling after
+            $set = ($post['xpos'] < $page->xpos)
+                ? 'IF((xpos >= '.$post['xpos'].' AND xpos < '.$page->xpos.'), xpos + 1, xpos)'
+                : 'IF((xpos > '.$page->xpos.' AND xpos < '.$post['xpos'].'), xpos - 1, xpos)';
+
+            $sql[] = 'UPDATE pages
+            SET updated = NOW(), xpos = '.$set.'
+            WHERE
+                id_area = '.$page->id_area.' AND
+                lang = '.$this->db->escape($page->lang).' AND
+                xfrom = '.$this->db->escape($post['xfrom']).' AND
+                id_menu = '.$post['id_menu'].' AND
+                deep = '.$page->deep.' AND
+                url != '.$this->db->escape($page->url);
+        }
 
 		// perform the update
 		$result = $this->db->multi_exec($sql);
@@ -277,7 +310,7 @@ class Page_model extends X4Model_core
 		$this->menu->ordinal($page->id_area, $page->lang, 'home', 'A');
 
 		// update sitemap.xml
-		$this->update_sitemap($domain);
+		$this->update_sitemap($domain, $page->id_area, $page->lang);
 
 		return $result;
 	}
@@ -326,7 +359,7 @@ class Page_model extends X4Model_core
 		$this->menu->ordinal($this->id_area, $this->lang, 'home', 'A');
 
 		// update sitemap.xml
-		$this->update_sitemap($domain);
+		$this->update_sitemap($domain, $this->id_area, $this->lang);
 
 		return $res;
 	}
@@ -346,7 +379,7 @@ class Page_model extends X4Model_core
 	 */
 	public function initialize_area(int $id_area, string $lang, array $array) : array
 	{
-		$sql = array();
+		$sql = [];
 		foreach ($array as $i)
 		{
 			// insert page
@@ -374,7 +407,7 @@ class Page_model extends X4Model_core
 	 */
 	public function initialize_context(int $id_area, string $lang) : void
 	{
-		$sql = array();
+		$sql = [];
 		$sql[] = 'INSERT INTO contexts (updated, id_area, lang, xkey, name, code, xlock, xon)
                     VALUES (NOW(), '.$id_area.', '.$this->db->escape($lang).', \'drafts\', \'drafts\', 0, 0, 1)';
 		$sql[] = 'INSERT INTO contexts (updated, id_area, lang, xkey, name, code, xlock, xon)
@@ -393,7 +426,7 @@ class Page_model extends X4Model_core
 		// get page data
 		$page = $this->get_page_by_id($id);
 
-		$sql = array();
+		$sql = [];
 		// delete related articles
 		$sql[] = 'DELETE FROM articles WHERE id_page = '.$id;
 
@@ -407,17 +440,17 @@ class Page_model extends X4Model_core
 		$sql[] = 'UPDATE pages SET xfrom = '.$this->db->escape($page->xfrom).', deep = '.$page->deep.', xpos = 0
                      WHERE id_area = '.$page->id_area.' AND id_area = '.$this->db->escape($page->lang);
 
-		$res = $this->db->multi_exec($sql);
+		$result = $this->db->multi_exec($sql);
 
-		if ($res[1])
+		if ($result[1])
 		{
 			// refresh ordinals
 			$this->menu->ordinal($page->id_area, $page->lang, 'home', 'A');
 
 			// update sitemap.xml
-			$this->update_sitemap($domain);
+			$this->update_sitemap($domain, $page->id_area, $page->lang);
 		}
-		return $res;
+		return $result;
 	}
 
 	/**
@@ -449,63 +482,73 @@ class Page_model extends X4Model_core
 	/**
 	 * Update sitemap.xml
 	 */
-	private function update_sitemap(string $domain) : void
+	public function update_sitemap(string $domain, int $id_area, string $lang) : int
 	{
-		// get pages
-		$pages = $this->db->query('SELECT p.url, p.lang, a.updated
-			FROM pages p
-			JOIN articles a ON a.id_page = p.id
-			JOIN alang l ON l.code = p.lang AND p.id_area = l.id_area
-			WHERE l.xon = 1 AND p.id_area = 2 AND p.xon = 1 AND p.hidden = 0 AND a.xon = 1
-			GROUP BY p.id
-			ORDER BY p.lang ASC, p.ordinal ASC, a.updated DESC');
+        // is a public area?
+        $area = $this->get_by_id($id_area, 'areas', 'private');
 
-		// build xml
-		$head = '<?xml version="1.0" encoding="utf-8"?>
-                    <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
-                        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd"
-                        xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'.NL;
+        if ($area->private == 0)
+        {
+            // get pages
+            $pages = $this->db->query('SELECT p.url, p.lang, a.updated
+                FROM pages p
+                JOIN articles a ON a.id_page = p.id AND a.xon = 1
+                WHERE p.id_area = '.$id_area.' AND p.lang = '.$this->db->escape($lang).' AND p.xon = 1 AND p.hidden = 0
+                GROUP BY p.id
+                ORDER BY p.lang ASC, p.ordinal ASC, a.updated DESC');
 
-		$body = '';
-		if ($pages) {
+            // build xml
+            $head = '<?xml version="1.0" encoding="utf-8"?>
+<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+    xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd"
+    xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'.NL;
 
-		    $domain = (MULTILANGUAGE)
-		        ? $domain.'/'.$pages[0]->lang
-		        : $domain;
+            $body = '';
+            if ($pages)
+            {
+                $domain_lang = (MULTILANGUAGE)
+                    ? $domain.'/'.$lang
+                    : $domain;
 
-			foreach ($pages as $i)
-			{
-				switch($i->url) {
-				case 'map':
-					$body .= '<url>
-    <loc>'.$domain.'/map</loc>
+                foreach ($pages as $i)
+                {
+                    switch($i->url) {
+                    case 'map':
+                        $body .= '<url>
+    <loc>'.$domain_lang.'/map</loc>
     <lastmod>'.str_replace(' ', 'T', date('Y-m-d H:i:s')).'+01:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
 </url>'.NL;
-					break;
-				case 'home':
-					$body .= '<url>
-    <loc>'.$domain.'</loc>
+                        break;
+
+                    case 'home':
+                        $body .= '<url>
+    <loc>'.$domain_lang.'</loc>
     <lastmod>'.str_replace(' ', 'T', $i->updated).'+01:00</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
 </url>'.NL;
-					break;
-				default:
-					$body .= '<url>
-    <loc>'.$domain.'/'.$i->url.'</loc><lastmod>'.str_replace(' ', 'T', $i->updated).'+01:00</lastmod>
+                        break;
+
+                    default:
+                        $body .= '<url>
+    <loc>'.$domain_lang.'/'.$i->url.'</loc><lastmod>'.str_replace(' ', 'T', $i->updated).'+01:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>'.NL;
-				}
-			}
-		}
-		$body .= '</urlset>';
+                        break;
+                    }
+                }
+            }
+            $body .= '</urlset>';
 
-		// write file
-		$check = file_put_contents(APATH.'files/sitemap.xml', $head.$body);
+            $domain_prefix = X4Utils_helper::slugify(str_replace(['http://', 'https://', '.', ':'], '', $domain));
+
+            return X4Files_helper::write_file(PATH.'public/files/'.$domain_prefix.'_'.$lang.'_sitemap.xml', $head.$body);
+        }
+        return $area->private;
 	}
 
 	/**
@@ -544,14 +587,12 @@ class Page_model extends X4Model_core
 
 	// FOR DUPLICATING
 
-	/**
-	 * Duplicate area for another language
-     * return array(array_of_installed_modules, res)
-	 */
-	public function duplicate_area_lang(int $id_area, string $old_lang, string $new_lang) : array
-	{
-	    // sync contexts
-	    $old = X4Array_helper::indicize($this->db->query('SELECT *
+    /**
+     * Sync contexts
+     */
+    private function sync_contexts(int $id_area, string $old_lang, string $new_lang) : void
+    {
+        $old = X4Array_helper::indicize($this->db->query('SELECT *
 			FROM contexts
 			WHERE id_area = '.$id_area.' AND lang = '.$this->db->escape($old_lang).'
 			ORDER BY code ASC'), 'code');
@@ -570,9 +611,93 @@ class Page_model extends X4Model_core
 		        $post = (array) $v;
 		        unset($post['id'], $post['updated']);
 		        $post['lang'] = $new_lang;
-		        $res = $this->insert($post, 'contexts');
+		        $this->insert($post, 'contexts');
             }
 		}
+    }
+
+    /**
+     * Sync sections
+     */
+    private function sync_sections(int $id_area, int $sections, int $id_page, string $old_lang, string $new_lang, array &$modules) : array
+    {
+        $res = [0, 0];
+        foreach ($sections as $i)
+        {
+            $articles = json_decode($i->articles);
+            $bids = [];
+
+            if (!empty($articles))
+            {
+                foreach ($articles as $ii)
+                {
+                    if (!empty($ii))
+                    {
+                        // get the article
+                        $art = $this->db->query_row('SELECT *
+                            FROM articles
+                            WHERE
+                                id_area = '.$id_area.' AND
+                                lang = '.$this->db->escape($old_lang).' AND
+                                bid = '.$this->db->escape($ii).' AND
+                                xon = 1
+                            ORDER BY id DESC');
+
+                        if ($art)
+                        {
+                            $bid = md5($art->id.time().'-'.$_SESSION['xuid']);
+
+                            // insert the article
+                            $post = (array) $art;
+
+                            unset($post['id'], $post['updated']);
+
+                            $post['bid'] = $bid;
+                            $post['lang'] = $new_lang;
+                            $post['id_page'] = $id_page;
+                            $post['id_editor'] = $_SESSION['xuid'];
+
+                            $res = $this->insert($post, 'articles');
+
+                            if ($res[1])
+                            {
+                                // memo for bid
+                                $bids[] = $bid;
+
+                                // modules
+                                if (!empty($i->module) && !in_array($i->module, $modules))
+                                {
+                                    $modules[] = $i->module;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // create section
+            $post = array(
+                'id_area' => $id_area,
+                'id_page' => $id_page,
+                'progressive' => $i->progressive,
+                'settings' => $i->settings,
+                'articles' => json_encode($bids),
+                'xon' => 1
+            );
+
+            $res = $this->insert($post, 'sections');
+        }
+        return $res;
+    }
+
+	/**
+	 * Duplicate area for another language
+     * return array(array_of_installed_modules, res)
+	 */
+	public function duplicate_area_lang(int $id_area, string $old_lang, string $new_lang) : array
+	{
+	    // sync contexts
+        $this->sync_contexts($id_area, $old_lang, $new_lang);
 
 		// sync pages
 
@@ -589,8 +714,8 @@ class Page_model extends X4Model_core
 			ORDER BY ordinal ASC'), 'url');
 
 		// memo for modules
-		$modules = array();
-		$res = 0;
+		$modules = [];
+		$res = [0, 0];
 
 		// insert pages
 		foreach ($old as $k => $v)
@@ -619,78 +744,16 @@ class Page_model extends X4Model_core
 
 		    if ($id_page)
 		    {
-		        // get sections
-		        $sections = $this->db->query('SELECT *
+                // get sections
+                $sections = $this->db->query('SELECT *
                     FROM sections
                     WHERE id_area = '.$id_area.' AND id_page = '.intval($old_id_page).'
                     ORDER BY progressive ASC');
 
-                if ($sections)
+                if (!empty($sections))
                 {
-                    foreach ($sections as $i)
-                    {
-                        $articles = explode('|', $i->articles);
-                        $bids = array();
-
-                        if (!empty($articles))
-                        {
-                            foreach ($articles as $ii)
-                            {
-                                if (!empty($ii))
-                                {
-                                    // get the article
-                                    $art = $this->db->query_row('SELECT *
-                                        FROM articles
-                                        WHERE
-                                            id_area = '.$id_area.' AND
-                                            lang = '.$this->db->escape($old_lang).' AND
-                                            bid = '.$this->db->escape($ii).' AND
-                                            xon = 1
-                                        ORDER BY id DESC');
-
-                                    if ($art)
-                                    {
-                                        $bid = md5($art->id.time().'-'.$_SESSION['xuid']);
-
-                                        // insert the article
-                                        $post = (array) $art;
-
-                                        unset($post['id'], $post['updated']);
-
-                                        $post['bid'] = $bid;
-                                        $post['lang'] = $new_lang;
-                                        $post['id_page'] = $id_page;
-                                        $post['id_editor'] = $_SESSION['xuid'];
-
-                                        $res = $this->insert($post, 'articles');
-
-                                        if ($res[1])
-                                        {
-                                            // memo for bid
-                                            $bids[] = $bid;
-
-                                            // modules
-                                            if (!empty($i->module) && !in_array($i->module, $modules))
-                                            {
-                                                $modules[] = $i->module;
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        // create section
-                        $post = array(
-                            'id_area' => $id_area,
-                            'id_page' => $id_page,
-                            'progressive' => $i->progressive,
-                            'articles' => implode('|', $bids),
-                            'xon' => 1
-                        );
-
-                        $res = $this->insert($post, 'sections');
-                    }
+                    // sync sections
+                    $res = $this->sync_sections($id_area, $sections, $id_page, $old_lang, $new_lang, $modules);
                 }
             }
 		}
@@ -713,6 +776,7 @@ class Page_obj
 	public $name;
 	public $description;
     public $icon = '';
+    public $xclass = '';
 	public $xfrom = '';
 	public $id_menu = 0;
 	public $deep = 0;

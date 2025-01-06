@@ -18,13 +18,11 @@ class X4Page_controller extends X4Cms_controller
 	/**
 	 * Admitted URLs without login
 	 */
-	protected $admitted = array('login', 'recovery', 'signin', 'msg', 'intro');
+	protected $admitted = array('login', 'recovery', 'signin', 'signup', 'msg', 'intro');
 
 	/**
 	 * Constructor
 	 * Check the site status
-	 *
-	 * @return  void
 	 */
 	public function __construct()
 	{
@@ -37,31 +35,21 @@ class X4Page_controller extends X4Cms_controller
 		}
 
 		X4Utils_helper::offline($this->site->data->xon, BASE_URL.$url);
+        X4Utils_helper::buyer();
 	}
 
 	/**
 	 * Call home page if method is empty
-	 *
-	 * @return void
 	 */
-	public function _default()
+	public function _default() : void
 	{
 		$this->__call('home', array());
 	}
 
 	/**
 	 * Call the specified plugin method
-	 *
-	 * @param string	$module plugin name
-	 * @param integer	$id_area area ID
-	 * @param string	$control method name
-	 * @param mixed		$a unspecified variable
-	 * @param mixed		$b unspecified variable
-	 * @param mixed		$c unspecified variable
-	 * @param mixed		$d unspecified variable
-	 * @return void
 	 */
-	public function plugin(string $module, string $control = '', $a = '', $b = '', $c = '', $d = '')
+	public function plugin(string $module, string $control = '', mixed $a = '', mixed $b = '', mixed $c = '', mixed $d = '') : void
 	{
 		$mod = new X4Plugin_model();
 
@@ -81,23 +69,16 @@ class X4Page_controller extends X4Cms_controller
 
 	/**
 	 * Build captcha image
-	 *
-	 * @param integer background
-	 * @return image file
 	 */
-	public function captcha($bg0 = 255, $bg1 = 255, $bg2 = 255)
+	public function captcha($bg0 = 255, $bg1 = 255, $bg2 = 255) : void
 	{
 		X4Form_helper::captcha(5, 'whitrabt.ttf', array($bg0, $bg1, $bg2));
 	}
 
 	/**
 	 * Generic page override __call
-	 *
-	 * @param string	url/controller name
-	 * @param array		array of arguments
-	 * @return void
 	 */
-	public function __call(string $method, array $args)
+	public function __call(string $method, array $args = []) : void
 	{
         // is the area active?
         if (!$this->site->area->xon)
@@ -178,7 +159,7 @@ class X4Page_controller extends X4Cms_controller
 
 		$qs = (!empty(X4Route_core::$query_string))
 		    ? X4Route_core::get_query_string()
-		    : array();
+		    : [];
 
 		// set title
 		if (isset($qs['ok']))

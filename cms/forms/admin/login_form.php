@@ -11,7 +11,7 @@
 // login form
 
 // build the form
-$fields = array();
+$fields = [];
 
 // check if user used remember me
 if (isset($_COOKIE[COOKIE.'_login']))
@@ -33,6 +33,13 @@ $fields[] = array(
     'value' => md5(time().SALT),
     'name' => 'antispam'
 );
+
+$fields[] = array(
+    'label' => null,
+    'type' => 'html',
+    'value' => '<div class="text-gray-50">',
+);
+
 $fields[] = array(
     'label' => _USERNAME,
     'type' => 'text',
@@ -92,6 +99,12 @@ if ($site->xon && !$chk && isset($_SESSION['failed']))
     $fields[] = array(
         'label' => null,
         'type' => 'html',
-        'value' => '<p class="text-sm"><a href="javascript:void(0)" @click="load_captcha()" title="reload" id="reload_captcha">'._RELOAD_CAPTCHA.'</a></p>'
+        'value' => '<p class="text-sm"><a @click="load_captcha()" title="reload" id="reload_captcha">'._RELOAD_CAPTCHA.'</a></p>'
     );
 }
+
+$fields[] = array(
+    'label' => null,
+    'type' => 'html',
+    'value' => '</div>',
+);

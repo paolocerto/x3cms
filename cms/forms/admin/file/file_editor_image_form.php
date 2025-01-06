@@ -11,7 +11,7 @@
 // file editor image form
 
 // build the form
-$fields = array();
+$fields = [];
 
 // editor form
 $fields[] = array(
@@ -40,7 +40,7 @@ $fields[] = array(
     'value' => '<div
             class="grid grid-cols-1 md:grid-cols-2 gap-4"
             x-data="imageEditor()"
-            x-init="initialize(\'img\', \'image_editor\', \''.FPATH.'img/'.$file->name.'\')"
+            x-init="initialize(\'img\', \'image_editor\', \''.FMPATH.'img/'.$file->name.'\')"
         >
             <div>'
 );
@@ -153,7 +153,7 @@ $fields[] = array(
     'label' => null,
     'type' => 'html',
     'value' => '<div style="overflow:hidden;">
-        <img class="thumb mx-auto" id="imagethumb" src="'.FPATH.'img/'.$file->name.'?t='.time().'" />
+        <img class="thumb mx-auto" id="imagethumb" src="'.FMPATH.'img/'.$file->name.'?t='.time().'" />
     </div>'
 );
 */

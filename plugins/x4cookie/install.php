@@ -21,9 +21,9 @@ $compatibility = '0.9.0 STABLE';
 $mod_name = 'x4cookie';
 
 // requirements
-$required = array();
+$required = [];
 
-$sql0 = $sql1 = array();
+$sql0 = $sql1 = [];
 
 // administration priv
 $sql0[] = "INSERT INTO privtypes (updated, xrif, name, description, xon) VALUES (NOW(), 1, 'x4_cookie', 'X4_COOKIE', 1)";

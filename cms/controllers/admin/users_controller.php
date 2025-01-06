@@ -41,7 +41,7 @@ class Users_controller extends X3ui_controller
 		$view->actions = AdminUtils_helper::link(
                 'memo',
                 'users:'.$page->lang,
-                [],
+                $this->memo('users:'.$page->lang, $_SESSION['xuid']),
                 _MEMO
             ).$this->actions('group');
 
@@ -105,29 +105,33 @@ class Users_controller extends X3ui_controller
             if ((($user->plevel > 1 && $user->xlock == 0) || $user->plevel >= 3))
             {
                 $actions = AdminUtils_helper::link('edit', 'users/edit/'.$user->id.'/'.$user->id_group);
+
                 // manager or admin user
                 if ($user->plevel > 2)
                 {
                     $actions .= AdminUtils_helper::link('xon', 'users/set/xon/'.$user->id.'/'.(($user->xon+1)%2), $statuses);
                 }
 
-                // admin user
-                if ($user->plevel >= 4)
+                if ($_SESSION['level'] == 5)
                 {
                     if ($user->hidden == 1)
                     {
                         $hide = _HIDE_USER;
-			            $hide_status = 'off';
+                        $hide_status = 'off';
                     }
                     else
                     {
                         $hide = _SHOW_USER;
-			            $hide_status = 'on';
+                        $hide_status = 'on';
                     }
 
                     $actions .= '<a class="link" @click="setter(\''.BASE_URL.'users/set/hidden/'.$user->id.'/'.(($user->hidden+1)%2).'\')" title="'._STATUS.' '.$hide.'">
                         <i class="fa-solid fa-lg fa-user '.$hide_status.'"></i>
                     </a>';
+                }
+                // admin user
+                if ($user->plevel == 4)
+                {
                     $actions .= AdminUtils_helper::link('xlock', 'users/set/xlock/'.$user->id.'/'.(($user->xon+1)%2), $statuses);
                     if ($user->id > 1 || $user->id == $_SESSION['xuid'])
                     {
@@ -144,20 +148,15 @@ class Users_controller extends X3ui_controller
 	 */
 	public function set(string $what, int $id, int $value = 0) : void
 	{
-		$msg = null;
-		// check permission
 		$msg = AdminUtils_helper::chk_priv_level(1, 'users', $id, $what);
 		if (is_null($msg))
 		{
-			// do action
 			$mod = new User_model();
 			$result = $mod->update($id, array($what => $value));
 
-			// set message
 			$this->dict->get_words();
 			$msg = AdminUtils_helper::set_msg($result);
 
-			// set update
 			if ($result[1])
             {
 				$msg->update = array(
@@ -174,17 +173,13 @@ class Users_controller extends X3ui_controller
 	 */
 	public function user(int $id) : void
 	{
-	    // load dictionaries
-		$this->dict->get_wordarray(array('users', 'form', 'login'));
+	    $this->dict->get_wordarray(array('users', 'form', 'login'));
 
-		// check permission
 		AdminUtils_helper::chk_priv_level(1, 'users', $id, 'read');
 
-        // get user data
         $mod = new User_model();
         $user = $mod->get_user_by_id($id);
 
-		// get page
 		$page = $this->get_page('users/detail');
 
         $view = new X4View_core('page');
@@ -192,7 +187,7 @@ class Users_controller extends X3ui_controller
 		$view->actions = AdminUtils_helper::link(
                 'memo',
                 'user:detail:'.$page->lang,
-                [],
+                $this->memo('user:detail:'.$page->lang, $_SESSION['xuid']),
                 _MEMO
             ).$this->actions('user', $user->id_group, $id);
 
@@ -200,7 +195,6 @@ class Users_controller extends X3ui_controller
         $view->content->page = $page;
         $view->content->user = $user;
 
-        // get user privileges
         $perm = new Permission_model();
         $view->content->aprivs = $perm->get_aprivs($id);
 		$view->render(true);
@@ -211,28 +205,24 @@ class Users_controller extends X3ui_controller
 	 */
 	public function edit(int $id, int $id_group = 0) : void
 	{
-		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'login', 'users'));
 
 		$lang = X4Route_core::$lang;
 
-		// get object
 		$mod = new User_model();
 		$user = ($id)
 			? $mod->get_by_id($id)
 			: new User_obj($id_group, $lang);
 
-		// get group
 		$group = $mod->get_by_id($user->id_group, 'xgroups', 'id_area, name');
 
-		// build the form
 		$form_fields = new X4Form_core('user/user_edit');
 		$form_fields->id = $id;
 		$form_fields->user = $user;
         $form_fields->group = $group;
         $form_fields->levels = $mod->get_levels();
-        // languages
-		$mod = new Language_model();
+
+        $mod = new Language_model();
         $form_fields->languages = $mod->get_languages();
 
         $mod = new Permission_model();
@@ -240,10 +230,8 @@ class Users_controller extends X3ui_controller
 		$mod = new Area_model();
         $form_fields->areas = $mod->get_areas($this->site->data->id, $group->id_area);
 
-        // get the fields array
-		$fields = $form_fields->render();
+        $fields = $form_fields->render();
 
-		// if submitted
 		if (X4Route_core::$post)
 		{
 			$e = X4Validation_helper::form($fields, 'editor');
@@ -263,11 +251,8 @@ class Users_controller extends X3ui_controller
 			? _EDIT_USER
 			: _ADD_USER;
 
-		// contents
 		$view->content = new X4View_core('editor');
-        // can user edit?
         $submit = AdminUtils_helper::submit_btn(1, 'users', $id, $user->xlock);
-		// form builder
 		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, $submit, 'buttons'), 'post', '',
             '@click="submitForm(\'editor\')"');
 		$view->render(true);
@@ -278,15 +263,12 @@ class Users_controller extends X3ui_controller
 	 */
 	private function editing(int $id, array $_post) : void
 	{
-		$msg = null;
-		// check permission
 		$msg = ($id)
 			? AdminUtils_helper::chk_priv_level(1, 'users', $id, 'edit')
 			: AdminUtils_helper::chk_priv_level(1, '_user_creation', 0, 'create');
 
 		if (is_null($msg))
 		{
-			// handle _post
 			$post = array(
 				'lang' => $_post['lang'],
 				'id_group' => $_post['id_group'],
@@ -315,7 +297,6 @@ class Users_controller extends X3ui_controller
                 // for redirect
                 $where = '';
 			    $perm = new Permission_model();
-                $perm->set_aprivs($id, $_post['domain']);
 				if ($id)
 				{
 					$result = $mod->update($id, $post);
@@ -330,6 +311,7 @@ class Users_controller extends X3ui_controller
                         $perm->set_uprivs($_SESSION['xuid'], $id, 'areas', $_post['level']);
 					}
 				}
+                $perm->set_aprivs($id, $_post['domain']);
 
 				$msg = AdminUtils_helper::set_msg($result);
 
@@ -355,15 +337,12 @@ class Users_controller extends X3ui_controller
 	 */
 	public function perm(int $id_user, int $id_area, int $table = 0) : void
 	{
-		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'groups', 'users'));
 
 		$mod = new Permission_model();
 
-		// user data
 		$user = $mod->get_by_id($id_user, 'users', 'id_group, username');
 
-		// build the form
 		$form_fields = new X4Form_core('user/user_privs');
         $form_fields->id_area = $id_area;
 		$form_fields->id_user = $id_user;
@@ -376,10 +355,8 @@ class Users_controller extends X3ui_controller
         // user permission
 		$form_fields->what = $mod->get_uprivs($id_user, $id_area);
 
-        // get the fields array
-		$fields = $form_fields->render();
+        $fields = $form_fields->render();
 
-		// if submitted
 		if (X4Route_core::$post)
 		{
 			$e = X4Validation_helper::form($fields, 'editpriv');
@@ -399,10 +376,7 @@ class Users_controller extends X3ui_controller
 			? _EDIT_PRIV.': '.$user->username
 			: _EDIT_PRIV.': '._GLOBAL_PRIVS;
 
-		// contents
 		$view->content = new X4View_core('editor');
-
-		// form builder
 		$view->content->form = X4Form_helper::doform('editpriv', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
             '@click="submitForm(\'editpriv\')"');
 
@@ -414,18 +388,14 @@ class Users_controller extends X3ui_controller
 	 */
 	private function permitting(array $_post) : void
 	{
-		$msg = null;
-		// check permission
 		$msg = AdminUtils_helper::chk_priv_level(1, 'users', $_post['id'], 'manage');
-
 		if (is_null($msg))
 		{
-			// get privilege types
 			$mod = new Permission_model();
 			$types = $mod->get_privtypes(1);
 
 			// check the differences
-			$insert = $update = $delete = array();
+			$insert = $update = $delete = [];
 			foreach ($types as $i)
 			{
 				// if the new value do not match the old value
@@ -458,12 +428,10 @@ class Users_controller extends X3ui_controller
 				}
 			}
 
-			// perform the refresh
 			$result = $mod->update_uprivs($_post['id'], $_post['id_area'], $insert, $update, $delete);
 
 			$msg = AdminUtils_helper::set_msg($result);
 
-			// set what update
 			if ($result[1])
 			{
 				$msg->update = array(
@@ -481,20 +449,15 @@ class Users_controller extends X3ui_controller
 	 */
 	public function reset(int $id_user) : void
 	{
-		$msg = null;
-		// check permission
 		$msg = AdminUtils_helper::chk_priv_level(1, 'users', $id_user, 'manage');
 		if (is_null($msg))
 		{
-			// do action
 			$mod = new Permission_model();
 			$result = $mod->refactory($id_user, true);
 
-			// set message
 			$this->dict->get_words();
 			$msg = AdminUtils_helper::set_msg($result);
 
-			// set update
 			if ($result[1])
 			{
 				$msg->update = array(
@@ -512,20 +475,15 @@ class Users_controller extends X3ui_controller
 	 */
 	public function refactory(int $id_user) : void
 	{
-		$msg = null;
-		// check permission
 		$msg = AdminUtils_helper::chk_priv_level(1, 'users', $id_user, 'manage');
 		if (is_null($msg))
 		{
-			// do action
 			$mod = new Permission_model();
 			$result = $mod->refactory($id_user);
 
-			// set message
 			$this->dict->get_words();
 			$msg = AdminUtils_helper::set_msg($result);
 
-			// set update
 			if ($result[1])
 			{
 				$msg->update = array(
@@ -542,7 +500,6 @@ class Users_controller extends X3ui_controller
 	 */
 	public function permissions(int $id_user, int $id_area, string $table) : void
 	{
-		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'groups', 'users'));
 
 		$mod = new Permission_model();
@@ -550,7 +507,6 @@ class Users_controller extends X3ui_controller
 		// get area name
 		$area = $mod->get_by_id($id_area, 'areas', 'name');
 
-		// build the form
 		$form_fields = new X4Form_core('user/user_permissions');
         $form_fields->id_area = $id_area;
 		$form_fields->id_user = $id_user;
@@ -560,10 +516,8 @@ class Users_controller extends X3ui_controller
         // get user privileges on the table
 		$form_fields->what = $mod->get_detail($id_user, $id_area, $table);
 
-        // get the fields array
-		$fields = $form_fields->render();
+        $fields = $form_fields->render();
 
-		// if submitted
 		if (X4Route_core::$post)
 		{
 			$e = X4Validation_helper::form($fields, 'detpriv');
@@ -580,9 +534,8 @@ class Users_controller extends X3ui_controller
 
         $view = new X4View_core('modal');
         $view->title = _EDIT_PRIV.': '.$area->name._TRAIT_.ucfirst($table);
-		// content
+
 		$view->content = new X4View_core('editor');
-		// form builder
 
         $extra_btn = [
             'title' => _GO_BACK,
@@ -617,17 +570,14 @@ function setForAll(val) {
 	 */
 	private function detailing(array $_post) : void
 	{
-		$msg = null;
-		// check permission
 		$msg = AdminUtils_helper::chk_priv_level(1, 'users', $_post['id_user'], 'manage');
-
 		if (is_null($msg))
 		{
 			$mod = new Permission_model();
 
 			// handle _post
 			$c = 0;
-			$post = array();
+			$post = [];
 			while(isset($_post['id_'.$c]))
 			{
 				// if the new value do not match the old value
@@ -649,10 +599,8 @@ function setForAll(val) {
 				$result = array(0,1);
 			}
 
-			// set message
 			$msg = AdminUtils_helper::set_msg($result);
 
-			// set what update
 			if ($result[1])
 			{
 				$msg->update = array(
@@ -669,15 +617,12 @@ function setForAll(val) {
 	 */
 	public function delete(int $id) : void
 	{
-		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'users'));
 
-        // get item
-		$user = new User_model();
+        $user = new User_model();
 		$item = $user->get_by_id($id, 'users', 'id, username, level');
 
-		// build the form
-		$fields = array();
+		$fields = [];
 		$fields[] = array(
 			'label' => null,
 			'type' => 'hidden',
@@ -685,7 +630,6 @@ function setForAll(val) {
 			'name' => 'id'
 		);
 
-		// if submitted
 		if (X4Route_core::$post)
 		{
 			$this->deleting($item);
@@ -694,11 +638,8 @@ function setForAll(val) {
         $view = new X4View_core('modal');
         $view->title = _DELETE_USER;
 
-		// contents
 		$view->content = new X4View_core('delete');
 		$view->content->item = $item->username;
-
-		// form builder
 		$view->content->form = X4Form_helper::doform('delete', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
             '@click="submitForm(\'delete\')"');
 		$view->render(true);
@@ -709,8 +650,6 @@ function setForAll(val) {
 	 */
 	private function deleting(stdClass $item) : void
 	{
-		$msg = null;
-		// check permission
 		$msg = AdminUtils_helper::chk_priv_level(1, 'users', $item->id, 'delete');
         // check user level
         if (!is_null($msg) || $_SESSION['level'] < $item->level)

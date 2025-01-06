@@ -11,7 +11,7 @@
 // template install form
 
 // build the form
-$fields = array();
+$fields = [];
 
 $fields[] = array(
     'label' => null,
@@ -50,7 +50,7 @@ $fields[] = array(
     'label' => _CSS,
     'type' => 'select',
     'value' => 'base',
-    'options' => array($this->get_css($theme->name), 'value', 'option'),
+    'options' => array($css, 'value', 'option'),
     'name' => 'css',
     'extra' => 'class="w-full"'
 );

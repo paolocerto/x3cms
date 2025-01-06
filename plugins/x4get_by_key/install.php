@@ -20,11 +20,11 @@ $compatibility = '0.9.99 STABLE';
 $mod_name = 'x4get_by_key';
 
 // requirements
-$required = array();
+$required = [];
 
 // sql0 is the array of queries for global use (tables, privtypes, admin, admin dictionary)
 // sql1 is the array of queries for specific area use (parameters, dictionary, module)
-$sql0 = $sql1 = array();
+$sql0 = $sql1 = [];
 
 // administration priv
 $sql0[] = "INSERT INTO privtypes (updated, xrif, name, description, xon) VALUES (NOW(), 1, 'x4_get_by_key', 'X4_GET_BY_KEY', 1)";

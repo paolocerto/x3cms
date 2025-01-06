@@ -84,9 +84,12 @@ if ($plugged || $pluggable)
 
                     $actions .= AdminUtils_helper::link('xlock', 'modules/set/xlock/'.$i->id_area.'/'.$i->id.'/'.(($i->xlock+1)%2), $statuses);
 
-                    $actions .= '<a class="link" @click="popup(\''.BASE_URL.'modules/uninstall/'.$i->id.'\')" title="'._UNINSTALL.'">
+                    if ($uninstall && $uninstall->level > 3)
+                    {
+                        $actions .= '<a class="link" @click="popup(\''.BASE_URL.'modules/uninstall/'.$i->id.'\')" title="'._UNINSTALL.'">
                             <i class="fa-solid fa-download fa-lg warn"></i>
                         </a>';
+                    }
                 }
             }
 
@@ -100,7 +103,7 @@ if ($plugged || $pluggable)
             echo '<tr>
                     <td><span class="text-xs hidden md:inline-block">'.$i->version._TRAIT_.'</span> '.$admin.' <span class="text-sm hidden md:inline-block">'._TRAIT_.$i->title.'</span></td>
                     <td>'.$help.'</td>
-                    <td class="space-x-2 text-right">'.$actions.'</td>
+                    <td class="text-right">'.$actions.'</td>
                     </tr>';
         }
     }
@@ -126,7 +129,7 @@ if ($plugged || $pluggable)
             echo '<tr>
                     <td><strong>'.$name.'</strong></td>
                     <td>'.$help.'</td>
-                    <td class="space-x-2 text-right">'.$actions.'</td>
+                    <td class="text-right">'.$actions.'</td>
                     </tr>';
         }
     }

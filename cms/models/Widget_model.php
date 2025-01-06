@@ -27,7 +27,7 @@ class Widget_model extends X4Model_core
 	/**
 	 * Build an array of user widgets
 	 */
-	public function widgets() : array
+	public function widgets(string $db) : array
 	{
 		// get user widgets
 		$widgets = $this->get_my_widgets(1);
@@ -40,7 +40,7 @@ class Widget_model extends X4Model_core
 			{
 				$w = ucfirst($i->name).'_model';
 				// load the model
-				$mod = new $w;
+				$mod = new $w($db);
 
 				// widget item
 				$a[] = $mod->get_widget($i->description, $i->id_area, $i->area);
@@ -126,7 +126,7 @@ class Widget_model extends X4Model_core
 	{
 		$ids = explode(',', $order);
 		$c = 1;
-		$sql = array();
+		$sql = [];
 		foreach ($ids as $i)
 		{
 			if (!empty($i) && $i != 'sort') {
@@ -146,7 +146,7 @@ class Widget_model extends X4Model_core
 		// get xpos
 		$pos = $this->get_var($id, 'widgets', 'xpos');
 
-		$sql = array();
+		$sql = [];
 		$sql[] = 'UPDATE widgets SET xpos = (xpos - 1) WHERE id_user = '.$_SESSION['xuid'].' AND xpos > '.$pos;
 		$sql[] = 'DELETE FROM widgets WHERE id_user = '.$_SESSION['xuid'].' AND id = '.$id;
 		return $this->db->multi_exec($sql);

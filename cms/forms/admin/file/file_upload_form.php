@@ -11,7 +11,7 @@
 // file upload form
 
 // build the form
-$fields = array();
+$fields = [];
 
 $fields[] = array(
     'label' => null,
@@ -23,7 +23,7 @@ $fields[] = array(
     'label' => null,
     'type' => 'html',
     'value' => '<p class="text-sm">'.ucfirst(_FILE_SIZES).' '.MAX_W.'x'.MAX_H.' px - '.ceil(MAX_IMG/1024).' MB / '.ceil(MAX_DOC/1024).' MB</p>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4">
             <div>'
 );
 

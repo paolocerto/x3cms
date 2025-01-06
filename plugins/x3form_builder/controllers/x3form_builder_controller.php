@@ -47,10 +47,17 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
         $view->breadcrumb = array($this->site->get_bredcrumb($page), array('modules' => 'index/'.$id_area));
 		$view->actions = AdminUtils_helper::link(
             'memo',
-            'x3form_builder:mod:'.$lang,
-            [],
+            'x3form_builder:mod:'.$page->lang,
+            $this->memo('x3form_builder:mod:'.$page->lang, $_SESSION['xuid']),
             _MEMO
         ).$this->actions($id_area, $lang);
+
+        // switchers
+        $view->id_area = $id_area;
+        $view->lang = $lang;
+        $view->areas = $areas;
+        $view->url = 'x3form_builder/mod/XAREAX/XLANGX';
+
         $view->content = new X4View_core('x3form_list', 'x3form_builder');
         $view->content->page = $page;
 		$view->content->pp = $pp;
@@ -59,14 +66,8 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
 		$view->content->items = X4Pagination_helper::paginate($mod->get_forms($id_area, $lang, 2), $pp);
 
 		$view->content->id_area = $id_area;
-		$view->content->areas = $areas;
-
 		$view->content->lang = $lang;
-        if (MULTILANGUAGE)
-        {
-            $mod = new Language_model();
-            $view->content->langs = $mod->get_languages();
-        }
+
 		$view->render(true);
 	}
 
@@ -123,12 +124,13 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
         );
 		$view->actions = AdminUtils_helper::link(
                 'memo',
-                'x3form_builder:fields:'.$lang,
-                [],
+                'x3form_builder:fields:'.$page->lang,
+                $this->memo('x3form_builder:fields:'.$page->lang, $_SESSION['xuid']),
                 _MEMO
             ).$this->actions($id_area, $lang, $id_form);
 
 		$view->content = new X4View_core('x3form_fields', 'x3form_builder');
+        $view->content->page = $page;
 		$view->content->id_area = $id_area;
 		$view->content->lang = $lang;
 		$view->content->id_form = $id_form;
@@ -147,7 +149,7 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
 	 */
 	public function results(int $id_area, string $lang, int $id_form, $pp = 0) : void
 	{
-		$this->dict->get_wordarray(array('x3form_builder'));
+		$this->dict->get_wordarray(array('x3form_builder', 'bulk'));
 
 		$lang = (empty($lang))
 			? X4Route_core::$lang
@@ -165,8 +167,8 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
         );
 		$view->actions = AdminUtils_helper::link(
             'memo',
-            'x3form_builder:results:'.$lang,
-            [],
+            'x3form_builder:results:'.$page->lang,
+            $this->memo('x3form_builder:results:'.$page->lang, $_SESSION['xuid']),
             _MEMO
         ).$this->actions($id_area, $lang);
 
@@ -193,12 +195,12 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
 	{
 		$this->dict->get_wordarray(array('x3form_builder'));
 
+        $mod = new Area_model();
+		list($id_area, $areas) = $mod->get_my_areas($this->site->data->id, $id_area);
+
 		$lang = (empty($lang))
 			? X4Route_core::$lang
 			: $lang;
-
-        $mod = new Area_model();
-        list($id_area, $areas) = $mod->get_my_areas($id_area);
 
 		$page = $this->get_page('x3form-builder/blacklist');
 
@@ -209,10 +211,16 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
         );
 		$view->actions = AdminUtils_helper::link(
             'memo',
-            'x3form_builder:blacklist:'.$lang,
-            [],
+            'x3form_builder:blacklist:'.$page->lang,
+            $this->memo('x3form_builder:blacklist:'.$page->lang, $_SESSION['xuid']),
             _MEMO
         ).$this->actions($id_area, $lang, -1);
+
+        // switchers
+        $view->id_area = $id_area;
+        $view->lang = $lang;
+        $view->areas = $areas;
+        $view->url = 'x3form_builder/blacklist/XAREAX/XLANGX';
 
         $mod = new X3form_builder_model($this->site->data->db);
 
@@ -224,13 +232,6 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
 
 		$view->content->items = X4Pagination_helper::paginate($mod->get_blacklist($id_area, $lang), $pp);
 
-        $view->content->lang = $lang;
-        if (MULTILANGUAGE)
-        {
-            $mod = new Language_model();
-            $view->content->langs = $mod->get_languages();
-        }
-        $view->content->areas = $areas;
 		$view->render(true);
 	}
 
@@ -239,7 +240,6 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
 	 */
 	public function set(string $table, string $what, int $id_area, int $id, int $value) : void
 	{
-		$msg = null;
 		$table = ($table == 'forms')
             ? ''
             : '_'.$table;
@@ -319,7 +319,6 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
 	 */
 	private function editing(array $_post) : void
 	{
-		$msg = null;
 		$msg = ($_post['id'])
 			? AdminUtils_helper::chk_priv_level($_post['id_area'], 'x3_forms', $_post['id'], 'edit')
 			: AdminUtils_helper::chk_priv_level($_post['id_area'], '_x3form_creation', 0, 'create');
@@ -359,6 +358,7 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
         {
             $msg = AdminUtils_helper::set_msg(false, '', $this->dict->get_word('_X3FB_FORM_ALREADY_EXISTS', 'msg'));
             $this->response($msg);
+            exit;
         }
 
         $result = ($_post['id'])
@@ -427,7 +427,6 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
 	 */
 	private function duplicating(array $_post) : void
 	{
-		$msg = null;
 		$msg = AdminUtils_helper::chk_priv_level($_post['id_area'], '_x3form_creation', 0, 'create');
 		if (is_null($msg))
 		{
@@ -516,7 +515,7 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
 		$mod = new X3form_builder_model($this->site->data->db);
 		$item = $mod->get_by_id($id_form, 'x3_forms', 'id, id_area, name');
 
-		$fields = array();
+		$fields = [];
 		$fields[] = array(
 			'label' => null,
 			'type' => 'hidden',
@@ -535,7 +534,6 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
 
 		$view->content = new X4View_core('delete');
 		$view->content->item = $item->name;
-
 		$view->content->form = X4Form_helper::doform('delete', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
             '@click="submitForm(\'delete\')"');
 		$view->render(true);
@@ -608,7 +606,7 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
     /**
 	 * Return recorded selected options
 	 */
-	public function decompose(string $str = '', string $fields = '', int $move = 0, int $echo = 0) : mixed
+	public function decompose(string $str = '', string $fields = '', int $move = 0, int $echo = 0)
 	{
         $this->dict->get_words();
         $res = AdminUtils_helper::decompose($str, $this->$fields, $move, $echo);
@@ -629,7 +627,7 @@ class X3form_builder_controller extends X3ui_controller implements X3plugin_cont
 	 */
 	public function encoded_rules() : void
 	{
-		$a = array();
+		$a = [];
 
         $rules = X4Validation_helper::$rules;
 		foreach ($rules as $r)
@@ -675,7 +673,6 @@ function checkRule(item) {
 	 */
 	private function editing_field(array $_post) : void
 	{
-		$msg = null;
 		$msg = ($_post['id'])
 			? AdminUtils_helper::chk_priv_level($_post['id_area'], 'x3_forms_fields', $_post['id'], 'edit')
 			: AdminUtils_helper::chk_priv_level($_post['id_area'], '_x3form_field_creation', 0, 'create');
@@ -735,7 +732,6 @@ function checkRule(item) {
 	 */
 	public function ordering(int $id_area, string $lang, int $id_form) : void
 	{
-		$msg = null;
 		$msg = AdminUtils_helper::chk_priv_level($id_area, 'x3_forms', $id_form, 'manage');
 		if (is_null($msg) && X4Route_core::$input)
 		{
@@ -778,7 +774,7 @@ function checkRule(item) {
 		$mod = new X3form_builder_model($this->site->data->db);
 		$item = $mod->get_by_id($id_field, 'x3_forms_fields', 'id, id_area, name');
 
-		$fields = array();
+		$fields = [];
 		$fields[] = array(
 			'label' => null,
 			'type' => 'hidden',
@@ -821,14 +817,14 @@ function checkRule(item) {
 
             $c = 0;
             $head = array('Date');
-            $list = array();
+            $list = [];
             foreach ($items as $i)
             {
                 $array = json_decode($i->result, true);
                 $tmp = array($i->updated);
                 foreach ($array as $k => $v)
                 {
-                    $str = array();
+                    $str = [];
                     if (!$c)
                     {
                         $head[] = strtoupper($k);
@@ -880,7 +876,7 @@ function checkRule(item) {
         $mod = new X3form_builder_model($this->site->data->db);
 		$item = $mod->get_by_id($id, 'x3_forms_results', 'id, id_area, updated');
 
-		$fields = array();
+		$fields = [];
 		$fields[] = array(
 			'label' => null,
 			'type' => 'hidden',
@@ -910,6 +906,7 @@ function checkRule(item) {
 	{
 		$msg = null;
         $_post = X4Route_core::$input;
+        $_post['bulk'] = json_decode($_post['bulk']);
 		if (!empty($_post) && isset($_post['bulk']) && is_array($_post['bulk']) && !empty($_post['bulk']))
 		{
             $mod = new X3form_builder_model($this->site->data->db);
@@ -994,8 +991,7 @@ function checkRule(item) {
 	 */
 	private function editing_blackitem(array $_post) : void
 	{
-		$msg = null;
-		$msg = ($_post['id'])
+        $msg = ($_post['id'])
 			? AdminUtils_helper::chk_priv_level($_post['id_area'], 'x3_forms_blacklist', $_post['id'], 'edit')
 			: AdminUtils_helper::chk_priv_level($_post['id_area'], '_x3form_blacklist_creation', 0, 'create');
 
@@ -1069,7 +1065,7 @@ function checkRule(item) {
         $mod = new X3form_builder_model($this->site->data->db);
 		$item = $mod->get_by_id($id, 'x3_forms_blacklist', 'id, id_area, name');
 
-		$fields = array();
+		$fields = [];
 		$fields[] = array(
 			'label' => null,
 			'type' => 'hidden',
@@ -1099,15 +1095,16 @@ function checkRule(item) {
 	 */
 	private function deleting($table, $item) : void
 	{
-		$msg = null;
-        $table = ($table == 'forms')
+		$table = ($table == 'forms')
             ? ''
             : '_'.$table;
 		$msg = AdminUtils_helper::chk_priv_level($item->id_area, 'x3_forms'.$table, $item->id, 'delete');
 		if (is_null($msg))
 		{
 			$mod = new X3form_builder_model($this->site->data->db);
-			$result = $mod->delete($item->id, 'x3_forms'.$table);
+            $result = ($table == 'forms')
+                ? $mod->delete_form($item->id)
+                : $mod->delete($item->id, 'x3_forms'.$table);
 
 			$msg = AdminUtils_helper::set_msg($result);
 

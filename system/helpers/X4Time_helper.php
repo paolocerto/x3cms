@@ -102,11 +102,20 @@ class X4Time_helper
      * days_in_month($month, $year)
      * Returns the number of days in a given month and year, taking into account leap years.
      *
-     * $month: numeric month (integers 1-12)
+     * $month: numeric month (integers 0-12) 0 is for current
      * $year: numeric year (any integer)
      */
     public static function days_in_month(int $month, int $year) : int
     {
+        if (!$month)
+        {
+            $month = date('n');
+        }
+        if (!$year)
+        {
+            $year = date('Y');
+        }
+
         // calculate number of days in a month
         return $month == 2
             ? ($year % 4 ? 28 : ($year % 100 ? 29 : ($year % 400 ? 28 : 29)))
@@ -208,6 +217,17 @@ class X4Time_helper
 			list($y, $m, $d) = explode(DATE_SEP, $date);
 			break;
 
+        case 16:
+            list($date, $time) = explode(' ', $date);
+            list($y, $m, $d) = explode(DATE_SEP, $date);
+            list($h, $i) = explode(':', $time);
+            break;
+
+        case 19:
+            list($date, $time) = explode(' ', $date);
+            list($y, $m, $d) = explode(DATE_SEP, $date);
+            list($h, $i, $s) = explode(':', $time);
+            break;
 		default:
 			// ???
 			break;
@@ -225,7 +245,7 @@ class X4Time_helper
 	{
 		$t1 = array_reverse(explode(':', $time1));
 		$t2 = array_reverse(explode(':', $time2));
-		$t3 = array();
+		$t3 = [];
 		$r = 0;
 		for($i = 0; $i < 2;$i++)
 		{
@@ -329,7 +349,7 @@ class X4Time_helper
 				else
 				{
 					// a formatted date
-					return self::format($start, DATE_FORMAT);
+					return self::format($start_datetime, DATE_FORMAT);
 				}
 			}
 			else
@@ -471,7 +491,7 @@ class X4Time_helper
 	 */
 	public static function get_months(string $start_date, string $end_date) : array
 	{
-		$m = array();
+		$m = [];
 		$start = new DateTime($start_date);
 		$end = new DateTime($end_date);
 
@@ -504,7 +524,7 @@ class X4Time_helper
 	 */
 	public static function get_month_dates_with_gap(int $gap) : array
 	{
-		list($year, $month, $last_day) = explode('-', date('Y-m-t', strtotime('last day of +'.$gap.' month')));
+		list($year, $month, $last_day) = explode('-', date('Y-m-t', strtotime('last day of '.$gap.' month')));
 
         // set start and end
         $start_date = $year.'-'.$month.'-01';

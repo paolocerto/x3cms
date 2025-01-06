@@ -38,22 +38,17 @@ class Files_controller extends X3ui_controller
 	 */
 	public function index(int $id_area = 2, int $pp = 0) : void
 	{
-		// load dictionary
-		$this->dict->get_wordarray(array('files'));
+		$this->dict->get_wordarray(array('files', 'bulk'));
 
-        // get query string from filter
         $qs = X4Route_core::get_query_string();
-
-		$amod = new Area_model();
-	    list($id_area, $areas) = $amod->get_my_areas($this->site->data->id, $id_area);
-
-        // handle filters
         $qs['xstr'] = $qs['xstr'] ?? '';
         $qs['xxtype'] = $qs['xxtype'] ?? -1;
         $qs['xctg'] = $qs['xctg'] ?? '';
         $qs['xsctg'] = $qs['xsctg'] ?? '';
 
-		// get page
+		$amod = new Area_model();
+	    list($id_area, $areas) = $amod->get_my_areas($this->site->data->id, $id_area);
+
 		$page = $this->get_page('files');
 
         $view = new X4View_core('page');
@@ -61,7 +56,7 @@ class Files_controller extends X3ui_controller
 		$view->actions = AdminUtils_helper::link(
                 'memo',
                 'files:'.$page->lang,
-                [],
+                $this->memo('files:'.$page->lang, $_SESSION['xuid']),
                 _MEMO
             ).$this->actions($id_area, $qs);
 
@@ -93,7 +88,6 @@ class Files_controller extends X3ui_controller
 	 */
 	public function tree(int $id_area) : void
 	{
-		// load dictionary
 		$this->dict->get_wordarray(array('files'));
 
 		// left
@@ -123,6 +117,7 @@ class Files_controller extends X3ui_controller
 	{
 		$msg = null;
         $_post = X4Route_core::$input;
+        $_post['bulk'] = json_decode($_post['bulk']);
 		if (!empty($_post) && isset($_post['bulk']) && is_array($_post['bulk']) && !empty($_post['bulk']))
 		{
             $qs = X4Route_core::get_query_string();
@@ -142,11 +137,9 @@ class Files_controller extends X3ui_controller
                 }
             }
 
-            // set message
             $this->dict->get_words();
             $msg = AdminUtils_helper::set_msg($result);
 
-            // set update
             if ($result[1])
             {
                 $msg->update = array(
@@ -163,20 +156,15 @@ class Files_controller extends X3ui_controller
 	 */
 	public function set(string $what, int $id_area, int $id, int $value = 0) : void
 	{
-		$msg = null;
-		// check permission
 		$msg = AdminUtils_helper::chk_priv_level($id_area, 'files', $id, $what);
 		if (is_null($msg))
 		{
-			// do action
 			$files = new File_model();
 			$result = $files->update($id, array($what => $value));
 
-			// set message
 			$this->dict->get_words();
 			$msg = AdminUtils_helper::set_msg($result);
 
-			// set update
 			if ($result[1])
             {
 				$msg->update = array(
@@ -193,29 +181,24 @@ class Files_controller extends X3ui_controller
 	 */
 	public function upload(int $id_area) : void
 	{
-		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'files'));
-        // get query string from filter
+
         $qs = X4Route_core::get_query_string();
 
 		$mod = new File_model();
 
-        // build the form
         $form_fields = new X4Form_core('file/file_upload');
         $form_fields->id_area = $id_area;
 		$form_fields->areas = $mod->get_areas();
         $form_fields->ctg = $qs['xctg'];
         $form_fields->sctg = $qs['xsctg'];
 
-		// get the fields array
 		$fields = $form_fields->render();
 
-		// to handle file's label
 		$file_array = array(
 			'filename' => _FILE
 		);
 
-		// if submitted
 		if (X4Route_core::$post)
 		{
 			$e = X4Validation_helper::form($fields, 'editor');
@@ -232,10 +215,8 @@ class Files_controller extends X3ui_controller
         $view = new X4View_core('modal');
         $view->title = _UPLOAD_FILE;
         $view->wide = 'md:inset-x-6 lg:w-3/4 xl:w-2/3';
-		// content
-		$view->content = new X4View_core('editor');
 
-		// form builder
+		$view->content = new X4View_core('editor');
 		$view->content->form = X4Form_helper::doform(
             'editor',
             $_SERVER["REQUEST_URI"],
@@ -246,7 +227,6 @@ class Files_controller extends X3ui_controller
             '@click="submitForm(\'editor\')"
             x-bind:disabled="files[\'filename\'] != null && !files[\'filename\'].length"'
         );
-
 		$view->render(true);
 	}
 
@@ -255,18 +235,15 @@ class Files_controller extends X3ui_controller
 	 */
 	private function uploading(array $_post, array $file_array) : void
 	{
-		$msg = null;
-		// check permission
 		$msg = AdminUtils_helper::chk_priv_level($_post['id_area'][0], '_file_upload', 0, 'create');
 		if (is_null($msg))
 		{
             $mod = new File_model();
             $filename = X4Files_helper::upload('filename', $mod->file_path);
 
-			// check for errors
 			if ($filename[1])
 			{
-				$post = array();
+				$post = [];
 				$files = $filename[0];
 				$n = sizeof($files);
 
@@ -286,7 +263,7 @@ class Files_controller extends X3ui_controller
 				for($i = 0; $i < $n; $i++)
 				{
 					$xtype = X4Files_helper::get_type_by_name($files[$i]);
-					$areas = array();
+					$areas = [];
 					foreach ($_post['id_area'] as $ii)
 					{
 						$areas[] = $ii;
@@ -302,17 +279,12 @@ class Files_controller extends X3ui_controller
 					}
 				}
 
-				// insert new files
 				$result = $mod->insert_file($post);
 
-				// set message
 				$msg = AdminUtils_helper::set_msg($result);
 
-				// set what update
 				if ($result[1])
 				{
-                    // permissions
-                    $perm = new Permission_model();
                     foreach ($_post['id_area'] as $ii)
                     {
                         AdminUtils_helper::set_priv($_SESSION['xuid'], $result[0], 'files', $ii);
@@ -333,7 +305,7 @@ class Files_controller extends X3ui_controller
 			else
 			{
 				// build msg
-				$str = array();
+				$str = [];
 				foreach ($filename[0] as $k => $v)
 				{
 					// each field
@@ -378,23 +350,18 @@ class Files_controller extends X3ui_controller
 	 */
 	public function edit(int $id) : void
 	{
-		// load dictionaries
-		$this->dict->get_wordarray(array('form', 'files'));
+	    $this->dict->get_wordarray(array('form', 'files'));
 
-		// get object
 		$mod = new File_model();
 		$file = $mod->get_by_id($id);
 
-        // build the form
         $form_fields = new X4Form_core('file/file_edit');
 
         $form_fields->area = $mod->get_by_id($file->id_area, 'areas');;
         $form_fields->file = $file;
 
-        // get the fields array
         $fields = $form_fields->render();
 
-		// if submitted
 		if (X4Route_core::$post)
 		{
 			$e = X4Validation_helper::form($fields, 'editor');
@@ -411,12 +378,9 @@ class Files_controller extends X3ui_controller
         $view = new X4View_core('modal');
         $view->title = _EDIT_FILE;
         $view->wide = 'md:inset-x-6 lg:w-3/4 xl:w-2/3';
-		// contents
-		$view->content = new X4View_core('editor');
 
-        // can user edit?
+		$view->content = new X4View_core('editor');
         $submit = AdminUtils_helper::submit_btn($file->id_area, 'files', $id, $file->xlock);
-		// form builder
 		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, $submit, 'buttons'), 'post', '',
             '@click="submitForm(\'editor\')"');
 
@@ -428,26 +392,20 @@ class Files_controller extends X3ui_controller
 	 */
 	private function editing(array $_post) : void
 	{
-		$msg = null;
-		// check permission
 		$msg = AdminUtils_helper::chk_priv_level($_post['id_area'], 'files', $_post['id'], 'edit');
 		if (is_null($msg))
 		{
-			// handle _post
 			$post = array(
 				'category' => X4Utils_helper::slugify($_post['category']),
 				'subcategory' => X4Utils_helper::slugify($_post['subcategory']),
 				'alt' => $_post['alt']
 			);
 
-			// do action
 			$mod = new File_model();
 			$result = $mod->update($_post['id'], $post);
 
-			// set message
 			$msg = AdminUtils_helper::set_msg($result);
 
-			// set what update
 			if ($result[1])
 			{
                 $qs = [
@@ -470,15 +428,12 @@ class Files_controller extends X3ui_controller
 	 */
 	public function delete(int $id) : void
 	{
-		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'files'));
 
-		// get object
 		$mod = new File_model();
 		$item = $mod->get_by_id($id);
 
-		// build the form
-		$fields = array();
+		$fields = [];
 		$fields[] = array(
 			'label' => null,
 			'type' => 'hidden',
@@ -486,7 +441,6 @@ class Files_controller extends X3ui_controller
 			'name' => 'id'
 		);
 
-		// if submitted
 		if (X4Route_core::$post)
 		{
 			$this->deleting($item);
@@ -494,9 +448,8 @@ class Files_controller extends X3ui_controller
 		}
         $view = new X4View_core('modal');
         $view->title = _DELETE_FILE;
-		// contents
-		$view->content = new X4View_core('delete');
 
+		$view->content = new X4View_core('delete');
 		$view->content->item = $item->name;
 		$view->content->form = X4Form_helper::doform('delete', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
             '@click="submitForm(\'delete\')"');
@@ -508,16 +461,12 @@ class Files_controller extends X3ui_controller
 	 */
 	private function deleting(stdClass $item) : void
 	{
-		$msg = null;
-		// check permission
 		$msg = AdminUtils_helper::chk_priv_level($item->id_area, 'files', $item->id, 'delete');
 		if (is_null($msg))
 		{
-			// action
 			$mod = new File_model();
 			$result = $mod->delete_file($item->id);
 
-			// set message
 			$msg = AdminUtils_helper::set_msg($result);
 
 			if ($result[1])
@@ -530,7 +479,6 @@ class Files_controller extends X3ui_controller
                     'xsctg' => $item->subcategory
                 ];
 
-				// set what update
 				$msg->update = array(
 					'element' => 'topic',
 					'url' => BASE_URL.'files/index/'.$item->id_area.'?'.http_build_query($qs)
@@ -548,7 +496,6 @@ class Files_controller extends X3ui_controller
 		$mod = new File_model();
 		$js = $mod->get_js_list($id_area, $type);
 
-		// output
 		header('Content-Type: ext/javascript');
 		echo $js;
 	}
@@ -560,7 +507,6 @@ class Files_controller extends X3ui_controller
 	{
 		$this->dict->get_wordarray(array('files', 'form'));
 
-		// get page
 		$page = $this->get_page('files/editor');
 
         $view = new X4View_core('page');
@@ -568,11 +514,10 @@ class Files_controller extends X3ui_controller
 		$view->actions = AdminUtils_helper::link(
             'memo',
             'files:editor:'.$page->lang,
-            [],
+            $this->memo('files:editor:'.$page->lang, $_SESSION['xuid']),
             _MEMO
         );
 
-		// content
 		$view->content = new X4View_core('files/editor_container');
         $view->content->page = $page;
         // TODO
@@ -894,7 +839,6 @@ class Files_controller extends X3ui_controller
 				}
 			}
 
-			// if submitted
 			if (X4Route_core::$post)
 			{
 				$e = X4Validation_helper::form($fields, 'editor');
@@ -922,8 +866,6 @@ class Files_controller extends X3ui_controller
 	 */
 	private function saving(int $id_file, array $_post) : void
 	{
-		$msg = null;
-		// check permissions
 		$msg = AdminUtils_helper::chk_priv_level($_post['id_area'], 'files', $id_file, 'edit');
 
 		if (is_null($msg))
@@ -957,7 +899,7 @@ class Files_controller extends X3ui_controller
 						$chk = X4Files_helper::create_cropped($path.$file->name, $path.$final_name, array($_post['width'], $_post['height']), array($_post['xcoord'], $_post['ycoord']), true);
 						if ($chk)
 						{
-							$post = array();
+							$post = [];
 							$post[] = array(
 								'id_area' => $file->id_area,
 								'xtype' => $file->xtype,
@@ -1054,7 +996,7 @@ class Files_controller extends X3ui_controller
 							{
 								chmod($ipath.$final_name, 0777);
 
-								$post = array();
+								$post = [];
 								$post[] = array(
 									'id_area' => $file->id_area,
 									'xtype' => 0,
@@ -1115,7 +1057,7 @@ class Files_controller extends X3ui_controller
 								{
 									chmod($path.$final_name, 0777);
 
-									$post = array();
+									$post = [];
 									$post[] = array(
 										'id_area' => $file->id_area,
 										'xtype' => $file->xtype,
@@ -1183,10 +1125,8 @@ class Files_controller extends X3ui_controller
 
 				}
 
-				// set message
 				$msg = AdminUtils_helper::set_msg($result, _MSG_OK, $ko);
 
-				// set what update
 				if ($result[1])
 				{
 					$msg->update = array(
@@ -1199,7 +1139,6 @@ class Files_controller extends X3ui_controller
 			else
 			{
 				// file not found
-				// set message
 				$msg = AdminUtils_helper::set_msg(array(0, 0));
 			}
 		}

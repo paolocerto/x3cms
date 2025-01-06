@@ -30,20 +30,15 @@ class Profile_controller extends X3ui_controller
 	 */
 	public function _default() : void
 	{
-		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'login', 'users', 'profile'));
 
-		// get object
 		$mod = new Language_model();
 
         $form_fields = new X4Form_core('user/profile');
         $form_fields->user = $mod->get_by_id($_SESSION['xuid'], 'users', 'id, lang, username, mail, phone, description');
         $form_fields->languages = $mod->get_alanguages(1);
-
-        // get the fields array
         $fields = $form_fields->render();
 
-		// if submitted
 		if (X4Route_core::$post)
 		{
 			$e = X4Validation_helper::form($fields, 'profile');
@@ -58,16 +53,14 @@ class Profile_controller extends X3ui_controller
 			die;
 		}
 
-		// get page
 		$page = $this->get_page('profile');
 
-		// contents
 		$view = new X4View_core('page');
         $view->breadcrumb = array($this->site->get_bredcrumb($page));
 		$view->actions = AdminUtils_helper::link(
             'memo',
             'profile:'.$page->lang,
-            [],
+            $this->memo('profile:'.$page->lang, $_SESSION['xuid']),
             _MEMO
         );
 		$view->content = new X4View_core('editor');
@@ -96,7 +89,6 @@ class Profile_controller extends X3ui_controller
             die;
         }
 
-		// handle _post
 		$post = array(
 			'lang' => $_post['lang'],
 			'username' => $_post['username'],
@@ -131,16 +123,16 @@ class Profile_controller extends X3ui_controller
 				$r = array($this->site->data->domain, $_post['username'], $_post['password']);
 				$subject = str_replace($s, $r, _SUBJECT_PROFILE);
 				$msg = str_replace($s, $r, _MSG_PROFILE);
-				$to = ['mail' => $_post['mail'], 'name' => $_post['username']];
+
+                $recipients = ['to' => []];
+		        $recipients['to'][] = ['mail' => $_post['mail'], 'name' => $_post['username']];
 				// send
-				X4Mailer_helper::mailto(MAIL, false, $subject, $msg, ['to' => [$to]]);
+				X4Mailer_helper::mailto(MAIL, false, $subject, $msg, $recipients);
 			}
 
-			// set message
 			$this->dict->get_words();
 			$msg = AdminUtils_helper::set_msg($result);
 
-			// set update
 			if ($result[1])
             {
 				$msg->update = array(

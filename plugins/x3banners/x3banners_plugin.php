@@ -36,7 +36,7 @@ class X3banners_plugin extends X4Plugin_core implements X3plugin
 		switch($p[0])
 		{
             case 'banner_top':
-                return $this->banner_top($page, $args);
+                return $this->banner_top($page);
                 break;
             default:
                 return '';
@@ -47,49 +47,41 @@ class X3banners_plugin extends X4Plugin_core implements X3plugin
     /**
 	 * banner_top
 	 */
-	private function banner_top(stdClass $page, array $args) : string
+	private function banner_top(stdClass $page) : string
 	{
-		// get banner
-        $mod = new X3banners_model($this->site->data->db);
+		$mod = new X3banners_model($this->site->data->db);
 		$banner = $mod->get_banner_by_id_page($page->id);
 
 		if ($banner)
 		{
-            $xdata = '';
-            if ($banner->auto_hide)
-            {
-                $xdata = 'x-data=\'{
-                    seconds:0,
-                    setup(t) {
-                        this.seconds = t;
-                        var obj = this;
-                        tmx = setInterval(function(){obj.updateTimer()},1000);
-                    },
-                    updateTimer() {
-                        var obj = this;
-                        this.seconds--;
-                        if (this.seconds <= 0) {
-                            clearInterval(tmx);
-                        }
-                    }
-                }\' x-init="setup('.$banner->auto_hide.')" x-show="seconds > 0" x-transition.opacity.duration.500ms';
-            }
+            $view = new X4View_core('public/x3banners_bar', 'x3banners');
+            $view->banner = $banner;
+            $view->gradient = $banner->gradient
+                ? 'background: linear-gradient(90deg, '.$this->hex2rgba($banner->bg_color1).' 0%, '.$this->hex2rgba($banner->bg_color2).' 100%);'
+                : '';
 
-			return '
-<script>var tmx;</script>
-<style>
-#banner_top a {color:'.$banner->link_color.'}
-#topic .section:first-of-type {padding-top:8em !important;}
-</style>
-<div id="banner_top" '.$xdata.' class="w-full z-10 shadow-lg" style="background:'.$banner->bg_color.';color:'.$banner->fg_color.'">
-    <div class="max-w-screen-lg pt-8 pb-4 mx-auto">'.$banner->description.'</div>
-</div>';
+            return $view->render(false);
 		}
 		else
         {
             return '';
         }
 	}
+
+    /**
+     * From HEX to RGBA
+     */
+    private function hex2rgba(string $hex) : string
+    {
+        list($r, $g, $b) = array_map(
+            function ($c) {
+              return hexdec(str_pad($c, 2, $c));
+            },
+            str_split(ltrim($hex, '#'), strlen($hex) > 4 ? 2 : 1)
+        );
+        return 'rgba('.$r.','.$g.','.$b.',1)';
+    }
+
 
 	/**
 	 * call plugin actions

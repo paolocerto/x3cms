@@ -60,9 +60,9 @@ class X4Dict_model extends X4Model_core
 		// check APC
 		$keys = (APC)
 			? apcu_fetch(SITE.'dict'.$this->area.$this->lang.$what)
-			: array();
+			: [];
 
-		if (empty($keys))
+		if ($keys === false)
 		{
            $keys = $this->db->query('SELECT xkey, xval FROM dictionary WHERE area = \''.$this->area.'\' AND lang = \''.$this->lang.'\' AND what = '.$this->db->escape($what).' AND xon = 1');
 
@@ -102,7 +102,7 @@ class X4Dict_model extends X4Model_core
 	/**
 	 * Get a specified key from dictionary and build a message object
 	 */
-	public function get_message(string $title, string $key, string $what = 'global', array $options = array()) : Obj_msg
+	public function get_message(string $title, string $key, string $what = 'global', array $options = []) : Obj_msg
 	{
 		$msg = $this->get_word($key, $what);
 		$m = (strstr($msg, '<br />') != '')
@@ -120,7 +120,7 @@ class X4Dict_model extends X4Model_core
 	/**
 	 * Build a specified message object
 	 */
-	public function build_message(string $title, string $msg, array $options = array()) : Obj_msg
+	public function build_message(string $title, string $msg, array $options = []) : Obj_msg
 	{
 		if (isset($_SESSION[$msg.'_msg']))
 		{
@@ -160,7 +160,7 @@ class Obj_msg
 	 * Constructor
 	 * Set message contents
 	 */
-	public function __construct(string $title, string $msg, array $options = array())
+	public function __construct(string $title, string $msg, array $options = [])
 	{
         // default options
         $options['Hn'] = $options['Hn'] ?? 'h2';

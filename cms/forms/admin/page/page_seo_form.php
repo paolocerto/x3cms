@@ -11,7 +11,7 @@
 // page seo form
 
 // build the form
-$fields = array();
+$fields = [];
 $fields[] = array(
     'label' => null,
     'type' => 'hidden',
@@ -33,15 +33,44 @@ $fields[] = array(
         <div class="relative w-full mx-auto overflow-hidden">'
 );
 
+
+$xdata = '{
+    activeAccordion: \'\',
+    setActiveAccordion(id) {
+        this.activeAccordion = (this.activeAccordion == id) ? \'\' : id
+    }
+}';
+
 $fields[] = array(
     'label' => null,
     'type' => 'html',
-    'value' => '<div x-data="{ open: false }" class="cursor-pointer group">
-    <button @click="open = !open" class="bg2 rounded flex items-center justify-between w-full p-4 text-left select-none mb-1">
+    'value' => '<div x-data="'.$xdata.'"
+            class="relative w-full mx-auto overflow-hidden font-normal divide-y divide-gray-200 rounded-md"
+        >'
+);
+
+$fields[] = array(
+    'label' => null,
+    'type' => 'html',
+    'value' => '<div x-data="{ id: $id(\'accordion\') }" class="cursor-pointer group">
+    <button @click="setActiveAccordion(id)" class="bg2 rounded flex items-center justify-between w-full p-4 text-left select-none mb-1">
         <span>'._TEMPLATE.'</span>
-        <svg class="w-4 h-4 duration-200 ease-out" :class="{ \'rotate-180\': open }" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        <svg
+            class="w-4 h-4
+            duration-200 ease-out"
+            :class="{ \'rotate-180\': activeAccordion==id }"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+        >
+            <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
     </button>
-    <div x-show="open" @click.away="open = false" x-transition:enter.duration.300ms x-transition:leave.duration.50ms x-cloak>
+    <div x-show="activeAccordion==id" x-collapse x-cloak>
         <div class="px-2 pb-4">'
 );
 
@@ -65,12 +94,25 @@ $fields[] = array(
 $fields[] = array(
     'label' => null,
     'type' => 'html',
-    'value' => '<div x-data="{ open: false }" class="cursor-pointer group">
-    <button @click="open = !open" class="bg2 rounded flex items-center justify-between w-full p-4 text-left select-none mb-1">
+    'value' => '<div x-data="{ id: $id(\'accordion\') }" class="cursor-pointer group">
+    <button @click="setActiveAccordion(id)" class="bg2 rounded flex items-center justify-between w-full p-4 text-left select-none mb-1">
         <span>'._SEO_TOOLS.'</span>
-        <svg class="w-4 h-4 duration-200 ease-out" :class="{ \'rotate-180\': open }" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        <svg
+            class="w-4 h-4
+            duration-200 ease-out"
+            :class="{ \'rotate-180\': activeAccordion==id }"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+        >
+            <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
     </button>
-    <div x-show="open" @click.away="open = false" x-transition:enter.duration.300ms x-transition:leave.duration.50ms x-cloak>
+    <div x-show="activeAccordion==id" x-collapse x-cloak>
         <div class="px-2 pb-4">'
 );
 
@@ -86,7 +128,7 @@ $fields[] = array(
 $fields[] = array(
     'label' => null,
     'type' => 'html',
-    'value' => '<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    'value' => '<div class="grid grid-cols-1 md:grid-cols-2 gap-x-4">
     <div>'
 );
 
@@ -133,6 +175,15 @@ $fields[] = array(
     'value' => htmlentities($page->icon),
     'name' => 'icon',
     'suggestion' => _ICON_MSG,
+    'extra' => 'class="w-full"'
+);
+
+$fields[] = array(
+    'label' => _CLASS,
+    'type' => 'text',
+    'value' => $page->xclass,
+    'name' => 'xclass',
+    'suggestion' => _CLASS_MSG,
     'extra' => 'class="w-full"'
 );
 
@@ -204,5 +255,6 @@ $fields[] = array(
     'label' => null,
     'type' => 'html',
     'value' => '</div>
+        </div>
     </div>'
 );

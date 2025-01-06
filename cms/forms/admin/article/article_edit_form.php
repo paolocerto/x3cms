@@ -66,7 +66,6 @@ $xdata = '{
     },
     pages() {
         if (this.xcontext != 1) {
-            console.log(this.xcontext);
             this.page_options = [];
         } else {
             fetch(root + "articles/refresh_pages/"+this.xid_area+"/"+this.xlang, {
@@ -110,7 +109,7 @@ $xdata = '{
 }';
 
 // build the form
-$fields = array();
+$fields = [];
 
 $fields[] = array(
     'label' => null,

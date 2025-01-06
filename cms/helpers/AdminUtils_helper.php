@@ -15,12 +15,34 @@
  */
 class AdminUtils_helper
 {
+    /**
+     * flmngr links
+     */
+    public static $flmngr_links = [
+        '<script src="//cdn.public.flmngr.com/'.FLMNGR_API_KEY.'/widgets.js"></script>',
+        '<script src="//cdn.flmngr.com/widgets.js?apiKey='.FLMNGR_API_KEY.'"></script>'
+    ];
+
+    /**
+     * Clean annoyng string
+     */
+    public static function flmngr(string $str) : string
+    {
+        return str_replace(self::$flmngr_links, '', $str);
+    }
+
 	/**
 	 * Put the message into a session variable
 	 */
-	public static function set_msg($res, string $ok = _MSG_OK, string $ko = _MSG_ERROR) : Msg
+	public static function set_msg(mixed $res, string $ok = _MSG_OK, string $ko = _MSG_ERROR, string $type = '') : Msg
 	{
 		$msg = new Msg();
+        if (!empty($type))
+        {
+            $msg->message_type = $type;
+            return $msg;
+        }
+
 		switch(gettype($res))
 		{
 			case 'boolean':
@@ -57,10 +79,28 @@ class AdminUtils_helper
 		return $msg;
 	}
 
+    /**
+     * Build error message for file errors
+     */
+    public static function build_error_msg(array $error, array $file_array) : Msg
+    {
+        $str = [];
+        $dict = new X4Dict_model(X4Route_core::$folder, X4Route_core::$lang);
+        foreach ($error as $k => $v)
+        {
+            foreach ($v as $i)
+            {
+                // each error
+                $str[] = $file_array[$k]._TRAIT_.$dict->get_word(strtoupper($i), 'msg');
+            }
+        }
+        return AdminUtils_helper::set_msg(false, '', implode('<br />', $str));
+    }
+
 	/**
 	 * Get User permission level on a table
 	 */
-	public static function get_ulevel(int $id_area, int $id_who, string $what) : stdClass
+	public static function get_ulevel(int $id_area, int $id_who, string $what) : mixed
 	{
 		$mod = new Permission_model();
 		return $mod->get_upriv($id_area, $id_who, $what);
@@ -173,15 +213,8 @@ class AdminUtils_helper
     /**
 	 * Get value to set submit button over edit item
      * Check if the user can edit it
-	 *
-	 * @static
-     * @param   integer	$id_area
-	 * @param   string	$what Privilege type
-	 * @param   integer	$id_what Item ID
-     * @param   integer	$xlock
-	 * @return  mixed
 	 */
-	public static function submit_btn(int $id_area, string $what, int $id_what, int $xlock)
+	public static function submit_btn(int $id_area, string $what, int $id_what, int $xlock, string $label = _SUBMIT) : mixed
 	{
 		// get priv level on the item
 		$level = self::get_priv_level($id_area, $what, $id_what);
@@ -195,18 +228,14 @@ class AdminUtils_helper
 
         // form dictionary should be already loaded
         return ($chk)
-            ? _SUBMIT
+            ? $label
             : null;
 	}
 
 	/**
 	 * Check if a file or a directory is writable
-	 *
-	 * @static
-	 * @param   string	$path File or Directory path
-	 * @return  null or object
 	 */
-	public static function chk_writable(string $path)
+	public static function chk_writable(string $path) : mixed
 	{
 		// if level lower than required redirect
 		if (!is_writable($path))
@@ -223,12 +252,8 @@ class AdminUtils_helper
 
     /**
 	 * Build statuses info
-	 *
-	 * @static
-	 * @param   object	$obj to analyze
-	 * @return  array
 	 */
-	public static function statuses(stdClass $obj, array $fields = ['xon', 'xlock'])
+	public static function statuses(stdClass $obj, array $fields = ['xon', 'xlock']) : array
 	{
         // available options
         $options = [
@@ -257,40 +282,33 @@ class AdminUtils_helper
 
     /**
 	 * Build admin links
-	 *
-	 * @static
-	 * @param   string	$action
-	 * @param   string	$url
-     * @param   array   $statuses
-     * @param   string  $title
-	 * @return  string
 	 */
-	public static function link(string $action, string $url, array $statuses = [], $title = '')
+	public static function link(string $action, string $url, array $statuses = [], string $title = '') : string
 	{
 		switch ($action)
         {
             case 'edit':
                 return '<a class="link" @click="popup(\''.BASE_URL.$url.'\')" title="'._EDIT.'">
-                    <i class="fa-solid fa-lg fa-pen-to-square"></i>
+                    <i class="fa-solid fa-lg fa-fw fa-pen-to-square"></i>
                 </a>';
                 break;
             case 'settings':
                 return '<a class="link" @click="popup(\''.BASE_URL.$url.'\')" title="'._SETTINGS.'">
-                    <i class="fa-solid fa-lg fa-sliders"></i>
+                    <i class="fa-solid fa-lg fa-fw fa-sliders"></i>
                 </a>';
             case 'xon':
                 return '<a class="link" @click="setter(\''.BASE_URL.$url.'\')" title="'._STATUS.' '.$statuses['xon']['label'].'">
-                    <i class="far fa-lightbulb fa-lg '.$statuses['xon']['class'].'"></i>
+                    <i class="far fa-lightbulb fa-lg fa-fw '.$statuses['xon']['class'].'"></i>
                 </a>';
                 break;
             case 'xlock':
                 return '<a class="link" @click="setter(\''.BASE_URL.$url.'\')" title="'._STATUS.' '.$statuses['xlock']['label'].'">
-                    <i class="fa-solid fa-lg '.$statuses['xlock']['class'].'"></i>
+                    <i class="fa-solid fa-lg fa-fw '.$statuses['xlock']['class'].'"></i>
                 </a>';
                 break;
             case 'delete':
                 return '<a class="link" @click="popup(\''.BASE_URL.$url.'\')" title="'._DELETE.'">
-                    <i class="fa-solid fa-lg fa-trash warn"></i>
+                    <i class="fa-solid fa-lg fa-fw fa-trash warn"></i>
                 </a>';
                 break;
             case 'refresh':
@@ -298,7 +316,7 @@ class AdminUtils_helper
                     ? _GENERATE
                     : $title;
                 return '<a class="link" @click="setter(\''.BASE_URL.$url.'\')" title="'.$title.'">
-                    <i class="fa-solid fa-rotate fa-lg"></i>
+                    <i class="fa-solid fa-rotate fa-lg fa-fw"></i>
                 </a>';
                 break;
             case 'duplicate':
@@ -306,38 +324,34 @@ class AdminUtils_helper
                     ? _DUPLICATE
                     : $title;
                 return '<a class="link" @click="popup(\''.BASE_URL.$url.'\')" title="'.$title.'">
-                    <i class="fa-solid fa-copy fa-lg"></i>
+                    <i class="fa-solid fa-copy fa-lg fa-fw"></i>
                 </a>';
                 break;
             case 'memo':
                 // $url have to be structured this way: page_url:lang
                 return '<a class="link" @click="popup(\''.BASE_URL.'memo/index/'.$url.'\')" title="'.$title.'">
-                    <i class="fas fa-thumbtack fa-lg"></i>
+                    <i class="fas fa-thumbtack fa-lg fa-fw '.$statuses['n'].'"></i>
                 </a>';
+                break;
+            default:
+                return '';
                 break;
         }
 	}
 
     /**
 	 * Return recorded selected options
-	 *
-	 * @param   string 	$str Encoded options
-     * @param   array   $fields structure
-	 * @param   boolean	$move With or without direction buttons
-	 * @param   boolean	$echo Return or echo
-	 * @return  string
 	 */
-	public static function decompose(string $str, array $fields, int $move = 0, int $echo = 0)
+	public static function decompose(string $str, array $fields, int $move = 0, int $echo = 0) : string
 	{
         $res = '';
 		if (!empty($str))
 		{
-            // replace substitution
-            $str = str_replace(['@', '._', ',', '_.', '+'], ['%3A', '%22', '%2C', '%2F', ' '], $str);
-			$str = urldecode($str);
 			if ($echo)
 			{
                 // is an AJAX call so we have to replace some character
+                $str = str_replace(['=', '*', '@', ',', '_.', '+'], ['%22%3A0%2C%22', '%22%3A0%7D%2C%7B%22', '%22%3A%22', '%22%2C%22', '%2F', ' '], $str);
+                $str = urldecode($str);
 			    $str = str_replace(array('_ZZZ_', '_XXX_'), array(NL, '#'), $str);
 			}
             // for values
@@ -347,49 +361,118 @@ class AdminUtils_helper
             foreach($fields as $f)
             {
                 $data[] = $f['name'];
-                $res .= '<th>'.$f['name'].'</th>';
+                $label = isset($f['label'])
+                    ? $f['label']
+                    : $f['name'];
+                $res .= '<th>'.$label.'</th>';
             }
             $res .= '<th></th></tr>';
 
 			$c = 0;
 			$items = json_decode($str, true);
-            $n = sizeof($items);
-			foreach ($items as $k => $v)
-			{
-                $actions = '';
-			    if ($v != [])
-				{
-                    if ($move)
+            if (is_array($items))
+            {
+                $n = sizeof($items);
+                foreach ($items as $k => $v)
+                {
+                    $actions = '';
+                    if ($v != [])
                     {
-                        if ($k < $n - 1)
+                        if ($move)
                         {
-                            // down
-                            $actions = '<a class="link" @click="moveItem('.$c.', 1)"><i class="fa-solid fa-lg fa-chevron-down"></i></a>';
+                            if ($k < $n - 1)
+                            {
+                                // down
+                                $actions = '<a class="link" @click="moveItem('.$c.', 1)"><i class="fa-solid fa-lg fa-fw fa-chevron-down"></i></a>';
+                            }
+                            if ($k > 0)
+                            {
+                                // up
+                                $actions .= '<a class="link" @click="moveItem('.$c.', -1)"><i class="fa-solid fa-lg fa-fw fa-chevron-up"></i></a>';
+                            }
                         }
-                        if ($k > 0)
+                        $res .= '<tr class="row'.$c.'" rel="'.$c.'">';
+                        // show values
+                        foreach ($data as $i)
                         {
-                            // up
-                            $actions .= '<a class="link" @click="moveItem('.$c.', -1)"><i class="fa-solid fa-lg fa-chevron-up"></i></a>';
+                            $res .= (is_array($v[$i]))
+                                ? '<td>'.json_encode($v[$i]).'</td>'
+                                : '<td>'.$v[$i].'</td>';
                         }
-                    }
-                    $res .= '<tr class="row'.$c.'" rel="'.$c.'">';
-                    // show values
-                    foreach ($data as $i)
-                    {
-                        $res .= '<td>'.$v[$i].'</td>';
-                    }
 
-                    $res .= '<td class="space-x-2 text-right">
-                                '.$actions.'
-                                <a class="link" @click="editItem('.$c.')"><i class="fa-solid fa-lg fa-pen-to-square"></i></a>
-                                <a class="link" @click="deleteItem('.$c.')"><i class="fa-solid fa-lg fa-trash warn"></i></a>
-                            </td>
-                        </tr>';
-                    $c++;
+                        $res .= '<td class="text-right">
+                                    '.$actions.'
+                                    <a class="link" @click="editItem('.$c.')"><i class="fa-solid fa-lg fa-fw fa-pen-to-square"></i></a>
+                                    <a class="link" @click="deleteItem('.$c.')"><i class="fa-solid fa-lg fa-fw fa-trash warn"></i></a>
+                                </td>
+                            </tr>';
+                        $c++;
+                    }
                 }
-			}
+            }
 		}
         return $res;
+    }
+
+    /**
+	 * Build the language switcher
+	 */
+	public static function lang_switcher(int $id_area, string $lang, string $url = '') : string
+	{
+        $res = '';
+        $mod = new Language_model();
+        $languages = $mod->get_alanguages($id_area);
+        if (sizeof($languages) > 1)
+        {
+            $src = ['XAREAX', 'XLANGX'];
+            $res .= '<div class="switcher text-sm flex justify-end py-1 space-x-4 border-b border-gray-200">';
+            foreach ($languages as $i)
+            {
+                $on = ($i->code == $lang)
+                    ? 'class="link"'
+                    : 'class="dark"';
+                $res .= '<a '.$on.' @click="pager(\''.BASE_URL.str_replace($src, [$id_area, $i->code], $url).'\')" title="'._SWITCH_LANGUAGE.'">'.ucfirst($i->language).'</a>';
+            }
+            $res .= '</div>';
+        }
+        return $res;
+	}
+
+    /**
+	 * Build the area switcher
+	 */
+	public static function area_switcher(int $id_area, string $lang, array $areas, string $url = '') : string
+	{
+        $res = '';
+        $src = ['XAREAX', 'XLANGX'];
+        $res = '<div class="switcher text-sm flex justify-end py-1 space-x-4 border-b border-gray-200">';
+        foreach ($areas as $i)
+        {
+            $on = ($i->id == $id_area)
+                ? 'class="link"'
+                : 'class="dark"';
+            $res .= '<a '.$on.' @click="pager(\''.BASE_URL.str_replace($src, [$i->id, $lang], $url).'\')" title="'._SWITCH_AREA.'">'.ucfirst($i->name).'</a>';
+        }
+        $res .= '</div>';
+        return $res;
+	}
+
+    /**
+     * Add note to text
+     */
+    public static function add_note(string $old, string $new) : mixed
+    {
+        if (!empty($new))
+        {
+            $tmp = X4Text_helper::clean_text($new);
+            if (!empty($tmp))
+            {
+                $tmp = '#'.$_SESSION['xuid'].'-'.$_SESSION['username'].'-'.date('Y-m-d H:i:s').NL.$tmp;
+                $a = array_filter([$old, $tmp]);
+                return implode(NL, $a);
+            }
+        }
+        return false;
     }
 }
 
@@ -402,7 +485,7 @@ class Msg
 {
 	public $message_type = 'error';
 	public $message = '';
-	public $command = array();
-	public $update = array();
+	public $command = [];
+	public $update = [];
 	public $redirect;
 }

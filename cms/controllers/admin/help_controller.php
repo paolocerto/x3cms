@@ -41,7 +41,7 @@ class Help_controller extends X3ui_controller
 		$view->actions = AdminUtils_helper::link(
             'memo',
             'help:'.$page->lang,
-            [],
+            $this->memo('help:'.$page->lang, $_SESSION['xuid']),
             _MEMO
         );
 

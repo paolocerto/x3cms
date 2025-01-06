@@ -1,0 +1,221 @@
+Italia +39
+Afghanistan +93
+Alaska +1
+Albania +355
+Algeria +213
+Andorra +376
+Angola +244
+Anguilla +1 264
+Antigua e Barbuda +1 268
+Antille Olandesi +599
+Arabia Saudita +966
+Argentina +54
+Armenia +374
+Aruba +297
+Ascensione +247
+Australia +61
+Australia Antartic +67210-1-2
+Austria +43
+Azerbaigian +994
+Bahamas +1 242
+Bahrein +973
+Bangladesh +880
+Barbados +1 246
+Belgio +32
+Belize +501
+Benin +229
+Bermuda +1 441
+Bhutan +975
+Bielorussia +375
+Bolivia +591
+Bosnia Erzegovina +387
+Botswana +267
+Brasile +55
+Brunei +673
+Bulgaria +359
+Burkina Faso +226
+Burundi +257
+Cambogia +855
+Camerun +237
+Canada +1
+Capo Verde +238
+Ciad +235
+Cile +56
+Cina +86
+Cipro +357
+Colombia +57
+Comore +269
+Congo +242
+Cook +682
+Corea del Nord +850
+Corea del Sud +82
+Costa d’Avorio +225
+Costarica +506
+Croazia +385
+Cuba +53
+Danimarca +45
+Diego Garcia +246
+Dominica +1 767
+Ecuador +593
+Egitto +20
+El Salvador +503
+Emirati Arabi Uniti +971
+Eritrea +291
+Estonia +372
+Etiopia +251
+Federazione Russa +7
+Figi +679
+Filippine +63
+Finlandia +358
+Francia +33
+Gabon +241
+Gambia +220
+Georgia +995
+Germania +49
+Ghana +233
+Giamaica +1 876
+Giappone +81
+Gibilterra +350
+Gibuti +253
+Giordania +962
+Gran Bretagna +44
+Grecia +30
+Grenada +1 473
+Groenlandia +299
+Guadalupa +590
+Guam +671
+Guatemala +502
+Guinea +224
+Guinea Bissau +245
+Guinea Ecuatoriale +240
+Guyana +592
+Guyana Francese +594
+Haiti +509
+Honduras +504
+Hong Kong +852
+India +91
+Indonesia +62
+Iran +98
+Iraq +964
+Irlanda +353
+Islanda +354
+Isole Cayman +1 345
+Isole Falkland +500
+Isole Fær Oer +298
+Isole Marianne +670
+Isole Marshall +692
+Isole Norfolk +672
+Isole Salomone +677
+Isole Vergini (GBR) +1 284
+Isole Vergini (U.S.) +1 340
+Israele +972
+Kazakistan +996
+Kenia +254
+Kirghizstan +996
+Kiribati +686
+Kuwait +965
+Laos +856
+Lesotho +266
+Lettonia +371
+Libano +961
+Liberia +231
+Libia +218
+Liechtenstein +423
+Lituania +370
+Lussemburgo +352
+Macao +853
+Macedonia +389
+Madagascar +261
+Malawi +265
+Maldive +960
+Malesia +60
+Mali +223
+Malta +356
+Marocco +212
+Martinica +596
+Mauritania +222
+Mauritius +230
+Messico +52
+Moldavia +373
+Monaco (Principato di) +377
+Mongolia +976
+Montserrat +1 664
+Mozambico +258
+Namibia +264
+Nepal +977
+Nicaragua +505
+Nigeria +234
+Niue +683
+Norvegia +47
+Nuova Caledonia +687
+Nuova Zelanda +64
+Oman +968
+Paesi Bassi (Olanda) +31
+Pakistan +92
+Palau +680
+Panama +507
+Papua Nuova Guinea +675
+Paraguay +595
+Perù +51
+Polinesia Francese +689
+Polonia +48
+Portogallo +351
+Porto Rico +1 787
+Qatar +974
+Rep. Ceca +420
+Rep. Centrafrica +236
+Rep. Democratica del Congo +243
+Rep. Dominicana +1
+Reunion (Francia) +262
+Romania +40
+Ruanda +250
+Saint Elena +290
+Saint Kitts e Nevis +1 869
+Saint Pierre e Miquelon +508
+Saint Vincent +1 784
+Samoa Americane +684
+Samoa Occidentale +685
+Santa Lucia +1 758
+Sao Tomè e Principe +239
+Senegal +221
+Serbia +381
+Seychelles +248
+Sierra Leone +232
+Singapore +65
+Siria +963
+Slovacchia +421
+Slovenia +386
+Somalia +252
+Spagna +34
+Sri Lanka +94
+Sudafrica +27
+Sudan +249
+Svezia +46
+Svizzera +41
+Swaziland +268
+Tajikistan +737
+Taiwan +886
+Tanzania +255
+Thailandia +66
+Togo +228
+Tonga +676
+Trinidad e Tobago +1 868
+Tunisia +216
+Turchia +90
+Turkmenistan +993
+Turks e Caicos +1 649
+Tuvalu +688
+Ucraina +380
+Uganda +256
+Ungheria +36
+Uruguay +598
+USA +1
+Uzbekistan +998
+Vanuato +678
+Venezuela +58
+Vietnam +84
+Wallis e Futuna +681
+Yemen +967
+Zambia +260
+Zimbabwe +263
+

@@ -108,11 +108,11 @@ class X4Mpdf_helper
 		$filename = X4Utils_helper::slugify(str_replace(' - ', '-', $title), true).'.pdf';
 
 		$path = ($config['output'] == 'F')
-			? PPATH.'tmp/'
+			? APATH.'files/tmp/'
 			: '';
 
 		$mpdf->Output($path.$filename, $config['output']);
-		if ($output != 'F')
+		if ($config['output'] != 'F')
 		{
 			exit;
 		}

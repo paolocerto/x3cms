@@ -43,7 +43,7 @@ class X4Auth_helper
 			if ($hash)
 			{
 				$new_hash = md5($conditions['username'].$conditions['password'].time().SALT);
-				$res = $mod->update($user->id, array('hashkey' => $new_hash), 'users');
+				$res = $mod->update($user->id, ['hashkey' => $new_hash], 'users');
 
 				if ($res[1])
 				{

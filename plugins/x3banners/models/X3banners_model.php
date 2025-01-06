@@ -35,7 +35,7 @@ class X3banners_model extends X4Model_core
 	 */
 	public function configurator(int $id_area, string $lang, int $id_page, string $param) : array
 	{
-	    $fields = array();
+	    $fields = [];
 
 	    $fields[] = array(
 			'label' => null,
@@ -99,7 +99,7 @@ class X3banners_model extends X4Model_core
 
         if (!empty($qs['xstr']))
         {
-            $w = array();
+            $w = [];
             $tok = explode(' ', urldecode($qs['xstr']));
             foreach ($tok as $i)
             {
@@ -181,8 +181,10 @@ class Obj_x3banners
 	public $id_page = 0;
 	public $start_date = '';
 	public $end_date = '';
-	public $bg_color = '';
-	public $fg_color = '';
+	public $bg_color1 = '';
+	public $bg_color2 = '';
+    public $gradient = 0;
+    public $fg_color = '';
 	public $link_color = '';
 	public $auto_hide = 0;
     public $xlock = 0;

@@ -8,28 +8,7 @@
  * @package		X3CMS
  */
 
-
-echo '<div class="switcher">';
-// language switcher
-if (MULTILANGUAGE)
-{
-	echo '<div class="text-sm flex justify-end py-1 space-x-4 border-b border-gray-200">';
-	foreach ($langs as $i)
-	{
-		$on = ($i->code == $lang) ? 'class="link"' : 'class="dark"';
-		echo '<a '.$on.' @click="pager(\''.BASE_URL.'categories/index/'.$id_area.'/'.$i->code.'\')" title="'._SWITCH_LANGUAGE.'">'.ucfirst($i->language).'</a>';
-	}
-	echo '</div>';
-}
-
-// area switcher
-echo '<div class="text-sm flex justify-end py-1 space-x-4 border-b border-gray-200">';
-foreach ($areas as $i)
-{
-	$on = ($i->id == $id_area) ? 'class="link"' : 'class="dark"';
-	echo '<a '.$on.' @click="pager(\''.BASE_URL.'categories/index/'.$i->id.'/'.$lang.'\')" title="'._SWITCH_AREA.'">'.ucfirst($i->name).'</a>';
-}
-echo '</div>';
+// categories list view
 
 // tag switcher
 echo '<div class="text-sm flex justify-end py-1 space-x-4 border-b border-gray-200">';
@@ -40,14 +19,12 @@ echo '<a '.$on.' @click="pager(\''.BASE_URL.'categories/index/'.$id_area.'/'.$la
 $on = ($tag == '') ? 'class="link"' : 'class="dark"';
 echo '<a '.$on.' @click="pager(\''.BASE_URL.'categories/index/'.$id_area.'/'.$lang.'\')" title="'._CATEGORY_TAG.'">'._NO_CATEGORY_TAG.'</a>';
 
-
 foreach ($tags as $i)
 {
 	$on = ($i->tag == $tag) ? 'class="link"' : 'class="dark"';
 	echo '<a '.$on.' @click="pager(\''.BASE_URL.'categories/index/'.$id_area.'/'.$lang.'/'.$i->tag.'\')" title="'._CATEGORY_TAG.'">'.$i->tag.'</a>';
 }
-echo '</div></div>';
-
+echo '</div>';
 ?>
 <h1 class="mt-6"><?php echo $page->icon.' '._CATEGORY_LIST ?></h1>
 <?php
@@ -88,7 +65,7 @@ if ($items)
 		echo '<tr>
 				<td><a class="link" @click="pager(\''.BASE_URL.'articles/index/'.$i->id_area.'/'.$i->lang.'?&xctg='.$i->name.'\')" title="'._VIEW_ARTICLES.'">'.$i->title.'</a></td>
                 <td>'.$i->tag.'</td>
-				<td class="space-x-2 text-right">'.$actions.'</td>
+				<td class="text-right">'.$actions.'</td>
 			</tr>';
 	}
 

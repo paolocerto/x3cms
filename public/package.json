@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@wiris/mathtype-tinymce6": "^8.8.3"
+  }
+}

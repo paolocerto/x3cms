@@ -39,7 +39,7 @@ $styles = [
 $sql = "INSERT INTO themes (updated, name, description, styles, version, xon) VALUES (NOW(), '$theme', 'Default theme', '".json_encode($styles)."', '$version', 0)";
 
 // templates
-$templates = array();
+$templates = [];
 
 // settings template base
 $t1 = [
@@ -144,5 +144,5 @@ $templates[] = "INSERT INTO templates (updated, name, js, css, id_theme, descrip
 $templates[] = "INSERT INTO templates (updated, name, js, css, id_theme, description, settings, sections, xon) VALUES (NOW(), 'two', 'script', 'base', XXX, 'Two columns template','".json_encode($t2)."', 2, 1)";
 
 // menus
-$menus = array();
+$menus = [];
 $menus[] = "INSERT INTO menus (updated, id_theme, name, description, xon) VALUES (NOW(), XXX, 'menu_top', 'Top menu', 1)";

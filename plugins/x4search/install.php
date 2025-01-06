@@ -20,11 +20,11 @@ $compatibility = '0.9.0 STABLE';
 $mod_name = 'x4search';
 
 // requirements
-$required = array();
+$required = [];
 
 // sql0 is the array of queries for global use (tables, privtypes, admin, admin dictionary)
 // sql1 is the array of queries for specific area use (parameters, dictionary, module)
-$sql0 = $sql1 = array();
+$sql0 = $sql1 = [];
 
 $sql0[] = "INSERT INTO privtypes (updated, xrif, name, description, xon) VALUES (NOW(), 1, 'x4_search', 'X4_SEARCH', 1)";
 $sql0[] = "INSERT INTO gprivs (updated, id_group, what, level, xon) VALUES (NOW(), 1, 'x4_search', 4, 1)";

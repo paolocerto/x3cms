@@ -11,7 +11,7 @@
 // module config form
 
 // build the form
-$fields = array();
+$fields = [];
 $fields[] = array(
     'label' => null,
     'type' => 'hidden',
@@ -53,6 +53,7 @@ foreach ($params as $i)
             // do nothing
             break;
         case '0|1':
+        case 'BOOL':
         case 'BOOLEAN':
             // boolean
             $tmp['type'] = 'checkbox';

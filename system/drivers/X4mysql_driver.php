@@ -45,7 +45,7 @@ final class X4mysql_driver extends X3db_driver
 	 *
 	 * @return  void
 	 */
-	public function connect()
+	public function connect() : void
 	{
 		if (!is_object($this->link))
 		{
@@ -76,7 +76,7 @@ final class X4mysql_driver extends X3db_driver
 	 * @param   string  $msg    Error message
 	 * @return  string
 	 */
-	public function print_error(string $sql, string $msg)
+	public function print_error(string $sql, string $msg) : string
 	{
 		// If there is an error then take note of it
 		echo  '<h1>SQL/DB Error</h1><blockquote><b>SQL: '.$sql.'</b><br /><br />ERROR: '.$msg.'</blockquote><br /><br />';
@@ -88,17 +88,17 @@ final class X4mysql_driver extends X3db_driver
 	 * @param   mixed   $sql    SQL query to execute
 	 * @return  Database_Result
 	 */
-	public function query(string $sql)
+	public function query(string $sql) : mixed
 	{
 		if (empty($sql))
 		{
-			return FALSE;
+			return false;
 		}
 
 		// No link? Connect!
-		$this->link or $this->connect();
+		$this->link || $this->connect();
 		$this->latest_query = $sql;
-		$res = array();
+		$res = [];
 
 		try
 		{
@@ -128,17 +128,17 @@ final class X4mysql_driver extends X3db_driver
 	 * @param   mixed   $sql    SQL query to execute
 	 * @return  Database_Result
 	 */
-	public function query_debug(string $sql)
+	public function query_debug(string $sql) : mixed
 	{
 		if (empty($sql))
 		{
-			return FALSE;
+			return false;
 		}
 
 		// No link? Connect!
-		$this->link or $this->connect();
+		$this->link || $this->connect();
 		$this->latest_query = $sql;
-		$res = array();
+		$res = [];
 
 		try
 		{
@@ -170,15 +170,15 @@ final class X4mysql_driver extends X3db_driver
 	 * @param   string  $sql
 	 * @return  Database_Result
 	 */
-	public function query_row(string $sql)
+	public function query_row(string $sql) : mixed
 	{
 		if (empty($sql))
 		{
-			return FALSE;
+			return false;
 		}
 
 		// No link? Connect!
-		$this->link or $this->connect();
+		$this->link || $this->connect();
 
 		$this->latest_query = $sql;
 
@@ -216,15 +216,15 @@ final class X4mysql_driver extends X3db_driver
 	 * @param   string  $sql
 	 * @return  Database_Result
 	 */
-	public function query_var(string $sql)
+	public function query_var(string $sql) : mixed
 	{
 		if (empty($sql))
 		{
-			return FALSE;
+			return false;
 		}
 		$res = '';
 		// No link? Connect!
-		$this->link or $this->connect();
+		$this->link || $this->connect();
 
 		$this->latest_query = $sql;
 
@@ -256,11 +256,11 @@ final class X4mysql_driver extends X3db_driver
      * @param   string  $action
 	 * @return  Database_Result  Query result
 	 */
-	public function single_exec(string $sql = '', $action = '')
+	public function single_exec(string $sql = '', string $action = '') : array
 	{
 		if (empty($sql))
 		{
-			return false;
+			return [0, 0];
 		}
 
 		// No link? Connect!
@@ -291,7 +291,7 @@ final class X4mysql_driver extends X3db_driver
 				$this->print_error($sql, $e->getMessage());
 				die;
 			}
-			$result = array(0, 0);
+			$result = [0, 0];
 		}
 		// Query counter
 		self::$queries++;
@@ -304,11 +304,12 @@ final class X4mysql_driver extends X3db_driver
 	 * @param   array   $sql    Array of queries
 	 * @return  Database_Result  Query result
 	 */
-	public function multi_exec(array $sql)
+	public function multi_exec(array $sql) : array
 	{
+        $result = array(0, 0);
 		if (empty($sql))
 		{
-			return false;
+			return $result;
 		}
 
 		// No link? Connect!
@@ -352,7 +353,6 @@ final class X4mysql_driver extends X3db_driver
 				$this->print_error($this->latest_query, $e->getMessage());
 				die;
 			}
-			$result = array(0, 0);
 		}
 		return $result;
 	}
@@ -363,7 +363,7 @@ final class X4mysql_driver extends X3db_driver
 	 * @param   string   value to escape
 	 * @return  string
 	 */
-	public function escape($value)
+	public function escape($value) : string
 	{
         // convert to string
         $value = trim(strval($value));
@@ -377,10 +377,10 @@ final class X4mysql_driver extends X3db_driver
 	 *
 	 * @return Database_Result  Query result
 	 */
-	public function optimize()
+	public function optimize() : array
 	{
 		$tables = $this->query('SHOW TABLES STATUS');
-		$sql = array();
+		$sql = [];
 		foreach ($tables as $i)
 		{
 			$sql[] = 'OPTIMIZE TABLE '.$i->name;
@@ -394,9 +394,9 @@ final class X4mysql_driver extends X3db_driver
 	 * @param   string	Attribute name
 	 * @return	string
 	 */
-	public function get_attribute(string $attr)
+	public function get_attribute(string $attr) : string
 	{
-		$this->link or $this->connect();
+		$this->link || $this->connect();
 		return $this->link->getAttribute(constant('PDO::ATTR_'.$attr));
 	}
 }

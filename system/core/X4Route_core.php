@@ -18,12 +18,12 @@ final class X4Route_core
 {
 	// this variables hold route data
 	public static $protocol  = 'http';
-	public static $lang  = 'en';
+	public static $lang  = '';
 	public static $area = 'public';
 	public static $folder = 'public';
 	public static $control = 'home';
 	public static $method = '_default';
-	public static $args = array();
+	public static $args = [];
 	// GET
 	public static $query_string = '';
 	// POST
@@ -37,7 +37,7 @@ final class X4Route_core
 	/*
 	 * Default configuration
 	 */
-	private static $default = array();
+	private static $default = [];
 
 	/*
 	 * Areas for IDs
@@ -88,13 +88,8 @@ final class X4Route_core
 
 	/**
 	 * Set the route
-	 *
-	 * @static
-	 * @param   string	request_uri
-	 * @param   array	default_config (lang, route)
-	 * @return  void
 	 */
-	public static function set_route(string $request_uri, array $default_config = [])
+	public static function set_route(string $request_uri, array $default_config = []) : void
 	{
 		// set the URI
 		self::$uri = $request_uri;
@@ -218,12 +213,8 @@ final class X4Route_core
 
 	/**
 	 * set the lang
-	 *
-	 * @static
-	 * @param   string	code lang
-	 * @return  void
 	 */
-	public static function set_lang($code)
+	public static function set_lang($code) : void
 	{
 		if (empty(self::$lang))
 		{
@@ -242,12 +233,8 @@ final class X4Route_core
 
 	/**
 	 * set the localization
-	 *
-	 * @static
-	 * @param   string	code lang
-	 * @return  void
 	 */
-	public static function set_locale(string $code)
+	public static function set_locale(string $code) : void
 	{
 	    if (isset(self::$locales[$code]))
 	    {
@@ -257,13 +244,10 @@ final class X4Route_core
 
 	/**
 	 * get query string
-	 *
-	 * @static
-	 * @return  array
 	 */
-	public static function get_query_string()
+	public static function get_query_string() : array
 	{
-        $a = array();
+        $a = [];
         $items = $_GET;
         // get from URL
         parse_str(self::$query_string, $uqs);
@@ -286,11 +270,8 @@ final class X4Route_core
 
 	/**
 	 * get the route
-	 *
-	 * @static
-	 * @return  string
 	 */
-	public static function get_route()
+	public static function get_route() : string
 	{
 	    $param = (isset(self::$args[0]) && self::$args[0] == '_default')
 			? ''
@@ -309,12 +290,8 @@ final class X4Route_core
 
 	/**
 	 * redirect to new route
-	 *
-	 * @static
-	 * @param   array	URL Route
-	 * @return  void
 	 */
-	public static function redirect(array $route)
+	public static function redirect(array $route) : void
 	{
 		$old_route = self::get_route();
 		// replace route items
@@ -346,12 +323,8 @@ final class X4Route_core
 
 	/**
 	 * get the URI
-	 *
-	 * @static
-	 * @param   boolean $query_string
-	 * @return  string
 	 */
-	public static function get_uri(bool $query_string = true)
+	public static function get_uri(bool $query_string = true) : string
 	{
 	    $uri = ($query_string)
 	        ? self::$uri
@@ -366,11 +339,8 @@ final class X4Route_core
 
 	/**
 	 * get controller path
-	 *
-	 * @static
-	 * @return  string
 	 */
-	public static function controller_path()
+	public static function controller_path() : string
 	{
 		$folder = str_replace('-', '_', self::$folder);
 		$control = str_replace('-', '_', self::$control);
@@ -396,12 +366,8 @@ final class X4Route_core
 
 	/**
 	 * get id_area
-	 *
-	 * @static
-     * @param   string $area
-	 * @return  integer
 	 */
-	public static function get_id_area(string $area = '')
+	public static function get_id_area(string $area = '') : int
 	{
         $area = $area ?: self::$area;
 
@@ -412,12 +378,8 @@ final class X4Route_core
 
     /**
 	 * get area name by ID
-	 *
-	 * @static
-     * @param   integer $id_area
-	 * @return  string
 	 */
-	public static function get_area_by_id(int $id_area)
+	public static function get_area_by_id(int $id_area) : string
 	{
         $areas = array_flip(X4Route_core::$areas);
         return $areas[$id_area];

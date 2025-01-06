@@ -19,7 +19,7 @@ switch($file->xtype)
         {
             sleep(1);
         }
-// <img src="<?php echo FPATH.'img/'.$file->name ? >" id="img" /> class="bg-gray-100 p-4 w-full overflow-hidden"
+// <img src="<?php echo FMPATH.'img/'.$file->name ? >" id="img" /> class="bg-gray-100 p-4 w-full overflow-hidden"
 ?>
     <h1><?php echo $page->icon.' '._IMAGE_EDIT.': '.$file->name ?></h1>
     <div id="image_editor" ></div>
@@ -230,7 +230,7 @@ swfobject.embedSWF("'.$this->site->data->domain.'/cms/files/'.SPREFIX.'/filemana
 		case 'video/webm':
 		case 'video/ogg':
 		case 'application/ogg':
-			$video = '<video id="movie" preload controls><source id="source" src="'.FPATH.'media/'.$file->name.'" />Your browser does not support the video tag.</video>';
+			$video = '<video id="movie" preload controls><source id="source" src="'.FMPATH.'media/'.$file->name.'" />Your browser does not support the video tag.</video>';
 
 			// to capture a frame frmo a video
 			$capture = '

@@ -25,6 +25,11 @@ class Msg_controller extends X4Cms_controller
 		X4Utils_helper::logged();
 	}
 
+    public function _default()
+    {
+        $this->empty_msg();
+    }
+
 	/**
 	 * Empty message can be called when happens an unknnown error
 	 */
@@ -72,7 +77,7 @@ class Msg_controller extends X4Cms_controller
 	/**
 	 * Override __call to avoid circular calls
 	 */
-	public function __call(string $method, array $arguments) : void
+	public function __call(string $method, array $arguments = []) : void
 	{
 		$this->empty_msg();
 	}

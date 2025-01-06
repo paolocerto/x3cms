@@ -19,8 +19,8 @@ class X4View_core
 	protected $filename = false;
 	protected $type = false;
 
-	protected $local_data = array();
-	protected static $global_data = array();
+	protected $local_data = [];
+	protected static $global_data = [];
 
 	/**
 	 * Attempts to load a view and pre-load view data
@@ -29,17 +29,17 @@ class X4View_core
 	{
 		if (!empty($name))
 		{
-			// Set the filename
+            // Set the filename
 			if (strstr($name, 'templates') != '')
 			{
 				// into theme
-				if (!file_exists($_SERVER['DOCUMENT_ROOT'].$name.'.php'))
+				if (!file_exists($name.'.php'))
 				{
 					$token = explode('/', $name);
 					$token[5] = 'base';
 					$name = implode('/', $token);
 				}
-				$this->filename = $_SERVER['DOCUMENT_ROOT'].$name.'.php';
+				$this->filename = $name.'.php';
 			}
 			else
 			{

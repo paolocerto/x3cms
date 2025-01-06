@@ -19,7 +19,7 @@ class Login_controller extends X4Cms_controller
 	 * List of admitted IP addresses
 	 * If you want to permit the login to a set of IP addresses
 	 */
-	protected $admitted = array(); // array('168.192.0.1', '192.168.0.3');
+	protected $admitted = []; // array('168.192.0.1', '192.168.0.3');
 
 	/**
 	 * Constructor
@@ -131,12 +131,11 @@ class Login_controller extends X4Cms_controller
 			);
 
 			// conditions
-			$conditions = array('id_area' => 1, 'username' => $_post['username']);
-
-			// remember me
-			$conditions['password'] = (isset($_post['hpwd']) && $_post['password'] == '12345678')
-				? $_post['hpwd']
-				: X4Utils_helper::hashing($_post['password']);
+			$conditions = [
+                'id_area' => 1,
+                'username' => $_post['username'],
+                'password' => X4Utils_helper::hashing($_post['password'])
+            ];
 
 			// log in
 			$login = X4Auth_helper::log_in(
@@ -221,11 +220,11 @@ class Login_controller extends X4Cms_controller
 		$view->page = $page;
 
 		// get menus
-		$view->menus = array();
+		$view->menus = [];
 		$view->navbar = array($this->site->get_bredcrumb($page));
 
 		// build the form
-		$fields = array();
+		$fields = [];
 		// antispam control
 		$fields[] = array(
 			'label' => null,
@@ -314,9 +313,10 @@ class Login_controller extends X4Cms_controller
 				$msg = mb_convert_encoding($body, 'ISO-8859-1', 'auto');
 
 				// recipients
-				$to = ['mail' => $user->mail, 'name' => $user->username];
+                $recipients = ['to' => []];
+		        $recipients['to'][] = ['mail' => $user->mail, 'name' => $user->username];
 
-				$check = X4Mailer_helper::mailto(MAIL, true, $view->subject, $msg, ['to' => [$to]]);
+				$check = X4Mailer_helper::mailto(MAIL, true, $view->subject, $msg, $recipients);
 
 				X4Utils_helper::set_msg($check, _RESET_MSG, _MSG_ERROR);
 
@@ -376,9 +376,10 @@ class Login_controller extends X4Cms_controller
 					$msg = mb_convert_encoding($body, 'ISO-8859-1', 'auto');
 
 					// recipients
-					$to = ['mail' => $user->mail, 'name' => $user->username];
+                    $recipients = ['to' => []];
+		            $recipients['to'][] = ['mail' => $user->mail, 'name' => $user->username];
 
-					$check = X4Mailer_helper::mailto(MAIL, true, $view->subject, $msg, ['to' => [$to]]);
+					$check = X4Mailer_helper::mailto(MAIL, true, $view->subject, $msg, $recipients);
 
 					X4Utils_helper::set_msg($check, _RECOVERY_PWD_OK, _MSG_ERROR);
 					header('Location: '.BASE_URL.'login/recovery');

@@ -232,7 +232,23 @@ class X4Checker_helper
 	 */
 	public static function check_url(string $str) : bool
 	{
-		return (filter_var($str, FILTER_VALIDATE_URL) !== false);
+        list($prefix, $value) = explode(':', $str);
+        switch ($prefix)
+        {
+            case 'http':
+            case 'https':
+                return filter_var($str, FILTER_VALIDATE_URL) !== false;
+                break;
+            case 'tel':
+                $val = str_replace(array(' ', '-', '/', '+'), '', $value);
+		        return !preg_match('/^([0-9])*?$/', $val);
+                break;
+            case 'mailto':
+                return filter_var($value, FILTER_VALIDATE_EMAIL) !== false;
+                break;
+            default:
+                return false;
+        }
 	}
 
     /**

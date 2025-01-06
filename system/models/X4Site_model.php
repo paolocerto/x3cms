@@ -35,7 +35,6 @@ class X4Site_model extends X4Model_core
 	 */
 	public $now;
 
-
 	/**
 	 * Initialize site model
 	 */
@@ -45,6 +44,8 @@ class X4Site_model extends X4Model_core
 
         // get area
 		$this->area = $this->get_area(X4Route_core::$lang);
+
+        $this->lang = $this->area->lang;
 
 		// set language
 		X4Route_core::set_lang($this->area->lang);
@@ -75,9 +76,9 @@ class X4Site_model extends X4Model_core
         // check APC
 		$c = (APC)
             ? apcu_fetch(SITE.'sitearea'.X4Route_core::$area.'-'.$lang)
-            : array();
+            : [];
 
-		if (empty($c))
+		if ($c === false)
 		{
             // we get the area even if not enabled     // .' AND a.xon = 1'
             $sql = 'SELECT t.name AS theme, a.id, a.id_theme, a.folder, a.private, a.xon,
@@ -105,9 +106,9 @@ class X4Site_model extends X4Model_core
 		// check APC
 		$c = (APC)
 			? apcu_fetch(SITE.'sitedata'.$id_area)
-			: array();
+			: [];
 
-		if (empty($c))
+		if ($c === false)
 		{
             // X3 cli doesn't have domain
             $where = $domain
@@ -133,6 +134,10 @@ class X4Site_model extends X4Model_core
 				apcu_store(SITE.'sitedata'.$id_area, $c);
 			}
 		}
+        if (!is_object($c))
+        {
+            $this->logger(1, 1, 'debug site data', $_SERVER['REQUEST_URI'], 'id_area: '.$id_area.' - '.json_encode($c).' - '.X4Utils_helper::get_ip());
+        }
 		return $c;
 	}
 
@@ -162,16 +167,16 @@ class X4Site_model extends X4Model_core
 		// check APC
 		$c = (APC)
 			? apcu_fetch(SITE.'param'.$id_site)
-			: array();
+			: [];
 
-		if (empty($c))
+		if ($c === false)
 		{
             // '.intval($id_site).'
 			$c = $this->db->query('SELECT pa.*, IF(p.id IS NULL, u.level, p.level) AS level
 				FROM param pa
 				JOIN uprivs u ON u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('sites').'
 				LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = s.id
-				WHERE pa.xrif = \'site\' AND pa.id_area = '.intval($id_site).' ORDER BY pa.id ASC');
+				WHERE pa.xrif = \'site\' AND pa.id_area = '.$id_site.' ORDER BY pa.id ASC');
 
 			if (APC)
 			{
@@ -205,9 +210,9 @@ class X4Site_model extends X4Model_core
 		// check APC
 		$sections = (APC)
 			? apcu_fetch(SITE.'sections'.$id_page)
-			: array();
+			: [];
 
-		if (empty($sections))
+		if ($sections === false)
 		{
 			if (ADVANCED_EDITING)
 			{
@@ -216,7 +221,7 @@ class X4Site_model extends X4Model_core
 			else
 			{
 				// SIMPLE EDITING
-                $sections[1] = $this->simple_section($id_page);
+                $sections[1] = $this->section_simple($id_page);
 			}
 
 			if (APC)
@@ -243,10 +248,10 @@ class X4Site_model extends X4Model_core
         {
             // get section's settings
             $settings = (empty($i->settings))
-                ? array()
+                ? []
                 : json_decode($i->settings, true);
 
-            $articles = array();
+            $articles = [];
             // get bids
             $bids = empty($i->articles)
                 ? []
@@ -289,7 +294,7 @@ class X4Site_model extends X4Model_core
             WHERE id_page = '.$id_page.' AND xon = 1 AND progressive = 1');
 
         $settings = (empty($section->settings))
-                ? array()
+                ? []
                 : json_decode($section->settings, true);
 
         $articles = $this->db->query_row('SELECT *
@@ -299,7 +304,7 @@ class X4Site_model extends X4Model_core
 
         return ($articles)
             ? array('a' => $articles, 's' => $settings)
-            : array();
+            : [];
     }
 
 	/**
@@ -310,9 +315,9 @@ class X4Site_model extends X4Model_core
 		// check APC
 		$c = (APC)
 			? apcu_fetch(SITE.'abid'.$id_area.$lang.$bid)
-			: array();
+			: [];
 
-		if (empty($c))
+		if ($c === false)
 		{
 		    $c = $this->db->query_row('SELECT a.*
 		        FROM articles a
@@ -347,9 +352,9 @@ class X4Site_model extends X4Model_core
 	    // check APC
 		$c = (APC)
 			? apcu_fetch(SITE.'akey'.$id_area.$lang.$key)
-			: array();
+			: [];
 
-		if (empty($c))
+		if ($c === false)
 		{
 		    $c = $this->db->query('SELECT a.*
                 FROM articles a
@@ -357,7 +362,7 @@ class X4Site_model extends X4Model_core
                     SELECT MAX(id) AS id, bid
                     FROM articles
                     WHERE
-                        id_area = '.intval($id_area).' AND
+                        id_area = '.$id_area.' AND
                         lang = '.$this->db->escape($lang).' AND
                         xon = 1 AND
                         date_in <= '.$this->time().' AND
@@ -384,9 +389,9 @@ class X4Site_model extends X4Model_core
 		// check APC
 		$c = (APC)
 			? apcu_fetch(SITE.'akey'.$id_area.$lang.$context)
-			: array();
+			: [];
 
-		if (empty($c))
+		if ($c === false)
 		{
 		    $c = $this->db->query('SELECT a.*
                 FROM articles a
@@ -394,7 +399,7 @@ class X4Site_model extends X4Model_core
                     SELECT MAX(id) AS id, bid
                     FROM articles
                     WHERE
-                        id_area = '.intval($id_area).' AND
+                        id_area = '.$id_area.' AND
                         lang = '.$this->db->escape($lang).' AND
                         xon = 1 AND
                         date_in <= '.$this->time().' AND
@@ -469,15 +474,22 @@ class X4Site_model extends X4Model_core
 		// check APC
 		$c = ($this->area->id > 1 && APC)
 			? apcu_fetch(SITE.'menu'.$this->area->id.$this->area->lang)
-			: array();
+			: [];
 
-		if (empty($c))
+		if ($c === false)
 		{
+            // get menus
+			$sql = 'SELECT *
+                FROM menus
+                WHERE id_theme = '.$this->area->id_theme.' AND xon = 1';
+
+            $menus = $this->db->query($sql);
+
 			// privs
 			if ($this->area->id == 1)
 			{
 				$level = ', IF (p.id IS NULL, u.level, p.level) AS level';
-				$page_privs = 'JOIN uprivs u ON u.id_area = pa.id_area AND u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('menus').'
+				$page_privs = 'JOIN uprivs u ON u.id_area = pa.id_area AND u.id_user = '.intval($_SESSION['xuid']).' AND pa.xid IN (u.privtype , \'base\', \'modules\')
 					LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = pa.id_menu AND p.level > 0';
 			}
 			else
@@ -485,25 +497,20 @@ class X4Site_model extends X4Model_core
 				$level = $page_privs = '';
 			}
 
-			// get menus
-			$sql = 'SELECT m.*
-				FROM menus m
-				WHERE m.id_theme = '.$this->area->id_theme.' AND m.xon = 1';
-
-			$menus = $this->db->query($sql);
-
 			// get pages foreach menu
-			$c = array();
+			$c = [];
 			foreach ($menus as $i)
 			{
-                $c[$i->name] = $this->db->query('SELECT pa.url, pa.redirect, pa.name, pa.title, pa.icon, pa.xfrom, pa.hidden, pa.fake, pa.deep, pa.ordinal '.$level.'
+                $c[$i->name] = $this->db->query('SELECT pa.url, pa.redirect, pa.name, pa.title, pa.icon, pa.xclass, pa.xfrom, pa.hidden, pa.fake, pa.action, pa.deep, pa.ordinal, '.$i->mode.' AS mode '.$level.'
 					FROM pages pa
 					'.$page_privs.'
 					WHERE
 						pa.id_area = '.$this->area->id.' AND
 						pa.lang = '.$this->db->escape($this->area->lang).' AND
-						pa.id_menu = '.$i->id.' AND
-						pa.xpos > 0 AND
+						(
+                            (pa.id_menu = '.$i->id.' AND pa.xpos > 0 ) OR
+                            pa.url = \'home\'
+                        ) AND
 						pa.xon = 1 AND
 						pa.deep < '.$maxdeep.' AND
 						pa.hidden = 0
@@ -527,9 +534,9 @@ class X4Site_model extends X4Model_core
 		// check APC
 		$pages = ($id_area > 1 && APC)
 			? apcu_fetch(SITE.'subpages'.$id_area.'_'.$xfrom)
-			: array();
+			: [];
 
-		if (empty($pages))
+		if ($pages === false)
 		{
 			// privs
 			if ($id_area == 1)
@@ -571,9 +578,9 @@ class X4Site_model extends X4Model_core
 		// check APC
 		$c = (APC)
 			? apcu_fetch(SITE.'breadcrumb'.$page->id)
-			: array();
+			: [];
 
-		if (empty($c))
+		if ($c === false)
 		{
 			$c = $this->db->query('SELECT xfrom, url, name, description, fake
 				FROM pages
@@ -605,6 +612,20 @@ class X4Site_model extends X4Model_core
 				ORDER BY name ASC');
 	}
 
+    /**
+     * Get pages to link
+     */
+    public function get_pages(string $lang, array $urls) : array
+    {
+        return $this->db->query('SELECT url, name, title, icon
+            FROM pages
+            WHERE
+                id_area = 1 AND
+                lang = '.$this->db->escape($lang).' AND
+                url IN ("'.implode('","', $urls).'")
+            ORDER BY xpos ASC');
+    }
+
 	/**
 	 * Get area map
 	 */
@@ -613,9 +634,9 @@ class X4Site_model extends X4Model_core
 		// check APC
 		$c = (APC)
 			? apcu_fetch(SITE.'map'.$page->lang.$ordinal)
-			: array();
+			: [];
 
-		if (empty($c))
+		if ($c === false)
 		{
             $where = $pwhere = '';
 			if ($xon)
@@ -658,7 +679,7 @@ class X4Site_model extends X4Model_core
 	 */
 	public function search(int $id_area, array $array) : array
 	{
-		$w_p = $w_c = array();
+		$w_p = $w_c = [];
 		foreach ($array as $a)
         {
 			$i = htmlentities($a);
@@ -678,7 +699,7 @@ class X4Site_model extends X4Model_core
             $sql = 'SELECT DISTINCT p.url, p.name, p.description, COUNT(b.id) AS n
                 FROM pages p
                 JOIN sections s ON s.id_page = p.id AND s.xon = 1
-                JOIN articles a ON s.articles LIKE CONCAT(\'%"\', a.bid, \'"%\')
+                JOIN articles a ON JSON_CONTAINS(s.articles, \'one\', a.bid)
                 LEFT JOIN (
                     SELECT MAX(id) AS id, bid
                     FROM articles
@@ -739,7 +760,7 @@ class X4Site_model extends X4Model_core
 			? apcu_fetch(SITE.'pageto'.$id_area.$lang.$modname.$param)
 			: '';
 
-		if (empty($c))
+		if ($c === false)
 		{
 			$where = (strstr($param, '*') != '')
 				? '	AND a.param LIKE '.$this->db->escape(str_replace('*', '%', $param))
@@ -757,7 +778,7 @@ class X4Site_model extends X4Model_core
 					GROUP BY a.bid
 					ORDER BY a.id DESC';
 
-			$c = $this->db->query_var($sql);
+			$c = (string) $this->db->query_var($sql);
 
 			if (APC)
 			{
@@ -774,15 +795,16 @@ class X4Site_model extends X4Model_core
 	{
 		// check APC
 		$conf = (APC)
-			? apcu_fetch(SITE.'mod_param'.$plugin_name.$id_area)
-			: array();
+			? apcu_fetch(SITE.'mod_param'.$plugin_name.$id_area) ?? []
+			: [];
 
-		if (empty($conf))
+		if ($conf === false)
 		{
+            $conf = [];
 		    $res = $this->db->query('SELECT p.name, p.xvalue
 				FROM param p
 				JOIN modules m ON m.name = p.xrif AND m.id_area = p.id_area
-				WHERE p.xrif = '.$this->db->escape($plugin_name).' AND p.id_area = '.intval($id_area).'
+				WHERE p.xrif = '.$this->db->escape($plugin_name).' AND p.id_area = '.$id_area.'
 				ORDER BY p.id ASC');
 
 			foreach ($res as $i)
@@ -808,12 +830,12 @@ class X4Site_model extends X4Model_core
 			? apcu_fetch(SITE.'mod_param'.$plugin_name.$id_area.$param)
 			: '';
 
-		if (empty($value))
+		if ($value === false)
 		{
 			$value = $this->db->query_var('SELECT p.xvalue
 				FROM param p
 				JOIN modules m ON m.name = p.xrif AND m.id_area = p.id_area
-				WHERE p.xrif = '.$this->db->escape($plugin_name).' AND p.id_area = '.intval($id_area).' AND p.name = '.$this->db->escape($param));
+				WHERE p.xrif = '.$this->db->escape($plugin_name).' AND p.id_area = '.$id_area.' AND p.name = '.$this->db->escape($param));
 
 			if (APC)
 			{

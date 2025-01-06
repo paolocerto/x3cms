@@ -214,15 +214,15 @@ class simple_html_dom_node
 	 *
 	 * @var array
 	 */
-	public $attr = array();
+	public $attr = [];
 
 	/**
 	 * List of child node objects
 	 *
 	 * @var array
 	 */
-	public $children = array();
-	public $nodes = array();
+	public $children = [];
+	public $nodes = [];
 
 	/**
 	 * The parent node object
@@ -232,7 +232,7 @@ class simple_html_dom_node
 	public $parent = null;
 
 	// The "info" array - see HDOM_INFO_... for what each element contains.
-	public $_ = array();
+	public $_ = [];
 
 	/**
 	 * Start position of the tag in the document
@@ -731,7 +731,7 @@ class simple_html_dom_node
 	{
 		$selectors = $this->parse_selector($selector);
 		if (($count = count($selectors)) === 0) { return array(); }
-		$found_keys = array();
+		$found_keys = [];
 
 		// find each selector
 		for ($c = 0; $c < $count; ++$c) {
@@ -746,7 +746,7 @@ class simple_html_dom_node
 
 			// handle descendant selectors, no recursive!
 			for ($l = 0; $l < $levle; ++$l) {
-				$ret = array();
+				$ret = [];
 
 				foreach ($head as $k => $v) {
 					$n = ($k === -1) ? $this->dom->root : $this->dom->nodes[$k];
@@ -768,7 +768,7 @@ class simple_html_dom_node
 		// sort keys
 		ksort($found_keys);
 
-		$found = array();
+		$found = [];
 		foreach ($found_keys as $k => $v) {
 			$found[] = $this->dom->nodes[$k];
 		}
@@ -798,7 +798,7 @@ class simple_html_dom_node
 		if (is_object($debug_object)) { $debug_object->debug_log_entry(1); }
 
 		list($tag, $id, $class, $attributes, $cmb) = $selector;
-		$nodes = array();
+		$nodes = [];
 
 		if ($parent_cmd === ' ') { // Descendant Combinator
 			// Find parent closing tag if the current element doesn't have a closing
@@ -1156,8 +1156,8 @@ class simple_html_dom_node
 			$debug_object->debug_log(2, 'Matches Array: ', $matches);
 		}
 
-		$selectors = array();
-		$result = array();
+		$selectors = [];
+		$result = [];
 
 		foreach ($matches as $m) {
 			$m[0] = trim($m[0]);
@@ -1192,7 +1192,7 @@ class simple_html_dom_node
 				);
 
 				// Replace element by array
-				$m[4] = array();
+				$m[4] = [];
 
 				foreach ($attributes as $att) {
 					// Skip empty matches
@@ -1225,7 +1225,7 @@ class simple_html_dom_node
 
 			if ($is_list) { // Selector List
 				$selectors[] = $result;
-				$result = array();
+				$result = [];
 			}
 		}
 
@@ -1403,7 +1403,7 @@ class simple_html_dom_node
 		// Now look for an inline style.
 		if (isset($this->attr['style'])) {
 			// Thanks to user gnarf from stackoverflow for this regular expression.
-			$attributes = array();
+			$attributes = [];
 
 			preg_match_all(
 				'/([\w-]+)\s*:\s*([^;]+)\s*;?/',
@@ -1586,7 +1586,7 @@ class simple_html_dom
 	 *
 	 * @var array
 	 */
-	public $nodes = array();
+	public $nodes = [];
 
 	/**
 	 * Callback function to run for each element in the DOM.
@@ -1659,7 +1659,7 @@ class simple_html_dom
 	 * @var object
 	 */
 	protected $parent;
-	protected $noise = array();
+	protected $noise = [];
 
 	/**
 	 * Tokens considered blank in HTML
@@ -1862,7 +1862,7 @@ class simple_html_dom
 		// Forcing tags to be closed implies that we don't trust the html, but
 		// it can lead to parsing errors if we SHOULD trust the html.
 		if (!$forceTagsClosed) {
-			$this->optional_closing_array = array();
+			$this->optional_closing_array = [];
 		}
 
 		$this->_target_charset = $target_charset;
@@ -2025,8 +2025,8 @@ class simple_html_dom
 		$this->original_size = $this->size; // original size of the html
 		$this->pos = 0;
 		$this->cursor = 1;
-		$this->noise = array();
-		$this->nodes = array();
+		$this->noise = [];
+		$this->nodes = [];
 		$this->lowercase = $lowercase;
 		$this->default_br_text = $defaultBRText;
 		$this->default_span_text = $defaultSpanText;
@@ -2397,7 +2397,7 @@ class simple_html_dom
 			if ($this->doc[$this->pos - 1] == '<') {
 				$node->nodetype = HDOM_TYPE_TEXT;
 				$node->tag = 'text';
-				$node->attr = array();
+				$node->attr = [];
 				$node->_[HDOM_INFO_END] = 0;
 				$node->_[HDOM_INFO_TEXT] = substr(
 					$this->doc,

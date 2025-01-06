@@ -304,7 +304,7 @@ If you want to fully use this method you have to create:</p>
 		$view->actions = AdminUtils_helper::link(
             \'memo\',
             \''.$name.'\':\'.$lang,
-            [],
+            $this->site->data->count_memos(\''.$name.':\'.$page->lang, $_SESSION[\'xuid\']),
             _MEMO
         ).$this->actions($id_area, $lang);
 
@@ -363,7 +363,6 @@ If you want to fully use this method you have to create:</p>
 	 */
 	public function set(string $what, int $id_area, int $id, int $value = 0) : void
 	{
-		$msg = null;
 		$msg = AdminUtils_helper::chk_priv_level($id_area, \''.$name.'\', $id, $what);
 		if (is_null($msg))
 		{
@@ -465,7 +464,6 @@ If you want to fully use this method you have to create:</p>
 	 */
 	private function editing(int $id, array $_post) : void
 	{
-		$msg = null;
 		$msg = ($id)
 		    ? AdminUtils_helper::chk_priv_level($_post[\'id_area\'], \''.$name.'\', $id, \'edit\')
 		    : AdminUtils_helper::chk_priv_level($_post[\'id_area\'], \'_'.$name.'_creation\', 0, \'create\');
@@ -524,7 +522,7 @@ If you want to fully use this method you have to create:</p>
 		$mod = new '.$uname.'_model();
 		$item = $mod->get_by_id($id, \''.$name.'\', \'id, id_area, title\');
 
-		$fields = array();
+		$fields = [];
 		$fields[] = array(
 			\'label\' => null,
 			\'type\' => \'hidden\',
@@ -558,9 +556,7 @@ If you want to fully use this method you have to create:</p>
 	 */
 	private function deleting(stdClass $item) : void
 	{
-		$msg = null;
 		$msg = AdminUtils_helper::chk_priv_level($item->id_area, \''.$name.'\', $item->id, \'delete\');
-
 		if (is_null($msg))
 		{
 			$mod = new '.$uname.'_model();
@@ -587,7 +583,7 @@ If you want to fully use this method you have to create:</p>
 	public function ordering(int $id_area, string $lang) : void
 	{
 		$msg = null;
-		if (is_null($msg) && X4Route_core::$input)
+		if (X4Route_core::$input)
 		{
 			$_post = X4Route_core::$input;
 			$elements = $_post[\'sort_order\'];
@@ -736,12 +732,12 @@ class '.$uname.'_controller extends X4Cms_controller
 // '.$name.' Edit form
 
 // to handle file\'s label
-$file_array = array();
+$file_array = [];
 // to handle optional JS build with the form construction
-$js_array = array();
+$js_array = [];
 
 // build the form
-$fields = array();
+$fields = [];
 $fields[] = array(
     \'label\' => null,
     \'type\' => \'hidden\',
@@ -775,7 +771,7 @@ $fields[] = array(
 $fields[] = array(
     \'label\' => null,
     \'type\' => \'html\',
-    \'value\' => \'<div class="grid grid-cols-1 md:grid-cols-2 gap-4"><div>\'
+    \'value\' => \'<div class="grid grid-cols-1 md:grid-cols-2 gap-x-4"><div>\'
 );
 
 // put an input field here
@@ -800,18 +796,45 @@ $fields[] = array(
 /*
 // IF YOU NEED TO USE ACCORDION
 
+
+$xdata = \'{
+    activeAccordion: \\\'\\\',
+    setActiveAccordion(id) {
+        this.activeAccordion = (this.activeAccordion == id) ? \\\'\\\' : id
+    }
+}\';
+
+$fields[] = array(
+    \'label\' => null,
+    \'type\' => \'html\',
+    \'value\' => \'<div x-data="\\\'.$xdata.\\\'"
+            class="relative w-full mx-auto overflow-hidden font-normal divide-y divide-gray-200 rounded-md"
+        >\'
+);
+
 // open accordion
 $fields[] = array(
     \'label\' => null,
     \'type\' => \'html\',
-    \'value\' => \'<div x-data="{ open: false }" class="cursor-pointer group">
+    \'value\' => \'<div x-data="{ id: $id(\\\'accordion\\\') }" class="cursor-pointer group">
     <button @click="open = !open" class="bg2 rounded flex items-center justify-between w-full p-4 text-left select-none mb-1">
         <span>Accordion title</span>
-        <svg class="w-4 h-4 duration-200 ease-out" :class="{ \\\'rotate-180\\\': open }" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="6 9 12 15 18 9"></polyline>
+        <svg
+            class="w-4 h-4
+            duration-200 ease-out"
+            :class="{ \\\'rotate-180\\\': activeAccordion==id }"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+        >
+            <polyline points="6 9 12 15 18 9"></polyline>
         </svg>
     </button>
-    <div x-show="open" @click.away="open = false" x-transition:enter.duration.300ms x-transition:leave.duration.50ms x-cloak>
+    <div x-show="activeAccordion==id" x-collapse x-cloak>
         <div class="p-4 pt-0">\'
 );
 
@@ -821,7 +844,7 @@ $fields[] = array(
 $fields[] = array(
     \'label\' => null,
     \'type\' => \'html\',
-    \'value\' => \'</div></div>\'
+    \'value\' => \'</div></div></div>\'
 );
 */
 
@@ -927,7 +950,7 @@ class '.$uname.'_model extends X4Model_core
 		$where = \'\';
 		if (isset($qs[\'xstr\']) && !empty($qs[\'xstr\']))
         {
-            $w = array();
+            $w = [];
             $tok = explode(\' \', urldecode($qs[\'xstr\']));
             foreach ($tok as $i)
             {
@@ -1112,7 +1135,7 @@ echo \'<div class="switcher">\';
 if (MULTILANGUAGE)
 {
     echo \'<div class="text-sm flex justify-end py-1 space-x-4 border-b border-gray-200">\';
-	foreach ($langs as $i)
+	foreach ($languages as $i)
 	{
 		$on = ($i->code == $lang)
 			? \'class="link"\'
@@ -1262,7 +1285,7 @@ if (!empty($list))
                 <table class="my-0">
                     <tr>
                         <td><strong>\'.$i->title.\'</strong></td>
-                        <td class="w-40 space-x-2 text-right">\'.$actions.\'</td>
+                        <td class="w-40 text-right">\'.$actions.\'</td>
                     </tr>
                 </table>
             </div>\';
@@ -1271,7 +1294,7 @@ if (!empty($list))
         {
             echo \'<tr>
                 <td><b>\'.$i->title.\'</b></td>
-                <td class="w-40 space-x-2 text-right">\'.$actions.\'</td>
+                <td class="w-40 text-right">\'.$actions.\'</td>
             </tr>\';
         }
     }
@@ -1359,9 +1382,9 @@ else
 	private function check_privtypes(string $table_name) : int
 	{
 	    // get admin languages
-	    $langs = $this->db->query('SELECT code FROM alang WHERE id_area = 1 ORDER BY language ASC');
+	    $languages = $this->db->query('SELECT code FROM alang WHERE id_area = 1 ORDER BY language ASC');
 
-	    $sql = array();
+	    $sql = [];
 
 	    // creation
 	    $creation = (int) $this->db->query_var('SELECT COUNT(*) AS n
@@ -1372,7 +1395,7 @@ else
 		{
 		    $sql[] = "INSERT INTO privtypes (updated, xrif, name, description, xon) VALUES (NOW(), 1, '_".$table_name."_creation', '_".strtoupper($table_name)."_CREATION', 1)";
 		    $sql[] = "INSERT INTO gprivs (updated, id_group, what, level, xon) VALUES (NOW(), 1, '_".$table_name."_creation', 4, 1)";
-		    foreach ($langs as $i)
+		    foreach ($languages as $i)
 		    {
 		        $sql[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), '".$i->code."', 'admin', 'groups', '_".strtoupper($table_name)."_CREATION', '".ucfirst($table_name)." creation', 0, 1)";
 		    }
@@ -1386,7 +1409,7 @@ else
 		{
 		    $sql[] = "INSERT INTO privtypes (updated, xrif, name, description, xon) VALUES (NOW(), 1, '".$table_name."', '".strtoupper($table_name)."', 1)";
 		    $sql[] = "INSERT INTO gprivs (updated, id_group, what, level, xon) VALUES (NOW(), 1, '".$table_name."', 4, 1)";
-		    foreach ($langs as $i)
+		    foreach ($languages as $i)
 		    {
 		        $sql[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), '".$i->code."', 'admin', 'groups', '".strtoupper($table_name)."', '".ucfirst($table_name)." manager', 0, 1)";
 		    }
@@ -1414,14 +1437,14 @@ else
 	    $uname = strtoupper($name);
 
 	    // get languages for the area
-	    $langs = $this->db->query('SELECT l.code, l.id_area, l.language
+	    $languages = $this->db->query('SELECT l.code, l.id_area, l.language
 	        FROM alang l
 	        JOIN areas a ON a.id = l.id_area
 	        WHERE a.name = '.$this->db->escape($area).'
 	        ORDER BY l.language ASC');
 
         $res = [0, 0];
-	    foreach ($langs as $i)
+	    foreach ($languages as $i)
 	    {
 	        // check if the section already exists
 	        $chk = (int) $this->db->query_var('SELECT COUNT(*) AS n
@@ -1433,7 +1456,7 @@ else
 
             if (!$chk)
             {
-                $sql = array();
+                $sql = [];
 
                 // add a section to the dictionary
                 foreach ($this->admin_dictionary as $k => $v)

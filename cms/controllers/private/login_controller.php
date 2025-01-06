@@ -48,7 +48,7 @@ class Login_controller extends X4Cms_controller
         $view->args = X4Route_core::$args;
 
         // get menus
-        $view->menus = array();
+        $view->menus = [];
         $view->navbar = array($this->site->get_bredcrumb($page));
 
         // get sections

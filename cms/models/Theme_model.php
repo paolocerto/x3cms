@@ -70,39 +70,42 @@ class Theme_model extends X4Model_core
 	/**
 	 * Install a new theme
 	 */
-	public function install(string $theme_name) : array
+	public function install(string $theme_name) : mixed
 	{
 		$error = [];
-		if ($this->exists($theme_name) == 0 && file_exists('themes/'.$theme_name.'/install.php'))
+		if (!$this->exists($theme_name) && file_exists(PATH.'themes/'.$theme_name.'/install.php'))
 		{
 			// load installer (arrays with SQL instructions)
-			require_once('themes/'.$theme_name.'/install.php');
+			require_once(PATH.'themes/'.$theme_name.'/install.php');
 
 			// install
-			$result = $this->db->single_exec($sql);
+			$result = $this->db->single_exec($sql, 'insert');
+
 			if ($result[1])
 			{
-				$sql = array();
+				$sql = [];
 
 				// templates
 				foreach ($templates as $i)
+                {
 					$sql[] = str_replace('XXX', $result[0], $i);
-
+                }
 				// menus
 				foreach ($menus as $i)
+                {
 					$sql[] = str_replace('XXX', $result[0], $i);
-
-				$res = $this->db->multi_exec($sql);
+                }
+				$this->db->multi_exec($sql);
 				return $result[0];
 			}
 			else
             {
-				$error[] = array('error' => '_theme_not_installed', 'label' => $theme_name);
+                $error[] = array('error' => '_theme_not_installed', 'label' => $theme_name);
             }
 		}
 		else
         {
-			$error[] = array('error' => '_already_installed', 'label' => $theme_name);
+            $error[] = array('error' => '_already_installed', 'label' => $theme_name);
         }
 		return $error;
 	}
@@ -113,10 +116,10 @@ class Theme_model extends X4Model_core
 	public function uninstall(int $id_theme, string $theme_name) : array
 	{
 		$error = [];
-		if (file_exists('themes/'.$theme_name.'/uninstall.php'))
+		if (file_exists(PATH.'themes/'.$theme_name.'/uninstall.php'))
 		{
 			// load uninstaller (SQL instructions)
-			require_once('themes/'.$theme_name.'/uninstall.php');
+			require_once(PATH.'themes/'.$theme_name.'/uninstall.php');
 
 			$result = $this->db->multi_exec($sql);
 			if ($result[1])

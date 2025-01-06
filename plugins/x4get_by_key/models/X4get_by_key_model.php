@@ -34,7 +34,7 @@ class X4get_by_key_model extends X4Model_core
 	        ? array('', '')
 	        : explode('|', urldecode($param));
 
-	    $fields = array();
+	    $fields = [];
 
         $fields[] = array(
             'label' => null,
@@ -117,9 +117,9 @@ class X4get_by_key_model extends X4Model_core
         // check APC
 		$c = (APC)
             ? apcu_fetch(SITE.'akeytag'.$id_area.$lang.$key.$tag)
-            : array();
+            : [];
 
-        if (empty($c))
+        if ($c === false)
         {
             $c = $this->db->query('SELECT a.* FROM
 				(
@@ -147,9 +147,9 @@ class X4get_by_key_model extends X4Model_core
 	    // check APC
 		$c = (APC)
 			? apcu_fetch(SITE.'akey'.$id_area.$lang.$key)
-			: array();
+			: [];
 
-		if (empty($c))
+		if ($c === false)
 		{
 		    $c = $this->db->query('SELECT a.*
                 FROM articles a
@@ -157,7 +157,7 @@ class X4get_by_key_model extends X4Model_core
                     SELECT MAX(id) AS id, bid
                     FROM articles
                     WHERE
-                        id_area = '.intval($id_area).' AND
+                        id_area = '.$id_area.' AND
                         lang = '.$this->db->escape($lang).' AND
                         xon = 1 AND
                         date_in <= NOW() AND
@@ -183,7 +183,7 @@ class X4get_by_key_model extends X4Model_core
 	public function search(int $id_area, string $lang, array $array) : array
 	{
 		// first step: get articles which can be highlighted
-		$w = array();
+		$w = [];
 		foreach ($array as $a) {
 			$i = htmlentities(strtolower($a));
 			$w[] = ' (
@@ -215,7 +215,7 @@ class X4get_by_key_model extends X4Model_core
 		$items = $this->db->query($sql);
 
 		// second step: check if there are articles with x4get_by_key
-		$sql = array();
+		$sql = [];
 		foreach ($items as $a)
 		{
             if (!empty($a->xkeys))
@@ -279,7 +279,7 @@ class X4get_by_key_model extends X4Model_core
 		}
 
         // get results
-		$a = array();
+		$a = [];
 		foreach($sql as $q)
 		{
 			$tmp = $this->db->query_row($q);

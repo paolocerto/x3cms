@@ -27,14 +27,18 @@ class Language_model extends X4Model_core
 	/**
 	 * Get languages
 	 */
-	public function get_languages(int $xon = 2) : array
+	public function get_languages(int $xon = 2, bool $full = true) : array
 	{
 		// condition
 		$where = ($xon < 2)
 			? ' WHERE l.xon = '.$xon
 			: '';
 
-		return $this->db->query('SELECT l.*, IF(p.id IS NULL, u.level, p.level) AS level
+        $fields = $full
+            ? 'l.*, IF(p.id IS NULL, u.level, p.level) AS level'
+            : 'l.code, l.language';
+
+		return $this->db->query('SELECT '.$fields.'
 				FROM languages l
 				JOIN uprivs u ON u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('languages').'
 				LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = l.id AND p.level > 0
@@ -70,7 +74,7 @@ class Language_model extends X4Model_core
 		$lang = $this->get_by_id($id);
 
 		// build queries
-		$sql = array();
+		$sql = [];
 
 		// clear privs table
 		$sql[] = 'DELETE p.* FROM privs p JOIN dictionary d ON d.id = p.id_what AND d.lang = '.$this->db->escape($lang->code).' WHERE p.what = \'dictionary\'';
@@ -92,7 +96,7 @@ class Language_model extends X4Model_core
 		$a = $this->db->query('SELECT code FROM alang WHERE id_area = '.$id_area.' ORDER BY language ASC');
 
 		// populate array
-		$b = array();
+		$b = [];
 		foreach ($a as $i)
 		{
 			$b[] = $i->code;
@@ -120,7 +124,7 @@ class Language_model extends X4Model_core
 		$setted = $this->db->query('SELECT id, code FROM alang WHERE id_area = '.$id_area.' ORDER BY language ASC');
 
 		// current situation
-		$set = array();
+		$set = [];
 		if ($setted)
 		{
 			foreach ($setted as $i)
@@ -130,7 +134,7 @@ class Language_model extends X4Model_core
 		}
 
 		// check differences between codes_lang and setted
-		$sql = array();
+		$sql = [];
 		foreach ($languages as $i)
 		{
 			if (!isset($set[$i]))
@@ -184,7 +188,7 @@ class Language_model extends X4Model_core
 	public function update_seo_data(array $post) : array
 	{
 		// build array of queries
-		$sql = array();
+		$sql = [];
 		foreach ($post as $id => $i)
 		{
 			$update = '';
@@ -211,7 +215,7 @@ class Language_model extends X4Model_core
 	public function switch_languages(int $id_area, string $table, string $old_lang, string $new_lang) : array
 	{
 		// build array of queries
-		$sql = array();
+		$sql = [];
 
 		// update items with new_lang with temporary
 		$sql[] = 'UPDATE `'.$table.'` SET lang = \'xx\' WHERE lang = '.$this->db->escape($new_lang);

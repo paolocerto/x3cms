@@ -44,10 +44,10 @@ class Template_model extends X4Model_core
 	public function get_tpl_installable(int $id_theme, string $theme_name) : array
 	{
 		// templates path
-		$path = realpath('themes/'.$theme_name.'/templates');
+		$path = realpath(TPATH.$theme_name.'/templates');
 
 		// uploaded templates
-		$tpls = array();
+		$tpls = [];
 		foreach (glob($path.'/*') as $i)
 		{
 			$tpls[] = str_replace('.php', '', $i);
@@ -55,7 +55,7 @@ class Template_model extends X4Model_core
 
 		// installed templates
 		$installed = $this->db->query('SELECT *	FROM templates WHERE id_theme = '.$id_theme.' ORDER BY name ASC');
-		$ed = array();
+		$ed = [];
 		foreach ($installed as $i)
 		{
 			$ed[] = $path.'/'.$i->name;
@@ -73,15 +73,15 @@ class Template_model extends X4Model_core
 		$error = [];
 		if ($this->exists($id_theme, $theme_name))
         {
-			$error[] = array('error' => '_ALREADY_INSTALLED', 'label' => $name);
+			$error[] = array('error' => '_ALREADY_INSTALLED', 'label' => $theme_name);
         }
         else
 		{
 			// check if template file exists
-			if (file_exists('themes/'.$theme_name.'_install.php'))
+			if (file_exists(PATH.'themes/'.$theme_name.'_install.php'))
 			{
 				// load template installer (SQL instructions)
-				require_once('themes/'.$theme_name.'_install.php');
+				require_once(PATH.'themes/'.$theme_name.'_install.php');
 
 				// install
 				$result = $this->db->single_exec($sql);
@@ -158,6 +158,11 @@ class Template_model extends X4Model_core
 			WHERE id_theme = '.$id_theme.' AND name = '.$this->db->escape($tpl_name).' '.$where);
 	}
 
+    /**
+     * Default settings
+     */
+    private $default_settings = '{"s1":{"locked":"y","bgcolor":"default","fgcolor":"default","columns":1,"col_sizes":"1","width":"fullwidth","height":"free","style":"","class":"","col_settings":{"bg0":"","fg0":"","style0":"","class0":""}},"sn":{"bgcolor":"#ffffff","fgcolor":"#444444","columns":3,"col_sizes":"2+1","width":"container mx-auto","height":"free","style":"","class":"","col_settings":{"bg0":"","fg0":"","style0":"","class0":"","bg1":"","fg1":"","style1":"","class1":""}}}';
+
 	/**
 	 * Reset page's sections
 	 * replace sections settings with the new template settings
@@ -171,7 +176,6 @@ class Template_model extends X4Model_core
 		// get template data
 		$tpl = $this->db->query_row('SELECT settings, sections FROM templates WHERE id_theme = '.$id_theme.' AND name = '.$this->db->escape($tpl_name));
 
-
 		if ($tpl && !empty($tpl->settings))
 		{
 			$settings = json_decode($tpl->settings, true);
@@ -182,21 +186,21 @@ class Template_model extends X4Model_core
 				// if no settings in the template we will use default settings from section_model
 				$set = (isset($settings['s'.$i]))
 					? json_encode($settings['s'.$i])
-					: '';
+					: $this->default_settings;
 				$this->db->single_exec('UPDATE sections SET settings = '.$this->db->escape($set).' WHERE id_page = '.$id_page.' AND progressive = '.intval($i));
 			}
 
 			// check for extra sections
 			$set = (isset($settings['sn']))
 				? json_encode($settings['sn'])
-				: '';
+				: $this->default_settings;
 
 			$this->db->single_exec('UPDATE sections SET settings = '.$this->db->escape($set).' WHERE id_page = '.$id_page.' AND progressive > '.intval($tpl->sections));
 		}
 		else
 		{
 			// remove settings from all sections
-			$this->db->single_exec('UPDATE sections SET settings = \'\' WHERE id_page = '.$id_page);
+			$this->db->single_exec('UPDATE sections SET settings = \'[]\' WHERE id_page = '.$id_page);
 		}
 	}
 }

@@ -11,13 +11,13 @@
 // profile form
 
 // build the form
-$fields = array();
+$fields = [];
 
 $fields[] = array(
     'label' => null,
     'type' => 'html',
     'value' => '<div class="w-full md:w-2/3 px-4 md:m-auto pt-6">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4">
             <div>'
 );
 
@@ -61,7 +61,7 @@ $fields[] = array(
 $fields[] = array(
     'label' => null,
     'type' => 'html',
-    'value' => '<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    'value' => '<div class="grid grid-cols-1 md:grid-cols-2 gap-x-4">
         <div>'
 );
 
@@ -108,7 +108,7 @@ $fields[] = array(
 $fields[] = array(
     'label' => null,
     'type' => 'html',
-    'value' => '<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    'value' => '<div class="grid grid-cols-1 md:grid-cols-2 gap-x-4">
             <div>'
 );
 

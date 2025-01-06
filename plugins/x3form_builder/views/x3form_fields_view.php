@@ -45,7 +45,7 @@ if (!empty($items))
                 @click="popup({url: \''.BASE_URL.'x3form_builder/edit_field/'.$i->id_area.'/'.$i->lang.'/'.$i->id_form.'/'.$i->id.'\', js: \''.$js_url.'\'})"
                 title="'._X3FB_NEW_FIELD.'"
             >
-                <i class="fa-solid fa-lg fa-pen-to-square"></i>
+                <i class="fa-solid fa-lg fa-fw fa-pen-to-square"></i>
             </a>';
 
             if ($i->level > 2)
@@ -62,7 +62,7 @@ if (!empty($items))
 		echo '<div class="sort-item" id="'.$i->id.'"><table class="my-0"><tr>
                 <td class="w-40"><span class="font-sm">'.$i->xtype.'</span></td>
                 <td><strong>'.$i->label.'</strong> ['.$i->name.']</td>
-				<td class="w-40 space-x-2 text-right">'.$actions.'</td>
+				<td class="w-40 text-right">'.$actions.'</td>
 			</tr></table></div>';
 	}
 

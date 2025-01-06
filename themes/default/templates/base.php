@@ -58,9 +58,13 @@ if (!empty($xkeys))
 {
     echo '<meta name="keywords" content="'.$xkeys.'">';
 }
+
+if ($this->site->area->private == 0)
+{
+    echo '<link rel="sitemap" type="application/xml" title="Sitemap" href="/'.$this->site->area->lang.'/sitemap.xml">';
+}
 ?>
     <link rel="canonical" href="<?php echo $this->site->data->domain ?>">
-    <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml">
 
     <link rel="shortcut icon" href="<?php echo THEME_URL ?>favicon.ico" type="images/x-icon">
 <?php
@@ -220,7 +224,7 @@ else
     $index = 0;
 
     // extra css rules
-    $css = array();
+    $css = [];
 
 	// NOTE: put here special
 

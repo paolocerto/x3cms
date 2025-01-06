@@ -27,8 +27,8 @@ $xdata = '{
 	}';
 
 ?>
-<sidebar id="sidebar" class="flex-none w-18 bg-gray-300 px-3 pt-3 leading-8" x-data="<?php echo $xdata ?>">
-    <a href="javascript:void(0)" x-cloak  class="pointer" @click="open=!open;close()" title="Show/hide text">
+<sidebar id="sidebar" class="flex-none w-18 bg-gray-300 px-3 pt-3 leading-8" x-data="<?php echo $xdata ?>" x-cloak>
+    <a x-cloak  class="pointer" @click="open=!open;close()" title="Show/hide text">
         <i x-show="!open" class="fa-solid fa-lg fa-fw fa-circle-chevron-right"></i>
         <i x-show="open" class="fa-solid fa-lg fa-fw fa-circle-chevron-left"></i>
     </a>
@@ -62,6 +62,9 @@ foreach ($menus['sidebar'] as $k => $v)
         // first level links
         switch ($v->url)
         {
+            case 'home':
+                // nothing
+                break;
             case 'sites':
                 echo '<a @click="settings=!settings;toggle()"
                     title="'._SETTINGS.'">'.$icon.' <span x-show="open">'._SETTINGS.'</span></a><br>
@@ -122,6 +125,10 @@ if ($open)
 // user menu
 foreach ($menus['user_menu'] as $k => $v)
 {
+    if ($v->url == 'home')
+    {
+        continue;
+    }
     $icon = !empty($v->icon)
         ? $v->icon
         : $fake_icon;
@@ -147,8 +154,6 @@ if ($_SESSION['level'] > 4)
         ? 'on'
         : '';
 ?>
-    <a @click="$dispatch('pager', '<?php echo BASE_URL ?>info')" @contextmenu="$dispatch('blank', '<?php echo BASE_URL ?>info')"
-        title="<?php echo _ABOUT ?>"><?php echo $icon ?> <span x-show="open"><?php echo _ABOUT ?></span></a><br>
 
     <a @click="$dispatch('setter', '<?php echo BASE_URL.'sites/set/debug/'.((DEBUG+1)%2) ?>')" title="<?php echo _DEBUG_MODE ?>">
         <i class="fa-solid fa-lg fa-fw fa-bug <?php echo $debug ?>"></i> <span x-show="open"><?php echo _DEBUG_MODE ?></span>

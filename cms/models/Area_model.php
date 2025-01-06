@@ -62,12 +62,18 @@ class Area_model extends X4Model_core
 
 		switch($which)
 		{
+            case 'noadmin':
+                $where .= ' AND a.id > 1';
+                break;
 			case 'public':
 				$where .= ' AND a.private = 0';
 				break;
 			case 'private':
 				$where .= ' AND a.private = 1';
 				break;
+            case 'default':
+                $where .= ' AND a.xdefault = 1';
+                break;
 		}
 
         $sql = 'SELECT a.*, u.level
@@ -167,7 +173,7 @@ class Area_model extends X4Model_core
 	{
 		$items = $this->db->query('SELECT id, name, private FROM areas WHERE id > 4 AND xon = 1 ORDER BY id ASC');
 
-		$a = array();
+		$a = [];
 		foreach ($items as $i)
 		{
 		    $a[$i->name] = ($i->private)
@@ -223,7 +229,7 @@ class Area_model extends X4Model_core
 		// get all controller's folders
 		$folders = glob(APATH.'/controllers/*', GLOB_ONLYDIR);
 
-		$a = array();
+		$a = [];
 		foreach ($folders as $i)
 		{
 			$tmp = preg_replace_callback('/(.*)\/(.*)/is',
@@ -265,7 +271,7 @@ class Area_model extends X4Model_core
 	 */
 	public function delete_area(int $id, string $area_name) : array
 	{
-		$sql = array();
+		$sql = [];
 
 		// alang
 		$sql[] = 'DELETE FROM alang WHERE id_area = '.$id;
@@ -312,7 +318,7 @@ class Area_model extends X4Model_core
 	 */
 	public function rename_area(int $id_area, string $old, string $new) : array
 	{
-		$sql = array();
+		$sql = [];
 
 		// aprivs
 		$sql[] = 'UPDATE aprivs SET area = '.$this->db->escape($new).' WHERE id_area = '.$id_area;

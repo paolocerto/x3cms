@@ -11,7 +11,7 @@
 // menu edit form
 
 // build the form
-$fields = array();
+$fields = [];
 
 $fields[] = array(
     'label' => null,
@@ -32,7 +32,6 @@ $fields[] = array(
     'value' => '<div class="bg-white text-gray-700 md:px-8 md:pb-8 px-4 pb-4" style="border:1px solid white">'
 );
 
-
 $fields[] = array(
     'label' => _NAME,
     'type' => 'text',
@@ -41,6 +40,22 @@ $fields[] = array(
     'rule' => 'required',
     'extra' => 'class="w-full"'
 );
+
+$options = [
+    _ONLY_TEXT,
+    _ONLY_ICON,
+    _TEXT_ICON
+];
+
+$fields[] = array(
+    'label' => _MENU_MODE,
+    'type' => 'select',
+    'value' => $item->mode,
+    'options' => array(X4Array_helper::array2obj($options, null, null, true), 'value', 'option'),
+    'name' =>'mode',
+    'extra' => 'class="w-full"'
+);
+
 $fields[] = array(
     'label' => _DESCRIPTION,
     'type' => 'textarea',

@@ -37,3 +37,5 @@ echo '<table>
 
 echo '</tbody>
 </table>';
+
+echo '<div class="w-full">'.phpinfo().'</div>';

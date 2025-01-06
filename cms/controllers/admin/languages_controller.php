@@ -41,15 +41,15 @@ class Languages_controller extends X3ui_controller
             $view->actions = AdminUtils_helper::link(
                 'memo',
                 'languages:'.$page->lang,
-                [],
+                $this->memo('languages:'.$page->lang, $_SESSION['xuid']),
                 _MEMO
             ).$this->actions();
 
         $view->content = new X4View_core('languages/language_list');
         $view->content->page = $page;
 
-		$lang = new Language_model();
-		$view->content->langs = $lang->get_languages();
+		$mod = new Language_model();
+		$view->content->languages = $mod->get_languages();
 		$view->render(true);
 	}
 
@@ -68,20 +68,15 @@ class Languages_controller extends X3ui_controller
 	 */
 	public function set(string $what, int $id, int $value = 0) : void
 	{
-		$msg = null;
-		// check permission
 		$msg = AdminUtils_helper::chk_priv_level(1, 'languages', $id, $what);
 		if (is_null($msg))
 		{
-			// do action
 			$lang = new Language_model();
 			$result = $lang->update($id, array($what => $value));
 
-			// set message
 			$this->dict->get_words();
 			$msg = AdminUtils_helper::set_msg($result);
 
-			// set update
 			if ($result[1])
             {
 				$msg->update = array(
@@ -105,7 +100,6 @@ class Languages_controller extends X3ui_controller
 			? $mod->get_by_id($id)
 			: new Lang_obj();
 
-		// build the form
 		$form_fields = new X4Form_core('language/language_edit');
 		$form_fields->id = $id;
 		$form_fields->item = $item;
@@ -143,15 +137,12 @@ class Languages_controller extends X3ui_controller
 	 */
 	private function editing(int $id, array $_post) : void
 	{
-		$msg = null;
-		// check permission
 		$msg = ($id)
             ? AdminUtils_helper::chk_priv_level(1, 'languages', $_post['id'], 'edit')
             : AdminUtils_helper::chk_priv_level(1, '_language_creation', 0, 'create');
 
 		if (is_null($msg))
 		{
-			// handle _post
 			$post = array(
 				'code' => X4Utils_helper::slugify($_post['code']),
 				'language' => $_post['language'],
@@ -160,7 +151,6 @@ class Languages_controller extends X3ui_controller
 
 			$lang = new Language_model();
 
-			// check if language already exists
 			$check = $lang->exists($post, $id);
 			if ($check)
             {
@@ -168,15 +158,12 @@ class Languages_controller extends X3ui_controller
             }
 			else
 			{
-				// update or insert
 				$result = ($id)
                     ? $lang->update($_post['id'], $post)
                     : $lang->insert($post);
 
-				// set message
 				$msg = AdminUtils_helper::set_msg($result);
 
-				// set what update
 				if ($result[1])
 				{
                     if (!$id)
@@ -199,11 +186,9 @@ class Languages_controller extends X3ui_controller
 	 */
 	public function delete(int $id) : void
 	{
-		// load dictionary
 		$this->dict->get_wordarray(array('form', 'languages'));
 
-		// build the form
-		$fields = array();
+		$fields = [];
 		$fields[] = array(
 			'label' => null,
 			'type' => 'hidden',
@@ -211,25 +196,20 @@ class Languages_controller extends X3ui_controller
 			'name' => 'id'
 		);
 
-		// if submitted
 		if (X4Route_core::$post)
 		{
 			$this->deleting($_POST);
 			die;
 		}
 
-		// get object
 		$mod = new Language_model();
 		$item = $mod->get_by_id($id, 'languages', 'language');
 
         $view = new X4View_core('modal');
         $view->title = _DELETE_LANG;
 
-		// contents
 		$view->content = new X4View_core('delete');
 		$view->content->item = $item->language;
-
-		// form builder
 		$view->content->form = X4Form_helper::doform('delete', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
             '@click="submitForm(\'delete\')"');
 		$view->render(true);
@@ -240,24 +220,18 @@ class Languages_controller extends X3ui_controller
 	 */
 	private function deleting(array $_post) : void
 	{
-		$msg = null;
-		// check permission
 		$msg = AdminUtils_helper::chk_priv_level(1, 'languages', $_post['id'], 'delete');
 		if (is_null($msg))
 		{
-			// action
 			$mod = new Language_model();
 			$result = $mod->delete_lang($_post['id']);
 
-			// set message
 			$msg = AdminUtils_helper::set_msg($result);
 
-			// clear useless permissions
 			if ($result[1])
 			{
 				AdminUtils_helper::delete_priv('languages', $_post['id']);
 
-				// set what update
 				$msg->update = array(
 					'element' => 'page',
 					'url' => BASE_URL.'languages'
@@ -272,15 +246,12 @@ class Languages_controller extends X3ui_controller
 	 */
 	public function selector() : void
 	{
-		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'lang'));
 
-		// getavailable languages
 		$mod = new Language_model();
         $languages = $mod->get_alanguages(1);
 
-        // build the form
-		$fields = array();
+        $fields = [];
 
         $fields[] = array(
             'label' => null,
@@ -303,7 +274,6 @@ class Languages_controller extends X3ui_controller
             'value' => '</div>'
         );
 
-		// if submitted
 		if (X4Route_core::$post)
 		{
 			$e = X4Validation_helper::form($fields, 'editor');
@@ -322,9 +292,7 @@ class Languages_controller extends X3ui_controller
         $view->wide = 'md:w-1/5';
         $view->title = _SWITCH_LANGUAGE;
 
-        // contents
-		$view->content = new X4View_core('editor');
-		// form builder
+        $view->content = new X4View_core('editor');
 		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
             '@click="submitForm(\'editor\')"');
 		$view->render(true);
@@ -335,14 +303,13 @@ class Languages_controller extends X3ui_controller
 	 */
 	private function selecting(array $_post) : void
 	{
-		$old_lang = X4Route_core::$lang;
+		//$old_lang = X4Route_core::$lang;
         $new_lang = $_post['code'];
 
         $res = [0, 1];
-         // set message
+
         $msg = AdminUtils_helper::set_msg($res);
 
-        // set what update
         $msg->update = array(
             'element' => 'redirect',
             'url' => ROOT.$new_lang.'/admin/home/dashboard'
@@ -382,7 +349,6 @@ class Languages_controller extends X3ui_controller
 
 			if ($chk1 && $chk2)
 			{
-				// get areas
 				$areas = $mod->get_all('areas');
 
 				echo '<h1>START SWITCHING LANUAGES FROM '.$old_lang.' TO '.$new_lang.'!</h1>';

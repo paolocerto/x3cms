@@ -40,7 +40,7 @@ if (isset($page)) {
         <link rel="icon" type="image/png" sizes="32x32" href="<?php echo ROOT ?>favicon-32x32.png">
         <link rel="icon" type="image/png" sizes="16x16" href="<?php echo ROOT ?>favicon-16x16.png">
 
-        <link rel="stylesheet" href="<?php echo THEME_URL ?>css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="<?php echo THEME_URL ?>css/fa.all.min.css">
 
 <?php
 echo (!DEVEL && file_exists(PATH.'themes/'.$this->site->area->theme.'/css/'.$css.'.min.css'))
@@ -52,10 +52,15 @@ if (RTL)
 {
 	echo '<link title="normal" rel="stylesheet" type="text/css" href="'.THEME_URL.'/css/rtl.css" media="all" />';
 }
+if (file_exists($_SERVER['DOCUMENT_ROOT'].'/themes/admin/css/tailwind_admin.css'))
+{
+    echo '<link rel="stylesheet" href="'.THEME_URL.'css/tailwind_admin.css">';
+}
+else
+{
+    echo '<script src="https://cdn.tailwindcss.com"></script>';
+}
 ?>
-        <script src="https://kit.fontawesome.com/2e7ce67797.js" crossorigin="anonymous"></script>
-        <script src="https://cdn.tailwindcss.com"></script>
-
         <script defer src="<?php echo THEME_URL ?>js/alpine.min.js"></script>
         <script src="<?php echo THEME_URL ?>js/x3ui.js"></script>
 
@@ -102,7 +107,7 @@ if (strstr($browser, 'MSIE') == '' || strstr($browser, 'MSIE 10.0;') != '')
 	else
 	{
 		echo '<div class="failed px-4 py-4 rounded">
-                <h1>'._WARNING.'</h1>
+                <h1 class="mt-6">'._WARNING.'</h1>
 				<p>'._GLOBAL_PAGE_NOT_FOUND.'</p>
 			</div>';
 	}
@@ -122,7 +127,7 @@ else
 		echo '<a href="https://support.apple.com/it_IT/downloads/#internet" title="Safari"><img src="'.THEME_URL.'img/safari.png" alt="Safari" /></a>',
 			 '<a href="https://windows.microsoft.com/it-IT/internet-explorer/products/ie/home" title="Internet Explorer"><img src="'.THEME_URL.'img/ie.png" alt="Internet Explorer" /></a>';
 	}
-	else if (strstr($browser, 'Macintosh') != '' || strstr($browser, 'Mac_PowerPC') != '')
+	elseif (strstr($browser, 'Macintosh') != '' || strstr($browser, 'Mac_PowerPC') != '')
 	{
 		echo '<a href="https://support.apple.com/it_IT/downloads/#internet" title="Safari"><img src="'.THEME_URL.'img/safari.png" alt="Safari" /></a>';
 	}

@@ -10,7 +10,7 @@
 
 /**
  * Controller for REST API calls
- * Use Restler2
+ * Use Restler
  *
  * @package X3CMS
  */
@@ -22,30 +22,28 @@ class Api_controller extends X4Cms_controller
 	public function __construct()
 	{
 		parent::__construct();
-		X4Core_core::auto_load('restler_library');
+        X4Core_core::auto_load('restler_library');
 	}
 
 	/**
 	 * Generic API override __call
 	 */
-	public function __call(string $method, array $args)
+	public function __call(string $method, array $args = []) : void
 	{
-		// load API class
-		$check = X4Core_core::auto_load($method.'_api');
-
 		// if API exists
-		if ($check)
+		if (file_exists(APATH.'apis/'.$method.'_api.php'))
 		{
-			// call Restler
+            require_once APATH.'apis/'.$method.'_api.php';
+
 			$r = new Restler();
-			$r->setSupportedFormats('JsonFormat');  // , 'XmlFormat'
-			$r->addAPIClass($method);
-			//$r->addAuthenticationClass('SimpleAuth');
+            $r->setSupportedFormats('JsonFormat');  // , 'XmlFormat'
+			$r->addAPIClass(ucfirst($method));
+            //$r->addAuthenticationClass('SimpleAuth');
 			$r->handle();
 		}
 		else
 		{
-			return false;
+			echo '';
 		}
 	}
 }

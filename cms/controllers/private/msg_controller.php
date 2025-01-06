@@ -64,7 +64,7 @@ class Msg_controller extends X4Cms_controller
 
 		$qs = (!empty(X4Route_core::$query_string))
 		    ? X4Route_core::get_query_string()
-		    : array();
+		    : [];
 
 		// set title
 		if (isset($qs['ok']))
@@ -105,7 +105,7 @@ class Msg_controller extends X4Cms_controller
 	/**
 	 * Override __call to avoid circular calls
 	 */
-    public function __call(string $method, array $args) : void
+    public function __call(string $method, array $args = []) : void
 	{
 		$this->empty_msg();
 	}

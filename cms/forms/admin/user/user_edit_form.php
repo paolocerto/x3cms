@@ -17,7 +17,7 @@ if ($_SESSION['level'] < 5)
 }
 
 // build the form
-$fields = array();
+$fields = [];
 
 $fields[] = array(
     'label' => null,
@@ -47,7 +47,7 @@ $fields[] = array(
 $fields[] = array(
     'label' => null,
     'type' => 'html',
-    'value' => '<div class="grid grid-cols-1 md:grid-cols-2 gap-4"><div>'
+    'value' => '<div class="grid grid-cols-1 md:grid-cols-2 gap-x-4"><div>'
 );
 
 
@@ -89,7 +89,7 @@ if ($id)
         'label' => null,
         'type' => 'html',
         'value' => '<div class="col-span-2">
-            <h4 class="text-center">'._PASSWORD_CHANGE_MSG.'</h4>
+            <h4 class="mt-4 text-center">'._PASSWORD_CHANGE_MSG.'</h4>
             </div>'
     );
     $rule = '';
@@ -201,13 +201,14 @@ $fields[] = array(
 
 $fields[] = array(
     'label' => _DOMAIN,
-    'type' => 'select',
+    'type' => 'mcheckbox',
     'value' => X4Array_helper::obj2array($aprivs, '', 'id_area'),
     'options' => array($areas, 'id', 'name'),
-    'multiple' => 4,
+    //'multiple' => 4,
     'name' => 'domain',
     'rule' => 'required',
-    'extra' => 'class="w-full"'
+    'checked' => X4Array_helper::obj2array($aprivs, '', 'id_area')
+    //'extra' => 'class="w-full"'
 );
 
 $fields[] = array(

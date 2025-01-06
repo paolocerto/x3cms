@@ -37,5 +37,5 @@ elseif (isset($content))
 }
 else
 {
-	echo '<h1>'._WARNING.'</h1><p>'._GLOBAL_PAGE_NOT_FOUND.'</p>';
+	echo '<h1 class="mt-6">'._WARNING.'</h1><p>'._GLOBAL_PAGE_NOT_FOUND.'</p>';
 }

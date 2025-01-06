@@ -41,7 +41,7 @@ class Menus_controller extends X3ui_controller
 		$view->actions = AdminUtils_helper::link(
                 'memo',
                 'menus:'.$this->site->area->lang,
-                [],
+                $this->memo('menus:'.$page->lang, $_SESSION['xuid']),
                 _MEMO
             ).$this->actions($id_theme);
 
@@ -71,19 +71,15 @@ class Menus_controller extends X3ui_controller
 	 */
 	public function set(string $what, int $id, int $value = 0) : void
 	{
-		$msg = null;
-		// check permission
 		$msg = AdminUtils_helper::chk_priv_level(1, 'menus', $id, $what);
 		if (is_null($msg))
 		{
-			// do action
 			$menus = new Menu_model();
 			$result = $menus->update($id, array($what => $value));
-			// set message
+
 			$this->dict->get_words();
 			$msg = AdminUtils_helper::set_msg($result);
 
-			// set update
 			if ($result[1])
             {
 				$msg->update = array(
@@ -100,24 +96,18 @@ class Menus_controller extends X3ui_controller
 	 */
 	public function edit(int $id_theme, int $id = 0) : void
 	{
-		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'menus'));
 
-		// get object
 		$mod = new Menu_model();
 		$item = ($id)
 			? $mod->get_by_id($id)
 			: new Menu_obj($id_theme);
 
-		// build the form
 		$form_fields = new X4Form_core('menu/menu_edit');
 		$form_fields->id = $id;
 		$form_fields->item = $item;
-
-		// get the fields array
 		$fields = $form_fields->render();
 
-		// if submitted
 		if (X4Route_core::$post)
 		{
 			$e = X4Validation_helper::form($fields, 'editor');
@@ -137,11 +127,8 @@ class Menus_controller extends X3ui_controller
 			? _EDIT_MENU
 			: _ADD_MENU;
 
-		// contents
 		$view->content = new X4View_core('editor');
-        // can user edit?
         $submit = AdminUtils_helper::submit_btn(1, 'menus', $id, $item->xlock);
-		// form builder
 		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, $submit, 'buttons'), 'post', '',
             '@click="submitForm(\'editor\')"');
 		$view->render(true);
@@ -152,29 +139,25 @@ class Menus_controller extends X3ui_controller
 	 */
 	private function editing(int $id, array $_post) : void
 	{
-		$msg = null;
-		// check permission
 		$msg = ($_post['id'])
 		    ? AdminUtils_helper::chk_priv_level(1, 'menus', $_post['id'], 'edit')
             : AdminUtils_helper::chk_priv_level(1, '_menu_creation', 0, 'create');
 
 		if (is_null($msg))
 		{
-			// handle _post
 			$post = array(
 				'id_theme' => $_post['id_theme'],
 				'name' => $_post['name'],
+                'mode' => $_post['mode'],
 				'description' => $_post['description']
 			);
 
 			$mod = new Menu_model();
 
-			// update or insert
 			$result = ($_post['id'])
                 ? $mod->update($_post['id'], $post)
                 : $mod->insert($post);
 
-			// set message
 			$msg = AdminUtils_helper::set_msg($result);
 
 			if ($result[1])
@@ -199,15 +182,12 @@ class Menus_controller extends X3ui_controller
 	 */
 	public function delete(int $id) : void
 	{
-		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'menus'));
 
-		// get object
 		$mod = new Menu_model();
 		$item = $mod->get_by_id($id, 'menus', 'id, name, id_theme');
 
-		// build the form
-		$fields = array();
+		$fields = [];
 		$fields[] = array(
 			'label' => null,
 			'type' => 'hidden',
@@ -215,7 +195,6 @@ class Menus_controller extends X3ui_controller
 			'name' => 'id'
 		);
 
-		// if submitted
 		if (X4Route_core::$post)
 		{
 			$this->deleting($item);
@@ -225,12 +204,8 @@ class Menus_controller extends X3ui_controller
         $view = new X4View_core('modal');
         $view->title = _DELETE_MENU;
 
-		// contents
 		$view->content = new X4View_core('delete');
-
 		$view->content->item = $item->name;
-
-		// form builder
 		$view->content->form = X4Form_helper::doform('delete', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
             '@click="submitForm(\'delete\')"');
 		$view->render(true);
@@ -241,24 +216,18 @@ class Menus_controller extends X3ui_controller
 	 */
 	private function deleting(stdClass $item) : void
 	{
-		$msg = null;
-		// check permission
 		$msg = AdminUtils_helper::chk_priv_level(1, 'menus', $item->id, 'delete');
 		if (is_null($msg))
 		{
-			// action
 			$mod = new Menu_model();
 			$result = $mod->delete($item->id);
 
-			// set message
 			$msg = AdminUtils_helper::set_msg($result);
 
-			// clear useless permissions
 			if ($result[1])
             {
 				AdminUtils_helper::delete_priv('menus', $item->id);
 
-				// set what update
 				$theme = $mod->get_var($item->id_theme, 'themes', 'name');
 				$msg->update = array(
 					'element' => 'page',

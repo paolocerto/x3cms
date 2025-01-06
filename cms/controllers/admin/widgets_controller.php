@@ -44,7 +44,7 @@ class Widgets_controller extends X3ui_controller
 		$view->actions = AdminUtils_helper::link(
                 'memo',
                 'widgets:'.$page->lang,
-                [],
+                $this->memo('widgets:'.$page->lang, $_SESSION['xuid']),
                 _MEMO
             ).$this->actions();
 
@@ -78,17 +78,12 @@ class Widgets_controller extends X3ui_controller
         }
 		if (is_null($msg))
 		{
-			$qs = X4Route_core::get_query_string();
-
-			// do action
 			$mod = new Widget_model();
 			$result = $mod->update($id, array($what => $value));
 
-			// set message
 			$this->dict->get_words();
 			$msg = AdminUtils_helper::set_msg($result);
 
-			// set update
 			if ($result[1])
             {
 				$msg->update = array(
@@ -105,10 +100,8 @@ class Widgets_controller extends X3ui_controller
 	 */
 	public function edit() : void
 	{
-		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'widgets'));
 
-		// get available widgets
 		$mod = new Widget_model();
 		$items = $mod->get_available_widgets($_SESSION['xuid']);
 
@@ -117,8 +110,7 @@ class Widgets_controller extends X3ui_controller
 
 		if ($items)
 		{
-			// build the form
-			$fields = array();
+			$fields = [];
 
             $fields[] = array(
                 'label' => null,
@@ -143,7 +135,6 @@ class Widgets_controller extends X3ui_controller
                 'value' => '</div>'
             );
 
-			// if submitted
 			if (X4Route_core::$post)
 			{
 				$e = X4Validation_helper::form($fields, 'editor');
@@ -158,11 +149,8 @@ class Widgets_controller extends X3ui_controller
 				die;
 			}
 
-			// contents
-            $view->content = new X4View_core('editor');
+			$view->content = new X4View_core('editor');
 			$view->content->msg = _WIDGETS_NEW_MSG;
-
-			// form builder
 			$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
                 '@click="submitForm(\'editor\')"');
 		}
@@ -180,16 +168,12 @@ class Widgets_controller extends X3ui_controller
 	 */
 	private function editing(array $_post) : void
 	{
-		$msg = null;
-		// check permissions
-		$msg = AdminUtils_helper::chk_priv_level(1, 'modules', $_post['id'], 'edit');
+		$msg = AdminUtils_helper::chk_priv_level(1, 'widgets', $_post['id'], 'edit');
 		if (is_null($msg))
 		{
-			// get obj
 			$mod = new Widget_model();
 			$obj = $mod->get_by_id($_post['id'], 'modules', 'id_area, name, title');
 
-			// handle post
 			$post = array(
 				'id_area' => $obj->id_area,
 				'id_user' => $_SESSION['xuid'],
@@ -204,10 +188,8 @@ class Widgets_controller extends X3ui_controller
 
 			$result = $mod->insert($post);
 
-			// set message
 			$msg = AdminUtils_helper::set_msg($result);
 
-			// set what update
 			if ($result[1])
 			{
                 AdminUtils_helper::set_priv($_SESSION['xuid'], $result[0], 'widgets', $post['id_area']);
@@ -229,11 +211,9 @@ class Widgets_controller extends X3ui_controller
 		$msg = null;
 		if (X4Route_core::$input)
 		{
-			// handle post
-            $_post = X4Route_core::$input;
+			$_post = X4Route_core::$input;
 			$elements = $_post['sort_order'];
 
-			// do action
 			$mod = new Widget_model();
 			$items = $mod->get_my_widgets();
 
@@ -254,7 +234,6 @@ class Widgets_controller extends X3ui_controller
 				}
 			}
 
-			// set message
 			$this->dict->get_words();
 			$msg = AdminUtils_helper::set_msg($result);
 		}
@@ -266,15 +245,12 @@ class Widgets_controller extends X3ui_controller
 	 */
 	public function delete(int $id) : void
 	{
-		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'widgets'));
 
-		// get object
 		$mod = new Widget_model();
 		$item = $mod->get_by_id($id, 'widgets', 'description AS name');
 
-		// build the form
-		$fields = array();
+		$fields = [];
 		$fields[] = array(
 			'label' => null,
 			'type' => 'hidden',
@@ -282,7 +258,6 @@ class Widgets_controller extends X3ui_controller
 			'name' => 'id'
 		);
 
-		// if submitted
 		if (X4Route_core::$post)
 		{
 			$this->deleting($_POST);
@@ -290,12 +265,9 @@ class Widgets_controller extends X3ui_controller
 		}
         $view = new X4View_core('modal');
         $view->title = _WIDGETS_DELETE;
-		// contents
+
 		$view->content = new X4View_core('delete');
-
 		$view->content->item = $item->name;
-
-		// form builder
 		$view->content->form = X4Form_helper::doform('delete', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
             '@click="submitForm(\'delete\')"');
 		$view->render(true);
@@ -306,9 +278,7 @@ class Widgets_controller extends X3ui_controller
 	 */
 	private function deleting(array $_post) : void
 	{
-		$msg = null;
 		$msg = AdminUtils_helper::chk_priv_level(1, 'widgets', $_post['id'], 'delete');
-
 		if (is_null($msg))
 		{
 			$mod = new Widget_model();

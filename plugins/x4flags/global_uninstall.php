@@ -11,9 +11,9 @@
 // x4flags global_uninstall
 
 $mod_name = 'x4flags';
-$required = array();
+$required = [];
 
-$sql = array();
+$sql = [];
 
 $privtypes = array('x4_flags');
 foreach ($privtypes as $i)

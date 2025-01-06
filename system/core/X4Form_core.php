@@ -20,7 +20,7 @@ class X4Form_core
 	protected $type = false;
 
 	// Form variable storage
-	protected $local_data = array();
+	protected $local_data = [];
 
 	/**
 	 * Attempts to load a view and pre-load view data

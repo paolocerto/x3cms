@@ -13,8 +13,8 @@
 $version = '0.9';
 $compatibility = '0.9.0 STABLE';
 $mod_name = 'x3form_builder';
-$required = array();
-$sql0 = $sql1 = array();
+$required = [];
+$sql0 = $sql1 = [];
 
 // table
 $sql0[] = 'CREATE TABLE IF NOT EXISTS x3_forms (

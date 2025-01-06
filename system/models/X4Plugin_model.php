@@ -69,7 +69,7 @@ class X4Plugin_model extends X4Model_core
         }
 		else
 		{
-			$sql = array();
+			$sql = [];
 			foreach ($array as $k => $v)
 			{
 				$sql[] = 'UPDATE param SET updated = NOW(), xvalue =  '.$this->db->escape($v).' WHERE id = '.intval($k);
@@ -108,7 +108,9 @@ class X4Plugin_model extends X4Model_core
 			up.privtype = \'x3_plugins\'
 		) AND up.level > 1
 		LEFT JOIN privs p ON p.id_who = up.id_user AND p.what = up.privtype AND p.id_what = m.id
-		WHERE m.id_area = '.$id_area.' ORDER BY m.name ASC');
+		WHERE m.id_area = '.$id_area.'
+        GROUP BY m.id
+        ORDER BY m.name ASC');
 	}
 
 	/**
@@ -120,7 +122,7 @@ class X4Plugin_model extends X4Model_core
 		$plugins = glob(PATH.'plugins/*', GLOB_ONLYDIR);
 		// installed
 		$installed = $this->get_installed($id_area);
-		$a = array();
+		$a = [];
 		foreach ($installed as $i)
 		{
 			$a[] = PATH.'plugins/'.$i->name;
@@ -133,7 +135,7 @@ class X4Plugin_model extends X4Model_core
 	 */
 	private function check_required(array $array, int $id_area, int $value) : array
 	{
-		$error = array();
+		$error = [];
 		$msg = ($value) ? '_plugin_needed_by' : '_required_plugin';
 		foreach ($array as $i)
 		{
@@ -174,7 +176,7 @@ class X4Plugin_model extends X4Model_core
 	 */
 	public function install(int $id_area, string $plugin_name) : mixed
 	{
-		$error = array();
+		$error = [];
 		if ($this->exists($plugin_name, $id_area))
 		{
             $error[] = array('error' => array('_already_installed'), 'label' => $plugin_name);
@@ -276,7 +278,7 @@ class X4Plugin_model extends X4Model_core
 	 */
 	public function uninstall(int $id) : mixed  // integer if all runs fine, else an array of error strings
 	{
-		$error = array();
+		$error = [];
 		$plugin = $this->get_by_id($id);
 		if ($this->exists($plugin->name, $plugin->id_area, 1))
 		{
@@ -363,7 +365,7 @@ class X4Plugin_model extends X4Model_core
 			? apcu_fetch(SITE.'pageto'.$id_area.$lang.$modname.$param)
 			: '';
 
-		if (empty($c))
+		if ($c === false)
 		{
 			$where = (strstr($param, '*') != '')
 				? '	AND a.param LIKE '.$this->db->escape(str_replace('*', '%', $param))
@@ -395,7 +397,7 @@ class X4Plugin_model extends X4Model_core
 	 * Duplicate modules for another language
 	 * This method have to be arranged for each website
 	 */
-	public function duplicate_modules_lang($id_area, $old_lang, $new_lang) : int
+	public function duplicate_modules_lang(int $id_area, string $old_lang, string $new_lang) : int
 	{
 	    // this list have to be adapted for each website
 	    $modules = array(
@@ -422,7 +424,7 @@ echo 'MODULE = '.$k.BR;
 	            // simple case
 
 	            // get data
-	            $items = $this->db->query('SELECT * FROM '.$k.' WHERE id_area = '.intval($id_area).' AND lang = '.$this->db->escape($old_lang).' ORDER BY id ASC');
+	            $items = $this->db->query('SELECT * FROM '.$k.' WHERE id_area = '.$id_area.' AND lang = '.$this->db->escape($old_lang).' ORDER BY id ASC');
 
 	            if ($items)
 	            {
@@ -468,11 +470,11 @@ echo 'MODULE = '.$k.BR;
 	            // get data
 	            if (in_array($k, $no_lang))
 	            {
-	                $items = $this->db->query('SELECT * FROM '.$k.' WHERE id_area = '.intval($id_area).' ORDER BY id ASC');
+	                $items = $this->db->query('SELECT * FROM '.$k.' WHERE id_area = '.$id_area.' ORDER BY id ASC');
 	            }
 	            else
 	            {
-	                $items = $this->db->query('SELECT * FROM '.$k.' WHERE id_area = '.intval($id_area).' AND lang = '.$this->db->escape($old_lang).' ORDER BY id ASC');
+	                $items = $this->db->query('SELECT * FROM '.$k.' WHERE id_area = '.$id_area.' AND lang = '.$this->db->escape($old_lang).' ORDER BY id ASC');
 	            }
 
 	            if ($items)

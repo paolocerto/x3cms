@@ -28,7 +28,7 @@ class File_model extends X4Model_core
 	{
 		parent::__construct('files');
 
-		$this->file_path = APATH.'files/'.SPREFIX.'/filemanager/';
+		$this->file_path = FFPATH.SPREFIX.'/filemanager/';
 	}
 
 	/**
@@ -72,7 +72,7 @@ class File_model extends X4Model_core
 			FROM areas a
 			JOIN uprivs u ON u.id_area = a.id AND u.id_user = '.intval($_SESSION['xuid']).' AND u.privtype = '.$this->db->escape('areas').'
 			LEFT JOIN privs p ON p.id_who = u.id_user AND p.what = u.privtype AND p.id_what = a.id
-			ORDER BY a.title ASC');
+			ORDER BY a.id ASC');
 	}
 
 	/**
@@ -142,7 +142,7 @@ class File_model extends X4Model_core
 
 		if (!empty($qs['xstr']))
 		{
-			$w = array();
+			$w = [];
 			$tok = explode(' ', urldecode($qs['xstr']));
 			foreach ($tok as $i)
 			{
@@ -176,7 +176,7 @@ class File_model extends X4Model_core
 	public function insert_file(array $array) : array
 	{
 		// build queries
-		$sql = array();
+		$sql = [];
 		foreach ($array as $i) {
 			$field = $insert = '';
 			foreach ($i as $k => $v) {
@@ -261,11 +261,11 @@ class File_model extends X4Model_core
 
 			if ($type == 'template')
 			{
-				$txt .= NL.'{"title": "'.addslashes(str_replace('\'', '&quote;', $i->alt)).'", "url": "'.FPATH.$type.'/'.$i->name.'", "description": "'.$i->alt.'"}';
+				$txt .= NL.'{"title": "'.addslashes(str_replace('\'', '&quote;', $i->alt)).'", "url": "'.FMPATH.$type.'/'.$i->name.'", "description": "'.$i->alt.'"}';
 			}
 			else
 			{
-				$txt .= NL.'{"title": "'.addslashes(str_replace('\'', '&quote;', $i->alt)).'", "value": "'.FPATH.$type.'/'.$i->name.'"}';
+				$txt .= NL.'{"title": "'.addslashes(str_replace('\'', '&quote;', $i->alt)).'", "value": "'.FMPATH.$type.'/'.$i->name.'"}';
 			}
 			$c++;
 		}

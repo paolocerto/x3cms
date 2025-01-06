@@ -73,7 +73,7 @@ class X4Url_helper
 	 */
     public static function extract_tags_from_url(string $url) : array
     {
-        $tags = array();
+        $tags = [];
 
         // url replacer
         $url = str_replace(
@@ -144,7 +144,7 @@ class X4Url_helper
 
             if(!isset($tags['title']) || !isset($tags['description']))
             {
-                $tags = array();
+                $tags = [];
             }
         }
         catch (Exception $e)
@@ -164,7 +164,7 @@ class X4Url_helper
 
 	    $am = array('title', 'description', 'url', 'player', 'video', 'image');
 
-	    $a = array();
+	    $a = [];
 	    foreach ($metas as $k => $v)
         {
             $keys = explode(':', $k);
@@ -252,7 +252,7 @@ class X4Url_helper
             $src = array('XGTX', 'XLTX', '<spam>', 'XQTX', 'XEQX');
             $rpl = array('>', '<', '<span class="AM">', '"', '=');
 
-            $ol = array();
+            $ol = [];
             for($c = 1; $c < 6; $c++)
             {
                 $ol[] = '<li class="pl-4 py-1">'.str_replace($src, $rpl, $v['answer'.$c]).'</li>';
@@ -362,7 +362,7 @@ class X4Url_helper
 	 */
 	public static function compact_meta(aray $data) : string
 	{
-	    $a = array();
+	    $a = [];
 	    foreach ($data as $k => $v)
 	    {
 	        if (!empty($v))

@@ -18,8 +18,6 @@ class X3ui_controller extends X4Cms_controller
 	/**
 	 * Constructor
 	 * Check the site status
-	 *
-	 * @return  void
 	 */
 	public function __construct()
 	{
@@ -28,27 +26,19 @@ class X3ui_controller extends X4Cms_controller
 
 	/**
      * Send an answer to the browser
-     *
-     * @param	array	Message array
-     *
      */
-    public function response($msg)
+    public function response(Msg $msg) : void
     {
+        header('Content-type: application/json');
     	echo json_encode($msg);
     }
 
 	/**
 	 * Return error message
-	 *
-	 * @param   mixed 	$fields Form array or boolean
-	 * @param   string 	$title Dialog title
-	 * @param   boolean $session If true save message in a session var
-	 * @return  void
 	 */
-	public function notice($fields, $title = '_form_not_valid', $session = false)
+	public function notice(array $fields, string $title = '_form_not_valid', bool $session = false) : void
 	{
-		$dict = new X4Dict_model(X4Route_core::$folder, X4Route_core::$lang);
-		$error_msg = $dict->get_word($title, 'form');
+		$error_msg = $this->dict->get_word($title, 'form');
 		$fields = X4Utils_helper::normalize_form($fields);
 
 		foreach ($fields as $i)
@@ -74,18 +64,15 @@ class X3ui_controller extends X4Cms_controller
 		{
 		    // set message
 		    $msg = AdminUtils_helper::set_msg(false, $error_msg, $error_msg);
-
+            header('Content-type: application/json');
             echo json_encode($msg);
 		}
 	}
 
     /**
 	 * Return label
-	 *
-	 * @param   array 	$field
-	 * @return  string
 	 */
-	public function label(array $field)
+	public function label(array $field) : string
 	{
         if (
             (is_null($field['label']) && isset($field['alabel'])) ||
@@ -105,23 +92,20 @@ class X3ui_controller extends X4Cms_controller
 
     /**
 	 * Return label
-	 *
-	 * @param   array 	$fields
-     * @param   array 	$error
-     * @param   string  $label
-	 * @return  string
 	 */
-	public function related(array $fields, array $error, string $label)
+	public function related(array $fields, array $error, string $label) : string
 	{
-        $dict = new X4Dict_model(X4Route_core::$folder, X4Route_core::$lang);
-
-        $error_msg = '';
+        // debug
+        if (isset($error['debug']))
+        {
+            return '<br />'.$error['debug'];
+        }
 
         // for related fields
         if (isset($error['related']))
         {
             $src = array('XXXRELATEDXXX');
-            $rpl = array();
+            $rpl = [];
 
             $related = $error['related'];
             if (isset($fields[$related]))
@@ -146,7 +130,7 @@ class X3ui_controller extends X4Cms_controller
                 $rpl[] = $error['relatedvalue'];
             }
 
-            $error_msg = '<br /><u>'.$label.'</u> '.str_replace($src, $rpl, $dict->get_word($error['msg'], 'form'));
+            $error_msg = '<br /><u>'.$label.'</u> '.str_replace($src, $rpl, $this->dict->get_word($error['msg'], 'form'));
         }
         elseif (isset($error['relatedvalue']))
         {
@@ -154,19 +138,22 @@ class X3ui_controller extends X4Cms_controller
             $src[] = 'XXXVALUEXXX';
             $rpl[] = $error['relatedvalue'];
 
-            $error_msg = '<br /><u>'.$label.'</u> '.str_replace($src, $rpl, $dict->get_word($error['msg'], 'form'));
+            $error_msg = '<br /><u>'.$label.'</u> '.str_replace($src, $rpl, $this->dict->get_word($error['msg'], 'form'));
         }
         else
         {
-            $error_msg = '<br /><u>'.$label.'</u> '.$dict->get_word($error['msg'], 'form');
-        }
-
-        // debug
-        if (isset($error['debug']))
-        {
-            $error_msg = '<br />'.$error['debug'];
+            $error_msg = '<br /><u>'.$label.'</u> '.$this->dict->get_word($error['msg'], 'form');
         }
         return $error_msg;
+    }
+
+    /**
+     * Info memo
+     */
+    public function memo(string $url, int $id_user) : array
+    {
+        $mod = new Memo_model();
+        return $mod->count_memos($url, $id_user);
     }
 
 }

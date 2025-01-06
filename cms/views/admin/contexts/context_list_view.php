@@ -8,44 +8,25 @@
  * @package		X3CMS
  */
 
-echo '<div class="switcher">';
-// language switcher
-if (MULTILANGUAGE)
-{
-	echo '<div class="text-sm flex justify-end py-1 space-x-4 border-b border-gray-200">';
-	foreach ($langs as $i)
-	{
-		$on = ($i->code == $lang) ? 'class="link"' : 'class="dark"';
-		echo '<a '.$on.' @click="pager(\''.BASE_URL.'contexts/index/'.$id_area.'/'.$i->code.'\')" title="'._SWITCH_LANGUAGE.'">'.ucfirst($i->language).'</a>';
-	}
-	echo '</div>';
-}
-
-// area switcher
-echo '<div class="text-sm flex justify-end py-1 space-x-4 border-b border-gray-200">';
-foreach ($areas as $i)
-{
-	$on = ($i->id == $id_area) ? 'class="link"' : 'class="dark"';
-	echo '<a '.$on.' @click="pager(\''.BASE_URL.'contexts/index/'.$i->id.'/'.$lang.'\')" title="'._SWITCH_AREA.'">'.ucfirst($i->name).'</a>';
-}
-echo '</div></div>';
+// contextx list view
 
 ?>
 <h1 class="mt-6"><?php echo $page->icon.' '._CONTEXT_LIST ?></h1>
 <p><?php echo _CONTEXT_MSG ?></p>
 
-<table>
-    <thead>
-	<tr>
-		<th><?php echo _CONTEXTS ?></th>
-		<th class="w-40"><?php echo _ACTIONS ?></th>
-	</tr>
-    </thead>
-    <tbody>
 
 <?php
 if ($items)
 {
+    echo '<table>
+    <thead>
+	<tr>
+		<th>'._CONTEXTS.'</th>
+		<th class="w-40">'._ACTIONS.'</th>
+	</tr>
+    </thead>
+    <tbody>';
+
 	foreach ($items as $i)
 	{
         $statuses = AdminUtils_helper::statuses($i);
@@ -79,12 +60,15 @@ if ($items)
 
         echo '<tr>
                 <td><a class="link" @click="pager(\''.BASE_URL.'articles/index/'.$i->id_area.'/'.$i->lang.'?&xcnt='.$i->code.'\')" title="'._VIEW_ARTICLES.'">'.$i->name.'</a></td>
-                <td class="space-x-2 text-right">'.$actions.'</td>
+                <td class="text-right">'.$actions.'</td>
             </tr>';
 	}
-}
-?>
-</tbody>
-</table>
 
-<p class="text-sm"><b>*</b> <?php echo _DEFAULT_CONTEXTS_MSG ?></p>
+    echo '</tbody>
+        </table>
+        <p class="text-sm"><b>*</b> '._DEFAULT_CONTEXTS_MSG.'</p>';
+}
+else
+{
+	echo '<p>'._NO_ITEMS.'</p>';
+}

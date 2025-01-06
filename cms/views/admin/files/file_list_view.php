@@ -74,13 +74,13 @@ echo '</div>
 $bulk_url = 'files/bulk/'.$id_area.'?'.http_build_query($qs);
 ?>
 <h1 class="mt-6"><?php echo $page->icon.' '._FILE_LIST ?></h1>
-<div x-data="bulkable()" x-init='setup("<?php echo $bulk_url ?>")' >
-
+<div x-data="bulkable()" x-init='setup("<?php echo $bulk_url ?>", {"delete": "<?php echo _BULK_DELETE ?>"})' >
+<form id="bulk_form">
 <div x-show="bulk.length > 0" class="buttons">
-    <input type="hidden" id="bulk_action" x-model="xaction" value="delete" />
-    <button type="button" @click="execute()" class="link"><?php echo _DELETE_BULK ?></button>
+    <input type="hidden" name="bulk_action" id="bulk_action" x-model="xaction" value="delete" />
+    <button type="button" @click="execute()" class="link" x-text="xbtns[xaction]"></button>
 </div>
-
+</form>
 <?php
 if (!empty($items[0]))
 {
@@ -131,13 +131,13 @@ if (!empty($items[0]))
 			$now = '?t='.time();
 
 			// image thumbs
-			if (file_exists(APATH.'files/'.SPREFIX.'/thumbs/img/'.$i->name))
+			if (file_exists(FFPATH.SPREFIX.'/thumbs/img/'.$i->name))
 			{
-				$thumb = '<img class="thumb" src="'.APATH.'files/'.SPREFIX.'/thumbs/img/'.$i->name.$now.'" alt="'.$i->alt.'" />';
+				$thumb = '<img class="thumb" src="'.ROOT.'files/'.SPREFIX.'/thumbs/img/'.$i->name.$now.'" alt="'.$i->alt.'" />';
 			}
 			else
 			{
-				$thumb = '<img class="thumb" src="'.FPATH.'img/'.$i->name.$now.'" alt="'.$i->alt.'" />';
+				$thumb = '<img class="thumb" src="'.FMPATH.'img/'.$i->name.$now.'" alt="'.$i->alt.'" />';
 			}
 
 			// image size
@@ -154,7 +154,7 @@ if (!empty($items[0]))
 
 		echo '<div class="bg2 rounded flex items-stretch">
                 <div class="flex-auto text-sm p-4 overflow-x-hidden">
-                    <a href="'.FPATH.$what[$i->xtype].'/'.$i->name.'" title="'.$i->alt.'">'.$i->name.'</a><br />
+                    <a target="_blank" href="'.FMPATH.$what[$i->xtype].'/'.$i->name.'" title="'.$i->alt.'">'.$i->name.'</a><br />
                     <span class="text-xs">'.$size.$filesize.'</span><br />
                     <div class="text-center pt-4">'.$thumb.'</div>
                     <p>caption: '.$i->alt.'</p>

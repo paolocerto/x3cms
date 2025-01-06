@@ -41,7 +41,7 @@ class Templates_controller extends X3ui_controller
 		$view->actions = AdminUtils_helper::link(
             'memo',
             'templates:index:'.$page->lang,
-            [],
+            $this->memo('templates:index:'.$page->lang, $_SESSION['xuid']),
             _MEMO
         );
 
@@ -64,20 +64,15 @@ class Templates_controller extends X3ui_controller
 	 */
 	public function set(string $what, int $id, int $value = 0) : void
 	{
-		$msg = null;
-		// check permission
 		$msg = AdminUtils_helper::chk_priv_level(1, 'templates', $id, $what);
 		if (is_null($msg))
 		{
-			// do action
 			$mod = new Template_model();
 			$result = $mod->update($id, array($what => $value));
 
-			// set message
 			$this->dict->get_words();
 			$msg = AdminUtils_helper::set_msg($result);
 
-			// set update
 			if ($result[1])
             {
 				$msg->update = array(
@@ -94,35 +89,32 @@ class Templates_controller extends X3ui_controller
 	 */
 	public function install(int $id_theme, string $template_name) : void
 	{
-		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'templates', 'sections'));
 
         $view = new X4View_core('modal');
         $view->title = _INSTALL_TEMPLATE;
 
-		// content
 		$view->content = new X4View_core('editor');
 
 		// check the template name
 		if (strstr(urldecode($template_name), ' ') != '')
         {
-			$view->content->form = '<h2>'._WARNING.'</h2><p>'._INVALID_TEMPLATE.BR.'<strong>>>&nbsp;'.urldecode($template_name).'&nbsp;<<</strong><br />&nbsp;</p>';
+			$view->content->form = '<div class="bg-white text-gray-700 md:px-8 md:pb-8 px-8 pb-4" style="border:1px solid white">
+                <h2>'._WARNING.'</h2><p>'._INVALID_TEMPLATE.BR.'<strong>&nbsp;'.urldecode($template_name).'&nbsp;</strong><br />&nbsp;</p>
+                </div>';
         }
 		else
 		{
-			// get theme object
 			$mod = new Theme_model();
+            $theme = $mod->get_var($id_theme, 'themes', 'name');
 
-			// build the form
-            $form_fields = new X4Form_core('template/template_install');
+			$form_fields = new X4Form_core('template/template_install');
             $form_fields->id_theme = $id_theme;
             $form_fields->template_name = $template_name;
             $form_fields->theme = $mod->get_by_id($id_theme);
+            $form_fields->css = $this->get_css($theme);
+            $fields = $form_fields->render();
 
-            // get the fields array
-		    $fields = $form_fields->render();
-
-			// if submitted
 			if (X4Route_core::$post)
 			{
 				$e = X4Validation_helper::form($fields, 'editor');
@@ -137,7 +129,6 @@ class Templates_controller extends X3ui_controller
 				die;
 			}
 
-			// form builder
 			$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
                 '@click="submitForm(\'editor\')"');
 		}
@@ -149,13 +140,9 @@ class Templates_controller extends X3ui_controller
 	 */
 	private function installing(array $_post) : void
 	{
-		$msg = null;
-		// check permission
 		$msg = AdminUtils_helper::chk_priv_level(1, '_template_install', 0, 'create');
-
 		if (is_null($msg))
 		{
-			// handle _post
 			$post = array(
 				'name' => $_post['name'],
 				'css' => $_post['css'],
@@ -167,10 +154,8 @@ class Templates_controller extends X3ui_controller
 			$mod = new Template_model();
 			$result = $mod->insert($post);
 
-			// set message
 			$msg = AdminUtils_helper::set_msg($result);
 
-			// add permission on new template
 			if ($result[1])
 			{
 				$theme = $mod->get_var($post['id_theme'], 'themes', 'name');
@@ -188,10 +173,9 @@ class Templates_controller extends X3ui_controller
 	 */
 	private function get_css(string $theme) : array
 	{
-		// css file list
-		$css = array();
-		$files = glob(PATH.'themes/'.$theme.'/css/*');
-		foreach ($files as $i)
+		$css = [];
+		$files = glob($_SERVER['DOCUMENT_ROOT'].'/themes/'.$theme.'/css/*');
+    	foreach ($files as $i)
 		{
 			$name = str_replace(array('screen.css', '.css'), '', basename($i));
 			$css[] = array('v' => $name, 'o' => $name);
@@ -205,15 +189,12 @@ class Templates_controller extends X3ui_controller
 	 */
 	public function uninstall(int $id) : void
 	{
-		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'templates'));
 
-		// get object
 		$mod = new Template_model();
 		$item = $mod->get_by_id($id, 'templates', 'id, name, id_theme');
 
-		// build the form
-		$fields = array();
+		$fields = [];
 		$fields[] = array(
 			'label' => null,
 			'type' => 'hidden',
@@ -221,7 +202,6 @@ class Templates_controller extends X3ui_controller
 			'name' => 'id'
 		);
 
-		// if submitted
 		if (X4Route_core::$post)
 		{
 			$this->uninstalling($item);
@@ -231,11 +211,9 @@ class Templates_controller extends X3ui_controller
         $view = new X4View_core('modal');
         $view->title = _UNINSTALL_TEMPLATE;
 
-		// contents
 		$view->content = new X4View_core('uninstall');
 		$view->content->item = $item->name;
 
-		// form builder
 		$view->content->form = X4Form_helper::doform('uninstall', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
             '@click="submitForm(\'uninstall\')"');
 		$view->render(true);
@@ -246,13 +224,10 @@ class Templates_controller extends X3ui_controller
 	 */
 	private function uninstalling(stdClass $item) : void
 	{
-		$msg = null;
-		// check permission
 		$msg = AdminUtils_helper::chk_priv_level(1, 'templates', $item->id, 'delete');
 
 		if (is_null($msg))
 		{
-			// do action
 			$mod = new Template_model();
 			$result = $mod->uninstall($item->id);
 
@@ -284,10 +259,8 @@ class Templates_controller extends X3ui_controller
 	 */
 	public function edit(string $what, string $theme, int $id) : void
 	{
-		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'template'));
 
-		// get object
 		$mod = new Template_model();
 		$item = $mod->get_by_id($id, 'templates', 'id_theme, name, css, xlock');
 
@@ -302,10 +275,8 @@ class Templates_controller extends X3ui_controller
 		$form_fields->item = $item;
         $form_fields->code = htmlentities($this->replace(1, file_get_contents($file)));
 
-		// get the fields array
 		$fields = $form_fields->render();
 
-		// if submitted
 		if (X4Route_core::$post)
 		{
 			$e = X4Validation_helper::form($fields, 'editor');
@@ -324,11 +295,8 @@ class Templates_controller extends X3ui_controller
         $view->title = _EDIT.' '.$item->name;
         $view->wide = ' xl:w-2/3';
 
-		// contents
 		$view->content = new X4View_core('editor');
-        // can user edit?
         $submit = AdminUtils_helper::submit_btn(1, 'templates', $id, $item->xlock);
-		// form builder
 		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, $submit, 'buttons'), 'post', '',
         '@click="submitForm(\'editor\')"');
 
@@ -372,28 +340,20 @@ class Templates_controller extends X3ui_controller
 	 */
 	private function editing(array $_post, string $file) : void
 	{
-		$msg = null;
-		// check permission
 		$msg = AdminUtils_helper::chk_priv_level(1, 'templates', $_post['id'], 'edit');
-
 		if (is_null($msg))
 		{
-			// get file permission
 			$fileperm = substr(sprintf('%o', fileperms($file)), -3);
 			if ($fileperm != 777)
 			{
-				// set file permission
 				chmod($file, 0777);
 			}
 
-			// update file content
 			$check = file_put_contents($file, $this->replace(0, stripslashes($_post['code'])));
 			chmod($file, 0755);
 
-			// set message
 			$msg = AdminUtils_helper::set_msg($result);
 
-			// set what update
 			if ($check)
 			{
                 $mod = new Theme_model();

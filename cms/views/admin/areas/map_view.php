@@ -20,7 +20,7 @@ $len = 0;
 $openul = $openli = 1;
 foreach ($map as $i)
 {
-	$ilen = strlen($i->ordinal)/4;
+	$ilen = ceil(strlen($i->ordinal)/4);
 	$deep = '';
 	if ($ilen > $len)
 	{

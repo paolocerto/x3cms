@@ -22,7 +22,7 @@ abstract class X4Controller_core
 	 */
 	public function __construct()
 	{
-		if (X4Core_core::$insta == NULL)
+		if (X4Core_core::$insta == null)
 		{
 			// Set the instance to the first controller loaded
 			X4Core_core::$insta = $this;

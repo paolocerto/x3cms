@@ -57,7 +57,7 @@ abstract class X4Model_core
 	 */
 	public function configurator(int $id_area, string $lang, int $id_page, string $param) : array
 	{
-	    $fields = array();
+	    $fields = [];
 
 	    $fields[] = array(
 			'label' => null,
@@ -101,6 +101,14 @@ abstract class X4Model_core
 		$this->log = $status;
 	}
 
+    /**
+	 * Get DB name
+	 */
+	final public function get_db_name() : string
+	{
+		return $this->db_name;
+	}
+
 	/**
 	 * Replacement for MySQL NOW() function to use PHP timezone
 	 */
@@ -139,7 +147,7 @@ abstract class X4Model_core
         $w = '';
         if (!empty($criteria))
         {
-            $c = array();
+            $c = [];
             foreach ($criteria as $k => $v)
             {
                 $c[] = addslashes($k).' = '.$this->db->escape($v);
@@ -168,7 +176,7 @@ abstract class X4Model_core
         $w = '';
         if (!empty($criteria))
         {
-            $c = array();
+            $c = [];
             foreach ($criteria as $k => $v)
             {
                 $c[] = addslashes($k).' = '.$this->db->escape($v);
@@ -259,6 +267,45 @@ abstract class X4Model_core
 		return $res;
 	}
 
+    /**
+	 * Insert a row in a table
+	 * to prevent the loading of different models to make base calls you can set table
+	 * Return array(id row, success)
+	 */
+	final public function insert_or_update(array $data, string $table = '', array $floats = []) : array
+	{
+		$t = empty($table)
+            ? $this->table
+            : $table;
+
+        // Relational DB
+        $field = $insert = $update = [];
+        foreach ($data as $k => $v)
+        {
+            $field[] = $k;
+            $insert[] = (in_array($k, $floats))
+                ? str_replace(',', '.', floatval($v))
+                : $this->db->escape($v);
+
+            $update[] = addslashes($k).' = '.$this->db->escape($v);
+        }
+
+        $sql = (in_array('updated', $field))
+            ? 'INSERT INTO '.$t.' ('.implode(',', $field).') VALUES ('.implode(',', $insert).')'
+            : 'INSERT INTO '.$t.' (updated, '.implode(',', $field).') VALUES (\''.$this->now().'\', '.implode(',', $insert).')';
+
+        $sql .= ' ON DUPLICATE KEY UPDATE '.implode(',', $update);
+
+        $res = $this->db->single_exec($sql, 'insert');
+
+        if ($this->log && $res[1])
+        {
+            $uid = $this->get_who();
+            $this->logger($uid, $res[0], $t, 'insert_or_update');
+        }
+		return $res;
+	}
+
 	/**
 	 * Get user ID for logger
 	 */
@@ -294,35 +341,38 @@ abstract class X4Model_core
             ? $this->table
             : $table;
 
-		// Relational DB
-        $update = '';
+		$update = [];
         foreach ($data as $k => $v)
         {
             if (in_array($k, $floats))
             {
-                $update .= ', '.addslashes($k).' = '.str_replace(',', '.', floatval($v));
+                $update[] = addslashes($k).' = '.str_replace(',', '.', floatval($v));
             }
             elseif (in_array($k, $concat))
             {
-                $update .= ', '.addslashes($k).' = CONCAT('.addslashes($k).', '.$v.')';
+                $update[] = addslashes($k).' = CONCAT('.addslashes($k).', '.$v.')';
             }
             else
             {
-                $update .= ', '.addslashes($k).' = '.$this->db->escape($v);
+                $update[] = addslashes($k).' = '.$this->db->escape($v);
             }
         }
 
-        $where = '';
+        $where = [];
         if (!empty($conditions))
         {
             foreach($conditions as $k => $v)
             {
-                $where .= ' AND '.addslashes($k).' '.$v['relation'].' '.$this->db->escape($v['value']);
+                $where[] = addslashes($k).' '.$v['relation'].' '.$this->db->escape($v['value']);
             }
         }
 
+        $where = (empty($where))
+            ? ''
+            : ' AND '.implode(',', $where);
+
         $res = $this->db->single_exec('UPDATE '.$t.'
-            SET updated = \''.$this->now().'\' '.$update.'
+            SET updated = \''.$this->now().'\', '.implode(',', $update).'
             WHERE id = '.$id.$where, 'update');
 
         $res = array($id, $res[1]);
@@ -346,7 +396,6 @@ abstract class X4Model_core
             ? $this->table
             : $table;
 
-        // Relational DB
         $res = $this->db->single_exec('DELETE FROM '.$t.' WHERE id = '.$id, 'delete');
         $res = array($id, $res[1]);
 
@@ -368,18 +417,9 @@ abstract class X4Model_core
 
 	/**
 	 * Log an action
-	 *
-	 * @param   integer	$who        User ID
-	 * @param   integer	$id_what    Record ID
-	 * @param   string	$what       Table name
-	 * @param   string	$action     Action to log
-	 * @param   string	$memo       Memo to log
-     * @param   integer $xon        Log status
-     * @param   string  $extra      Additional data
-	 * @return  array
 	 */
     public function logger(
-        int $who,
+        int $id_who,
         int $id_what,
         string $what,
         string $action,
@@ -393,7 +433,6 @@ abstract class X4Model_core
 
 		if (LOGS && $this->db->sql)
 		{
-			// Relational DB
 			$log = (empty($memo))
 				? $this->db->escape($this->db->latest_query)
 				: $this->db->escape($memo);
@@ -414,7 +453,7 @@ abstract class X4Model_core
                         (updated, who, what, id_what, action, memo, extra, xon)
                     VALUES (
                         \''.$this->now().'\',
-                        '.$who.',
+                        '.$id_who.',
                         '.$this->db->escape($what).',
                         '.$id_what.',
                         '.$this->db->escape($action).',
@@ -434,6 +473,82 @@ abstract class X4Model_core
 		return $this->db->get_attribute($attr);
 	}
 
+
+    /**
+	 * Get by what and id_what
+	 */
+    public function get_by_what(string $table, string $what, int $id_what) : mixed
+	{
+		return $this->db->query_row('SELECT * FROM '.$table.' WHERE what = '.$this->db->escape($what).' AND id_what = '.$id_what.'
+            ORDER BY id DESC');
+	}
+
+    /**
+	 * Get domain
+	 */
+	public function get_domain(int $id_area) : string
+	{
+        return $this->db->query_var('SELECT s.domain
+				FROM sites s
+                JOIN areas a ON a.id_site = s.id
+				WHERE a.id = '.$id_area);
+	}
+
+    /**
+	 * Get school
+	 */
+	public function get_school(int $id_area, string $fields = '*') : stdClass
+	{
+        return $this->db->query_row('SELECT '.$fields.'
+				FROM x3_schools
+				WHERE public_area = '.$id_area.' OR student_area = '.$id_area.' OR teacher_area = '.$id_area.' OR parent_area = '.$id_area);
+	}
+
+    /**
+	 * Get school_area
+	 */
+	public function get_school_area(int $id_area, string $school_area = 'student_area') : string
+	{
+        return $this->db->query_var('SELECT a.name
+				FROM x3_schools s
+                JOIN areas a ON a.id = s.'.$school_area.'
+				WHERE s.public_area = '.$id_area.' OR s.student_area = '.$id_area.' OR s.teacher_area = '.$id_area.' OR s.parent_area = '.$id_area);
+	}
+
+    /**
+	 * Check if a student is a demo or not
+     * At the moment we check if the student paid something or not
+	 */
+	public function is_a_demo(int $id_student) : int
+	{
+		$paid = $this->db->query_var('SELECT SUM(c.price) AS n
+            FROM x3_contracts c
+            JOIN x3_cart_checkout co ON co.id = c.id_checkout AND co.pay NOT IN (\'OMAGGIO\', \'0\', \'free\')
+            WHERE c.id_student = '.$id_student.' AND c.xon = 1');
+
+        if (!is_null($paid) && $paid > 0)
+        {
+            // we check for courses
+            $courses = (int) $this->db->query_var('SELECT COUNT(id) AS n FROM x3_contracts
+                            WHERE id_student = '.$id_student.' AND xon = 1 AND id_course > 0');
+
+            if ($courses > 0)
+            {
+                // have a course
+                return 2;
+            }
+            else
+            {
+                // have a generic purchase
+                return 3;
+            }
+        }
+        else
+        {
+            return 1;
+        }
+	}
+
 }
 
 /**
@@ -443,7 +558,7 @@ abstract class X3db_driver
 {
 	// Database instances
 	protected $name = '';
-	public static $instances = array();
+	public static $instances = [];
 	// DSN
 	protected $dsn = '';
 	// query counter

@@ -8,6 +8,7 @@
  * @package		X3CMS
  */
 
+// <link rel="stylesheet" href="<?php echo ROOT ? >files/css/prism.css">
 // X3CMS - admin theme - base view
 header('Content-Type: text/html; charset=utf-8');
 header('X-UA-Compatible: IE=edge');
@@ -39,17 +40,22 @@ if (isset($page)) {
     <link rel="icon" type="image/png" sizes="32x32" href="<?php echo ROOT ?>favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="<?php echo ROOT ?>favicon-16x16.png">
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700&display=swap" rel="stylesheet">
+
 <?php
-if (file_exists(PATH.'files/css/tailwind.css'))
+echo '<!-- '.$_SERVER['DOCUMENT_ROOT'].'/themes/admin/css/tailwind_admin.css -->';
+if (file_exists($_SERVER['DOCUMENT_ROOT'].'/themes/admin/css/tailwind_admin.css'))
 {
-    echo '<link rel="stylesheet" href="'.ROOT.'files/css/tailwind.css">';
+    echo '<link rel="stylesheet" href="'.THEME_URL.'css/tailwind_admin.css">';
 }
 else
 {
     echo '<script src="https://cdn.tailwindcss.com"></script>';
 }
 ?>
-    <link rel="stylesheet" href="<?php echo THEME_URL ?>css/fontawesome-all.min.css">
+    <link rel="stylesheet" href="<?php echo THEME_URL ?>css/fa.all.min.css">
     <link rel="stylesheet" href="<?php echo THEME_URL ?>css/dragula.min.css">
 
 <?php
@@ -62,10 +68,13 @@ if (RTL)
 	echo '<link title="normal" rel="stylesheet" href="'.THEME_URL.'/css/rtl.css" media="all" />';
 }
 ?>
-    <script src="https://kit.fontawesome.com/2e7ce67797.js" crossorigin="anonymous"></script>
-
     <script defer src="<?php echo THEME_URL ?>js/tinymce/tinymce.min.js"></script>
     <script defer src="<?php echo THEME_URL ?>js/dragula.min.js"></script>
+
+    <!-- Alpine Plugins -->
+    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/gh/hankhank10/alpine-fetch@main/alpine-fetch.js"></script>
+
     <script defer src="<?php echo THEME_URL ?>js/alpine.min.js"></script>
     <script defer src="<?php echo ROOT ?>files/js/jscolor.js"></script>
 
@@ -89,7 +98,8 @@ echo (!DEVEL && file_exists(PATH.'themes/'.$this->site->area->theme.'/js/x3ui.mi
 ?>
 
     <link rel="stylesheet" href="<?php echo ROOT ?>files/js/croppie.css">
-    <script src="<?php echo ROOT ?>files/js/croppie.js"></script>
+    <script src="<?php echo ROOT ?>files/js/codicefiscale.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
 </head>
 <body class="w-full h-screen" x-data="openMenu()" @keypress="open($event)">
@@ -100,12 +110,13 @@ echo (!DEVEL && file_exists(PATH.'themes/'.$this->site->area->theme.'/js/x3ui.mi
         @click="menu()"
         @mouseover="over()"
         @mouseleave="leave()"
-        class="text-center py-1 my-2 cursor-pointer rounded"
+        class="text-center py-1 my-2 cursor-pointer rounded text-gray-600"
     >
         <i
             id="working_icon"
-            class="fa-solid fa-lg fa-slash text-gray-600"
-            :class="{'fa-spin text-amber-500': working}"
+            class="fa-solid fa-lg fa-slash "
+            :class="working ? 'fa-spin text-amber-500' : ''"
+            @click="menu()"
             x-on:working.window="run($event.detail)"
             x-cloak
         ></i>
@@ -123,19 +134,42 @@ echo (!DEVEL && file_exists(PATH.'themes/'.$this->site->area->theme.'/js/x3ui.mi
             </a>
         </div>
 
-        <div class="flex-auto text-right text-gray-100 text-xs pr-4">
-            <?php echo _PUBLIC_SIDE ?>:
+        <div class="flex-auto  text-gray-100 text-xs pr-4">
+            <div class="flex flex-row justify-end space-x-4">
+                <div class="text-right">
+                    <?php echo _PUBLIC_SIDE ?>:
+                    <a
+                        class="link"
+                        target="_blank"
+                        href="<?php echo $this->site->data->domain ?>"
+                        title="<?php echo _PUBLIC_SIDE ?>"
+                    >
+                        <?php echo $this->site->data->domain ?>
+                    </a><br />
+                    <?php echo _LOGGED_AS ?>:
+                    <b><?php echo $_SESSION['username'] ?></b>
+                </div>
+
+<?php
+if (isset($_SESSION['id_teacher']))
+{
+?>
+        <div class="flex-none w-18 pt-2">
             <a
                 class="link"
-                target="_blank"
-                href="<?php echo $this->site->data->domain ?>"
-                title="<?php echo _PUBLIC_SIDE ?>"
+                href="<?php echo BASE_URL ?>x3teachers/back"
+                title="Torna all'area docenti"
             >
-                <?php echo $this->site->data->domain ?>
-            </a><br />
-            <?php echo _LOGGED_AS ?>:
-            <b><?php echo $_SESSION['username'] ?></b>
+                <i class="fa-solid fa-user-graduate fa-2xl"></i>
+            </a>
         </div>
+<?php
+}
+?>
+            </div>
+        </div>
+
+
     </header>
 <?php
 if (!$this->site->data->xon)
@@ -169,7 +203,7 @@ $view->menus = $menus;
 echo $view->render(false);
 ?>
         <div id="page"
-            class="flex-auto"
+            class="flex-1"
             x-data="page_box()"
             x-init="pager(start_page)"
             x-on:pager.window="pager($event.detail)"
@@ -220,7 +254,6 @@ echo $view->render(false);
     >
         <div x-html="html_modal" class="max-h-[calc(100%-1rem)]"></div>
     </div>
-
 
 </body>
 </html>

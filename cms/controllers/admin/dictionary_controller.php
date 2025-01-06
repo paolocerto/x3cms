@@ -58,7 +58,6 @@ class Dictionary_controller extends X3ui_controller
         $mod = new Dictionary_model();
         $keys = $mod->get_keys($lang, $area);
 
-
         // handle filters
         $qs['xstr'] = $qs['xstr'] ?? '';
         $qs['xwhat'] = $qs['xwhat'] ?? '';
@@ -75,8 +74,8 @@ class Dictionary_controller extends X3ui_controller
         $view->breadcrumb = array($this->site->get_bredcrumb($page));
             $view->actions = AdminUtils_helper::link(
                 'memo',
-                'dictionary:keys:'.$lang,
-                [],
+                'dictionary:keys:'.$page->lang,
+                $this->memo('dictionary:keys:'.$page->lang, $_SESSION['xuid']),
                 _MEMO
             ).$this->actions($lang, $area, $qs['xwhat']);
 
@@ -108,8 +107,8 @@ class Dictionary_controller extends X3ui_controller
         $view->content->lang = $lang;
         if (MULTILANGUAGE)
         {
-            $lang = new Language_model();
-            $view->content->langs = $lang->get_languages();
+            $mod = new Language_model();
+            $view->content->languages = $mod->get_alanguages($id_area);
         }
         // to fix charset
         header('Content-Type: text/html; charset=utf-8');
@@ -138,20 +137,15 @@ class Dictionary_controller extends X3ui_controller
 	 */
 	public function set(string $what, int $id_area, int $id, int $value = 0) : void
 	{
-		$msg = null;
-		// check permission
-		$msg = AdminUtils_helper::chk_priv_level($id_area, 'dictionary', $id, $what);
+        $msg = AdminUtils_helper::chk_priv_level($id_area, 'dictionary', $id, $what);
 		if (is_null($msg))
 		{
-			// do action
 			$dict = new Dictionary_model();
 			$result = $dict->update($id, array($what => $value));
 
-			// set message
 			$this->dict->get_words();
 			$msg = AdminUtils_helper::set_msg($result);
 
-			// set update
 			if ($result[1])
             {
 				$msg->update = array(
@@ -168,29 +162,24 @@ class Dictionary_controller extends X3ui_controller
 	 */
 	public function edit(string $lang, string $area, int $id = 0) : void
 	{
-        // load dictionary
-		$this->dict->get_wordarray(array('form', 'dictionary'));
+        $this->dict->get_wordarray(array('form', 'dictionary'));
 
         $qs = X4Route_core::get_query_string();
         $qs['xwhat'] = $qs['xwhat'] ?? '';
 
-		// get object
 		$mod = new Dictionary_model();
         $item = ($id)
 			? $mod->get_by_id($id)
 			: new Word_obj($qs['xwhat']);
 
-        // build the form
-		$form_fields = new X4Form_core('dictionary/word_edit');
+        $form_fields = new X4Form_core('dictionary/word_edit');
 		$form_fields->id = $id;
 		$form_fields->item = $item;
 
-		// get the fields array
 		$fields = $form_fields->render();
 
         $id_area = X4Route_core::get_id_area($area);
 
-		// if submitted
 		if (X4Route_core::$post)
 		{
 			$e = X4Validation_helper::form($fields, 'editor');
@@ -207,11 +196,9 @@ class Dictionary_controller extends X3ui_controller
 
         $view = new X4View_core('modal');
         $view->title = _EDIT_WORD;
-		// content
+
 		$view->content = new X4View_core('editor');
-        // can user edit?
         $submit = AdminUtils_helper::submit_btn($id_area, 'dictionary', $id, $item->xlock);
-		// form builder
 		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, $submit, 'buttons'), 'post', '',
             '@click="submitForm(\'editor\')"');
 		$view->render(true);
@@ -222,16 +209,12 @@ class Dictionary_controller extends X3ui_controller
 	 */
 	private function editing(int $id, int $id_area, array $_post) : void
 	{
-		$msg = null;
-        // check permissions
-        $msg = ($id)
+		$msg = ($id)
             ? AdminUtils_helper::chk_priv_level($id_area, 'dictionary', $id_area, 'edit')
             : AdminUtils_helper::chk_priv_level($id_area, '_word_creation', 0, 'create');
 
 		if (is_null($msg))
 		{
-			// handle _post
-            // handle _post
 			$post = array(
 				'lang' => $_post['lang'],
 				'area' => $_post['area'],
@@ -247,11 +230,9 @@ class Dictionary_controller extends X3ui_controller
             }
 			$post['xval'] = $value;
 
-			// update
 			$mod = new Dictionary_model();
 
-            // check if words already exists
-			$check = $mod->exists($id, $post);
+            $check = $mod->exists($id, $post);
 			if ($check)
             {
 				$msg = AdminUtils_helper::set_msg(false, '', $this->dict->get_word('_XKEY_ALREADY_EXISTS', 'msg'));
@@ -259,8 +240,8 @@ class Dictionary_controller extends X3ui_controller
 			else
 			{
                 $obj = $mod->get_by_id($id);
-                // update or insert
-				if ($id)
+
+                if ($id)
 				{
                     $result = $mod->update($id, $post);
 				}
@@ -274,10 +255,8 @@ class Dictionary_controller extends X3ui_controller
                     }
                 }
 
-                // set message
                 $msg = AdminUtils_helper::set_msg($result);
 
-                // set what update
                 if ($result[1])
                 {
                     // reset cache
@@ -298,15 +277,12 @@ class Dictionary_controller extends X3ui_controller
 	 */
 	public function delete(int $id) : void
 	{
-		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'dictionary'));
 
-		// get object
 		$mod = new Dictionary_model();
 		$item = $mod->get_by_id($id, 'dictionary', 'id, area, xkey');
 
-		// build the form
-		$fields = array();
+		$fields = [];
 		$fields[] = array(
 			'label' => null,
 			'type' => 'hidden',
@@ -314,7 +290,6 @@ class Dictionary_controller extends X3ui_controller
 			'name' => 'id'
 		);
 
-		// if submitted
 		if (X4Route_core::$post)
 		{
 			$this->deleting($item);
@@ -323,11 +298,10 @@ class Dictionary_controller extends X3ui_controller
 
         $view = new X4View_core('modal');
 		$view->title = _DELETE_WORD;
-		// contents
+
         $view->content = new X4View_core('delete');
 		$view->content->item = $item->xkey;
 
-		// form builder
 		$view->content->form = X4Form_helper::doform('delete', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
             '@click="submitForm(\'delete\')"');
 		$view->render(true);
@@ -338,26 +312,20 @@ class Dictionary_controller extends X3ui_controller
 	 */
 	private function deleting(stdClass $item) : void
 	{
-		$msg = null;
-		// check permission
-        $id_area = X4Route_core::get_id_area($item->area);
+		$id_area = X4Route_core::get_id_area($item->area);
 		$msg = AdminUtils_helper::chk_priv_level($id_area, 'dictionary', $item->id, 'delete');
 
 		if (is_null($msg))
 		{
-			// do action
 			$mod = new Dictionary_model();
-			$result = $mod->delete($id);
+			$result = $mod->delete($item->id);
 
-			// set message
 			$msg = AdminUtils_helper::set_msg($result);
 
-			// clear useless permissions
 			if ($result[1])
             {
-				AdminUtils_helper::delete_priv('dictionary', $id);
+				AdminUtils_helper::delete_priv('dictionary', $item->id);
 
-				// set what update
 				$msg->update = array(
 					'element' => 'page',
 					'url' => $_SERVER['HTTP_REFERER']
@@ -372,11 +340,9 @@ class Dictionary_controller extends X3ui_controller
 	 */
 	public function clean(string $area) : void
 	{
-		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'dictionary'));
 
-		// build the form
-		$fields = array();
+		$fields = [];
 		$fields[] = array(
 			'label' => null,
 			'type' => 'hidden',
@@ -384,7 +350,6 @@ class Dictionary_controller extends X3ui_controller
 			'name' => 'id'
 		);
 
-		// if submitted
 		if (X4Route_core::$post)
 		{
 			$this->cleaning($area);
@@ -394,11 +359,9 @@ class Dictionary_controller extends X3ui_controller
         $view = new X4View_core('modal');
         $view->title = _DICTIONARY_DELETE_DUPLICATES;
 
-		// contents
 		$view->content = new X4View_core('delete');
 		$view->content->item = _DICTIONARY_DELETE_DUPLICATES_MSG;
 
-		// form builder
 		$view->content->form = X4Form_helper::doform('delete', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
             '@click="submitForm(\'delete\')"');
 		$view->render(true);
@@ -409,25 +372,19 @@ class Dictionary_controller extends X3ui_controller
 	 */
 	private function cleaning($area) : void
 	{
-		$msg = null;
-		// check permission
-        $id_area = X4Route_core::get_id_area($area);
+		$id_area = X4Route_core::get_id_area($area);
 		$msg = AdminUtils_helper::chk_priv_level($id_area, '_word_creation', 0, 'create');
 
 		if (is_null($msg))
 		{
-			// do action
 			$mod = new Dictionary_model();
 			$result = $mod->remove_duplicates();
 
-			// set message
 			$msg = AdminUtils_helper::set_msg($result);
 
-			// clear useless permissions
 			if ($result[1])
             {
-                // set what update
-				$msg->update = array(
+                $msg->update = array(
 					'element' => 'page',
 					'url' => $_SERVER['HTTP_REFERER']
 				);
@@ -441,7 +398,6 @@ class Dictionary_controller extends X3ui_controller
 	 */
 	public function import(string $lang, string $area) : void
 	{
-		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'dictionary'));
 
         $mod = new Dictionary_model();
@@ -451,10 +407,8 @@ class Dictionary_controller extends X3ui_controller
 		$form_fields->area = $area;
         $form_fields->sections = $mod->get_section_options();
 
-		// get the fields array
 		$fields = $form_fields->render();
 
-		// if submitted
 		if (X4Route_core::$post)
 		{
 			$e = X4Validation_helper::form($fields, 'import');
@@ -472,11 +426,7 @@ class Dictionary_controller extends X3ui_controller
         $view = new X4View_core('modal');
         $view->title = _IMPORT_KEYS;
 
-		// contents
 		$view->content = new X4View_core('editor');
-
-
-		// form builder
 		$view->content->form = X4Form_helper::doform('import', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
             '@click="submitForm(\'import\')"');
 
@@ -488,9 +438,7 @@ class Dictionary_controller extends X3ui_controller
 	 */
 	private function importing(array $_post) : void
 	{
-		$msg = null;
-		// check permission
-        $id_area = X4Route_core::get_id_area($_post['area']);
+		$id_area = X4Route_core::get_id_area($_post['area']);
 		$msg = AdminUtils_helper::chk_priv_level($id_area, '_key_import', 0, 'create');
 
 		if (is_null($msg))
@@ -498,7 +446,6 @@ class Dictionary_controller extends X3ui_controller
 			// get key
 			list($lang, $area, $what) = explode('-', $_post['what']);
 
-			// handle _post
 			$post = array(
 				'lang' => $_post['lang'],
 				'area' => $_post['area'],
@@ -530,7 +477,6 @@ class Dictionary_controller extends X3ui_controller
 							$post['xkey'] = $i->xkey;
 							$post['xval'] = $i->xval;
 
-							// insert
 							$result = $mod->insert($post);
 						}
 					}
@@ -552,14 +498,12 @@ class Dictionary_controller extends X3ui_controller
 					$post['xkey'] = $i->xkey;
                     $post['xval'] = $i->xval;
 
-					// insert
 					$result = $mod->insert($post);
 				}
 			}
 
 			$msg = AdminUtils_helper::set_msg($result);
 
-			// set what update
 			if ($result[1])
 			{
 				$msg->update = array(

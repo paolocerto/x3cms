@@ -53,7 +53,7 @@ class Articles_controller extends X3ui_controller
 	public function index(int $id_area = 2, string $lang = '' , int $pp = 0) : void
 	{
 		// load dictionary
-		$this->dict->get_wordarray(array('articles'));
+		$this->dict->get_wordarray(array('articles', 'bulk'));
 
         // get query string from filter
         $qs = X4Route_core::get_query_string();
@@ -68,12 +68,18 @@ class Articles_controller extends X3ui_controller
         $view->breadcrumb = array($this->site->get_bredcrumb($page));
 		$view->actions = AdminUtils_helper::link(
                 'memo',
-                'articles:mod:'.$lang,
-                [],
+                'articles:mod:'.$page->lang,
+                $this->memo('articles:mod:'.$page->lang, $_SESSION['xuid']),
                 _MEMO
             ).$this->actions($id_area, $lang);
 
 		$mod = new Article_model();
+
+        // switchers
+        $view->id_area = $id_area;
+        $view->areas = $areas;
+        $view->lang = $lang;
+        $view->url = 'articles/index/XAREAX/XLANGX';
 
         // contents
         $view->content = new X4View_core('articles/article_list');
@@ -100,17 +106,9 @@ class Articles_controller extends X3ui_controller
         $view->content->qs = $qs;
 		$view->content->pp = $pp;
 
-		// area switcher
 		$view->content->id_area = $id_area;
-		$view->content->areas = $areas;
 
-		// language switcher
 		$view->content->lang = $lang;
-        if (MULTILANGUAGE)
-        {
-		    $lang = new Language_model();
-            $view->content->langs = $lang->get_languages();
-        }
 		$view->render(true);
 	}
 
@@ -131,6 +129,7 @@ class Articles_controller extends X3ui_controller
 	{
 		$msg = null;
         $_post = X4Route_core::$input;
+        $_post['bulk'] = json_decode($_post['bulk']);
 		if (!empty($_post) && isset($_post['bulk']) && is_array($_post['bulk']) && !empty($_post['bulk']))
 		{
             $mod = new Article_model();
@@ -230,6 +229,7 @@ class Articles_controller extends X3ui_controller
 	{
 		$mod = new Area_model();
 		$items = $mod->get_areas();
+        header('Content-type: application/json');
         echo json_encode($items);
 	}
 
@@ -362,8 +362,8 @@ class Articles_controller extends X3ui_controller
         $view->breadcrumb = array($this->site->get_bredcrumb($page), array('articles' => 'index/'.$id_area.'/'.$lang));
 		$view->actions = AdminUtils_helper::link(
                 'memo',
-                'articles:edit:'.$lang,
-                [],
+                'articles:edit:'.$page->lang,
+                $this->memo('articles:edit:'.$page->lang, $_SESSION['xuid']),
                 _MEMO
             ).$this->actions($id_area, $lang);
 
@@ -436,7 +436,7 @@ class Articles_controller extends X3ui_controller
 			if ($e)
 			{
 			    // handle POST data
-			    $p = array();
+			    $p = [];
 			    if (isset($_POST['no_options']))
 			    {
 			        $result = array(0, 1);
@@ -494,7 +494,6 @@ class Articles_controller extends X3ui_controller
 	private function editing($item, array $_post) : void
 	{
 		$msg = null;
-		// check permission
 		if ($item->id)
 		{
 			$msg = AdminUtils_helper::chk_priv_level($item->id_area, 'articles', $item->id, 'edit');
@@ -502,7 +501,6 @@ class Articles_controller extends X3ui_controller
 
 		if (is_null($msg))
 		{
-			// handle _post
 			$post = array(
 				'bid' => $_post['bid'],
 				'id_area' => $_post['id_area'],
@@ -514,7 +512,7 @@ class Articles_controller extends X3ui_controller
 
 				'xkeys' => strtolower($_post['xkeys']),
 				'name' => $_post['name'],
-				'content' => str_replace('<script src="//cdn.public.flmngr.com/pM7MjiPd/widgets.js"></script>', '', $_post['content']),
+				'content' => AdminUtils_helper::flmngr($_post['content']),
 				'ftext' => $_post['name'].' '.strip_tags($_post['content']),
 				'js' => html_entity_decode($_post['js']),
 				'excerpt' => (strstr($_post['content'], '<!--pagebreak-->') !== false) ? 1 : 0,
@@ -594,10 +592,8 @@ class Articles_controller extends X3ui_controller
 				}
 			}
 
-			// set message
 			$msg = AdminUtils_helper::set_msg($result);
 
-			// response
 			if ($result[1])
 			{
                 AdminUtils_helper::set_priv($_SESSION['xuid'], $result[0], 'articles', $post['id_area']);
@@ -632,8 +628,8 @@ class Articles_controller extends X3ui_controller
         $view->breadcrumb = array($this->site->get_bredcrumb($page), ['articles' => 'index/'.$id_area.'/'.$lang]);
 		$view->actions = AdminUtils_helper::link(
             'memo',
-            'artilces:history:'.$lang,
-            [],
+            'articles:history:'.$page->lang,
+            $this->memo('articles:history:'.$page->lang, $_SESSION['xuid']),
             _MEMO
         );
 
@@ -687,10 +683,9 @@ class Articles_controller extends X3ui_controller
 
         $view = new X4View_core('modal');
         $view->title = _SET_DATE;
-		// content
-		$view->content = new X4View_core('editor');
 
-		// form builder
+        $view->content = new X4View_core('editor');
+
 		$view->content->form = X4Form_helper::doform('editor', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
             '@click="submitForm(\'editor\')"');
 
@@ -702,25 +697,19 @@ class Articles_controller extends X3ui_controller
 	 */
 	private function setting_date(array $_post) : void
 	{
-		$msg = null;
-		// check permissions
 		$msg = AdminUtils_helper::chk_priv_level($_post['id_area'], 'articles', $_post['id'], 'edit');
 		if (is_null($msg))
 		{
-			// handle _post
 			$post = array(
 				'date_in' => strtotime($_post['date_in']),
 				'date_out' => (empty($_post['date_out'])) ? 0 : strtotime($_post['date_out'])
 			);
 
-			// do action
 			$mod = new Article_model();
 			$result = $mod->update($_post['id'], $post);
 
-			// set message
 			$msg = AdminUtils_helper::set_msg($result);
 
-			// set what update
 			if ($result[1])
 			{
 				$msg->update = array(
@@ -738,15 +727,12 @@ class Articles_controller extends X3ui_controller
 	 */
 	public function delete(int $id_area, string $lang, string $bid) : void
 	{
-		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'articles'));
 
-		// get object
 		$mod = new Article_model();
 		$item = $mod->get_by_bid($id_area, $lang, $bid);
 
-		// build the form
-		$fields = array();
+		$fields = [];
 		$fields[] = array(
 			'label' => null,
 			'type' => 'hidden',
@@ -754,7 +740,6 @@ class Articles_controller extends X3ui_controller
 			'name' => 'bid'
 		);
 
-		// if submitted
 		if (X4Route_core::$post)
 		{
 			$this->deleting($item);
@@ -762,11 +747,10 @@ class Articles_controller extends X3ui_controller
 		}
         $view = new X4View_core('modal');
         $view->title = _DELETE_ARTICLE;
-		// contents
+
 		$view->content = new X4View_core('delete');
 		$view->content->item = $item->name;
 
-		// form builder
 		$view->content->form = X4Form_helper::doform('delete', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
             '@click="submitForm(\'delete\')"');
 		$view->render(true);
@@ -803,13 +787,10 @@ class Articles_controller extends X3ui_controller
 
 		if (is_null($msg))
 		{
-			// do action
 			$result = $mod->delete_by_bid($item->id_area, $item->lang, $item->bid);
 
-			// set message
 			$msg = AdminUtils_helper::set_msg($result);
 
-			// set what update
 			if ($result[1])
 			{
 				$msg->update = array(
@@ -826,15 +807,12 @@ class Articles_controller extends X3ui_controller
 	 */
 	public function delete_version(int $id) : void
 	{
-		// load dictionaries
 		$this->dict->get_wordarray(array('form', 'articles'));
 
-        // get object
-		$mod = new Article_model();
+        $mod = new Article_model();
 		$item = $mod->get_by_id($id, 'articles', 'id, id_area, name, updated');
 
-		// build the form
-		$fields = array();
+		$fields = [];
 		$fields[] = array(
 			'label' => null,
 			'type' => 'hidden',
@@ -842,7 +820,6 @@ class Articles_controller extends X3ui_controller
 			'name' =>'id'
 		);
 
-		// if submitted
 		if (X4Route_core::$post)
 		{
 			$this->deleting_version($item);
@@ -851,11 +828,10 @@ class Articles_controller extends X3ui_controller
 
         $view = new X4View_core('modal');
         $view->title = _DELETE_ARTICLE;
-		// contents
+
 		$view->content = new X4View_core('delete');
 		$view->content->item = $item->name.' '.$item->updated;
 
-		// form builder
 		$view->content->form = X4Form_helper::doform('delete', $_SERVER["REQUEST_URI"], $fields, array(null, _YES, 'buttons'), 'post', '',
             '@click="submitForm(\'delete\')"');
 		$view->render(true);
@@ -866,26 +842,20 @@ class Articles_controller extends X3ui_controller
 	 */
 	private function deleting_version(stdClass $item) : void
 	{
-		$msg = null;
-		// check permissions
 		$msg = AdminUtils_helper::chk_priv_level($item->id_area, 'articles', $item->id, 'delete');
 
 		if (is_null($msg))
 		{
-			// do action
 			$mod = new Article_model();
 			$result = $mod->delete($item->id);
 
-			// clear useless permissions
 			if ($result[1])
 			{
 				AdminUtils_helper::delete_priv('articles', $item->id);
 			}
 
-			// set message
 			$msg = AdminUtils_helper::set_msg($result);
 
-			// set what update
 			if ($result[1])
 			{
 				$msg->update = array(

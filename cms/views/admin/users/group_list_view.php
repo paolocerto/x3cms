@@ -66,7 +66,7 @@ else
         echo '<tr>
                 <td>'.$i->title.'</td>
                 <td><a class="link" @click="popup(\''.BASE_URL.'users/users/'.$i->id.'\')" title="">'.$i->name.'</a>'._TRAIT_.$i->description.'</td>
-                <td class="space-x-2 text-right">'.$actions.'</td>
+                <td class="text-right">'.$actions.'</td>
             </tr>';
     }
     echo '</tbody>
