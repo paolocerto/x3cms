@@ -363,7 +363,7 @@ class X4Plugin_model extends X4Model_core
 		// check APC
 		$c = (APC)
 			? apcu_fetch(SITE.'pageto'.$id_area.$lang.$modname.$param)
-			: '';
+			: false;
 
 		if ($c === false)
 		{

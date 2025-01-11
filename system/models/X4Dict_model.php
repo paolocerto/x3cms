@@ -60,7 +60,7 @@ class X4Dict_model extends X4Model_core
 		// check APC
 		$keys = (APC)
 			? apcu_fetch(SITE.'dict'.$this->area.$this->lang.$what)
-			: [];
+			: false;
 
 		if ($keys === false)
 		{

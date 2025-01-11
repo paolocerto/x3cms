@@ -242,7 +242,7 @@ function get_timezone(string $value) : string
  */
 function get_web_server() : string
 {
-    if (stristr($_SERVER['SERVER_SIGNATURE'], 'Apache'))
+    if (isset($_SERVER['SERVER_SIGNATURE']) && stristr($_SERVER['SERVER_SIGNATURE'], 'Apache'))
 	{
         return 'Apache';
     }

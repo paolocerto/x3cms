@@ -76,7 +76,7 @@ class X4Site_model extends X4Model_core
         // check APC
 		$c = (APC)
             ? apcu_fetch(SITE.'sitearea'.X4Route_core::$area.'-'.$lang)
-            : [];
+            : false;
 
 		if ($c === false)
 		{
@@ -106,7 +106,7 @@ class X4Site_model extends X4Model_core
 		// check APC
 		$c = (APC)
 			? apcu_fetch(SITE.'sitedata'.$id_area)
-			: [];
+			: false;
 
 		if ($c === false)
 		{
@@ -167,7 +167,7 @@ class X4Site_model extends X4Model_core
 		// check APC
 		$c = (APC)
 			? apcu_fetch(SITE.'param'.$id_site)
-			: [];
+			: false;
 
 		if ($c === false)
 		{
@@ -210,7 +210,7 @@ class X4Site_model extends X4Model_core
 		// check APC
 		$sections = (APC)
 			? apcu_fetch(SITE.'sections'.$id_page)
-			: [];
+			: false;
 
 		if ($sections === false)
 		{
@@ -315,7 +315,7 @@ class X4Site_model extends X4Model_core
 		// check APC
 		$c = (APC)
 			? apcu_fetch(SITE.'abid'.$id_area.$lang.$bid)
-			: [];
+			: false;
 
 		if ($c === false)
 		{
@@ -352,7 +352,7 @@ class X4Site_model extends X4Model_core
 	    // check APC
 		$c = (APC)
 			? apcu_fetch(SITE.'akey'.$id_area.$lang.$key)
-			: [];
+			: false;
 
 		if ($c === false)
 		{
@@ -389,7 +389,7 @@ class X4Site_model extends X4Model_core
 		// check APC
 		$c = (APC)
 			? apcu_fetch(SITE.'akey'.$id_area.$lang.$context)
-			: [];
+			: false;
 
 		if ($c === false)
 		{
@@ -476,7 +476,7 @@ class X4Site_model extends X4Model_core
 			? apcu_fetch(SITE.'menu'.$this->area->id.$this->area->lang)
 			: [];
 
-		if ($c === false)
+		if ($c === false || empty($c))
 		{
             // get menus
 			$sql = 'SELECT *
@@ -536,7 +536,7 @@ class X4Site_model extends X4Model_core
 			? apcu_fetch(SITE.'subpages'.$id_area.'_'.$xfrom)
 			: [];
 
-		if ($pages === false)
+		if ($pages === false || empty($pages))
 		{
 			// privs
 			if ($id_area == 1)
@@ -578,7 +578,7 @@ class X4Site_model extends X4Model_core
 		// check APC
 		$c = (APC)
 			? apcu_fetch(SITE.'breadcrumb'.$page->id)
-			: [];
+			: false;
 
 		if ($c === false)
 		{
@@ -634,7 +634,7 @@ class X4Site_model extends X4Model_core
 		// check APC
 		$c = (APC)
 			? apcu_fetch(SITE.'map'.$page->lang.$ordinal)
-			: [];
+			: false;
 
 		if ($c === false)
 		{
@@ -758,7 +758,7 @@ class X4Site_model extends X4Model_core
 		// check APC
 		$c = (APC)
 			? apcu_fetch(SITE.'pageto'.$id_area.$lang.$modname.$param)
-			: '';
+			: false;
 
 		if ($c === false)
 		{
@@ -796,7 +796,7 @@ class X4Site_model extends X4Model_core
 		// check APC
 		$conf = (APC)
 			? apcu_fetch(SITE.'mod_param'.$plugin_name.$id_area) ?? []
-			: [];
+			: false;
 
 		if ($conf === false)
 		{
@@ -828,7 +828,7 @@ class X4Site_model extends X4Model_core
 		// check APC
 		$value = (APC)
 			? apcu_fetch(SITE.'mod_param'.$plugin_name.$id_area.$param)
-			: '';
+			: false;
 
 		if ($value === false)
 		{

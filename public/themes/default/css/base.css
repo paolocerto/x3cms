@@ -145,11 +145,12 @@ a.link {color:var(--link-color) !important}
 
 #topic {background:#fff;color:#444;padding:4em 0 0;}
 #topic section {position:relative;padding:3em 0 2em;}
-
+/*#topic section:first-child {padding-top:6em}*/
 #topic section.short {padding-top:0}
-#topic section a {color:var(--link-color) !important;font-weight:600;text-decoration:underline !important}
-#topic section button.btn_as_link {color:var(--link-color) !important;font-weight:normal}
-#topic section:first-of-type {padding-top:2em;}
+#topic section:not(.fucsium) a {color:var(--link-color)};
+#topic section.fucsium a {color:#fff !important;font-weight:600;text-decoration:underline !important}
+#topic section button.btn_as_link {color:var(--fucsia) !important;font-weight:normal}
+#topic section:first-of-type {padding-top:4em;}
 
 footer a {text-decoration:underline !important}
 

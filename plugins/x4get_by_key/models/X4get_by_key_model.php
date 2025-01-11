@@ -117,7 +117,7 @@ class X4get_by_key_model extends X4Model_core
         // check APC
 		$c = (APC)
             ? apcu_fetch(SITE.'akeytag'.$id_area.$lang.$key.$tag)
-            : [];
+            : false;
 
         if ($c === false)
         {
@@ -147,7 +147,7 @@ class X4get_by_key_model extends X4Model_core
 	    // check APC
 		$c = (APC)
 			? apcu_fetch(SITE.'akey'.$id_area.$lang.$key)
-			: [];
+			: false;
 
 		if ($c === false)
 		{

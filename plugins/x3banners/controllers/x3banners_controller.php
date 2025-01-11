@@ -183,6 +183,10 @@ class X3banners_controller extends X3ui_controller implements X3plugin_controlle
                 'auto_hide' => $_post['auto_hide']
 			);
 
+            $post['bg_color2'] = ($post['gradient'])
+                ? $_post['bg_color2']
+                : $_post['bg_color1'];
+
             $mod = new X3banners_model($this->site->data->db);
             if ($_post['id'])
             {

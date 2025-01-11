@@ -131,21 +131,21 @@ CREATE TABLE IF NOT EXISTS `articles` (
 
 INSERT INTO `articles` (`updated`, `bid`, `id_area`, `lang`, `category`, `tags`, `ftext`, `author`, `js`, `excerpt`, `code_context`, `name`, `id_page`, `id_editor`, `date_in`, `date_out`, `xkeys`, `content`, `module`, `param`, `xlock`, `xon`) VALUES
 (NOW(), '3bdda9ed1e2a332550bf2783e4a3a70b', 2, 'it', '', '', '', '', '', 0, 1, 'benvenuti', 1, 1, UNIX_TIMESTAMP(), 0, '', '<h1>Benvenuti nel CMS X3</h1><p>Se visualizzate questa pagina il vostro Content Management System X3 &egrave; stato correttamente installato e configurato.<br>Per accedere al pannello di amministrazione aggiungete <strong>/admin</strong> all\'URL nella barra dell\'indirizzo.<br>Buon divertimento</p><p><strong>X3 CMS</strong></p><h2 class="mt-6">Cosa fare ora</h2>', 'x4get_by_key', 'cosa_fare|no_tags', 0, 1),
-(NOW(), '66d18c936a9cfe9d82417e9b3af69e3f', 2, 'it', '', '', '', '', '', 0, 1, 'mappa sito', 4, 1, UNIX_TIMESTAMP(), 0, '', '<h1>Mappa del sito</h1>', '', '', 0, 1),
-(NOW(), '01415ff7588434f6797bf8869d58b2d6', 2, 'it', '', '', '', '', '', 0, 1, 'risultato ricerca', 5, 1, UNIX_TIMESTAMP(), 0, '', '<h1>Risultato della ricerca</h1>', '', '', 0, 1),
-(NOW(), '096d1fda54d98e4dcd5924bf34e46b92', 2, 'it', '', '', '', '', '', 0, 1, 'informazioni', 6, 1, UNIX_TIMESTAMP(), 0, '', '<h1>Informazioni</h1><p>X3 CMS è uno strumento semplice per grandi progetti: <strong>semplice è meglio</strong> è la regola principale del nostro lavoro.<br>Con questa nuova versione del CMS X3 abbiamo riscritto quasi tutto il codice per renderlo ancora più semplice e potente.</p><p>Altre informazioni e documentazione sul CMS X3 al sito <a href="http://www.x3cms.net" title="Sito del progetto X3 CMS">www.x3cms.net</a>.</p>', '', '', 0, 1),
-(NOW(), '9c7c7a6472f843dea1c6148935c78c77', 2, 'it', '', '', '', '', '', 0, 1, 'sito offline', 7, 1, UNIX_TIMESTAMP(), 0, '', '<h1>Sito in manutenzione</h1><p>Ci scusiamo per il disagio.</p>', '', '', 0, 1),
-(NOW(), '9d2aa0933a39e7579dd68557dcb8324a', 2, 'en', '', '', '', '', '', 0, 1, 'welcome', 8, 1, UNIX_TIMESTAMP(), 0, '', '<h1>Welcome to X3 CMS</h1><p>If you see this page your Content Management System X3 was correctly installed and configured.<br>To access to the control panel add <strong>/admin</strong> to the URL on the address bar.<br>Enjoy</p><p><strong>X3 CMS</strong></p><h2 class="mt-6">What to do now</h2>', 'x4get_by_key', 'what_to_do|no_tags', 0, 1),
-(NOW(), '4fbb483bb2abca4cefe1818eddb3c6b5', 2, 'en', '', '', '', '', '', 0, 1, 'site map', 11, 1, UNIX_TIMESTAMP(), 0, '', '<h1>Site map</h1>', '', '', 0, 1),
-(NOW(), '682146f9fc27f463cd874d5bd14a618a', 2, 'en', '', '', '', '', '', 0, 1, 'search result', 12, 1, UNIX_TIMESTAMP(), 0, '', '<h1>Search result</h1>', '', '', 0, 1),
-(NOW(), 'c4c95c36570d5a8834be5e88e2f0f6b2', 2, 'en', '', '', '', '', '', 0, 1, 'information', 13, 1, UNIX_TIMESTAMP(), 0, '', '<h1>Information</h1><p>X3 CMS aims to be a simple tool to build great projects: <strong>simple is better</strong> is the main rule of our work.<br>With this new release of X3 CMS we rewritten almost all the code to be even more simple and powerful.</p><p>More information and documentation at <a href="http://www.x3cms.net" title="Project X3 CMS site">www.x3cms.net</a>.</p>', '', '', 0, 1),
-(NOW(), '45d00683ff3a196cb430483d8208688c', 2, 'en', '', '', '', '', '', 0, 1, 'site off line', 14, 1, UNIX_TIMESTAMP(), 0, '', '<h1>Site maintenance</h1><p>We apologize for the inconvenience.</p>', '', '', 0, 1),
-(NOW(), 'd266dc06172bf9e423bf83c6788483ea', 3, 'it', '', '', '', '', '', 0, 1, 'benvenuti area privata', 15, 1, UNIX_TIMESTAMP(), 0, '',  '<h1>Benvenuti nell\'area privata del CMS X3</h1><p>Se visualizzate questa pagina il vostro Content Management System X3 &egrave; stato correttamente installato e configurato.</p><p>Per accedere al pannello di amministrazione aggiungete <strong>/admin</strong> all\'URL nella barra dell\'indirizzo.</p><p>Buon divertimento</p><p><strong>X3 CMS</strong></p>', '', '', 0, 1),
-(NOW(), '05141455c70bb27de5d8925cd7560ac7', 3, 'it', '', '', '', '', '', 0, 1, 'mappa area', 18, 1, UNIX_TIMESTAMP(), 0, '', '<h1>Mappa dell\'area</h1>', '', '', 0, 1),
-(NOW(), 'e79713eac44836bfafac19a296140538', 3, 'it', '', '', '', '', '', 0, 1, 'risultato ricerca', 19, 1, UNIX_TIMESTAMP(), 0, '', '<h1>Risultato della ricerca</h1>', '', '', 0, 1),
-(NOW(), '1cd2b77d8f2b17141e1a7d94be100df1', 3, 'en', '', '', '', '', '', 0, 1, 'welcome reserved area', 22, 1, UNIX_TIMESTAMP(), 0, '', '<h1>Welcome to the private area of X3 CMS</h1><p>If you see this page your Content Management System X3 was correctly installed and configured.<br>To access to the control panel add <strong>/admin</strong>  to the URL on the address bar.<br>Enjoy</p><p><strong>X3 CMS</strong></p>', '', '', 0, 1),
-(NOW(), '0640e3193041d7d58fae88d548e43b1a', 3, 'en', '', '', '', '', '', 0, 1, 'area map', 25, 1, UNIX_TIMESTAMP(), 0, '', '<h1>Area map</h1>', '', '', 0, 1),
-(NOW(), '14bdd61f75985a52949b033ea9957ae6', 3, 'en', '', '', '', '', '', 0, 1, 'search result', 26, 1, UNIX_TIMESTAMP(), 0, '', '<h1>Search result</h1>', '', '', 0, 1);
+(NOW(), '66d18c936a9cfe9d82417e9b3af69e3f', 2, 'it', '', '', '', '', '', 0, 1, 'mappa sito', 3, 1, UNIX_TIMESTAMP(), 0, '', '<h1>Mappa del sito</h1>', '', '', 0, 1),
+(NOW(), '01415ff7588434f6797bf8869d58b2d6', 2, 'it', '', '', '', '', '', 0, 1, 'risultato ricerca', 4, 1, UNIX_TIMESTAMP(), 0, '', '<h1>Risultato della ricerca</h1>', '', '', 0, 1),
+(NOW(), '096d1fda54d98e4dcd5924bf34e46b92', 2, 'it', '', '', '', '', '', 0, 1, 'informazioni', 5, 1, UNIX_TIMESTAMP(), 0, '', '<h1>Informazioni</h1><p>X3 CMS è uno strumento semplice per grandi progetti: <strong>semplice è meglio</strong> è la regola principale del nostro lavoro.<br>Con questa nuova versione del CMS X3 abbiamo riscritto quasi tutto il codice per renderlo ancora più semplice e potente.</p><p>Altre informazioni e documentazione sul CMS X3 al sito <a href="http://www.x3cms.net" title="Sito del progetto X3 CMS">www.x3cms.net</a>.</p>', '', '', 0, 1),
+(NOW(), '9c7c7a6472f843dea1c6148935c78c77', 2, 'it', '', '', '', '', '', 0, 1, 'sito offline', 6, 1, UNIX_TIMESTAMP(), 0, '', '<h1>Sito in manutenzione</h1><p>Ci scusiamo per il disagio.</p>', '', '', 0, 1),
+(NOW(), '9d2aa0933a39e7579dd68557dcb8324a', 2, 'en', '', '', '', '', '', 0, 1, 'welcome', 7, 1, UNIX_TIMESTAMP(), 0, '', '<h1>Welcome to X3 CMS</h1><p>If you see this page your Content Management System X3 was correctly installed and configured.<br>To access to the control panel add <strong>/admin</strong> to the URL on the address bar.<br>Enjoy</p><p><strong>X3 CMS</strong></p><h2 class="mt-6">What to do now</h2>', 'x4get_by_key', 'what_to_do|no_tags', 0, 1),
+(NOW(), '4fbb483bb2abca4cefe1818eddb3c6b5', 2, 'en', '', '', '', '', '', 0, 1, 'site map', 9, 1, UNIX_TIMESTAMP(), 0, '', '<h1>Site map</h1>', '', '', 0, 1),
+(NOW(), '682146f9fc27f463cd874d5bd14a618a', 2, 'en', '', '', '', '', '', 0, 1, 'search result', 10, 1, UNIX_TIMESTAMP(), 0, '', '<h1>Search result</h1>', '', '', 0, 1),
+(NOW(), 'c4c95c36570d5a8834be5e88e2f0f6b2', 2, 'en', '', '', '', '', '', 0, 1, 'information', 11, 1, UNIX_TIMESTAMP(), 0, '', '<h1>Information</h1><p>X3 CMS aims to be a simple tool to build great projects: <strong>simple is better</strong> is the main rule of our work.<br>With this new release of X3 CMS we rewritten almost all the code to be even more simple and powerful.</p><p>More information and documentation at <a href="http://www.x3cms.net" title="Project X3 CMS site">www.x3cms.net</a>.</p>', '', '', 0, 1),
+(NOW(), '45d00683ff3a196cb430483d8208688c', 2, 'en', '', '', '', '', '', 0, 1, 'site off line', 12, 1, UNIX_TIMESTAMP(), 0, '', '<h1>Site maintenance</h1><p>We apologize for the inconvenience.</p>', '', '', 0, 1),
+(NOW(), 'd266dc06172bf9e423bf83c6788483ea', 3, 'it', '', '', '', '', '', 0, 1, 'benvenuti area privata', 13, 1, UNIX_TIMESTAMP(), 0, '',  '<h1>Benvenuti nell\'area privata del CMS X3</h1><p>Se visualizzate questa pagina il vostro Content Management System X3 &egrave; stato correttamente installato e configurato.</p><p>Per accedere al pannello di amministrazione aggiungete <strong>/admin</strong> all\'URL nella barra dell\'indirizzo.</p><p>Buon divertimento</p><p><strong>X3 CMS</strong></p>', '', '', 0, 1),
+(NOW(), '05141455c70bb27de5d8925cd7560ac7', 3, 'it', '', '', '', '', '', 0, 1, 'mappa area', 15, 1, UNIX_TIMESTAMP(), 0, '', '<h1>Mappa dell\'area</h1>', '', '', 0, 1),
+(NOW(), 'e79713eac44836bfafac19a296140538', 3, 'it', '', '', '', '', '', 0, 1, 'risultato ricerca', 16, 1, UNIX_TIMESTAMP(), 0, '', '<h1>Risultato della ricerca</h1>', '', '', 0, 1),
+(NOW(), '1cd2b77d8f2b17141e1a7d94be100df1', 3, 'en', '', '', '', '', '', 0, 1, 'welcome reserved area', 19, 1, UNIX_TIMESTAMP(), 0, '', '<h1>Welcome to the private area of X3 CMS</h1><p>If you see this page your Content Management System X3 was correctly installed and configured.<br>To access to the control panel add <strong>/admin</strong>  to the URL on the address bar.<br>Enjoy</p><p><strong>X3 CMS</strong></p>', '', '', 0, 1),
+(NOW(), '0640e3193041d7d58fae88d548e43b1a', 3, 'en', '', '', '', '', '', 0, 1, 'area map', 21, 1, UNIX_TIMESTAMP(), 0, '', '<h1>Area map</h1>', '', '', 0, 1),
+(NOW(), '14bdd61f75985a52949b033ea9957ae6', 3, 'en', '', '', '', '', '', 0, 1, 'search result', 22, 1, UNIX_TIMESTAMP(), 0, '', '<h1>Search result</h1>', '', '', 0, 1);
 
 INSERT INTO `articles` (`updated`, `bid`, `id_area`, `lang`, `code_context`, `name`, `id_page`, `id_editor`, `date_in`, `date_out`, `xkeys`, `category`, `tags`, `content`, `ftext`, `js`, `excerpt`, `author`, `module`, `param`,`xlock`, `xon`) VALUES
 (NOW(),	'93a2ebdfb8c9f7a1d51adabcc87ca5c4',	2,	'en', 2,	'filemanager',	0,	1,	UNIX_TIMESTAMP(),	0,	'what_to_do',	'',	'',	'<h3>File Manager</h3>\r\n<p>X3CMS use TinyMCE as WYSIWYG editor for contents but the File Manager is not included.<br><strong>Get the Api key for FLMNGR</strong><br>visit <a href=\"https://flmngr.com/\">https://flmngr.com/</a> and create a free account for the TinyMCE plugin. Configure the File Manager for your domain.<br>At the end when you will have your API key replace the default value in the /cms/config/config.php</p>\r\n<p>NOTE: your API key could not work immediately. You should wait a bit.</p>',	'filemanager File Manager\r\nX3CMS use TinyMCE as WYSIWYG editor for contents but the File Manager is not included.Get the Api key for FLMNGRvisit https://flmngr.com/ and create a free account for the TinyMCE plugin. Configure the File Manager for your domain.At the end when you will have your API key replace the default value in the /cms/config/config.php\r\nNOTE: your API key could not work immediately. You should wait a bit.',	'',	0,	'web@cblu.net',	'',	'', 0,	1),
@@ -877,7 +877,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 
 
 (NOW(), 'it', 'admin', 'profile', '_SUBJECT_PROFILE', 'Aggiornamento profilo su DOMAIN', 0, 1),
-(NOW(), 'it', 'admin', 'profile', '_MSG_PROFILE', "Gentile Utente,\nconserva questa email come promemoria dell'account creato per te su DOMAIN \n\nDati per l'accesso \nUsername: USERNAME \nPassword: PASSWORD \n\nGrazie", 0, 1),
+(NOW(), 'it', 'admin', 'profile', '_MSG_PROFILE', 'Gentile Utente,\nconserva questa email come promemoria dell\'account creato per te su DOMAIN \n\nDati per l\'accesso \nUsername: USERNAME \nPassword: PASSWORD \n\nGrazie', 0, 1),
 
 
 (NOW(), 'it', 'admin', 'modules', '_AREA_LIST', 'Elenco aree', 0, 1),
@@ -2677,20 +2677,20 @@ CREATE TABLE IF NOT EXISTS `pages` (
   `name` varchar(128) NOT NULL,
   `title` varchar(128) NOT NULL,
   `description` varchar(255) NOT NULL,
-  `icon` varchar(128) NOT NULL,
-  `xclass` varchar(128) NOT NULL,
+  `icon` varchar(128) NOT NULL DEFAULT '',
+  `xclass` varchar(128) NOT NULL DEFAULT '',
   `xkeys` text NOT NULL,
-  `robot` varchar(128) NOT NULL,
-  `redirect_code` smallint(4) NOT NULL,
-  `redirect` varchar(255) NOT NULL,
-  `id_menu` int(11) NOT NULL,
-  `xpos` smallint(2) NOT NULL,
-  `deep` smallint(2) NOT NULL,
-  `ordinal` varchar(255) NOT NULL,
-  `hidden` tinyint(1) NOT NULL,
-  `fake` tinyint(1) NOT NULL,
-  `action` varchar(128) NOT NULL,
-  `xlock` tinyint(1) NOT NULL,
+  `robot` varchar(128) NOT NULL DEFAULT '',
+  `redirect_code` smallint(4) NOT NULL  DEFAULT '0',
+  `redirect` varchar(255) NOT NULL DEFAULT '',
+  `id_menu` int(11) NOT NULL DEFAULT '0',
+  `xpos` smallint(2) NOT NULL DEFAULT '0',
+  `deep` smallint(2) NOT NULL DEFAULT '0',
+  `ordinal` varchar(255) NOT NULL DEFAULT '',
+  `hidden` tinyint(1) NOT NULL DEFAULT '0',
+  `fake` tinyint(1) NOT NULL DEFAULT '0',
+  `action` varchar(128) NOT NULL DEFAULT '',
+  `xlock` tinyint(1) NOT NULL DEFAULT '0',
   `xon` tinyint(1) NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `arealang` (`id_area`,`lang`,`xfrom`),
@@ -2704,139 +2704,129 @@ CREATE TABLE IF NOT EXISTS `pages` (
 
 -- default pages public it
 
-INSERT INTO `pages` (`updated`, `lang`, `id_area`, `tpl`, `css`, `xfrom`, `xid`, `url`, `name`, `title`, `description`,  `icon`, `robot`, `redirect_code`, `redirect`,
-`fake`, `xkeys`, `id_menu`, `xpos`, `deep`, `ordinal`, `hidden`, `xlock`, `action`, `xon`) VALUES
-(NOW(), 'it', 2, 'base', 'base', 'home', 'base', 'home', 'Home', 'Home', 'Home page', '', '', 0, '', 0, '', 0, 0, 0, 'A', 0, 0, '', 1),
-(NOW(), 'it', 2, 'base', 'base', 'home', 'base', 'x3admin', 'Editor', 'Editor', 'Editor', '', '', 0, '', 0,' ', 0, 1, 1, 'A0000001', 1, 1, '', 1),
-(NOW(), 'it', 2, 'base', 'base', 'home', 'base', 'msg', 'Comunicazione', 'Comunicazione', 'Messaggio all&#039;utente', '', '', 0, '', 0, '', 0, 2, 1, 'A0000002', 1, 1, '', 1),
-(NOW(), 'it', 2, 'base', 'base', 'home', 'base', 'map', 'Mappa del sito', 'Mappa del sito', 'Mappa del sito', '', '', 0, '', 0, '', 0, 3, 1, 'A0000003', 0, 1, '', 1),
-(NOW(), 'it', 2, 'base', 'base', 'home', 'base', 'search', 'Risultati della ricerca', 'Risultati della ricerca', 'Risultati della ricerca', '', '', 0, '', 0, '', 0, 4, 1, 'A0000004', 1, 1, '', 1),
-(NOW(), 'it', 2, 'base', 'base', 'home', 'base', 'info', 'Informazioni', 'Informazioni', 'Informazioni', '', '', 0, '', 0, '', 4, 5, 1, 'A0041001', 0, 0, '', 1),
-(NOW(), 'it', 2, 'base', 'base', 'home', 'base', 'offline', 'Sito in manutenzione', 'Sito in manutenzione', 'Sito in manutenzione', '', '', 0, '', 0, '', 0, 6, 1, 'A0000006', 1, 0, '', 1);
+INSERT INTO `pages` (`updated`, `lang`, `id_area`, `tpl`, `css`, `xfrom`, `xid`, `url`, `name`, `title`, `description`, `xkeys`, `id_menu`, `xpos`, `deep`, `ordinal`, `hidden`, `xlock`, `xon`) VALUES
+(NOW(), 'it', 2, 'base', 'base', 'home', 'base', 'home', 'Home', 'Home', 'Home page',                               '', 0, 0, 0, 'A', 0, 1, 1),
+(NOW(), 'it', 2, 'base', 'base', 'home', 'base', 'msg', 'Comunicazione', 'Comunicazione', 'Messaggio all\'utente',  '', 0, 2, 1, 'A0000002', 1, 1, 1),
+(NOW(), 'it', 2, 'base', 'base', 'home', 'base', 'map', 'Mappa del sito', 'Mappa del sito', 'Mappa del sito',       '', 0, 3, 1, 'A0000003', 0, 1, 1),
+(NOW(), 'it', 2, 'base', 'base', 'home', 'base', 'search', 'Risultati della ricerca', 'Risultati della ricerca', 'Risultati della ricerca', '', 0, 4, 1, 'A0000004', 1, 1, 1),
+(NOW(), 'it', 2, 'base', 'base', 'home', 'base', 'info', 'Informazioni', 'Informazioni', 'Informazioni', '', 4, 5, 1, 'A0041001', 0, 0, 1),
+(NOW(), 'it', 2, 'base', 'base', 'home', 'base', 'offline', 'Sito in manutenzione', 'Sito in manutenzione', 'Sito in manutenzione', '', 0, 6, 1, 'A0000006', 1, 0, 1);
 
 
 -- default pages public en
 
-INSERT INTO `pages` (`updated`, `lang`, `id_area`, `tpl`, `css`, `xfrom`, `xid`, `url`, `name`, `title`, `description`, `icon`, `robot`, `redirect_code`, `redirect`,
-`fake`, `xkeys`, `id_menu`, `xpos`, `deep`, `ordinal`, `hidden`, `xlock`, `action`, `xon`) VALUES
-(NOW(), 'en', 2, 'base', 'base', 'home', 'base', 'home', 'Home', 'Home', 'Home page', '', '', 0, '', 0, '', 0, 0, 0, 'A', 0, 0, '', 1),
-(NOW(), 'en', 2, 'base', 'base', 'home', 'base', 'x3admin', 'Editor', 'Editor', 'Editor', '', '', 0, '', 0, '', 0, 1, 1, 'A0000001', 1, 1, '', 1),
-(NOW(), 'en', 2, 'base', 'base', 'home', 'base', 'msg', 'Warning', 'Warning', 'Message', '', '', 0, '', 0, '', 0, 2, 1, 'A0000002', 1, 1, '', 1),
-(NOW(), 'en', 2, 'base', 'base', 'home', 'base', 'map', 'Site map', 'Site map', 'Site map', '', '', 0, '', 0, '', 0, 3, 1, 'A0000003', 0, 1, '', 1),
-(NOW(), 'en', 2, 'base', 'base', 'home', 'base', 'search', 'Search results', 'Search results', 'Search results', '', '', 0, '', 0, '', 0, 4, 1, 'A0000004', 1, 1, '', 1),
-(NOW(), 'en', 2, 'base', 'base', 'home', 'base', 'info', 'Informations', 'Informations', 'Informations', '', '', 0, '', 0, '', 4, 5, 1, 'A0041001', 0, 0, '', 1),
-(NOW(), 'en', 2, 'base', 'base', 'home', 'base', 'offline', 'Site maintenance', 'Site maintenance', 'Site maintenance', '', '', 0, '', 0, '', 0, 6, 1, 'A0000006', 1, 0, '', 1);
+INSERT INTO `pages` (`updated`, `lang`, `id_area`, `tpl`, `css`, `xfrom`, `xid`, `url`, `name`, `title`, `description`,  `xkeys`, `id_menu`, `xpos`, `deep`, `ordinal`, `hidden`, `xlock`, `xon`) VALUES
+(NOW(), 'en', 2, 'base', 'base', 'home', 'base', 'home', 'Home', 'Home', 'Home page', '', 0, 0, 0, 'A', 0, 0, 1),
+(NOW(), 'en', 2, 'base', 'base', 'home', 'base', 'msg', 'Warning', 'Warning', 'Message', '', 0, 2, 1, 'A0000002', 1, 1, 1),
+(NOW(), 'en', 2, 'base', 'base', 'home', 'base', 'map', 'Site map', 'Site map', 'Site map', '', 0, 3, 1, 'A0000003', 0, 1, 1),
+(NOW(), 'en', 2, 'base', 'base', 'home', 'base', 'search', 'Search results', 'Search results', 'Search results', '', 0, 4, 1, 'A0000004', 1, 1, 1),
+(NOW(), 'en', 2, 'base', 'base', 'home', 'base', 'info', 'Informations', 'Informations', 'Informations', '', 4, 5, 1, 'A0041001', 0, 0, 1),
+(NOW(), 'en', 2, 'base', 'base', 'home', 'base', 'offline', 'Site maintenance', 'Site maintenance', 'Site maintenance', '', 0, 6, 1, 'A0000006', 1, 0, 1);
 
 
 -- default pages private it
 
-INSERT INTO `pages` (`updated`, `lang`, `id_area`, `tpl`, `css`, `xfrom`, `xid`, `url`, `name`, `title`, `description`, `icon`, `robot`, `redirect_code`, `redirect`,
-`fake`, `xkeys`, `id_menu`, `xpos`, `deep`, `ordinal`, `hidden`, `xlock`, `action`, `xon`) VALUES
-(NOW(), 'it', 3, 'base', 'base', 'home', 'base', 'home', 'Home page', 'Home page', 'Home page private', '', '', 0, '', 0, '', 0, 0, 0, 'A', 0, 0, '', 1),
-(NOW(), 'it', 3, 'base', 'base', 'home', 'base', 'x3admin', 'Editor', 'Editor', 'Editor', '', '', 0, '', 0, '', 0, 1, 1, 'A0000001', 1, 1, '', 1),
-(NOW(), 'it', 3, 'base', 'base', 'home', 'base', 'msg', 'Comunicazione', 'Comunicazione', 'Messaggio all''utente', '', '', 0, '', 0, '', 0, 2, 1, 'A0000002', 1, 1, '', 1),
-(NOW(), 'it', 3, 'base', 'base', 'home', 'base', 'map', 'Mappa del sito', 'Mappa del sito', 'Mappa del sito', '', '', 0, '', 0, '', 0, 3, 1, 'A0000003', 0, 1, '', 1),
-(NOW(), 'it', 3, 'base', 'base', 'home', 'base', 'search', 'Risultati della ricerca', 'Risultati della ricerca', 'Risultati della ricerca', '', '', 0, '', 0, '', 0, 4, 1, 'A0000004', 1, 1, '', 1),
-(NOW(), 'it', 3, 'base', 'base', 'home', 'base', 'logout', 'Esci', 'Esci', 'Esci dall\'area riservata', '', '', 0, '', 0, '', 0, 5, 1, 'A0000005', 0, 1, '', 1),
-(NOW(), 'it', 3, 'base', 'base', 'home', 'base', 'login', 'Login', 'Login', 'Accesso autenticato', '', '', 0, '', 0, '', 0, 6, 1, 'A0000006', 0, 0, '', 1);
+INSERT INTO `pages` (`updated`, `lang`, `id_area`, `tpl`, `css`, `xfrom`, `xid`, `url`, `name`, `title`, `description`,  `xkeys`, `id_menu`, `xpos`, `deep`, `ordinal`, `hidden`, `xlock`, `xon`) VALUES
+(NOW(), 'it', 3, 'base', 'base', 'home', 'base', 'home', 'Home page', 'Home page', 'Home page private', '', 0, 0, 0, 'A', 0, 0, 1),
+(NOW(), 'it', 3, 'base', 'base', 'home', 'base', 'msg', 'Comunicazione', 'Comunicazione', 'Messaggio all\'utente', '', 0, 2, 1, 'A0000002', 1, 1, 1),
+(NOW(), 'it', 3, 'base', 'base', 'home', 'base', 'map', 'Mappa del sito', 'Mappa del sito', 'Mappa del sito', '', 0, 3, 1, 'A0000003', 0, 1, 1),
+(NOW(), 'it', 3, 'base', 'base', 'home', 'base', 'search', 'Risultati della ricerca', 'Risultati della ricerca', 'Risultati della ricerca', '', 0, 4, 1, 'A0000004', 1, 1, 1),
+(NOW(), 'it', 3, 'base', 'base', 'home', 'base', 'logout', 'Esci', 'Esci', 'Esci dall\'area riservata', '', 0, 5, 1, 'A0000005', 0, 1, 1),
+(NOW(), 'it', 3, 'base', 'base', 'home', 'base', 'login', 'Login', 'Login', 'Accesso autenticato', '', 0, 6, 1, 'A0000006', 0, 0, 1);
 
 
 -- default pages private en
 
-INSERT INTO `pages` (`updated`, `lang`, `id_area`, `tpl`, `css`, `xfrom`, `xid`, `url`, `name`, `title`, `description`, `icon`, `robot`, `redirect_code`, `redirect`,
-`fake`, `xkeys`, `id_menu`, `xpos`, `deep`, `ordinal`, `hidden`, `xlock`, `action`, `xon`) VALUES
-(NOW(), 'en', 3, 'base', 'base', 'home', 'base', 'home', 'Home page', 'Home page', 'Home page private', '', '', 0, '', 0, '', 0, 0, 0, 'A', 0, 0, '', 1),
-(NOW(), 'en', 3, 'base', 'base', 'home', 'base', 'x3admin', 'Editor', 'Editor', 'Editor', '', '', 0, '', 0, '', 0, 1, 1, 'A0000001', 1, 1, '', 1),
-(NOW(), 'en', 3, 'base', 'base', 'home', 'base', 'msg', 'Warning', 'Warning', 'Warning', '', '', 0, '', 0, '', 0, 2, 1, 'A0000002', 1, 1, '', 1),
-(NOW(), 'en', 3, 'base', 'base', 'home', 'base', 'map', 'Site map', 'Site map', 'Site map', '', '', 0, '', 0, '', 0, 3, 1, 'A0000003', 0, 1, '', 1),
-(NOW(), 'en', 3, 'base', 'base', 'home', 'base', 'search', 'Search results', 'Search results', 'Search results', '', '', 0, '', 0, '', 0, 4, 1, 'A0000004', 1, 1, '', 1),
-(NOW(), 'en', 3, 'base', 'base', 'home', 'base', 'logout', 'Logout', 'Logout', 'Logout', '', '', 0, '', 0, '', 0, 5, 1, 'A0000005', 0, 1, '', 1),
-(NOW(), 'en', 3, 'base', 'base', 'home', 'base', 'login', 'Login', 'Login', 'Authenticated access', '', '', 0, '', 0, '', 0, 6, 1, 'A0000006', 0, 0, '', 1);
+INSERT INTO `pages` (`updated`, `lang`, `id_area`, `tpl`, `css`, `xfrom`, `xid`, `url`, `name`, `title`, `description`, `xkeys`, `id_menu`, `xpos`, `deep`, `ordinal`, `hidden`, `xlock`, `xon`) VALUES
+(NOW(), 'en', 3, 'base', 'base', 'home', 'base', 'home', 'Home page', 'Home page', 'Home page private', '', 0, 0, 0, 'A', 0, 0, 1),
+(NOW(), 'en', 3, 'base', 'base', 'home', 'base', 'msg', 'Warning', 'Warning', 'Warning', '', 0, 2, 1, 'A0000002', 1, 1, 1),
+(NOW(), 'en', 3, 'base', 'base', 'home', 'base', 'map', 'Site map', 'Site map', 'Site map', '', 0, 3, 1, 'A0000003', 0, 1, 1),
+(NOW(), 'en', 3, 'base', 'base', 'home', 'base', 'search', 'Search results', 'Search results', 'Search results', '', 0, 4, 1, 'A0000004', 1, 1, 1),
+(NOW(), 'en', 3, 'base', 'base', 'home', 'base', 'logout', 'Logout', 'Logout', 'Logout', '', 0, 5, 1, 'A0000005', 0, 1, 1),
+(NOW(), 'en', 3, 'base', 'base', 'home', 'base', 'login', 'Login', 'Login', 'Authenticated access', '', 0, 6, 1, 'A0000006', 0, 0, 1);
 
 
 -- admin pages it
 
-INSERT INTO `pages` (`updated`, `lang`, `id_area`, `tpl`, `css`, `xfrom`, `xid`, `url`, `name`, `title`, `description`, `icon`, `xkeys`, `robot`, `redirect_code`, `redirect`,
-`id_menu`, `xpos`, `deep`, `ordinal`, `hidden`, `fake`, `xlock`, `action`, `xon`) VALUES
-(NOW(),	'it',	1,	'base',	'x3ui',	'home',	'base',	'home',	'Home',	'Home',	'Home page',	'Home page', '',	'',	0,	'',	0,	0,	0,	'A',	0,	0,	1, '',	1),
-(NOW(),	'it',	1,	'base',	'x3ui',	'home',	'base',	'msg',	'Comunicazione',	'Comunicazione',	'Messaggio all\'utente', '',	'',	'',	0,	'',	0,	1,	1,	'A0000001',	0,	0,	1, '',	1),
-(NOW(),	'it',	1,	'base',	'x3ui',	'home',	'base',	'search',	'Risultati della ricerca',	'Risultati della ricerca',	'Risultati della ricerca', '',	'',	'',	0,	'',	0,	2,	1,	'A0000002',	0,	0,	1, '',	1),
-(NOW(),	'it',	1,	'login','x3ui',	'home',	'base',	'login',	'Login',	'Login utente',	'Login utente', '',	'',	'',	0,	'',	0,	3,	1,	'A0000003',	0,	0,	1, '',	1),
-(NOW(),	'it',	1,	'login','x3ui',	'home',	'base',	'login/recovery',	'Recupero password',	'Recupero password',	'Recupero password', '',	'',	'',	0,	'',	0,	4,	1,	'A0000004',	0,	0,	1, '',	1),
+INSERT INTO `pages` (`updated`, `lang`, `id_area`, `tpl`, `css`, `xfrom`, `xid`, `url`, `name`, `title`, `description`, `xkeys`, `icon`, `id_menu`, `xpos`, `deep`, `ordinal`, `hidden`, `xlock`, `xon`) VALUES
+(NOW(),	'it',	1,	'base',	'x3ui',	'home',	'base',	'home',	            'Home',	                'Home',	                        'Home page',                '', '', 0, 0, 0, 'A',	0,	1, 1),
+(NOW(),	'it',	1,	'base',	'x3ui',	'home',	'base',	'msg',	            'Comunicazione',        'Comunicazione',                'Messaggio all\'utente',    '', '', 0, 1, 1, 'A0000001', 0,	1, 1),
+(NOW(),	'it',	1,	'base',	'x3ui',	'home',	'base',	'search',           'Risultati della ricerca', 'Risultati della ricerca',	'Risultati della ricerca',  '', '', 0, 2, 1, 'A0000002', 0, 1, 1),
+(NOW(),	'it',	1,	'login','x3ui',	'home',	'base',	'login',            'Login',                'Login utente',                 'Login utente',             '', '', 0, 3, 1, 'A0000003', 0, 1, 1),
+(NOW(),	'it',	1,	'login','x3ui',	'home',	'base',	'login/recovery',   'Recupero password',    'Recupero password',            'Recupero password',        '', '', 0, 4, 1, 'A0000004', 0, 1, 1),
 
-(NOW(),	'it',	1,	'base',	'x3ui',	'home',	'widgets',	'widgets',	'Widget',	'Gestione widget',	'Gestione widget', '<i class="fa-solid fa-lg fa-fw fa-paperclip"></i>',	'',	'',	0,	'',	1,	1,	1,	'A0011001',	0,	0,	1, '',	1),
-(NOW(),	'it',	1,	'base',	'x3ui',	'home',	'help',	'help',	'Guida in linea',	'Guida in linea',	'Guida in linea', '<i class="fa-solid fa-lg fa-fw fa-circle-question"></i>',	'',	'',	0,	'',	1,	2,	1,	'A0011002',	0,	0,	1, '',	1),
-(NOW(),	'it',	1,	'base',	'x3ui',	'home',	'base',	'profile',	'Profilo',	'Profilo utente',	'Profilo utente', '<i class="fa-solid fa-lg fa-fw fa-user"></i>',	'',	'',	0,	'',	1,	3,	1,	'A0011003',	0,	0,	1, '',	1),
-(NOW(),	'it',	1,	'base',	'x3ui',	'home',	'base',	'info',	'info',	'Info',	'Informazioni sul CMS X3', '<i class="fa-solid fa-lg fa-fw fa-circle-info"></i>',	'',	'',	0,	'',	1,	4,	1,	'A0011004',	0,	0,	1, '',	1),
-(NOW(),	'it',	1,	'base',	'x3ui',	'home',	'base',	'login/logout',	'Esci',	'Esci',	'Chiudi sessione', '<i class="fa-solid fa-lg fa-fw fa-power-off"></i>',	'',	'',	0,	'',	1,	5,	1,	'A0011005',	0,	0,	1, '',	1),
+(NOW(),	'it',	1,	'base',	'x3ui',	'home',	'widgets', 'widgets', 'Widget',	'Gestione widget', 'Gestione widget', '', '<i class="fa-solid fa-lg fa-fw fa-paperclip"></i>', 1, 1, 1, 'A0011001',	0, 1, 1),
+(NOW(),	'it',	1,	'base',	'x3ui',	'home',	'help',	'help',	'Guida in linea', 'Guida in linea',	'Guida in linea', '', '<i class="fa-solid fa-lg fa-fw fa-circle-question"></i>', 1,	2, 1, 'A0011002',	0, 1, 1),
+(NOW(),	'it',	1,	'base',	'x3ui',	'home',	'base',	'profile', 'Profilo', 'Profilo utente',	'Profilo utente', '', '<i class="fa-solid fa-lg fa-fw fa-user"></i>', 1, 3,	1, 'A0011003', 0, 1, 1),
+(NOW(),	'it',	1,	'base',	'x3ui',	'home',	'base',	'info',	'info',	'Info',	'Informazioni sul CMS X3', '', '<i class="fa-solid fa-lg fa-fw fa-circle-info"></i>', 1, 4,	1, 'A0011004', 0, 1, 1),
+(NOW(),	'it',	1,	'base',	'x3ui',	'home',	'base',	'login/logout',	'Esci',	'Esci',	'Chiudi sessione', '', '<i class="fa-solid fa-lg fa-fw fa-power-off"></i>',	1, 5, 1, 'A0011005', 0,	1, 1),
 
-(NOW(),	'it',	1,	'base',	'x3ui',	'home',	    'sites',	'sites',	'Impostazioni',	'Gestione impostazioni',	'Gestione impostazioni', '<i class="fa-solid fa-lg fa-fw fa-gear"></i>',	'',	'',	0,	'',	3,	1,	1,	'A0031001',	0,	1,	1, '',	1),
-(NOW(),	'it',	1,	'base',	'x3ui',	'sites',	'sites',	'sites/index',	'Sito',	'Gestione sito',	'Gestione sito', '',	'',	'',	0,	'',	3,	1,	2,	'A00310011001',	0,	0,	1, '',	1),
-(NOW(),	'it',	1,	'base',	'x3ui',	'sites',	'pages',	'areas',	'Aree',	'Gestione aree',	'Gestione aree', '',	'',	'',	0,	'',	3,	2,	2,	'A00310011002',	0,	0,	1, '',	1),
-(NOW(),	'it',	1,	'base',	'x3ui',	'sites',	'languages',	'languages',	'Lingue',	'Gestione lingue',	'Gestione lingue', '',	'',	'',	0,	'',	3,	3,	2,	'A00310011003',	0,	0,	1, '',	1),
-(NOW(),	'it',	1,	'base',	'x3ui',	'languages',	'languages',	'dictionary/keys',	'Gestione chiavi',	'Gestione chiavi',	'Gestione chiavi', '',	'',	'',	0,	'',	0,	1,	3,	'A003100110030001',	0,	0,	1, '',	1),
-(NOW(),	'it',	1,	'base',	'x3ui',	'dictionary/keys',	'languages',	'dictionary/words',	'Gestione espressioni',	'Gestione espressioni',	'Gestione espressioni', '',	'',	'',	0,	'',	0,	1,	3,	'A0031001100300010001',	0,	0,	1, '',	1),
-(NOW(),	'it',	1,	'base',	'x3ui',	'sites',	'users',	'users',	'Utenti',	'Gestione utenti',	'Gestione utenti', '',	'',	'',	0,	'',	3,	4,	2,	'A00310011004',	0,	0,	1, '',	1),
-(NOW(),	'it',	1,	'base',	'x3ui',	'users',	'users',	'users/detail',	'Dettaglio utente',	'Dettaglio utente',	'Dettaglio utente', '',	'',	'',	0,	'',	0,	1,	3,	'A003100110040001',	0,	0,	1, '',	1),
-(NOW(),	'it',	1,	'base',	'x3ui',	'users',	'users/detail',	'users/permissions',	'Permessi utente',	'Permessi utente',	'Permessi utente', '',	'',	'',	0,	'',	0,	1,	4,	'A003100110040001',	0,	0,	1, '',	1),
-(NOW(),	'it',	1,	'base',	'x3ui',	'sites',	'pages',	'themes',	'Temi',	'Gestione temi',	'Gestione temi', '',	'',	'',	0,	'',	3,	5,	2,	'A00310011005',	0,	0,	1, '',	1),
-(NOW(),	'it',	1,	'base',	'x3ui',	'themes',	'pages',	'templates/index',	'Template',	'Gestione template',	'Gestione template', '',	'',	'',	0,	'',	0,	1,	3,	'A003100110050001',	0,	0,	1, '',	1),
-(NOW(),	'it',	1,	'base',	'x3ui',	'themes',	'pages',	'menus/index',	'Men&ugrave;',	'Gestione men&ugrave;',	'Gestione men&ugrave;', '',	'',	'',	0,	'',	0,	2,	3,	'A003100110050002',	0,	0,	1, '',	1),
-(NOW(),	'it',	1,	'base',	'x3ui',	'sites',	'pages',	'contexts',	'Contesti',	'Contesti articoli',	'Contesti articoli', '',	'',	'',	0,	'',	3,	6,	2,	'A00310011006',	0,	0,	1, '',	1),
-(NOW(),	'it',	1,	'base',	'x3ui',	'sites',	'pages',	'categories',	'Categorie',	'Categorie articoli',	'Categorie articoli', '',	'',	'',	0,	'',	3,	7,	2,	'A00310011007',	0,	0,	1, '',	1),
+(NOW(),	'it',	1,	'base',	'x3ui',	'home',	    'sites',	'sites',	'Impostazioni',	'Gestione impostazioni',	'Gestione impostazioni', '', '<i class="fa-solid fa-lg fa-fw fa-gear"></i>', 3,	1,	1,	'A0031001',	1,	1, 1),
+(NOW(),	'it',	1,	'base',	'x3ui',	'sites',	'sites',	'sites/index',	'Sito',	'Gestione sito',	'Gestione sito', '', '', 3,	1,	2,	'A00310011001',	0,	1, 1),
+(NOW(),	'it',	1,	'base',	'x3ui',	'sites',	'pages',	'areas',	'Aree',	'Gestione aree',	'Gestione aree', '', '', 3,	2,	2,	'A00310011002',	0,	1, 1),
+(NOW(),	'it',	1,	'base',	'x3ui',	'sites',	'languages',	'languages',	'Lingue',	'Gestione lingue',	'Gestione lingue', '', '',	3,	3,	2,	'A00310011003',	0,	1, 1),
+(NOW(),	'it',	1,	'base',	'x3ui',	'languages',	'languages',	'dictionary/keys',	'Gestione chiavi',	'Gestione chiavi',	'Gestione chiavi', '', '',	0,	1,	3,	'A003100110030001',	0,	1, 1),
+(NOW(),	'it',	1,	'base',	'x3ui',	'dictionary/keys',	'languages',	'dictionary/words',	'Gestione espressioni',	'Gestione espressioni',	'Gestione espressioni', '', '',	0,	1,	3,	'A0031001100300010001',	0,	1, 1),
+(NOW(),	'it',	1,	'base',	'x3ui',	'sites',	'users',	'users',	'Utenti',	'Gestione utenti',	'Gestione utenti', '', '',	3,	4,	2,	'A00310011004',	0,	1, 1),
+(NOW(),	'it',	1,	'base',	'x3ui',	'users',	'users',	'users/detail',	'Dettaglio utente',	'Dettaglio utente',	'Dettaglio utente', '', '',	0,	1,	3,	'A003100110040001',	0,	1, 1),
+(NOW(),	'it',	1,	'base',	'x3ui',	'users',	'users/detail',	'users/permissions',	'Permessi utente',	'Permessi utente',	'Permessi utente', '', '',	0,	1,	4,	'A003100110040001',	0,	1, 1),
+(NOW(),	'it',	1,	'base',	'x3ui',	'sites',	'pages',	'themes',	'Temi',	'Gestione temi',	'Gestione temi', '', '', 3,	5,	2,	'A00310011005',	0,	1,  1),
+(NOW(),	'it',	1,	'base',	'x3ui',	'themes',	'pages',	'templates/index',	'Template',	'Gestione template',	'Gestione template', '', '', 0,	1,	3,	'A003100110050001',	 0,	1,  1),
+(NOW(),	'it',	1,	'base',	'x3ui',	'themes',	'pages',	'menus/index',	'Men&ugrave;',	'Gestione men&ugrave;',	'Gestione men&ugrave;', '', '',	 0,	2,	3,	'A003100110050002',	 0,	1,  1),
+(NOW(),	'it',	1,	'base',	'x3ui',	'sites',	'pages',	'contexts',	'Contesti',	'Contesti articoli',	'Contesti articoli', '', '', 3,	6,	2,	'A00310011006',	 0,	1,  1),
+(NOW(),	'it',	1,	'base',	'x3ui',	'sites',	'pages',	'categories',	'Categorie',	'Categorie articoli',	'Categorie articoli', '', '',	 3,	7,	2,	'A00310011007',	 0,	1,  1),
 
-(NOW(),	'it',	1,	'base',	'x3ui',	'home',	    'pages',	'pages',	'Pagine',	'Gestione pagine',	'Gestione pagine', '<i class="fa-solid fa-lg fa-fw fa-file"></i>',	'',	'',	0,	'',	3,	2,	1,	'A0031002',	0,	0,	0, '',	1),
-(NOW(),	'it',	1,	'base',	'x3ui',	'pages',	'pages',	'areas/map',	'Mappa area',	'Mappa area',	'Mappa area', '',	'',	'',	0,	'',	0,	1,	1,	'A00310020000001',	0,	0,	1, '',	1),
-(NOW(),	'it',	1,	'base',	'x3ui',	'pages',	'pages',	'sections/compose',	'Disposizione articoli',	'Disposizione articoli',	'Disposizione articoli', '',	'',	'',	0,	'',	0,	2,	1,	'A00310020000002',	0,	0,	1, '',	1),
-(NOW(),	'it',	1,	'base',	'x3ui',	'pages',	'pages',	'sections',	'Sezioni',	'Gestione sezioni',	'Gestione sezioni', '',	'',	'',	0,	'',	2,	1,	1,	'A00310020021001',	0,	0,	0, '',	1),
-(NOW(),	'it',	1,	'base',	'x3ui',	'home',	    'pages',	'articles',	'Articoli',	'Gestione articoli',	'Gestione articoli', '<i class="fa-solid fa-lg fa-fw fa-puzzle-piece"></i>', '',	'',	0,	'',	3,	3,	1,	'A0031003',	0,	0,	1, '',	1),
-(NOW(),	'it',	1,	'base',	'x3ui',	'articles',	'pages',	'articles/history',	'Storico articolo',	'Storico articolo',	'Storico articolo', '',	'',	'',	0,	'',	0,	1,	2,	'A00310030001',	0,	0,	1, '',	1),
-(NOW(),	'it',	1,	'base',	'x3ui',	'articles',	'pages',	'articles/edit',	'Editor articolo',	'Editor articolo',	'Editor articolo', '',	'',	'',	0,	'',	0,	2,	2,	'A00310030002',	0,	0,	1, '',	1),
-(NOW(),	'it',	1,	'base',	'x3ui',	'home',	    'files',	'files',	'Files',	'Gestione files',	'Gestione files', '<i class="fa-solid fa-lg fa-fw fa-image"></i>',	'',	'',	0,	'',	3,	4,	1,	'A0031004',	0,	0,	1, '',	1),
-(NOW(),	'it',	1,	'base',	'x3ui',	'files',	'files',	'files/editor',	'Editor file',	'Editor file',	'Editor file', '',	'',	'',	0,	'',	0,	3,	2,	'A00310040003',	0,	0,	1, '',	1),
-(NOW(),	'it',	1,	'base',	'x3ui',	'home',	    'modules',	'modules',	'Moduli',	'Gestione moduli',	'Gestione moduli', '<i class="fa-solid fa-lg fa-fw fa-plug"></i>',	'',	'',	0,	'',	3,	5,	1,	'A0031005',	0,	0,	1, '',	1);
+(NOW(),	'it',	1,	'base',	'x3ui',	'home',	    'pages',	'pages',	'Pagine',	'Gestione pagine',	'Gestione pagine', '', '<i class="fa-solid fa-lg fa-fw fa-file"></i>',	 3,	2,	1,	'A0031002',	 0,	0,  1),
+(NOW(),	'it',	1,	'base',	'x3ui',	'pages',	'pages',	'areas/map',	'Mappa area',	'Mappa area',	'Mappa area', '', '', 0,	1,	1,	'A00310020000001',	 0,	1,  1),
+(NOW(),	'it',	1,	'base',	'x3ui',	'pages',	'pages',	'sections/compose',	'Disposizione articoli',	'Disposizione articoli',	'Disposizione articoli', '', '', 0,	2,	1,	'A00310020000002',	 0,	1,  1),
+(NOW(),	'it',	1,	'base',	'x3ui',	'pages',	'pages',	'sections',	'Sezioni',	'Gestione sezioni',	'Gestione sezioni', '', '',	 2,	1,	1,	'A00310020021001',	 0,	0,  1),
+(NOW(),	'it',	1,	'base',	'x3ui',	'home',	    'pages',	'articles',	'Articoli',	'Gestione articoli',	'Gestione articoli', '', '<i class="fa-solid fa-lg fa-fw fa-puzzle-piece"></i>',  3,	3,	1,	'A0031003',	 0,	1,  1),
+(NOW(),	'it',	1,	'base',	'x3ui',	'articles',	'pages',	'articles/history',	'Storico articolo',	'Storico articolo',	'Storico articolo', '', '',	 0,	1,	2,	'A00310030001',	 0,	1,  1),
+(NOW(),	'it',	1,	'base',	'x3ui',	'articles',	'pages',	'articles/edit',	'Editor articolo',	'Editor articolo',	'Editor articolo', '', '',	 0,	2,	2,	'A00310030002',	 0,	1,  1),
+(NOW(),	'it',	1,	'base',	'x3ui',	'home',	    'files',	'files',	'Files',	'Gestione files',	'Gestione files', '', '<i class="fa-solid fa-lg fa-fw fa-image"></i>',	 3,	4,	1,	'A0031004',	 0,	1,  1),
+(NOW(),	'it',	1,	'base',	'x3ui',	'files',	'files',	'files/editor',	'Editor file',	'Editor file',	'Editor file', '', '',	 0,	3,	2,	'A00310040003',	 0,	1,  1),
+(NOW(),	'it',	1,	'base',	'x3ui',	'home',	    'modules',	'modules',	'Moduli',	'Gestione moduli',	'Gestione moduli', '', '<i class="fa-solid fa-lg fa-fw fa-plug"></i>',	 3,	5,	1,	'A0031005',	 0,	1,  1);
 
 
 -- admin pages en
 
-INSERT INTO `pages` (`updated`, `lang`, `id_area`, `tpl`, `css`, `xfrom`, `xid`, `url`, `name`, `title`, `description`, `icon`, `xkeys`, `robot`, `redirect_code`, `redirect`,
-`id_menu`, `xpos`, `deep`, `ordinal`, `hidden`, `fake`, `xlock`, `action`, `xon`) VALUES
-(NOW(),	'en',	1,	'base',	'x3ui',	'home',	'base',	'home',	'Home',	'Home',	'Home page', '',	'',	'',	0,	'',	0,	0,	0,	'A',	0,	0,	1, '',	1),
-(NOW(),	'en',	1,	'base',	'x3ui',	'home',	'base',	'msg',	'Message',	'Message',	'Message', '',	'',	'',	0,	'',	0,	1,	1,	'A0000001',	0,	0,	1, '',	1),
-(NOW(),	'en',	1,	'base',	'x3ui',	'home',	'base',	'search',	'Search result',	'Search result',	'Search result', '',	'',	'',	0,	'',	0,	2,	1,	'A0000002',	0,	0,	1, '',	1),
-(NOW(),	'en',	1,	'login',	'x3ui',	'home',	'base',	'login',	'Login',	'User login',	'User login', '',	'',	'',	0,	'',	0,	3,	1,	'A0000003',	0,	0,	1, '',	1),
-(NOW(),	'en',	1,	'login',	'x3ui',	'home',	'base',	'login/recovery',	'Recovery password',	'Recovery password', 'Recovery password', '',	'',	'',	0,	'',	0,	4,	1,	'A0000004',	0,	0,	1, '',	1),
+INSERT INTO `pages` (`updated`, `lang`, `id_area`, `tpl`, `css`, `xfrom`, `xid`, `url`, `name`, `title`, `description`, `xkeys`, `icon`, `id_menu`, `xpos`, `deep`, `ordinal`, `hidden`, `xlock`, `xon`) VALUES
+(NOW(),	'en',	1,	'base',	'x3ui',	'home',	'base',	'home',	'Home',	'Home',	'Home page', '', '', 0,	0, 0, 'A', 0, 1, 1),
+(NOW(),	'en',	1,	'base',	'x3ui',	'home',	'base',	'msg',	'Message',	'Message',	'Message', '', '', 0, 1, 1,	'A0000001',	0, 1, 1),
+(NOW(),	'en',	1,	'base',	'x3ui',	'home',	'base',	'search', 'Search result', 'Search result',	'Search result', '', '', 0,	2,	1, 'A0000002', 0, 1, 1),
+(NOW(),	'en',	1,	'login',	'x3ui',	'home',	'base',	'login',	'Login',	'User login',	'User login', '', '', 0, 3,	1, 'A0000003', 0, 1, 1),
+(NOW(),	'en',	1,	'login',	'x3ui',	'home',	'base',	'login/recovery', 'Recovery password', 'Recovery password', 'Recovery password', '', '', 0,	4,	1, 'A0000004', 0, 1, 1),
 
-(NOW(),	'en',	1,	'base',	'x3ui',	'home',	'widgets',	'widgets',	'Widgets',	'Widgets manager',	'Widgets manager', '<i class="fa-solid fa-lg fa-fw fa-paperclip"></i>',	'',	'',	0,	'',	1,	1,	1,	'A0011001',	0,	0,	1, '',	1),
-(NOW(),	'en',	1,	'base',	'x3ui',	'home',	'help',	'help',	'Help',	'Help on line',	'Help on line',	'<i class="fa-solid fa-lg fa-fw fa-circle-question"></i>', '',	'',	0,	'',	1,	2,	1,	'A0011002',	0,	0,	1, '',	1),
-(NOW(),	'en',	1,	'base',	'x3ui',	'home',	'base',	'profile',	'Profile',	'User profile',	'User profile', '<i class="fa-solid fa-lg fa-fw fa-user"></i>',	'',	'',	0,	'',	1,	3,	1,	'A0011003',	0,	0,	1, '',	1),
-(NOW(),	'en',	1,	'base',	'x3ui',	'home',	'base',	'info',	'info',	'Info',	'Info about X3 CMS', '<i class="fa-solid fa-lg fa-fw fa-circle-info"></i>',	'',	'',	0,	'',	1,	4,	1,	'A0011004',	0,	0,	1, '',	1),
-(NOW(),	'en',	1,	'base',	'x3ui',	'home',	'base',	'login/logout',	'Logout',	'Logout',	'Logout', '<i class="fa-solid fa-lg fa-fw fa-power-off"></i>',	'',	'',	0,	'',	1,	5,	1,	'A0011005',	0,	0,	1, '',	1),
-(NOW(),	'en',	1,	'base',	'x3ui',	'home',	'sites',	'sites',	'Settings',	'Settings',	'Settings',	'<i class="fa-solid fa-lg fa-fw fa-gear"></i>', '',	'',	0,	'',	3,	1,	1,	'A0031001',	0,	1,	1, '',	1),
-(NOW(),	'en',	1,	'base',	'x3ui',	'sites',	'sites',	'sites/index',	'Site',	'Site manager',	'Site manager',	 '','',	'',	0,	'',	3,	1,	2,	'A00310011001',	0,	0,	1, '',	1),
-(NOW(),	'en',	1,	'base',	'x3ui',	'sites',	'pages',	'areas',	'Areas',	'Areas manager',	'Areas manager', '',	'',	'',	0,	'',	3,	2,	2,	'A00310011002',	0,	0,	1, '',	1),
-(NOW(),	'en',	1,	'base',	'x3ui',	'sites',	'languages',	'languages',	'Languages',	'Languages manager',	'Languages manager', '',	'',	'',	0,	'',	3,	3,	2,	'A00310011003',	0,	0,	1, '',	1),
-(NOW(),	'en',	1,	'base',	'x3ui',	'languages',	'languages',	'dictionary/keys',	'Keys',	'Keys manager',	'Keys manager', '',	'',	'',	0,	'',	0,	1,	3,	'A003100110030001',	0,	0,	1, '',	1),
-(NOW(),	'en',	1,	'base',	'x3ui',	'dictionary/keys',	'languages',	'dictionary/words',	'Words manager',	'Words manager',	'Words manager', '',	'',	'',	0,	'',	0,	1,	3,	'A0031001100300010001',	0,	0,	1, '',	1),
-(NOW(),	'en',	1,	'base',	'x3ui',	'sites',	'users',	'users',	'Users',	'Users manager',	'Users manager', '',	'',	'',	0,	'',	3,	4,	2,	'A00310011004',	0,	0,	1, '',	1),
-(NOW(),	'en',	1,	'base',	'x3ui',	'users',	'users',	'users/detail',	'User detail',	'User detail',	'User detail', '',	'',	'',	0,	'',	0,	1,	3,	'A003100110040001',	0,	0,	1, '',	1),
-(NOW(),	'en',	1,	'base',	'x3ui',	'users',	'users/detail',	'users/permissions',	'User permissions',	'User User permissions',	'User permissions', '',	'',	'',	0,	'',	0,	1,	4,	'A003100110040001',	0,	0,	1, '',	1),
-(NOW(),	'en',	1,	'base',	'x3ui',	'sites',	'pages',	'themes',	'Themes',	'Themes manager',	'Themes manager', '',	'',	'',	0,	'',	3,	5,	2,	'A00310011005',	0,	0,	1, '',	1),
-(NOW(),	'en',	1,	'base',	'x3ui',	'themes',	'pages',	'templates/index',	'Templates',	'Templates manager',	'Templates manager', '',	'',	'',	0,	'',	0,	1,	3,	'A003100110050001',	0,	0,	1, '',	1),
-(NOW(),	'en',	1,	'base',	'x3ui',	'themes',	'pages',	'menus/index',	'Menus',	'Menus manager',	'Menus manager', '',	'',	'',	0,	'',	0,	2,	3,	'A003100110050002',	0,	0,	1, '',	1),
-(NOW(),	'en',	1,	'base',	'x3ui',	'sites',	'pages',	'contexts',	'Contexts',	'Context of articles',	'Context of articles', '',	'',	'',	0,	'',	3,	6,	2,	'A00310011006',	0,	0,	1, '',	1),
-(NOW(),	'en',	1,	'base',	'x3ui',	'sites',	'pages',	'categories',	'Categories',	'Categories of articles',	'Categories of articles', '',	'',	'',	0,	'',	3,	7,	2,	'A00310011007',	0,	0,	1, '',	1),
+(NOW(),	'en',	1,	'base',	'x3ui',	'home',	'widgets',	'widgets',	'Widgets',	'Widgets manager',	'Widgets manager', '', '<i class="fa-solid fa-lg fa-fw fa-paperclip"></i>',	1,	1,	1,	'A0011001',	 0,	1,  1),
+(NOW(),	'en',	1,	'base',	'x3ui',	'home',	'help',	'help',	'Help',	'Help on line',	'Help on line', '',	'<i class="fa-solid fa-lg fa-fw fa-circle-question"></i>',  1,	2,	1,	'A0011002', 0,	1,  1),
+(NOW(),	'en',	1,	'base',	'x3ui',	'home',	'base',	'profile',	'Profile',	'User profile',	'User profile', '', '<i class="fa-solid fa-lg fa-fw fa-user"></i>', 1,	3,	1,	'A0011003',	 0,	1,  1),
+(NOW(),	'en',	1,	'base',	'x3ui',	'home',	'base',	'info',	'info',	'Info',	'Info about X3 CMS', '', '<i class="fa-solid fa-lg fa-fw fa-circle-info"></i>', 1,	4,	1,	'A0011004',	 0,	1,  1),
+(NOW(),	'en',	1,	'base',	'x3ui',	'home',	'base',	'login/logout',	'Logout',	'Logout',	'Logout', '', '<i class="fa-solid fa-lg fa-fw fa-power-off"></i>',	 1,	5,	1,	'A0011005',	 0,	1,  1),
+(NOW(),	'en',	1,	'base',	'x3ui',	'home',	'sites',	'sites',	'Settings',	'Settings',	'Settings', '',	'<i class="fa-solid fa-lg fa-fw fa-gear"></i>',  3,	1,	1,	'A0031001',	 1,	1,  1),
+(NOW(),	'en',	1,	'base',	'x3ui',	'sites',	'sites',	'sites/index',	'Site',	'Site manager',	'Site manager', '',	 '', 3,	1,	2,	'A00310011001',	 0,	1,  1),
+(NOW(),	'en',	1,	'base',	'x3ui',	'sites',	'pages',	'areas',	'Areas',	'Areas manager',	'Areas manager', '', '', 3,	2,	2,	'A00310011002',	 0,	1,  1),
+(NOW(),	'en',	1,	'base',	'x3ui',	'sites',	'languages',	'languages',	'Languages',	'Languages manager',	'Languages manager', '', '', 3,	3,	2,	'A00310011003',	 0,	1,  1),
+(NOW(),	'en',	1,	'base',	'x3ui',	'languages',	'languages',	'dictionary/keys',	'Keys',	'Keys manager',	'Keys manager', '', '',	 0,	1,	3,	'A003100110030001',	 0,	1,  1),
+(NOW(),	'en',	1,	'base',	'x3ui',	'dictionary/keys',	'languages',	'dictionary/words',	'Words manager',	'Words manager',	'Words manager', '', '', 0,	1,	3,	'A0031001100300010001',	 0,	1,  1),
+(NOW(),	'en',	1,	'base',	'x3ui',	'sites',	'users',	'users',	'Users',	'Users manager',	'Users manager', '', '', 3,	4,	2,	'A00310011004',	 0,	1,  1),
+(NOW(),	'en',	1,	'base',	'x3ui',	'users',	'users',	'users/detail',	'User detail',	'User detail',	'User detail', '', '',	0,	1,	3,	'A003100110040001',	 0,	1,  1),
+(NOW(),	'en',	1,	'base',	'x3ui',	'users',	'users/detail',	'users/permissions',	'User permissions',	'User User permissions',	'User permissions', '', '',	 0,	1,	4,	'A003100110040001',	 0,	1,  1),
+(NOW(),	'en',	1,	'base',	'x3ui',	'sites',	'pages',	'themes',	'Themes',	'Themes manager',	'Themes manager', '', '',	3,	5,	2,	'A00310011005',	 0,	1,  1),
+(NOW(),	'en',	1,	'base',	'x3ui',	'themes',	'pages',	'templates/index',	'Templates',	'Templates manager', 'Templates manager', '', '', 0, 1,	3,	'A003100110050001',	0,	1, 1),
+(NOW(),	'en',	1,	'base',	'x3ui',	'themes',	'pages',	'menus/index',	'Menus',	'Menus manager',	'Menus manager', '', '', 0,	2,	3,	'A003100110050002',	0,	1, 1),
+(NOW(),	'en',	1,	'base',	'x3ui',	'sites',	'pages',	'contexts',	'Contexts',	'Context of articles',	'Context of articles', '', '',	3,	6,	2,	'A00310011006',	0,	1, 1),
+(NOW(),	'en',	1,	'base',	'x3ui',	'sites',	'pages',	'categories',	'Categories',	'Categories of articles',	'Categories of articles', '', '', 3,	7,	2,	'A00310011007',	0,	1, 1),
 
-(NOW(),	'en',	1,	'base',	'x3ui',	'home',	    'pages',	'pages',	'Pages',	'Pages manager',	'Pages manager', '<i class="fa-solid fa-lg fa-fw fa-file"></i>',	'',	'',	0,	'',	3,	2,	1,	'A0031002',	0,	0,	0, '',	1),
-(NOW(),	'en',	1,	'base',	'x3ui',	'pages',	'pages',	'areas/map',	'Area map',	'Area map',	'Area map', '',	'',	'',	0,	'',	0,	1,	3,	'A00310020001',	0,	0,	1, '',	1),
-(NOW(),	'en',	1,	'base',	'x3ui',	'pages',	'pages',	'sections/compose',	'Articles disposition',	'Articles disposition',	'Articles disposition', '',	'',	'',	0,	'',	0,	2,	3,	'A00310020002',	0,	0,	1, '',	1),
-(NOW(),	'en',	1,	'base',	'x3ui',	'pages',	'pages',	'sections',	'Sections',	'Sections manager',	'Sections manager', '',	'',	'',	0,	'',	2,	1,	3,	'A00310021001',	0,	0,	0, '',	1),
-(NOW(),	'en',	1,	'base',	'x3ui',	'home',	    'pages',	'articles',	'Articles',	'Articles manager',	'Articles manager', '<i class="fa-solid fa-lg fa-fw fa-puzzle-piece"></i>',	'',	'',	0,	'',	3,	3,	1,	'A0031003',	0,	0,	1, '',	1),
-(NOW(),	'en',	1,	'base',	'x3ui',	'articles',	'pages',	'articles/history',	'Article history',	'Article history',	'Article history', '',	'',	'',	0,	'',	0,	1,	2,	'A00310030001',	0,	0,	1, '',	1),
-(NOW(),	'en',	1,	'base',	'x3ui',	'articles',	'pages',	'articles/edit',	'Article editor',	'Article editor',	'Article editor', '',	'',	'',	0,	'',	0,	2,	2,	'A00310030002',	0,	0,	1, '',	1),
-(NOW(),	'en',	1,	'base',	'x3ui',	'home',	    'files',	'files',	'Files',	'Files manager',	'Files manager', '<i class="fa-solid fa-lg fa-fw fa-image"></i>',	'',	'',	0,	'',	3,	4,	1,	'A0031004',	0,	0,	1, '',	1),
-(NOW(),	'en',	1,	'base',	'x3ui',	'files',	'files',	'files/editor',	'File editor',	'File editor',	'File editor', '',	'',	'',	0,	'',	0,	3,	2,	'A00310040003',	0,	0,	1, '',	1),
-(NOW(),	'en',	1,	'base',	'x3ui',	'home',	    'modules',	'modules',	'Plugins',	'Plugins manager',	'Plugins manager', '<i class="fa-solid fa-lg fa-fw fa-plug"></i>',	'',	'',	0,	'',	3,	5,	1,	'A0031005',	0,	0,	1, '',	1);
+(NOW(),	'en',	1,	'base',	'x3ui',	'home',	    'pages',	'pages',	'Pages',	'Pages manager',	'Pages manager', '', '<i class="fa-solid fa-lg fa-fw fa-file"></i>', 3,	2,	1,	'A0031002',	0,	0, 1),
+(NOW(),	'en',	1,	'base',	'x3ui',	'pages',	'pages',	'areas/map',	'Area map',	'Area map',	'Area map', '', '',	0,	1,	3,	'A00310020001',	0,	1, 1),
+(NOW(),	'en',	1,	'base',	'x3ui',	'pages',	'pages',	'sections/compose',	'Articles disposition',	'Articles disposition',	'Articles disposition', '', '',	0,	2,	3,	'A00310020002',	0,	1, 1),
+(NOW(),	'en',	1,	'base',	'x3ui',	'pages',	'pages',	'sections',	'Sections',	'Sections manager',	'Sections manager', '', '',	2,	1,	3,	'A00310021001',	0,	0, 1),
+(NOW(),	'en',	1,	'base',	'x3ui',	'home',	    'pages',	'articles',	'Articles',	'Articles manager',	'Articles manager', '', '<i class="fa-solid fa-lg fa-fw fa-puzzle-piece"></i>',	3,	3,	1,	'A0031003',	0,	1, 1),
+(NOW(),	'en',	1,	'base',	'x3ui',	'articles',	'pages',	'articles/history',	'Article history',	'Article history',	'Article history', '', '',	0,	1,	2,	'A00310030001',	0,	1, 1),
+(NOW(),	'en',	1,	'base',	'x3ui',	'articles',	'pages',	'articles/edit',	'Article editor',	'Article editor',	'Article editor', '', '', 0,	2,	2,	'A00310030002',	0,	1, 1),
+(NOW(),	'en',	1,	'base',	'x3ui',	'home',	    'files',	'files',	'Files',	'Files manager',	'Files manager', '', '<i class="fa-solid fa-lg fa-fw fa-image"></i>',	3,	4,	1,	'A0031004',	0,	1, 1),
+(NOW(),	'en',	1,	'base',	'x3ui',	'files',	'files',	'files/editor',	'File editor',	'File editor',	'File editor', '', '',	0,	3,	2,	'A00310040003',	0,	1, 1),
+(NOW(),	'en',	1,	'base',	'x3ui',	'home',	    'modules',	'modules',	'Plugins',	'Plugins manager',	'Plugins manager', '', '<i class="fa-solid fa-lg fa-fw fa-plug"></i>',	3,	5,	1,	'A0031005',	0,	1, 1);
 
 -- --------------------------------------------------------
 

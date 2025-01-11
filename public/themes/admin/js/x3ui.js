@@ -341,19 +341,18 @@ function xmodal() {
                     loadJsFile(js);
                 }
                 this.html_modal = txt;
+                this.status(false);
             })
             .catch(() => {
                 this.modal_title = warning;
                 this.modal_msg = error;
                 this.html_modal = modal_ko;
+                this.status(false);
             });
-            this.status(false);
         },
         pager(url) {
-            this.status(true);
-            let event = new CustomEvent("pager", {detail: url});
+           let event = new CustomEvent("pager", {detail: url});
             window.dispatchEvent(event);
-            this.status(false);
         },
         reload(url) {
             if (url == null) {
@@ -396,7 +395,6 @@ function xmodal() {
             document.getElementById(btn).setAttribute("disabled", "");
             let action = document.getElementById(formName).getAttribute("action");
             let formData = getFormData(formName, this.files);
-
             fetch(action, {
                 method: 'POST',
                 body: formData
@@ -497,12 +495,12 @@ function page_box() {
             .then(txt => {
                 this.content = txt;
                 history.pushState(url, "", url);
+                this.status(false);
                 //Prism.highlightAll();
             })
             .catch(() => {
                 this.content = error;
             });
-            this.status(false);
         },
         filter() {
             let formData = getFormData("xfilter", []);
