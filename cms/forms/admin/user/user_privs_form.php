@@ -162,7 +162,7 @@ foreach ($what as $t)
                     );
 
                     $fields[] = array(
-                        'label' => constant(strtoupper($t->privtype)),
+                        'label' => constant(strtoupper($t->privtype)).' ('.$t->privtype.')',
                         'type' => 'select',
                         'value' => $t->level,
                         'name' => $t->privtype,

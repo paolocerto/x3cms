@@ -205,7 +205,7 @@ class Users_controller extends X3ui_controller
 	 */
 	public function edit(int $id, int $id_group = 0) : void
 	{
-		$this->dict->get_wordarray(array('form', 'login', 'users'));
+		$this->dict->get_wordarray(array('form', 'login', 'users', 'password'));
 
 		$lang = X4Route_core::$lang;
 

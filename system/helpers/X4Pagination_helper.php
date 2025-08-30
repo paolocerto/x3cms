@@ -18,17 +18,29 @@ class X4Pagination_helper
 	/**
 	 * Get an array of records and slice a page of items
 	 */
-	public static function paginate(array $array, int $active_page, int $items_per_page = 0) : array
+	public static function paginate(array $items, int $active_page, int $items_per_page = 0) : array
 	{
-		$i = ($items_per_page) ? $items_per_page : PP;	// items per page
-		$n = sizeof($array);	// items
-		$p = ceil($n/$i);		// pages
+		$ipp = ($items_per_page) ? $items_per_page : PP;	// items per page
+		$n = sizeof($items);	// items
+		$p = ceil($n/$ipp);		// pages
 
         // (array of items to show, elements needed for pagination)
-		return (is_null($array))
+		return (is_null($items))
 			? [[], [$p, $active_page, $n]]
-			: [array_slice($array, $active_page*$i, $i), [$p, $active_page, $n]];
+			: [array_slice($items, $active_page*$ipp, $ipp), [$p, $active_page, $n]];
 	}
+
+    /**
+     * Get a generator from array
+     */
+    private static function strip_data(array $items, int $active_page, int $ipp) : Generator
+    {
+        $stripped = array_slice($items, $active_page*$ipp, $ipp);
+        foreach ($stripped as $i)
+        {
+            yield $i;
+        }
+    }
 
     /**
 	 * Controllers for TailWind admin pagination
@@ -241,7 +253,7 @@ class X4Pagination_helper
 			        $link .= '<a class="bg2 font-bold px-2 py-1 rounded mr-2" href="'.$url.'0'.$suffix.'" title="'._FIRST_PAGE.'">1</a>';
 			    }
 				$link .= '<a class="link font-bold px-2" href="'.$url.($info[1]-1).$suffix.'" title="'._PREVIOUS.'">
-                    <i class="fas fa-chevron-left"></i>
+                    <i class="fa-solid fa-chevron-left"></i>
                 </a>';
 			}
 
@@ -258,7 +270,7 @@ class X4Pagination_helper
 			if ($info[1] < ($info[0]-1))
 			{
 				$link .= '<a class="link font-bold px-2" href="'.$url.($info[1]+1).$suffix.'" title="'._NEXT.'">
-                    <i class="fas fa-chevron-right"></i>
+                    <i class="fa-solid fa-chevron-right"></i>
                 </a>';
 				if (($info[0]-1) > $last)
 				{

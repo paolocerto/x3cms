@@ -11,7 +11,13 @@
 ?>
 <script>
 <?php
-if (isset($location)) echo 'location.href="'.$location.'";';
-else echo 'window.location.reload();';
+if (isset($location))
+{
+    echo 'location.href="'.$location.'";';
+}
+else
+{
+    echo 'window.location.reload();';
+}
 ?>
 </script>

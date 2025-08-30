@@ -10,7 +10,7 @@
 
 /**
  * x3form_builder controller
- * This controller work only on the admin side
+ * This controller only works on the admin side
  *
  * @package		X3CMS
  */
@@ -1135,7 +1135,7 @@ function checkRule(item) {
 	/**
 	 * Rebuild the widget
 	 */
-	public function rewidget(string $title, int $id_area, string $area) : string
+	public function rewidget(string $title, int $id_area, string $area) : void
 	{
         $mod = new X3form_builder_model($this->site->data->db);
 		echo $mod->get_widget(urldecode($title), $id_area, urldecode($area), false);

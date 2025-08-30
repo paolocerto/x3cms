@@ -18,7 +18,7 @@ class X3form_builder_helper
     /**
 	 * build message without spam check
 	 */
-	private function messagize_without_spam_check(string $form, array $fields, array $files = []) : string
+	public static function messagize_without_spam_check(string $form, array $fields, array $files = []) : string
 	{
 		$str = 'FORM <strong>'.$form.'</strong> '.date('Y-m-d H:i:s').BR.BR;
 		foreach ($fields as $k => $v)
@@ -41,7 +41,7 @@ class X3form_builder_helper
 				}
 			}
 		}
-        
+
         $str .= BR.'---';
 
         // for files

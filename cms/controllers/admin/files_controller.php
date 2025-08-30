@@ -588,7 +588,7 @@ class Files_controller extends X3ui_controller
 				$form = 'left';
 				$view->right = '';
 
-				$content = file_get_contents(APATH.'files/'.SPREFIX.'/filemanager/files/'.$file->name);
+				$content = file_get_contents(FFPATH.SPREFIX.'/filemanager/files/'.$file->name);
 
 				$fields[] = array(
 					'label' => _TEMPLATE_EDIT,
@@ -601,8 +601,8 @@ class Files_controller extends X3ui_controller
 			case 2:
 				// media files
 
-				$mime = X4Files_helper::get_mime(APATH.'files/'.SPREFIX.'/filemanager/media/'.$file->name);
-				$data = X4getid3_helper::analyze(APATH.'files/'.SPREFIX.'/filemanager/media/'.$file->name);
+				$mime = X4Files_helper::get_mime(FFPATH.SPREFIX.'/filemanager/media/'.$file->name);
+				$data = X4getid3_helper::analyze(FFPATH.SPREFIX.'/filemanager/media/'.$file->name);
 
 				$view->content->mime = $mime;
 				$view->content->width = $data['video']['resolution_x'];
@@ -801,7 +801,7 @@ class Files_controller extends X3ui_controller
 				$form = 'left';
 				$tinymce = true;
 
-				$content = file_get_contents(APATH.'files/'.SPREFIX.'/filemanager/template/'.$file->name);
+				$content = file_get_contents(FFPATH.SPREFIX.'/filemanager/template/'.$file->name);
 
 				$fields[] = array(
 					'label' => _TEMPLATE_EDIT,
@@ -884,7 +884,7 @@ class Files_controller extends X3ui_controller
 				{
 				case 0:
 					// images
-					$path = APATH.'files/'.SPREFIX.'/filemanager/img/';
+					$path = FFPATH.SPREFIX.'/filemanager/img/';
 
 					$rotation = intval($_post['rotate']);
 					$rotation = ($rotation)
@@ -948,7 +948,7 @@ class Files_controller extends X3ui_controller
 
 				case 1:
 					// generic text file
-					$path = APATH.'files/'.SPREFIX.'/filemanager/files/';
+					$path = FFPATH.SPREFIX.'/filemanager/files/';
 
 					$txt = $_post['content'];
 
@@ -981,8 +981,8 @@ class Files_controller extends X3ui_controller
 						if (isset($_post['capture']))
 						{
 							// we have to extract a frame
-							$vpath = APATH.'files/'.SPREFIX.'/filemanager/media/';
-							$ipath = APATH.'files/'.SPREFIX.'/filemanager/img/';
+							$vpath = FFPATH.SPREFIX.'/filemanager/media/';
+							$ipath = FFPATH.SPREFIX.'/filemanager/img/';
 
 							$file_name = str_replace($mimes[$_post['old_format']], 'jpg', $file_name);
 
@@ -1020,7 +1020,7 @@ class Files_controller extends X3ui_controller
 						else
 						{
 							// is a video conversion
-							$path = APATH.'files/'.SPREFIX.'/filemanager/media/';
+							$path = FFPATH.SPREFIX.'/filemanager/media/';
 
 							$new_format = $new_size = 0;
 
@@ -1104,7 +1104,7 @@ class Files_controller extends X3ui_controller
 					break;
 				case 3:
 					// template
-					$path = APATH.'files/'.SPREFIX.'/filemanager/template/';
+					$path = FFPATH.SPREFIX.'/filemanager/template/';
 
 					if (extension_loaded('php5-tidy'))
 					{
@@ -1227,4 +1227,30 @@ class Files_controller extends X3ui_controller
             }
         }
 	}
+
+    /**
+     * Download file
+     */
+    public function download(string $file_path) : void
+    {
+        $file_path = str_replace('§', '/', urldecode($file_path));
+        if (file_exists($file_path))
+        {
+            $file = basename($file_path);
+            $ext = pathinfo($file, PATHINFO_EXTENSION);
+
+            header('Content-Description: File Transfer');
+            header('Content-Type: application/'.$ext);
+            header('Content-Disposition: attachment; filename='.$file);
+            header('Expires: 0');
+            header('Cache-Control: must-revalidate');
+            header('Pragma: public');
+            header('Content-Length: ' . filesize($file_path));
+            readfile($file_path);
+        }
+        else
+        {
+            echo _FILE_NOT_FOUND;
+        }
+    }
 }

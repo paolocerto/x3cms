@@ -85,13 +85,20 @@ else
 {
     // edit settings
 
-    // tpl settings could be ordered in the wrong way
+    // tpl settings may be missing some settings
     if (!empty($settings))
     {
-        foreach ($settings as $k => $v)
+        foreach ($mod_settings as $k => $v)
         {
-            $mod_settings[$k] = $v;
+            if (!isset($settings[$k]))
+            {
+                $settings[$k] = $v;
+            }
         }
+    }
+    else
+    {
+        $settings = $mod_settings;
     }
 
     $accordion_xdata = '{

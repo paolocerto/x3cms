@@ -1310,7 +1310,7 @@ if (!empty($list))
 
         if ($pagination)
         {
-            echo \'<div id="'.$name.'_pager" class="pager">\'.X4Pagination_helper::tw_admin_pager(BASE_URL.\''.$name.'/mod/\'.$id_area.\'/\'.$lang.\'/\', $items[1], 5, false, \'?\'.http_build_query($qs), \'\').\'</div>\';
+            echo \'<div id="'.$name.'_pager" class="pager">\'.X4Pagination_helper::tw_admin_pager(BASE_URL.\''.$name.'/mod/\'.$id_area.\'/\'.$lang.\'/\', $items[1], 5, \'?\'.http_build_query($qs)).\'</div>\';
         }
     }
 }

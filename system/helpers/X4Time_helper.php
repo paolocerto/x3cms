@@ -326,7 +326,7 @@ class X4Time_helper
 			break;
 		case 'seconds':
 			// only seconds
-            return $time->h*3600+$time->m*60+$time->s;
+            return $time->h*3600+$time->i*60+$time->s;
 			break;
 		case 'days':
 			// number of days

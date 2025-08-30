@@ -22,6 +22,7 @@ if (isset($msg))
 	echo $msg.BR;
 }
 
-echo _ARE_YOU_SURE_DELETE .' <strong>'.$item.'</strong>?</p></div>';
+echo _ARE_YOU_SURE_DELETE .' <b>'.$item.'</b>?</p></div>
+<div class="m-0" x-html="error_msg"></div>';
 
 echo $form;

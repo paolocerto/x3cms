@@ -14,14 +14,19 @@
 // set redirect
 if (isset($location) && !empty($location))
 {
-    if ($location == 'back')
+    switch ($location)
     {
-        echo 'window.history.back();';
-    }
-    else
-    {
-        // set redirect
-	echo 'location.href=\''.$location.'\';';
+        case 'back':
+            echo 'window.history.back();';
+            break;
+        case 'blank':
+            // require URL
+            echo 'window.open(\''.$url.'\', \'_blank\');window.location.reload();';
+            break;
+        default:
+            // set redirect
+	        echo 'location.href=\''.$location.'\';';
+            break;
     }
 }
 else

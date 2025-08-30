@@ -17,17 +17,6 @@ class X4Mpdf_helper
 {
 	/**
 	 * Export a pdf
-	 *
-	 * @static
-	 * @param	string	$title		Document title
-	 * @param	string	$css		CSS Contents
-	 * @param	string	$html		HTML Contents
-	 * @param	string	$page_format 	Default A4
-	 * @param	string	$orientation	Can be P|L
-	 * @param	string	$output			Can be D|I|F
-     * @param   string  $footer
-     * @param   string  $background
-	 * @return boolean
 	 */
 	public static function pdf_export(
         string $title,
@@ -35,14 +24,14 @@ class X4Mpdf_helper
         string $html,
         array $config = [
             'page_format' => 'A4',
-            'orientation' => 'P',
+            'orientation' => 'P',       // orientation can be [P|L], output can be [D|I|F]
             'output' => 'D'
-        ],  // orientation can be [P|L], output can be [D|I|F]
-        bool $footer = false,
+        ],
+        bool $fixed_footer = false,
         string $background = ''
-    )
+    ) : mixed
 	{
-	    require_once PATH . '/vendor/autoload.php';
+	    require_once PATH . 'vendor/autoload.php';
 
 	    $defaultConfig = (new Mpdf\Config\ConfigVariables())->getDefaults();
 	    $fontDirs = $defaultConfig['fontDir'];
@@ -96,19 +85,24 @@ class X4Mpdf_helper
             $mpdf->SetDefaultBodyCSS('background-image-resize', 6);
         }
 
-        $mpdf->WriteHTML($css, \Mpdf\HTMLParserMode::HEADER_CSS);
-        $mpdf->WriteHTML($html, \Mpdf\HTMLParserMode::HTML_BODY);
-
-        if ($footer)
+        if ($fixed_footer)
         {
             $mpdf->SetHTMLFooterByName('footer', 'E', true);
             $mpdf->SetHTMLFooterByName('footer', 'O', true);
         }
+        elseif (isset($config['footer']))
+        {
+            $mpdf->SetHTMLFooter($config['footer']);
+            $mpdf->SetHTMLFooter($config['footer'], 'E');
+        }
+
+        $mpdf->WriteHTML($css, \Mpdf\HTMLParserMode::HEADER_CSS);
+        $mpdf->WriteHTML($html, \Mpdf\HTMLParserMode::HTML_BODY);
 
 		$filename = X4Utils_helper::slugify(str_replace(' - ', '-', $title), true).'.pdf';
 
 		$path = ($config['output'] == 'F')
-			? APATH.'files/tmp/'
+			? X4Files_helper::$secret_path.'pdf/'
 			: '';
 
 		$mpdf->Output($path.$filename, $config['output']);
@@ -118,7 +112,9 @@ class X4Mpdf_helper
 		}
         else
         {
+            chmod($path.$filename, 0777);
             return array('file' => $path.$filename, 'filename' => $filename);
         }
 	}
+
 }

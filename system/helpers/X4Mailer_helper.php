@@ -108,19 +108,21 @@ class X4Mailer_helper
         {
             foreach ($attached as $i)
             {
-                $data = file_get_contents($i['file']);
-                // set filename if exists
-                if (isset($i['filename']))
+                if (isset($i['file']) && file_exists($i['file']))
                 {
-                    // NOTE we attach only PDF files
-                    $attachment = new Swift_Attachment($data, $i['filename'], 'application/pdf');
+                    $data = file_get_contents($i['file']);
+                    // set filename if exists
+                    if (isset($i['filename']))
+                    {
+                        // NOTE we attach only PDF files
+                        $attachment = new Swift_Attachment($data, $i['filename'], 'application/pdf');
+                    }
+                    else
+                    {
+                        $attachment = (new Swift_Attachment())->setBody($data);
+                    }
+                    $mail->attach($attachment);
                 }
-                else
-                {
-                    $attachment = (new Swift_Attachment())->setBody($data);
-                }
-
-                $mail->attach($attachment);
             }
         }
     }

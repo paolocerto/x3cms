@@ -180,7 +180,10 @@ class X4Array_helper
 			{
 				if (sizeof($ii) == 1)
 				{
-					$a[$i->$indexes] = $i;
+                    if (isset($i->$indexes))
+                    {
+                        $a[$i->$indexes] = $i;
+                    }
 				}
 				else
 				{
@@ -227,7 +230,7 @@ class X4Array_helper
     public static function ids2strings(array $items, string $ids, string $title = 'title') : array
 	{
 		$a = [];
-		if (!empty($ids) && $ids != '[""]' && !empty($items))
+		if (!empty($ids) && $ids != '[]' && $ids != '[""]' && !empty($items))
 		{
             $indexed = X4Array_helper::indicize($items, 'id');
             $ids = json_decode($ids, true);
@@ -452,7 +455,7 @@ class X4Array_helper
                     $php_stmt_main=$php_stmt.'[$x_tag]'.$add.'[\'content\'] = $xml_elem[\'value\'];';
                     eval($php_stmt_main);
                 }
-                foreach ($xml_elem['attributes'] as $key=>$value)
+                foreach ($xml_elem['attributes'] as $key => $value)
                 {
                     $php_stmt_att=$php_stmt.'[$x_tag]'.$add.'[$key] = $value;';
                     eval($php_stmt_att);
@@ -460,6 +463,17 @@ class X4Array_helper
             }
         }
         return $xml_array;
+    }
+
+    /**
+     * Get a generator from array
+     */
+    public static function generate(array $items) : Generator
+    {
+        foreach ($items as $i)
+        {
+            yield $i;
+        }
     }
 }
 

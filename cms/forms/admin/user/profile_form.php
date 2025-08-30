@@ -9,6 +9,16 @@
  */
 
 // profile form
+$min_password_length = AdminUtils_helper::$user_password_length;
+$length_msg = str_replace('XXXNUMXXX', $min_password_length, _PWD_LENGTH_MSG);
+
+$messages = [
+    'digit'=> _PWD_DIGIT_MSG,
+    'capital'=> _PWD_CAPITAL_MSG,
+    'lowercase'=> _PWD_LOWERCASE_MSG,
+    'symbol'=> _PWD_SYMBOL_MSG,
+    'length'=> $length_msg
+];
 
 // build the form
 $fields = [];
@@ -16,7 +26,7 @@ $fields = [];
 $fields[] = array(
     'label' => null,
     'type' => 'html',
-    'value' => '<div class="w-full md:w-2/3 px-4 md:m-auto pt-6">
+    'value' => '<div class="w-full lg:w-2/3 px-4 md:m-auto pt-6">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4">
             <div>'
 );
@@ -62,7 +72,11 @@ $fields[] = array(
     'label' => null,
     'type' => 'html',
     'value' => '<div class="grid grid-cols-1 md:grid-cols-2 gap-x-4">
-        <div>'
+        <div
+            x-data="pwd()"
+            x-init=\'setUp('.$min_password_length.', '.json_encode($messages).')\'
+            x-cloak
+        >'
 );
 
 $fields[] = array(
@@ -71,8 +85,14 @@ $fields[] = array(
     'value' => '',
     'name' => 'password',
     'suggestion' => _PASSWORD_RULE,
-    'rule' => 'password|minlength§6',
-    'extra' => 'class="w-full"'
+    'rule' => 'password|minlength§'.$min_password_length,
+    'extra' => 'class="w-full" x-model="pwd" x-on:keyup="chk_pwd()"'
+);
+
+$fields[] = array(
+    'label' => null,
+    'type' => 'html',
+    'value' => '<p class="text-xs" x-show="pwd_msg.length" x-html="pwd_msg"></p>',
 );
 
 $fields[] = array(

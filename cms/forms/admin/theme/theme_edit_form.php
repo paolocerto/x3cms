@@ -35,8 +35,7 @@ $fields[] = array(
 'value' => '<div
     x-data="configurator()"
     x-init=\'setup('.json_encode($js_fields).', '.$start_value.', "styles", "tcomposer", "themes/decompose/", "js_fields", 1)\'
-    x-cloak
->'
+    x-cloak>'
 );
 $fields[] = array(
     'label' => null,

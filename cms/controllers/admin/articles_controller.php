@@ -619,7 +619,7 @@ class Articles_controller extends X3ui_controller
 	public function history(int $id_area, string $lang, string $bid) : void
 	{
 		// load dictionaries
-		$this->dict->get_wordarray(array('history', 'articles'));
+		$this->dict->get_wordarray(array('history', 'articles', 'bulk'));
 
 		// get the page
 		$page = $this->get_page('articles/history');

@@ -138,7 +138,7 @@ class X4Form_helper
                 $body .= $i['value'];
                 break;
             case 'button':
-                $body .= '<div class="xcenter">'.self::button($i).'</div>';
+                $body .= '<div class="text-center">'.self::button($i).'</div>';
                 break;
             default:
                 // for: fieldset, hidden, text, file, password, checkbox, radio, texarea, select
@@ -399,7 +399,7 @@ class X4Form_helper
 				: '';
 
 			$tmp = '<div class="checkbox">
-                        <label class="flex flex-col md:flex-row gap-2'.$label_class.' items-center" for="'.$e['name'].'">
+                        <label class="flex flex-row gap-2'.$label_class.' items-center" for="'.$e['name'].'">
                             <div class="flex-none">
                                 <input type="checkbox" '.$iextra.' name="'.$e['name'].'" id="'.$e['name'].'" value="'.$e['value'].'" '.$checked.' />
                             </div>
@@ -564,7 +564,7 @@ class X4Form_helper
 
 				if ($inline)
 				{
-					$tmp .= '<div class="flex-1 rounded bg-slate-100 px-4 py-1">
+					$tmp .= '<div class="w-full rounded bg-slate-100 px-4 py-1">
                                 <input type="radio" '.$iextra.' name="'.$e['name'].'" id="'.$e['name'].'_'.$c.'" value="'.$i->$v.'" '.$checked.' />
                                 <label class="inline mt-0" for="'.$e['name'].'_'.$c.'" '.$error.'>'.stripslashes($i->$o).'</label>
                             </div>';
@@ -584,7 +584,7 @@ class X4Form_helper
 		if ($inline)
 		{
             // NOTE: this works only with TailwindCSS
-			$tmp = '<div class="w-full flex flex-col items-center sm:flex-row gap-2 mt-2">'.$tmp.'</div>';
+			$tmp = '<div class="flex flex-col items-center sm:flex-row gap-2 mt-2">'.$tmp.'</div>';
 		}
 		return $tmp.self::suggestion($e);
 	}
@@ -954,7 +954,7 @@ class X4Form_helper
                     else
                     {
                         $field = $disabled[0];
-                        eval('$chk = '.$i->$field.$disabled[1].$disabled[2].';');
+                        eval('$chk = "'.$i->$field.'"'.$disabled[1].'"'.$disabled[2].'";');
                         if ($chk)
                         {
                             $dis = ' disabled = "disabled"';

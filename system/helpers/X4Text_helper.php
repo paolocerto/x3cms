@@ -97,7 +97,7 @@ class X4Text_helper
 	 */
 	public static function empty_rows(string $str) : string
 	{
-        return implode("\n", array_filter(explode("\n", $str)));
+        return implode("\n", array_filter(explode("\n", str_replace("\r", '', $str))));
 	}
 
 	/**
@@ -160,7 +160,7 @@ class X4Text_helper
 		$cur_encoding = mb_detect_encoding($str) ;
 		if ($cur_encoding != 'UTF-8' || !mb_check_encoding($str, 'UTF-8'))
 		{
-			$str = utf8_encode($str);
+			$str = mb_convert_encoding($str, 'UTF-8', mb_detect_encoding($str));
 		}
 		return preg_replace("/[\n\r]/","\n", $str);
 	}
@@ -168,7 +168,7 @@ class X4Text_helper
     /**
 	 * Create random string
 	 * /
-	public static function randomize(int $lenght)
+	public static function randomize(int $length)
 	{
 		$codice_random = bin2hex(openssl_random_pseudo_bytes(6));
 		$xcode = uniqid().$codice_random;
@@ -679,7 +679,7 @@ class X4Text_helper
                     break;
             }
             throw new Exception ('Error parsing JSON, ' . $message, 400);
-        } elseif (strlen ($data) && $decoded === NULL || $decoded === $data) {
+        } elseif (strlen ($data) && $decoded === null || $decoded === $data) {
             throw new Exception ('Error parsing JSON', 400);
         }
         return (array) $decoded;

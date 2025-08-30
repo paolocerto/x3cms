@@ -59,7 +59,8 @@ class X4Validation_helper
 		array('value' => 'datetime', 	'option' => 'datetime: check if a value is a valid datetime', 											'param' => array(0, 0)),
 		array('value' => 'after', 		'option' => 'after: check if a date is after another date in the same form', 							'param' => array(1, 0)),
 		array('value' => 'afterequal', 	'option' => 'afterequal: check if a date is after or equal another date in the same form',				'param' => array(1, 0)),
-		array('value' => 'before', 		'option' => 'before: check if a date is before another date in the same form', 							'param' => array(1, 0)),
+		array('value' => 'after_index', 'option' => 'after: check if a value in array has an index greater another value in the same array',    'param' => array(1, 0)),
+        array('value' => 'before', 		'option' => 'before: check if a date is before another date in the same form', 							'param' => array(1, 0)),
 		array('value' => 'beforeequal', 'option' => 'beforequal: check if a date is before or equal another date in the same form',				'param' => array(1, 0)),
 		array('value' => 'periodical', 	'option' => 'periodical: check if a value is a strtotime compatible string (1 year)', 					'param' => array(0, 0)),
 		array('value' => 'captcha', 	'option' => 'captcha: check if value is equal to session captcha value', 								'param' => array(0, 0)),
@@ -1017,7 +1018,7 @@ class X4Validation_helper
 		}
 		else
 		{
-            if (!preg_match('/^([a-zA-Z]*)$/', $_post[$field['name']]))
+            if (!preg_match('/^([a-zA-Zàèéìòù]*)$/', $_post[$field['name']]))
             {
                 $field['error'][] = array('msg' => '_must_be_alphabetic');
                 $e = false;
@@ -1059,12 +1060,12 @@ class X4Validation_helper
 			$field['error'][] = array('msg' => '_must_contain_number');
 			$e = false;
 		}
-		elseif (!strpbrk($_post[$field['name']], '!"#$%&()*+,\-./:;<=>?@[]^_{|}~'))
+		elseif (!strpbrk($_post[$field['name']], '!"#$%&()*+,-./:;<=>?@[]^_{|}~'))
 		{
 			$field['error'][] = array('msg' => '_must_contain_symbol');
 			$e = false;
 		}
-		elseif (preg_match('/^(.*)([.\s]+)(.*)$/', $_post[$field['name']]))
+		elseif (preg_match('/^(.*)([\t\s]+)(.*)$/', $_post[$field['name']]))
 		{
 			$field['error'][] = array('msg' => '_must_be_alphanumeric_plus_symbols');
 			$e = false;
@@ -1127,7 +1128,7 @@ class X4Validation_helper
 		if ($_post[$field['name']] < $_post[$tok[1]])
 		{
 			$field['error'][] = array(
-			    'msg' => '_greater_than',
+			    'msg' => '_greater_equal_to',
 			    'related' => $_post[$tok[1]]
 			);
 			$e = false;
@@ -1163,7 +1164,7 @@ class X4Validation_helper
 		if ($_post[$field['name']] > $_post[$tok[1]])
 		{
 			$field['error'][] = array(
-			    'msg' => '_lower_than',
+			    'msg' => '_lower_equal_than',
 			    'related' => $_post[$tok[1]]
 			);
 			$e = false;
@@ -1388,6 +1389,25 @@ class X4Validation_helper
 		{
 			$field['error'][] = array(
 				'msg' => '_must_be_after_or_equal',
+				'related' => $_post[$tok[1]],
+			);
+			$e = false;
+		}
+	}
+
+    /**
+	 * After index rule
+	 * if the value not have an index in reference array greater another value in another field then catch an error
+	 */
+	private static function _after_index(array &$field, array $tok, bool &$e, array $_post, array $_files)
+	{
+        $value = $_post[$field['name']];
+        $related = $_post[$tok[1]];
+        $reference = array_flip(json_decode(urldecode($_post[$tok[2]]), true));
+		if ($reference[$value] < $reference[$related])
+		{
+			$field['error'][] = array(
+				'msg' => '_must_be_after_index',
 				'related' => $_post[$tok[1]],
 			);
 			$e = false;

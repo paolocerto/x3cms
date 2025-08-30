@@ -90,7 +90,7 @@ class Dictionary_model extends X4Model_core
 	 * Get dictionary sections
 	 * A section consists of the triad of values language_code-area_name-key_value
 	 */
-	public function get_section_options() : array
+	public function get_section_options(bool $all = true) : array
 	{
 		// sections
 		$sections = $this->db->query('SELECT DISTINCT CONCAT(lang, \'-\', area, \'-\', what) AS lang_what
@@ -98,13 +98,19 @@ class Dictionary_model extends X4Model_core
 			WHERE xon = 1
 			ORDER BY lang_what ASC');
 
-		// to add ALL option
-
-		// areas
-		$areas = $this->db->query('SELECT DISTINCT CONCAT(lang, \'-\', area, \'-ALL\') AS lang_what
-			FROM dictionary
-			WHERE xon = 1
-			ORDER BY lang_what ASC');
+        if ($all)
+        {
+            // to add ALL option
+            // areas
+            $areas = $this->db->query('SELECT DISTINCT CONCAT(lang, \'-\', area, \'-ALL\') AS lang_what
+                FROM dictionary
+                WHERE xon = 1
+                ORDER BY lang_what ASC');
+        }
+        else
+        {
+            $areas = [];
+        }
 
 		// merge
 		$res = array_merge($sections, $areas);
@@ -131,6 +137,33 @@ class Dictionary_model extends X4Model_core
 				lang = '.$this->db->escape($lang).' AND
 				xon = 1
 			ORDER BY what ASC');
+	}
+
+    /**
+	 * Keys search inside dictionary section
+	 */
+	public function keys_search(string $lang, string $area, string $what, array $filters) : array
+	{
+        $where = !empty($filters['wsearch'])
+            ? ' AND (d.xkey LIKE '.$this->db->escape('%'.strtoupper($filters['wsearch']).'%').' OR LOWER(d.xval) LIKE '.$this->db->escape('%'.strtolower($filters['wsearch']).'%').')'
+            : '';
+
+        return $this->db->query('SELECT DISTINCT d.*
+            FROM dictionary d
+            LEFT JOIN dictionary d2 ON (
+                d2.what = d.what AND
+                d2.xkey = d.xkey AND
+                d2.lang = '.$this->db->escape($filters['lang']).' AND
+                d2.area = '.$this->db->escape($filters['area']).'
+            )
+            JOIN areas a ON a.name = d.area
+            WHERE
+                d.lang = '.$this->db->escape($lang).' AND
+                d.area = '.$this->db->escape($area).' AND
+                d.what = '.$this->db->escape($what).' AND
+                d2.id IS NULL '.$where.'
+            GROUP BY d.id
+            ORDER BY d.xkey ASC');
 	}
 
 	/**
@@ -202,8 +235,10 @@ class Word_obj
 	public $xval = '';
     public $xlock = 0;
 
-    public function __construct(string $what = '')
+    public function __construct(string $what = '', string $lang = '', string $area = '')
 	{
 		$this->what = $what;
+        $this->lang = $lang;
+        $this->area = $area;
 	}
 }

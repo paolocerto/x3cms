@@ -40,4 +40,12 @@ class X4Debug_helper
 		}
 	}
 
+    /**
+     * Log a text in a file
+     */
+    public static function log(string $log_file, string $log_text) : void
+    {
+       file_put_contents(APATH.'files/logs/'.$log_file.'.log', $log_text, FILE_APPEND);
+    }
+
 }

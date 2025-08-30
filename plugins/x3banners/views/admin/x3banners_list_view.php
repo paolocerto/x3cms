@@ -90,7 +90,7 @@ if (!empty($list))
     // pagination
     if (!isset($qs) || empty($qs['xstr']))
     {
-        echo '<div id="x3banners_pager" class="pager">'.X4Pagination_helper::tw_admin_pager(BASE_URL.'x3banners/mod/'.$id_area.'/'.$lang.'/', $items[1], 5, false, '?'.http_build_query($qs), '').'</div>';
+        echo '<div id="x3banners_pager" class="pager">'.X4Pagination_helper::tw_admin_pager(BASE_URL.'x3banners/mod/'.$id_area.'/'.$lang.'/', $items[1], 5, '?'.http_build_query($qs)).'</div>';
     }
 }
 else

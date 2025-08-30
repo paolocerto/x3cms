@@ -14,7 +14,7 @@ switch($file->xtype)
 {
     case 0:
         // images
-        $chk = file_exists(APATH.'files/'.SPREFIX.'/filemanager/img'.$file->name);
+        $chk = file_exists(FMPATH.'img/'.$file->name);
         if (!$chk)
         {
             sleep(1);

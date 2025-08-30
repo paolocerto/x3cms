@@ -170,7 +170,7 @@ if (!empty($items[0]))
     </div>';
 
 	// pagination
-	echo '<div id="file_pager" class="pager">'.X4Pagination_helper::tw_admin_pager(BASE_URL.'files/index/'.$id_area.'/', $items[1], 5, false, '?'.http_build_query($qs), '').'</div>';
+	echo '<div id="file_pager" class="pager">'.X4Pagination_helper::tw_admin_pager(BASE_URL.'files/index/'.$id_area.'/', $items[1], 5, '?'.http_build_query($qs)).'</div>';
 }
 else
 {

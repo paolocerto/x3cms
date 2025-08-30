@@ -57,7 +57,7 @@ if ($id)
     $fields[] = array(
         'label' => null,
         'type' => 'html',
-        'value' => '<h4 class="mt-6">'.$item->xkey.'</h4>'
+        'value' => '<h4 class="mt-6"><b>'._SECTION.': '.$item->what.'</b><br>'._KEY.': '.$item->xkey.'</h4>'
     );
 }
 else

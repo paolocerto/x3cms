@@ -147,7 +147,7 @@ if ($items[0]) {
 	echo '</table>';
 
 	// pagination
-	echo '<div id="article_pager" class="pager">'.X4Pagination_helper::tw_admin_pager(BASE_URL.'articles/index/'.$id_area.'/'.$lang, $items[1], 5, false, '?'.http_build_query($qs), '').'</div>';
+	echo '<div id="article_pager" class="pager">'.X4Pagination_helper::tw_admin_pager(BASE_URL.'articles/index/'.$id_area.'/'.$lang, $items[1], 5, '?'.http_build_query($qs)).'</div>';
 }
 else
 {

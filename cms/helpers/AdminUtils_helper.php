@@ -16,11 +16,16 @@
 class AdminUtils_helper
 {
     /**
+     * User password length for admin users
+     */
+    public static $user_password_length = 6;
+
+    /**
      * flmngr links
      */
     public static $flmngr_links = [
         '<script src="//cdn.public.flmngr.com/'.FLMNGR_API_KEY.'/widgets.js"></script>',
-        '<script src="//cdn.flmngr.com/widgets.js?apiKey='.FLMNGR_API_KEY.'"></script>'
+        '<script src="//cdn.flmngr.com/widgets.js?apiKey='.FLMNGR_API_KEY.'" data-ts=""></script>'
     ];
 
     /**
@@ -28,7 +33,7 @@ class AdminUtils_helper
      */
     public static function flmngr(string $str) : string
     {
-        return str_replace(self::$flmngr_links, '', $str);
+        return preg_replace('/<script\b[^>]*flmngr[^>]*>(.*?)<\/script>/is', '', $str);
     }
 
 	/**
@@ -70,6 +75,18 @@ class AdminUtils_helper
 					break;
 				}
 				break;
+            case 'integer':
+                if ($res > 0)
+				{
+					$msg->message_type = 'success';
+					$msg->message = $ok;
+				}
+				else
+				{
+					$msg->message_type = 'error';
+					$msg->message = $ko;
+				}
+                break;
 			default:
 				// is a string so is an error
 				$msg->message_type = 'error';
@@ -395,9 +412,16 @@ class AdminUtils_helper
                         // show values
                         foreach ($data as $i)
                         {
-                            $res .= (is_array($v[$i]))
-                                ? '<td>'.json_encode($v[$i]).'</td>'
-                                : '<td>'.$v[$i].'</td>';
+                            if (isset($v[$i]))
+                            {
+                                $res .= (is_array($v[$i]))
+                                    ? '<td>'.json_encode($v[$i]).'</td>'
+                                    : '<td>'.stripslashes($v[$i]).'</td>';
+                            }
+                            else
+                            {
+                                $res .= '<td></td>';
+                            }
                         }
 
                         $res .= '<td class="text-right">

@@ -62,7 +62,7 @@ $sql1[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock,
 
 $sql1[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'it', '".$area->name."', 'x4cookie', '_X4COOKIE_SETUP_MSG', 'I cookie sono piccoli file di testo che vengono memorizzati sul dispositivo dell\'utente quando naviga su internet.\nQuesto sito fa uso di:', 0, 1)";
 $sql1[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'it', '".$area->name."', 'x4cookie', '_X4COOKIE_TECHNICAL', 'Cookie tecnici e cookie funzionali', 0, 1)";
-$sql1[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'it', '".$area->name."', 'x4cookie', '_X4COOKIE_TECHNICAL_MSG', 'Sono necessari per il corretto funzionamento del sito e usati analisi statistiche con dati anonimi e aggregati', 0, 1)";
+$sql1[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'it', '".$area->name."', 'x4cookie', '_X4COOKIE_TECHNICAL_MSG', 'Sono necessari per il corretto funzionamento del sito e usa analisi statistiche con dati anonimi e aggregati', 0, 1)";
 
 $sql1[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'it', '".$area->name."', 'x4cookie', '_X4COOKIE_THIRDY', 'Cookie di terze parti', 0, 1)";
 $sql1[] = "INSERT INTO dictionary (updated, lang, area, what, xkey, xval, xlock, xon) VALUES (NOW(), 'it', '".$area->name."', 'x4cookie', '_X4COOKIE_THIRDY_MSG', 'Per consentire l’utilizzo dei social network e di altre applicazioni multimediali.\nQuesti cookie potrebbero anche essre cookie di profilazione', 0, 1)";

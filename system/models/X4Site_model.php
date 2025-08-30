@@ -112,7 +112,7 @@ class X4Site_model extends X4Model_core
 		{
             // X3 cli doesn't have domain
             $where = $domain
-                ? ' s.domain LIKE '.$this->db->escape('%'._DOMAIN_).' AND '
+                ? ' s.domain LIKE '.$this->db->escape('%'._DOMAIN_.'%').' AND '
                 : '';
 
             $select = $join = '';
@@ -123,11 +123,13 @@ class X4Site_model extends X4Model_core
                 $join = 'JOIN areas a ON a.id_site = s.id AND a.xdefault = 1';
             }
 
-			$c = $this->db->query_row('SELECT s.*, s.xdatabase AS db, l.title, l.description, l.keywords, l.rtl '.$select.'
+            $sql = 'SELECT s.*, s.xdatabase AS db, l.title AS lang, l.description, l.keywords, l.rtl '.$select.'
 				FROM sites s
 				JOIN alang l ON l.code = '.$this->db->escape($this->area->lang).'
                 '.$join.'
-				WHERE '.$where.' l.id_area = '.$id_area);
+				WHERE '.$where.' l.id_area = '.$id_area;
+
+			$c = $this->db->query_row($sql);
 
 			if (APC)
 			{
@@ -136,7 +138,7 @@ class X4Site_model extends X4Model_core
 		}
         if (!is_object($c))
         {
-            $this->logger(1, 1, 'debug site data', $_SERVER['REQUEST_URI'], 'id_area: '.$id_area.' - '.json_encode($c).' - '.X4Utils_helper::get_ip());
+            $this->logger(1, 1, 'debug site data', $_SERVER['REQUEST_URI'].' id_area: '.$id_area.' - '.json_encode($c).' - '.X4Utils_helper::get_ip(), $sql);
         }
 		return $c;
 	}
@@ -214,6 +216,7 @@ class X4Site_model extends X4Model_core
 
 		if ($sections === false)
 		{
+            $sections = [];
 			if (ADVANCED_EDITING)
 			{
 				$sections = $this->section_advanced($id_page);

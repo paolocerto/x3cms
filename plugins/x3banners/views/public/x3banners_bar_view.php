@@ -42,5 +42,5 @@ if ($banner->auto_hide)
     style="background:<?php echo $banner->bg_color1.';'.$gradient.'color:'.$banner->fg_color ?>"
     class="w-full z-10 shadow-lg brightness-125 hover:brightness-100 text-center"
 >
-    <div class="max-w-screen-lg pt-8 pb-4 mx-auto"><?php echo $banner->description ?></div>
+    <div class="max-w-screen-lg pt-6 pb-4 mx-auto"><?php echo $banner->description ?></div>
 </div>

@@ -132,7 +132,7 @@ final class X4Core_core
         if (CACHE && X4Route_core::$folder == 'public' && !X4Route_core::$post && empty(X4Route_core::$query_string))
         {
             X4Cache_core::setPrefix(COOKIE);
-            X4Cache_core::setStore(APATH.'files/tmp/');
+            X4Cache_core::setStore(X4Files_helper::$secret_path.'cache/');
 
             // if no cache to read
             if (!X4Cache_core::start($_SERVER['REQUEST_URI'], CACHE_TIME))

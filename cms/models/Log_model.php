@@ -24,4 +24,18 @@ class Log_model extends X4Model_core
 		parent::__construct('logs', $db);
 	}
 
+    /**
+     * Unlog - remove log
+     */
+    public function unlog(string $case, array $data)
+    {
+        $sql = 'DELETE FROM logs
+            WHERE who = '.intval($data['who']).' AND
+                action ='.$this->db->escape($case).' AND
+                what = '.$this->db->escape($data['what']).' AND
+                id_what = '.intval($data['id_what']);
+                
+        return $this->db->single_exec($sql);
+    }
+
 }

@@ -119,7 +119,7 @@ class X4get_by_key_plugin extends X4Plugin_core implements X3plugin
 				// pager
 				if ($items[1][0] > 1)
 				{
-				    $out .= '<div id="pager">'.X4Pagination_helper::tw_admin_pager(BASE_URL.$page->url.'/', $items[1]).'</div>';
+				    $out .= '<div id="pager">'.X4Pagination_helper::tw_admin_pager(BASE_URL.$page->url.'/', $items[1], 5, '').'</div>';
 				}
 			}
 		}

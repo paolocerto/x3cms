@@ -47,7 +47,7 @@ class Intro_controller extends X4Cms_controller
         $view->page = $page;
         $view->args = X4Route_core::$args;
 
-        $content = new X4View_core('public/x3students_pwa', 'x3students');
+        $content = new X4View_core('public/x3users_pwa', 'x3users');
         $content->login = ($start == 'login')
             ? 1
             : 0;

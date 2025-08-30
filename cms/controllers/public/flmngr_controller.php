@@ -33,7 +33,7 @@ class Flmngr_controller extends X4Cms_controller
         require_once PATH . 'vendor/autoload.php';
 		\EdSDK\FlmngrServer\FlmngrServer::flmngrRequest(
             array(
-                'dirFiles' => FFPATH.'x3_/filemanager',
+                'dirFiles' => FFPATH.SPREFIX.'/filemanager/',
             )
         );
 

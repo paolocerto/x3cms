@@ -97,7 +97,6 @@ echo (!DEVEL && file_exists(PATH.'themes/'.$this->site->area->theme.'/js/x3ui.mi
 	: '<script src="'.THEME_URL.'js/x3ui.js?v=1"></script>'
 ?>
 
-    <link rel="stylesheet" href="<?php echo ROOT ?>files/js/croppie.css">
     <script src="<?php echo ROOT ?>files/js/codicefiscale.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 

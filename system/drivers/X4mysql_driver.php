@@ -143,8 +143,6 @@ final class X4mysql_driver extends X3db_driver
 		try
 		{
 			$sth = $this->link->prepare($sql);
-            echo '+++'.$sth->queryString.'+++';
-            echo '+++'.$sth->debugDumpParams().'+++';
 		    $sth->execute();
 
 			$sth->setFetchMode(PDO::FETCH_OBJ);

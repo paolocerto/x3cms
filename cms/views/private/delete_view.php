@@ -7,13 +7,27 @@
  * @license		https://www.gnu.org/licenses/gpl-3.0.html
  * @package		X3CMS
  */
+
+
+if (isset($title))
+{
+	echo '<h3>'.$title.'</h3>';
+}
 ?>
-<h3><?php echo $title ?></h3>
 <p><?php
 
 if (isset($msg))
-	echo $msg;
+{
+	echo $msg.BR.BR;
+}
 
-?>
-<br /><?php echo _ARE_YOU_SURE_DELETE ?> <strong>'<?php echo $item ?>'</strong>?</p>
-<?php echo $form ?>
+if (isset($no_delete))
+{
+    echo $no_delete;
+}
+else
+{
+    echo _ARE_YOU_SURE_DELETE.' <strong>'.$item.'</strong>?';
+}
+echo '</p>';
+echo $form;

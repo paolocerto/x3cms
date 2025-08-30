@@ -10,6 +10,17 @@
 
 // user edit form
 
+$min_password_length = AdminUtils_helper::$user_password_length;
+$length_msg = str_replace('XXXNUMXXX', $min_password_length, _PWD_LENGTH_MSG);
+
+$messages = [
+    'digit'=> _PWD_DIGIT_MSG,
+    'capital'=> _PWD_CAPITAL_MSG,
+    'lowercase'=> _PWD_LOWERCASE_MSG,
+    'symbol'=> _PWD_SYMBOL_MSG,
+    'length'=> $length_msg
+];
+
 // only superadmin can set superadmin
 if ($_SESSION['level'] < 5)
 {
@@ -103,7 +114,11 @@ else
 $fields[] = array(
     'label' => null,
     'type' => 'html',
-    'value' => '<div>'
+    'value' => '<div
+            x-data="pwd()"
+            x-init=\'setUp('.$min_password_length.', '.json_encode($messages).')\'
+            x-cloak
+        >'
 );
 
 $fields[] = array(
@@ -112,8 +127,14 @@ $fields[] = array(
     'value' => '',
     'name' => 'password',
     'suggestion' => _PASSWORD_RULE,
-    'rule' => $rule.'password|minlength§6',
-    'extra' => 'class="w-full"'
+    'rule' => $rule.'password|minlength§'.$min_password_length,
+    'extra' => 'class="w-full" x-model="pwd" x-on:keyup="chk_pwd()"'
+);
+
+$fields[] = array(
+    'label' => null,
+    'type' => 'html',
+    'value' => '<p class="text-xs" x-show="pwd_msg.length" x-html="pwd_msg"></p>',
 );
 
 $fields[] = array(

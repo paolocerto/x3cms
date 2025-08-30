@@ -443,7 +443,7 @@ abstract class X4Model_core
 				$table = (
                     strpos($what, 'debug') === false &&
                     strpos($action, 'debug') === false &&
-                    $_SESSION['id_area'] > 1
+                    (isset($_SESSION['id_area']) && $_SESSION['id_area'] > 1)
                 )
 				    ? 'logs'
                     : 'debug';
@@ -494,60 +494,6 @@ abstract class X4Model_core
 				WHERE a.id = '.$id_area);
 	}
 
-    /**
-	 * Get school
-	 */
-	public function get_school(int $id_area, string $fields = '*') : stdClass
-	{
-        return $this->db->query_row('SELECT '.$fields.'
-				FROM x3_schools
-				WHERE public_area = '.$id_area.' OR student_area = '.$id_area.' OR teacher_area = '.$id_area.' OR parent_area = '.$id_area);
-	}
-
-    /**
-	 * Get school_area
-	 */
-	public function get_school_area(int $id_area, string $school_area = 'student_area') : string
-	{
-        return $this->db->query_var('SELECT a.name
-				FROM x3_schools s
-                JOIN areas a ON a.id = s.'.$school_area.'
-				WHERE s.public_area = '.$id_area.' OR s.student_area = '.$id_area.' OR s.teacher_area = '.$id_area.' OR s.parent_area = '.$id_area);
-	}
-
-    /**
-	 * Check if a student is a demo or not
-     * At the moment we check if the student paid something or not
-	 */
-	public function is_a_demo(int $id_student) : int
-	{
-		$paid = $this->db->query_var('SELECT SUM(c.price) AS n
-            FROM x3_contracts c
-            JOIN x3_cart_checkout co ON co.id = c.id_checkout AND co.pay NOT IN (\'OMAGGIO\', \'0\', \'free\')
-            WHERE c.id_student = '.$id_student.' AND c.xon = 1');
-
-        if (!is_null($paid) && $paid > 0)
-        {
-            // we check for courses
-            $courses = (int) $this->db->query_var('SELECT COUNT(id) AS n FROM x3_contracts
-                            WHERE id_student = '.$id_student.' AND xon = 1 AND id_course > 0');
-
-            if ($courses > 0)
-            {
-                // have a course
-                return 2;
-            }
-            else
-            {
-                // have a generic purchase
-                return 3;
-            }
-        }
-        else
-        {
-            return 1;
-        }
-	}
 
 }
 

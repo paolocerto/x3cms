@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="format-detection" content="telephone=no">
-  
+
   <title><?php echo SERVICE ?></title>
   <link rel="stylesheet" type="text/css" href="<?php echo $domain ?>/themes/default/css/mail.css">
 </head>
@@ -24,19 +24,19 @@
         </tr>
         <tr>
           <td class="container-padding content" align="left">
-          
+
             <br>
-            
+
             <div class="title"><?php echo $subject ?></div>
             <br>
-            
+
             <div class="body-text">
               <?php echo $sub_subject ?>
               <br><br>
             </div>
-            
+
             <div class="hr">&nbsp;</div>
-            
+
             <div class="body-text">
 <?php
 // check html
@@ -46,21 +46,21 @@ if (substr($message, 0, 1) == '<')
 }
 else
 {
-	echo '<p>'.$message.'</p>';
+	echo '<p>'.nl2br($message).'</p>';
 }
 ?>
             <br><br>
             </div>
-            
+
             <br>
           </td>
         </tr>
         <tr>
           <td class="container-padding footer-text" align="left">
             <br><br>
-            
+
             <strong><?php echo SERVICE ?></strong><br>
-            
+
             <a href="mailto:<?php echo MAIL ?>"><?php echo MAIL ?></a><br>
             <a href="<?php echo $domain ?>"><?php echo $domain ?></a><br>
             <br><br>
@@ -68,7 +68,7 @@ else
           </td>
         </tr>
       </table>
-      
+
     </td>
   </tr>
 </table>

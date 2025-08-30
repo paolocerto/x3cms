@@ -30,7 +30,7 @@ class Profile_controller extends X3ui_controller
 	 */
 	public function _default() : void
 	{
-		$this->dict->get_wordarray(array('form', 'login', 'users', 'profile'));
+		$this->dict->get_wordarray(array('form', 'login', 'users', 'profile', 'password'));
 
 		$mod = new Language_model();
 

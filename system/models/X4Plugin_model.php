@@ -412,7 +412,7 @@ class X4Plugin_model extends X4Model_core
 	    // here we store relations for IDs
 	    $tables = [];
 
-	    $path = APATH.'files/'.SPREFIX.'/filemanager/img/';
+	    $path = FMPATH.'img/';
 
 	    foreach ($modules as $k => $v)
 	    {

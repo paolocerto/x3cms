@@ -10,5 +10,5 @@
 
 ?>
 <script>
-window.reload(true);
+location.reload();
 </script>

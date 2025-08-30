@@ -2,6 +2,8 @@
  * X3 CMS Admin with Alpine.js
  */
 
+
+
 // constants
 const zero_option = '<option value="0">--</option>';
 
@@ -97,6 +99,10 @@ function numberCheck(str) {
     return str.replace(",", ".").replace(/[^0-9\.]/g,'');
 }
 
+function toLower(str) {
+    return str.toLowerCase();
+}
+
 function alphaNumCheck(str) {
     return str.replace(/[^0-9a-zA-ZàèìòùÀÈÌÒÙ]/gi, '');
 }
@@ -160,6 +166,37 @@ function curve() {
     }
 }
 
+function pwd() {
+    return {
+        pwd: "",
+        pwd_msg: "",
+        min_length: 0,
+        msgs:{},
+        setUp(ml, msgs) {
+            this.min_length = ml;
+            this.msgs = msgs;
+        },
+        chk_pwd() {
+            this.pwd_msg = "";
+
+            const criteria = [
+                { test: /[0-9]/.test(this.pwd), msg: 'digit' },
+                { test: /[A-Z]/.test(this.pwd), msg: 'capital' },
+                { test: /[a-z]/.test(this.pwd), msg: 'lowercase' },
+                { test: /[!"#$%&()*+,-./:;<=>?@\[\]^_{|}~]/.test(this.pwd), msg: 'symbol' },
+                { test: this.pwd.length >= this.min_length, msg: 'length' }
+            ];
+
+            const tmp = criteria.map(criterion => {
+                const status = criterion.test ? 'success' : 'error';
+                return `<i class="fa-solid fa-circle-check ${status}"></i> ${this.msgs[criterion.msg]}`;
+            });
+
+            this.pwd_msg = tmp.join("<br>");
+        }
+    }
+}
+
 // form handling
 function getFormData(formName, files) {
     let formData = new FormData();
@@ -207,7 +244,7 @@ function getFormData(formName, files) {
                 }
                 break;
             case 'SELECT':
-                if (el.multiple == true) {
+                if (el.multiple) {
                     let collection = el.selectedOptions;
                     for (let i = 0; i < collection.length; i++) {
                         if (collection[i].selected) {
@@ -318,7 +355,7 @@ function xmodal() {
             }
         },
         popup(data) {
-            this.status(false);
+            this.status(true);
             let url, js;
             if (typeof data == "string") {
                 url = data;
@@ -351,7 +388,7 @@ function xmodal() {
             });
         },
         pager(url) {
-           let event = new CustomEvent("pager", {detail: url});
+            let event = new CustomEvent("pager", {detail: url});
             window.dispatchEvent(event);
         },
         reload(url) {
@@ -439,7 +476,10 @@ function xmodal() {
                     }
                     this.afterSubmission(btn);
                 } else {
-                    this.error_msg = '<p class="failed md:px-10 p-6">'+json.message+'</p>';
+                    console.log(json.message);
+                    if (json.message != "") {
+                        this.error_msg = '<p class="failed md:px-10 p-6">'+json.message+'</p>';
+                    }
                     this.afterSubmission(btn);
                 }
             })
@@ -500,6 +540,7 @@ function page_box() {
             })
             .catch(() => {
                 this.content = error;
+                this.status(false);
             });
         },
         filter() {
@@ -644,6 +685,8 @@ function small_tiny(id_area, lang) {
         remove_script_host : true,
 		document_base_url : domain,
         relative_urls : false,
+        convert_urls: false,
+        remove_script_host : false,
         extended_valid_elements: "i[class]",
         invalid_elements : "script",
         // Example content CSS (should be your site CSS)
@@ -687,7 +730,12 @@ function tiny(id_area, lang, api_key) {
             "insertdatetime", "image", "media", "nonbreaking", "directionality",
             "table", "importcss", "file-manager",
         ],
-        
+        /*
+        external_plugins: {
+            "tiny_mce_wiris": domain + "/node_modules/@wiris/mathtype-tinymce6/plugin.min.js",
+        },
+        */
+
         urlFileManager: domain + "/flmngr",
         urlFiles: domain + "/files/x3_/filemanager",
 
@@ -695,7 +743,8 @@ function tiny(id_area, lang, api_key) {
             apiKey: api_key, // Default free key "FLMNFLMN"
         },
 
-        toolbar1: "undo redo | styleselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent blockquote | image link media charmap table codesample | tiny_mce_wiris_formulaEditor tiny_mce_wiris_formulaEditorChemistry",
+        toolbar1: "undo redo | styleselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent blockquote | image link media charmap table codesample",
+        // | tiny_mce_wiris_formulaEditor tiny_mce_wiris_formulaEditorChemistry",
 
         toolbar_items_size: "small",
         style_formats: [
@@ -733,6 +782,9 @@ function tiny(id_area, lang, api_key) {
         remove_script_host : true,
 		document_base_url : domain,
         relative_urls : false,
+        convert_urls: false,
+        remove_script_host : false,
+
         // required for wiris,
         extended_valid_elements: '*[.*]',
         invalid_elements : "script",
@@ -853,9 +905,18 @@ function configurator() {
             let item = {};
             let res = true;
             this.xfields.forEach(function(e) {
-                var val = null;
+                let val = null;
                 switch(e.type) {
                     case "text":
+                    case "textarea":
+                        let tel = document.getElementById(e.name);
+                        if (tel != null) {
+                            val = tel.value;
+                            val = val.replace(/'/g, "&quot;");
+                        } else {
+                            val = "";
+                        }
+                        break;
                     case "integer":
                     case "time":
                         val = document.getElementById(e.name).value;
@@ -864,9 +925,13 @@ function configurator() {
                         let elem = document.getElementById(e.name);
                         val = elem.checked ? 1 : 0;
                         break;
+                    case "radio":
+                        val = document.querySelector('input[name="'+e.name+'"]:checked').value;
+                        console.log(val);
+                        break;
                     case "select":
                         let selectElement = document.getElementById(e.name);
-                        val = selectElement.value;
+                        val = selectElement.options[selectElement.selectedIndex].value;
                         break;
                     case "array":
                         val = [];
@@ -906,12 +971,18 @@ function configurator() {
                     case "checkbox":
                         // nothing
                         break;
+                    case "radio":
+                        document.querySelector('input[name="'+e.name+'"]').checked = false;
+                        break;
                     default:
                         if (e.default == null) {
-                            if (e.value == null) {
-                                document.getElementById(e.name).value = "";
-                            } else {
-                                document.getElementById(e.name).value = e.value;
+                            let df = document.getElementById(e.name);
+                            if (df != null) {
+                                if (e.value == null) {
+                                    df.value = "";
+                                } else {
+                                    df.value = e.value;
+                                }
                             }
                         }
                     break;
@@ -943,13 +1014,36 @@ function configurator() {
             this.xfields.forEach(function(e) {
                 switch(e.type) {
                     case "text":
+                    case "textarea":
                     case "integer":
                     case "time":
+                        let chks = tmp[index] != null
+                            ? tmp[index][e.name]
+                            : "";
+                        let el = document.getElementById(e.name);
+                        if (el != null) {
+                            el.value = chks;
+                        }
+                        break;
                     case "select":
-                        document.getElementById(e.name).value = tmp[index][e.name];
+                        let chkss = tmp[index] != null
+                            ? tmp[index][e.name]
+                            : "";
+                        document.getElementById(e.name).value = chkss;
+                        break
+                    case "radio":
+                        let chkr = tmp[index] != null
+                            ? tmp[index][e.name]
+                            : "";
+                        if (chkr != "") {
+                            document.querySelector('input[name="'+e.name+'"][value="'+chkr+'"]').checked = true;
+                        }
                         break;
                     case "checkbox":
-                        document.getElementById(e.name).checked = tmp[index][e.name];
+                        let chkc = tmp[index] != null
+                            ? tmp[index][e.name]
+                            : false;
+                        document.getElementById(e.name).checked = chkc;
                         break;
                     case "array":
                         let checkboxes = document.getElementsByName(e.name+"[]");

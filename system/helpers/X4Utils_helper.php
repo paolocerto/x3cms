@@ -344,6 +344,17 @@ class X4Utils_helper
         return $currency.' '.$res;
 	}
 
+    /**
+	 * Format money amount
+	 */
+	public static function currency_sup(float $amount, string $currency = '&euro;', int $decimal = 2) : string
+	{
+        $res = number_format($amount, $decimal, ',', '.');
+        list($a, $d) = explode(',', $res);
+
+		return $a.'<sup>'.$d.$currency.'</sup>';
+	}
+
 	/**
 	 * URL correction
 	 */
@@ -400,12 +411,12 @@ class X4Utils_helper
     public static function UUID(string $name_space, string $string) : string
     {
         $n_hex = bin2hex(str_replace(array('-','{','}', ':'), '', $name_space)); // Getting hexadecimal components of namespace
-        $binray_str = ''; // Binary value string
+        $binary_str = ''; // Binary value string
         //Namespace UUID to bits conversion
         for($i = 0; $i < strlen($n_hex); $i+=2)
         {
             try {
-                $binray_str .= chr(
+                $binary_str .= chr(
                     hexdec($n_hex[$i].$n_hex[$i+1])
                 );
             }
@@ -417,7 +428,7 @@ class X4Utils_helper
 
         }
         //hash value
-        $hashing = sha1($binray_str . $string);
+        $hashing = sha1($binary_str . $string);
 
         return sprintf('%08s-%04s-%04x-%04x-%12s',
           // 32 bits for the time_low

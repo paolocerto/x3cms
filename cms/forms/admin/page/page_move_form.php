@@ -41,7 +41,7 @@ $xdata = '{
         },
         subpages() {
             //console.log([this.xid_area, this.xlang, this.xxfrom, this.xfrom_menu]);
-            fetch(root+"pages/subpages/"+this.xid_area+"/"+this.xlang+"/"+this.xxfrom+"/"+this.xid_menu+"/1", {
+            fetch(root+"pages/subpages/"+this.xid_area+"/"+this.xlang+"/"+this.xxfrom+"/"+parseInt(this.xid_menu)+"/1", {
                 method: "GET",
                 headers: { "Content-Type": "text/html" }
             })

@@ -85,6 +85,10 @@ class Obj_site
     public $xdatabase = '';
     public $version = '';
 
+    public $title = '';
+    public $email = '';
+    public $replyto = '';
+
 	public function __construct()
 	{
 		$this->version = X4VERSION;

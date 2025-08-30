@@ -127,6 +127,9 @@ class Dictionary_controller extends X3ui_controller
         <a class="link" @click="popup(\''.BASE_URL.'dictionary/import/'.$lang.'/'.$area.'\')" title="'._IMPORT_KEYS.'">
             <i class="fa-solid fa-upload fa-lg"></i>
         </a>
+        <a class="link" @click="popup(\''.BASE_URL.'dictionary/selection/'.$lang.'/'.$area.'\')" title="'._IMPORT_SELECTED_KEYS.'">
+            <i class="fa-solid fa-file-import fa-lg"></i>
+        </a>
         <a class="link" @click="popup(\''.BASE_URL.'dictionary/edit/'.$lang.'/'.$area.'?xwhat='.$what.'\')" title="'._NEW_WORD.'">
             <i class="fa-solid fa-lg fa-circle-plus"></i>
         </a>';
@@ -135,8 +138,9 @@ class Dictionary_controller extends X3ui_controller
 	/**
 	 * Change status
 	 */
-	public function set(string $what, int $id_area, int $id, int $value = 0) : void
+	public function set(string $what, string $area, int $id, int $value = 0) : void
 	{
+        $id_area = X4Route_core::get_id_area($area);
         $msg = AdminUtils_helper::chk_priv_level($id_area, 'dictionary', $id, $what);
 		if (is_null($msg))
 		{
@@ -170,7 +174,7 @@ class Dictionary_controller extends X3ui_controller
 		$mod = new Dictionary_model();
         $item = ($id)
 			? $mod->get_by_id($id)
-			: new Word_obj($qs['xwhat']);
+			: new Word_obj($qs['xwhat'], $lang, $area);
 
         $form_fields = new X4Form_core('dictionary/word_edit');
 		$form_fields->id = $id;
@@ -239,8 +243,6 @@ class Dictionary_controller extends X3ui_controller
             }
 			else
 			{
-                $obj = $mod->get_by_id($id);
-
                 if ($id)
 				{
                     $result = $mod->update($id, $post);
@@ -248,10 +250,9 @@ class Dictionary_controller extends X3ui_controller
 				else
 				{
 				    $result = $mod->insert($post);
-
                     if ($result[1])
                     {
-                        AdminUtils_helper::set_priv($_SESSION['xuid'], $result[0], 'dictionary', $post['id_area']);
+                        AdminUtils_helper::set_priv($_SESSION['xuid'], $result[0], 'dictionary', $id_area);
                     }
                 }
 
@@ -260,7 +261,7 @@ class Dictionary_controller extends X3ui_controller
                 if ($result[1])
                 {
                     // reset cache
-                    APC && apcu_delete(SITE.'dict'.$obj->area.$obj->lang.$obj->what);
+                    APC && apcu_delete(SITE.'dict'.$post['area'].post['lang'].$post['what']);
 
                     $msg->update = array(
                         'element' => 'page',
@@ -402,7 +403,7 @@ class Dictionary_controller extends X3ui_controller
 
         $mod = new Dictionary_model();
 
-        $form_fields = new X4Form_core('dictionary/word_import');
+        $form_fields = new X4Form_core('dictionary/section_import');
 		$form_fields->lang = $lang;
 		$form_fields->area = $area;
         $form_fields->sections = $mod->get_section_options();
@@ -501,6 +502,125 @@ class Dictionary_controller extends X3ui_controller
 					$result = $mod->insert($post);
 				}
 			}
+
+			$msg = AdminUtils_helper::set_msg($result);
+
+			if ($result[1])
+			{
+				$msg->update = array(
+					'element' => 'page',
+					'url' => BASE_URL.'dictionary/keys/'.$post['lang'].'/'.$post['area'].'/'.$what
+				);
+			}
+		}
+		$this->response($msg);
+	}
+
+    /**
+	 * Import selected dictionary words from another area
+	 */
+	public function selection(string $lang, string $area) : void
+	{
+		$this->dict->get_wordarray(array('form', 'dictionary'));
+
+        $mod = new Dictionary_model();
+
+        $form_fields = new X4Form_core('dictionary/selection_import');
+		$form_fields->lang = $lang;
+		$form_fields->area = $area;
+        $form_fields->sections = $mod->get_section_options(false);
+
+		$fields = $form_fields->render();
+
+		if (X4Route_core::$post)
+		{
+			$e = X4Validation_helper::form($fields, 'selection');
+			if ($e)
+			{
+				$this->import_selected($_POST);
+			}
+			else
+			{
+				$this->notice($fields);
+			}
+			die;
+		}
+
+        $view = new X4View_core('modal');
+        $view->title = _IMPORT_SELECTED_KEYS;
+
+		$view->content = new X4View_core('editor');
+		$view->content->form = X4Form_helper::doform('selection', $_SERVER["REQUEST_URI"], $fields, array(_RESET, _SUBMIT, 'buttons'), 'post', '',
+            '@click="submitForm(\'selection\')"');
+
+		$view->render(true);
+	}
+
+    /**
+	 * Keys search inside dictionary section
+	 */
+	public function keys_search() : void
+	{
+        if (!X4Route_core::$post)
+		{
+            echo '';
+            exit;
+        }
+
+        $this->dict->get_wordarray(array('form', 'dictionary'));
+
+        $mod = new Dictionary_model();
+        list($lang, $area, $what) = explode('-', $_POST['what']);
+        $items = $mod->keys_search($lang, $area, $what, $_POST);
+
+        if (empty($items))
+        {
+            echo '<h2>'.BR._KEYS_LIST.'</h2><p>'._NO_ITEMS.'</p>';
+            exit;
+        }
+
+        $form_fields = new X4Form_core('dictionary/keys_search');
+        $form_fields->items = $items;
+
+        $fields = $form_fields->render();
+        echo X4Form_helper::doform_section($fields, 'selection');
+	}
+
+    /**
+	 * Perform the importing of words
+	 */
+	private function import_selected(array $_post) : void
+	{
+		$id_area = X4Route_core::get_id_area($_post['area']);
+		$msg = AdminUtils_helper::chk_priv_level($id_area, '_key_import', 0, 'create');
+
+		if (is_null($msg))
+		{
+			// get from key
+			list($lang, $area, $what) = explode('-', $_post['what']);
+
+			$post = array(
+				'lang' => $_post['lang'],
+				'area' => $_post['area'],
+				'what' => $what,
+				'xon' => 1
+			);
+
+			// get words to import
+			$mod = new Dictionary_model();
+
+            $c = $_post['counter'];
+            for ($i = 0; $i < $c; $i++)
+            {
+                if (isset($_post['k'.$i]))
+                {
+					$item = $mod->get_by_id($_post['k'.$i], 'dictionary', 'id, xkey, xval');
+
+                    $post['xkey'] = $item->xkey;
+                    $post['xval'] = $item->xval;
+                    $result = $mod->insert($post, 'dictionary');
+                }
+            }
 
 			$msg = AdminUtils_helper::set_msg($result);
 

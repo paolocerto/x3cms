@@ -11,7 +11,7 @@
 
 /**
  * x3banners controller
- * This controller work only on the admin side
+ * This controller only works on the admin side
  *
  * @package		X3CMS
  */

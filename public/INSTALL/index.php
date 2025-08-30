@@ -340,9 +340,9 @@ switch($step)
 					<ul>
 						<li>Allows people to copy, modify and distribute the X3 CMS code.</li>
 						<li>Forces any modifications done to the X3 CMS code to be shared back to the project and other users.</li>
-						<li class="error"><u>Does not allow rebranding of the system for commercial purposes.</u></li>
-						<li class="error"><u>Does not allow removal of the original copyright notices.</u></li>
-						<li class="error"><u>Requires you keep a convenient and prominently visible link to the X3 CMS Legal Notices.</u></li>
+						<li class="note"><u>Does not allow rebranding of the system for commercial purposes.</u></li>
+						<li class="note"><u>Does not allow removal of the original copyright notices.</u></li>
+						<li class="note"><u>Requires you keep a convenient and prominently visible link to the X3 CMS Legal Notices.</u></li>
 						<li>Forces a clear message that the modified version is based on the original and links back to X3 CMS.</li>
 						<li>Plugins should be available under their own license and should not be in anyway dependent on the X3 CMS license.</li>
 					</ul>
@@ -635,8 +635,26 @@ switch($step)
 				$domain = get_domain();
 
 				// set configuration
-				$search = array("define('HASH', 'sha1');", "'db_host' => 'localhost',", "'db_socket' => '',", "'db_name' => 'x3cms',", "'db_user' => 'root',", "'db_pass' => 'root',", "'TIMEZONE', 'timezone'");
-				$replace = array("define('HASH', '".$_POST['hash']."');", "'db_host' => '".$_POST['dbhost']."',", "'db_socket' => '".$_POST['dbsocket']."',", "'db_name' => '".$_POST['dbname']."',", "'db_user' => '".$_POST['dbuser']."',", "'db_pass' => '".$_POST['dbpass']."',", "'TIMEZONE', '".$_POST['tzone']."'");
+				$search = array(
+                    "'HASH', 'sha1'",
+                    "'db_host' => 'localhost'",
+                    "'db_socket' => ''",
+                    "'db_name' => 'x3cms'",
+                    "'db_user' => 'root'",
+                    "'db_pass' => 'root'",
+                    "'TIMEZONE', 'timezone'",
+                    "'SALT', 'aLongSecretComplexString'"
+                );
+				$replace = array(
+                    "'HASH', '".$_POST['hash']."'",
+                    "'db_host' => '".$_POST['dbhost']."'",
+                    "'db_socket' => '".$_POST['dbsocket']."'",
+                    "'db_name' => '".$_POST['dbname']."'",
+                    "'db_user' => '".$_POST['dbuser']."'",
+                    "'db_pass' => '".$_POST['dbpass']."'",
+                    "'TIMEZONE', '".$_POST['tzone']."'",
+                    "'SALT', '".md5(time().md5($_POST['dbpass']))."'"
+                );
 				$config = str_replace($search, $replace, file_get_contents(CMS_ROOT.'config/config.php'));
 				$check_config = file_put_contents(CMS_ROOT.'config/config.php', $config);
 

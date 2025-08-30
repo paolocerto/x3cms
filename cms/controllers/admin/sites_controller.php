@@ -310,7 +310,10 @@ class Sites_controller extends X3ui_controller
 			$post = array(
 				'xcode' => X4Utils_helper::slugify($_post['xcode']),
 				'domain' => $_post['domain'],
-                'xdatabase' => $_post['xdatabase']
+                'xdatabase' => $_post['xdatabase'],
+                'title' => $_post['title'],
+                'email' => $_post['email'],
+                'replyto' => $_post['replyto'],
 			);
 
             $result = ($_post['id'])
@@ -335,7 +338,7 @@ class Sites_controller extends X3ui_controller
 	 */
 	public function clear_cache() : void
 	{
-		$files = glob(APATH.'files/tmp/*');
+		$files = glob(X4Files_helper::$secret_path.'cache/*');
 		foreach ($files as $i)
 		{
 			unlink($i);

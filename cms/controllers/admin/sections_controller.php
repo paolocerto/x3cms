@@ -220,7 +220,7 @@ class Sections_controller extends X3ui_controller
 			$error = [];
 			$mod = new Section_model();
 
-            /*
+
             // get the previuos
             if ($id)
             {
@@ -245,19 +245,16 @@ class Sections_controller extends X3ui_controller
                     $settings = $mod->settings;
                 }
             }
-            */
 
 			// get data for settings
-            $settings = array(
-                'columns' => $_post['columns'],
-                'col_sizes' => $_post['col_sizes'],
-                'bgcolor' => $_post['bgcolor'],
-                'fgcolor' => $_post['fgcolor'],
-                'width' => $_post['width'],
-                'height' => $_post['height'],
-                'style' => $_post['stylex'],
-                'class' => $_post['classx'],
-            );
+            $settings['columns'] = $_post['columns'];
+            $settings['col_sizes'] = $_post['col_sizes'];
+            $settings['bgcolor'] = $_post['bgcolor'];
+            $settings['fgcolor'] = $_post['fgcolor'];
+            $settings['width'] = $_post['width'];
+            $settings['height'] = $_post['height'];
+            $settings['style'] = $_post['stylex'];
+            $settings['class'] = $_post['classx'];
 
             // col_sizes
             if (empty($settings['col_sizes']))
@@ -301,7 +298,7 @@ class Sections_controller extends X3ui_controller
             $w4k = 3840;
             $h4k = 2160;
 
-            $path = APATH.'files/'.SPREFIX.'/filemanager/';
+            $path = X4Files_helper::$file_path;
             $sizes = array($w4k, $h4k, 'RESIZE', $w4k, $h4k);
             $mimes = array('image/jpeg', 'image/pjpeg', 'image/png', 'image/x-png');
 
@@ -319,7 +316,7 @@ class Sections_controller extends X3ui_controller
             if (!empty($_FILES['img_h']['name']))
             {
                 // upload file
-                $filename = X4Files_helper::upload('img_h', $path, '', 0, $sizes, $mimes);
+                $filename = X4Files_helper::upload('img_h', $path, '', $sizes, $mimes);
 
                 // check for errors
                 if (!is_array($filename))

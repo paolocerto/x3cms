@@ -54,7 +54,7 @@ class X4Files_helper
 	public static $file_path = FFPATH.SPREFIX.'/filemanager/';
 
     // secret path
-	public static $secret_path = APATH.'files/files_'.SECRET.'/';
+	public static $secret_path = APATH.'files/secret/'.SPREFIX.SECRET.'/';
 
 	/**
 	 * Get a code related to the file type
@@ -104,6 +104,7 @@ class X4Files_helper
                 case 'rb':
                     return false;
                     break;
+            case 'pdf':
             case 'xls':
             case 'xlsx':
             case 'doc':
@@ -168,6 +169,7 @@ class X4Files_helper
             case 'rb':
                 return false;
                 break;
+            case 'pdf':
 			case 'xls':
             case 'xlsx':
             case 'doc':
@@ -406,7 +408,7 @@ class X4Files_helper
 	 * Perform the upload of an array of files with all required checks: file size, image size form images (crop and resize), check for overwrite and add prefixes, store the file inthe right folder.
 	 *
 	 * @param string	the name of the field
-	 * @param string	the path where to store the file. The standard path is APATH.'files/'.SPREFIX.'/filemanager/'
+	 * @param string	the path where to store the file. The standard path is FMPATH'
 	 * @param string	a prefix for the filename
 	 * @param array		the array contains (maximum width, maximum height, action_string). Possibles values for the action string are: 'NONE', 'CROP', 'RESIZE', 'SCALE'
 	 * @param array		the array contains valid mime types
@@ -1155,12 +1157,12 @@ class X4Files_helper
 	/**
 	 * Copy uploaded file and set chmod
 	 */
-	public static function copy_file(string $path, string $name, string $obj) : bool
+	public static function copy_file(string $path, string $name, string $uploaded_tmp_file) : bool
 	{
-		$check = move_uploaded_file($obj, $path.$name);
+        $check = move_uploaded_file($uploaded_tmp_file, $path.$name);
 		if ($check)
 		{
-			chmod($path.$name, 0777);
+        	chmod($path.$name, 0777);
 		}
 		return $check;
 	}
@@ -1225,7 +1227,7 @@ class X4Files_helper
 		if (!empty($ffmpeg))
 		{
 			// we can extract a frame
-			$ipath = APATH.'files/'.SPREFIX.'/filemanager/img/';
+			$ipath = FMPATH.'img/';
 
 			// set the new name
 			$final_name = self::get_final_name($ipath, $image_name);
@@ -1275,7 +1277,7 @@ class X4Files_helper
 		if (!empty($frame))
 		{
 			// we can extract a frame
-			$ipath = APATH.'files/'.SPREFIX.'/filemanager/img/';
+			$ipath = FMPATH.'img/';
 
 			// set the new name
 			$final_name = self::get_final_name($ipath, $image_name);

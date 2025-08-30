@@ -355,8 +355,9 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'admin', 'global', '_ENTER_TO_FILTER', 'invio per filtrare', 0, 1),
 
 (NOW(), 'it', 'admin', 'global', '_SET_ALL', 'Imposta per tutti', 0, 1),
-(NOW(), 'it', 'admin', 'global', '_SET_ALL_MSG', 'Azione sarà eseguita solo sugli elementi visibili', 0, 1),
+(NOW(), 'it', 'admin', 'global', '_SET_ALL_MSG', 'Azione sarà eseguita solo sugli elementi visibili', 0, 1);
 
+INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xlock`, `xon`) VALUES
 (NOW(), 'it', 'admin', 'home', '_HOME_PAGE', 'Home page', 0, 1),
 (NOW(), 'it', 'admin', 'home', '_PUBLIC_SIDE', 'Sito pubblico', 0, 1),
 (NOW(), 'it', 'admin', 'home', '_LOGGED_AS', 'Loggato come', 0, 1),
@@ -497,12 +498,15 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'admin', 'form', '_MUST_BE_A_PERIODICAL', 'deve essere una stringa formata da un numero seguito da uno dei seguenti termini: year, month, week, day', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_MUST_BE_AFTER', 'deve essere data successiva a "XXXRELATEDXXX"', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_MUST_BE_AFTER_OR_EQUAL', 'deve essere una data successiva o al limite uguale a "XXXRELATEDXXX"', 0, 1),
+(NOW(), 'it', 'admin', 'form', '_MUST_BE_AFTER_INDEX', 'deve essere un valore successivo o al limite uguale a "XXXRELATEDXXX"', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_MUST_BE_BEFORE', 'deve essere data precedente a "XXXRELATEDXXX"', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_MUST_BE_BEFORE_OR_EQUAL', 'deve essere una data precedente o al limite uguale a "XXXRELATEDXXX"', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_WRONG_LENGTH', 'numero di caratteri sbagliato (XXXRELATEDXXX)', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_GREATER_THAN', 'deve essere maggiore di "XXXRELATEDXXX".', 0, 1),
+(NOW(), 'it', 'admin', 'form', '_GREATER_EQUAL_TO', 'deve essere maggiore o al limite uguale a "XXXRELATEDXXX".', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_AT_LEAST', 'deve essere almeno pari a "XXXRELATEDXXX".', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_LOWER_THAN', 'deve essere minore di "XXXRELATEDXXX".', 0, 1),
+(NOW(), 'it', 'admin', 'form', '_LOWER_EQUAL_THAN', 'deve essere minore o al più uguale a "XXXRELATEDXXX"', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_IS_NOT_A_VALID_COLOR', 'non &egrave; un colore valido', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_INVALID_IBAN', 'il codice IBAN inserito non &egrave; valido', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_INVALID_EAN', 'il codice EAN inserito non &egrave; valido', 0, 1),
@@ -556,7 +560,10 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'admin', 'form', '_CAPTCHA_ERROR', 'Il codice di controllo con corrisponde.', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_SELECT_COLOR', 'Scegli un colore', 0, 1),
 (NOW(), 'it', 'admin', 'form', '_TO_CHANGE', 'Da modificare', 0, 1),
+(NOW(), 'it', 'admin', 'form', '_CONFIRM_DELETION', 'Confermo eliminazione', 0, 1),
+(NOW(), 'it', 'admin', 'form', '_CONFIRM_MESSAGE', 'Scrivere la parola <b>CONFERMO</b> per confermare volontà di eliminazione', 0, 1);
 
+INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xlock`, `xon`) VALUES
 (NOW(), 'it', 'admin', 'sites', '_SETTINGS_MANAGER', 'Gestione impostazioni', 0, 1),
 (NOW(), 'it', 'admin', 'sites', '_SETTINGS_MANAGER_MSG', 'Qui potete configurare la struttura e il comportamento del vostro X3CMS', 0, 1),
 (NOW(), 'it', 'admin', 'sites', '_SITE_MANAGER', 'Gestione sito', 0, 1),
@@ -564,6 +571,9 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'admin', 'sites', '_OFFLINE', 'Off Line', 0, 1),
 (NOW(), 'it', 'admin', 'sites', '_KEYCODE', 'Codice licenza', 0, 1),
 (NOW(), 'it', 'admin', 'sites', '_DOMAIN', 'Dominio', 0, 1),
+(NOW(), 'it', 'admin', 'sites', '_SITE_TITLE', 'Titolo sito', 0, 1),
+(NOW(), 'it', 'admin', 'sites', '_MAIL_FROM', 'Email mittente', 0, 1),
+(NOW(), 'it', 'admin', 'sites', '_MAIL_REPLY', 'Email replyto', 0, 1),
 (NOW(), 'it', 'admin', 'sites', '_DATABASE', 'Database', 0, 1),
 (NOW(), 'it', 'admin', 'sites', '_DATABASE_MSG', 'Per dominii alternativi', 0, 1),
 (NOW(), 'it', 'admin', 'sites', '_SITE_CONFIG', 'Configurazione sito', 0, 1),
@@ -571,7 +581,6 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'admin', 'sites', '_EDIT_SITE', 'Modifica sito', 0, 1),
 (NOW(), 'it', 'admin', 'sites', '_CLEAR_CACHE', 'Svuota la cache', 0, 1),
 (NOW(), 'it', 'admin', 'sites', '_VERSION', 'versione X3CMS', 0, 1),
-
 
 (NOW(), 'it', 'admin', 'info', '_SITE_INFO', 'Informazioni', 0, 1),
 (NOW(), 'it', 'admin', 'info', '_INFO_SERVER', 'Server', 0, 1),
@@ -603,6 +612,11 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'admin', 'login', '_RESET_PWD', 'Hai dimenticato la password?', 0, 1),
 (NOW(), 'it', 'admin', 'login', '_RESET_MSG', 'Una mail con le istruzioni per il recupero della password sar&agrave; inviata al vostro indirizzo email', 0, 1),
 
+(NOW(), 'it', 'admin', 'password', '_PWD_DIGIT_MSG', 'Almeno un numero', 0, 1),
+(NOW(), 'it', 'admin', 'password', '_PWD_CAPITAL_MSG', 'Almeno una lettera maiuscola', 0, 1),
+(NOW(), 'it', 'admin', 'password', '_PWD_LOWERCASE_MSG', 'Almeno una lettera minuscola', 0, 1),
+(NOW(), 'it', 'admin', 'password', '_PWD_SYMBOL_MSG', 'Almeno un simbolo tra !“#$%&()*+,-./:;<=>?@[]^_{|}~', 0, 1),
+(NOW(), 'it', 'admin', 'password', '_PWD_LENGTH_MSG', 'Lunga almeno XXXNUMXXX caratteri', 0, 1),
 
 (NOW(), 'it', 'admin', 'pwd_recovery', '_RECOVERY_SUBJECT', 'Recupero password', 0, 1),
 (NOW(), 'it', 'admin', 'pwd_recovery', '_RECOVERY_BODY_CONFIRM', 'Abbiamo ricevuto una richiesta di recupero della password associata a questo account.<br />Per confermare la richiesta segui questo link <a href="XXXLINKXXX" title="recupero password su XXXDOMAINXXX">XXXLINKXXX</a>', 0, 1),
@@ -648,9 +662,9 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'admin', 'menus', '_BOOKMARKS_NAME', 'Nome segnalibro', 0, 1),
 (NOW(), 'it', 'admin', 'menus', '_BOOKMARKS_ADD', 'Aggiungi pagina corrente', 0, 1),
 (NOW(), 'it', 'admin', 'menus', '_BOOKMARKS_DELETE', 'Elimina segnalibro', 0, 1),
-(NOW(), 'it', 'admin', 'menus', '_BOOKMARKS_ALREADY_EXISTS', 'Segnalibro già registrato', 0, 1),
+(NOW(), 'it', 'admin', 'menus', '_BOOKMARKS_ALREADY_EXISTS', 'Segnalibro già registrato', 0, 1);
 
-
+INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xlock`, `xon`) VALUES
 (NOW(), 'it', 'admin', 'pages', '_PAGE_LIST', 'Pagine - elenco pagine area', 0, 1),
 (NOW(), 'it', 'admin', 'pages', '_ADD_PAGE', 'Aggiungi una nuova pagina', 0, 1),
 (NOW(), 'it', 'admin', 'pages', '_NEW_PAGE', 'Nuova pagina', 0, 1),
@@ -686,8 +700,9 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'admin', 'pages', '_ROBOT_MSG', 'se vuoto viene usato "index,follow"', 0, 1),
 (NOW(), 'it', 'admin', 'pages', '_REDIRECT_CODE', 'Codice redirect', 0, 1),
 (NOW(), 'it', 'admin', 'pages', '_REDIRECT', 'Redirect URL', 0, 1),
-(NOW(), 'it', 'admin', 'pages', '_REDIRECT_MSG', 'inserire vecchio URL per esteso o relativo se nello stesso dominio', 0, 1),
+(NOW(), 'it', 'admin', 'pages', '_REDIRECT_MSG', 'inserire vecchio URL per esteso o relativo se nello stesso dominio', 0, 1);
 
+INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xlock`, `xon`) VALUES
 (NOW(), 'it', 'admin', 'articles', '_ARTICLE_LIST', 'Elenco articoli', 0, 1),
 (NOW(), 'it', 'admin', 'articles', '_ARTICLES', 'Articoli', 0, 1),
 (NOW(), 'it', 'admin', 'articles', '_ADD_ARTICLE', 'Aggiungi un nuovo articolo', 0, 1),
@@ -836,14 +851,17 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'admin', 'dictionary', '_WORD', 'Espressione', 0, 1),
 (NOW(), 'it', 'admin', 'dictionary', '_IMPORT_INTO', 'Importa in', 0, 1),
 (NOW(), 'it', 'admin', 'dictionary', '_IMPORT_KEYS', 'Importa chiavi', 0, 1),
+(NOW(), 'it', 'admin', 'dictionary', '_IMPORT_SELECTED_KEYS', 'Importa chiavi selezionate', 0, 1),
+
 (NOW(), 'it', 'admin', 'dictionary', '_SECTION', 'Sezione', 0, 1),
 (NOW(), 'it', 'admin', 'dictionary', '_SECTIONS_LIST', 'Elenco sezioni', 0, 1),
 (NOW(), 'it', 'admin', 'dictionary', '_WORDS_LIST', 'Elenco espressioni', 0, 1),
 (NOW(), 'it', 'admin', 'dictionary', '_DICTIONARY_SEARCH_MSG', 'Cerca per chiave in tutte le lingue', 0, 1),
 (NOW(), 'it', 'admin', 'dictionary', '_DICTIONARY_SEARCH_RESULT', 'Risultato della ricerca', 0, 1),
 (NOW(), 'it', 'admin', 'dictionary', '_DICTIONARY_DELETE_DUPLICATES', 'Elimina chiavi duplicate', 0, 1),
-(NOW(), 'it', 'admin', 'dictionary', '_DICTIONARY_DELETE_DUPLICATES_MSG', 'tutte le chiavi duplicate all\'interno di ogni sezione', 0, 1),
+(NOW(), 'it', 'admin', 'dictionary', '_DICTIONARY_DELETE_DUPLICATES_MSG', 'tutte le chiavi duplicate all\'interno di ogni sezione', 0, 1);
 
+INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xlock`, `xon`) VALUES
 (NOW(), 'it', 'admin', 'users', '_GROUP', 'Gruppo', 0, 1),
 (NOW(), 'it', 'admin', 'users', '_USERS_LIST', 'Elenco utenti', 0, 1),
 (NOW(), 'it', 'admin', 'users', '_USER_VIEW', 'Dettaglio utente', 0, 1),
@@ -1210,13 +1228,16 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'admin', 'form', '_INVALID_FISCAL_ID', 'must be a fiscal id', 0, 1),
 (NOW(), 'en', 'admin', 'form', '_MUST_BE_A_PERIODICAL', 'must be a string consisting of a number followed by one of the following: year, month, week, day, hour', 0, 1),
 (NOW(), 'en', 'admin', 'form', '_MUST_BE_AFTER', 'must be a later date than "XXXRELATEDXXX"', 0, 1),
-(NOW(), 'en', 'admin', 'form', '_MUST_BE_AFTER_OR_EQUAL', 'must be a later date or at least equal than "XXXRELATEDXXX"', 0, 1),
+(NOW(), 'en', 'admin', 'form', '_MUST_BE_AFTER_OR_EQUAL', 'must be a later date or at least the same as "XXXRELATEDXXX"', 0, 1),
+(NOW(), 'en', 'admin', 'form', '_MUST_BE_AFTER_INDEX', 'must be a value greater or at least the same as "XXXRELATEDXXX"', 0, 1),
 (NOW(), 'en', 'admin', 'form', '_MUST_BE_BEFORE', 'must be an earlier date than "XXXRELATEDXXX"', 0, 1),
 (NOW(), 'en', 'admin', 'form', '_MUST_BE_BEFORE_OR_EQUAL', 'must be an earlier or at less equal date than "XXXRELATEDXXX"', 0, 1),
 (NOW(), 'en', 'admin', 'form', '_WRONG_LENGTH', 'wrong length (XXXRELATEDXXX)', 0, 1),
 (NOW(), 'en', 'admin', 'form', '_GREATER_THAN', 'have to be greater than "XXXRELATEDXXX".', 0, 1),
+(NOW(), 'en', 'admin', 'form', '_GREATER_EQUAL_TO', 'have to be greater or at least the same as "XXXRELATEDXXX".', 0, 1),
 (NOW(), 'en', 'admin', 'form', '_AT_LEAST', 'have to be at least equal to "XXXRELATEDXXX".', 0, 1),
 (NOW(), 'en', 'admin', 'form', '_LOWER_THAN', 'have to be lower than "XXXRELATEDXXX"', 0, 1),
+(NOW(), 'en', 'admin', 'form', '_LOWER_EQUAL_THAN', 'have to be less than or at most equal to "XXXRELATEDXXX"', 0, 1),
 (NOW(), 'en', 'admin', 'form', '_IS_NOT_A_VALID_COLOR', 'is not a valid color', 0, 1),
 (NOW(), 'en', 'admin', 'form', '_INVALID_IBAN', 'invalid IBAN code', 0, 1),
 (NOW(), 'en', 'admin', 'form', '_INVALID_EAN', 'invalid EAN code', 0, 1),
@@ -1269,7 +1290,9 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'admin', 'form', '_LEVEL_RULES', 'Reader: can only read, Writer: can read and write, Manager: can read, write, enable and disable, Administrator: like manager plus lock and delete power', 0, 1),
 (NOW(), 'en', 'admin', 'form', '_CAPTCHA_ERROR', 'Wrong captcha.', 0, 1),
 (NOW(), 'en', 'admin', 'form', '_SELECT_COLOR', 'Pick a color', 0, 1),
-(NOW(), 'en', 'admin', 'form', '_TO_CHANGE', 'To changes', 0, 1);
+(NOW(), 'en', 'admin', 'form', '_TO_CHANGE', 'To changes', 0, 1),
+(NOW(), 'en', 'admin', 'form', '_CONFIRM_DELETION', 'Confirm deletion', 0, 1),
+(NOW(), 'en', 'admin', 'form', '_CONFIRM_MESSAGE', 'Write the word <b>CONFIRM</b> to confirm your wish to delete', 0, 1);
 
 INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xlock`, `xon`) VALUES
 (NOW(), 'en', 'admin', 'sites', '_SETTINGS_MANAGER', 'Settings manager', 0, 1),
@@ -1279,6 +1302,9 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'admin', 'sites', '_OFFLINE', 'Off Line', 0, 1),
 (NOW(), 'en', 'admin', 'sites', '_KEYCODE', 'License code', 0, 1),
 (NOW(), 'en', 'admin', 'sites', '_DOMAIN', 'Domain', 0, 1),
+(NOW(), 'en', 'admin', 'sites', '_SITE_TITLE', 'Site title', 0, 1),
+(NOW(), 'en', 'admin', 'sites', '_MAIL_FROM', 'Mail from', 0, 1),
+(NOW(), 'en', 'admin', 'sites', '_MAIL_REPLY', 'Mail replyto', 0, 1),
 (NOW(), 'en', 'admin', 'sites', '_DATABASE', 'Database', 0, 1),
 (NOW(), 'en', 'admin', 'sites', '_DATABASE_MSG', 'For alternative domains', 0, 1),
 (NOW(), 'en', 'admin', 'sites', '_SITE_CONFIG', 'Site config', 0, 1),
@@ -1316,6 +1342,13 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'admin', 'login', '_RESET_PWD_TITLE', 'Password recovery', 0, 1),
 (NOW(), 'en', 'admin', 'login', '_RESET_PWD', 'Forgot your password?', 0, 1),
 (NOW(), 'en', 'admin', 'login', '_RESET_MSG', 'An email with instructions on retrieving your password will be sent to you', 0, 1),
+
+
+(NOW(), 'en', 'admin', 'password', '_PWD_DIGIT_MSG', 'At least one digit', 0, 1),
+(NOW(), 'en', 'admin', 'password', '_PWD_CAPITAL_MSG', 'At least one capital letter', 0, 1),
+(NOW(), 'en', 'admin', 'password', '_PWD_LOWERCASE_MSG', 'At least one lowercase letter', 0, 1),
+(NOW(), 'en', 'admin', 'password', '_PWD_SYMBOL_MSG', 'At least aone symbol !“#$%&()*+,-./:;<=>?@[]^_{|}~', 0, 1),
+(NOW(), 'en', 'admin', 'password', '_PWD_LENGTH_MSG', 'At least XXXNUMXXX characters long', 0, 1),
 
 
 (NOW(), 'en', 'admin', 'pwd_recovery', '_RECOVERY_SUBJECT', 'Password recovery', 0, 1),
@@ -1489,7 +1522,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'admin', 'sections', '_SECTION_SIZES_AND_COLORS', 'Section sizes and colors', 0, 1),
 (NOW(), 'en', 'admin', 'sections', '_SECTION_COLUMNS_STYLE', 'Columns colors and styles', 0, 1),
 (NOW(), 'en', 'admin', 'sections', '_SECTION_BACKGROUND', 'Background color', 0, 1),
-(NOW(), 'en', 'admin', 'sections', '_SECTION_IMG_H', 'Backgrond image horizontal', 0, 1),
+(NOW(), 'en', 'admin', 'sections', '_SECTION_IMG_H', 'Background image horizontal', 0, 1),
 (NOW(), 'en', 'admin', 'sections', '_SECTION_IMG_V', 'Background image vertical', 0, 1),
 (NOW(), 'en', 'admin', 'sections', '_SECTION_FOREGROUND', 'Foreground color', 0, 1),
 (NOW(), 'en', 'admin', 'sections', '_SECTION_COLUMNS', 'Number of columns', 0, 1),
@@ -1549,6 +1582,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'admin', 'dictionary', '_WORD', 'Word', 0, 1),
 (NOW(), 'en', 'admin', 'dictionary', '_IMPORT_INTO', 'Import in', 0, 1),
 (NOW(), 'en', 'admin', 'dictionary', '_IMPORT_KEYS', 'Import keys', 0, 1),
+(NOW(), 'en', 'admin', 'dictionary', '_IMPORT_SELECTED_KEYS', 'Import selected keys', 0, 1),
 (NOW(), 'en', 'admin', 'dictionary', '_SECTION', 'Section', 0, 1),
 (NOW(), 'en', 'admin', 'dictionary', '_SECTIONS_LIST', 'Sections list', 0, 1),
 (NOW(), 'en', 'admin', 'dictionary', '_WORDS_LIST', 'Words list', 0, 1),
@@ -1789,8 +1823,10 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'public', 'form', '_MUST_BE_DIFFERENT', 'deve essere diverso da "XXXRELATEDXXX".', 0, 1),
 
 (NOW(), 'it', 'public', 'form', '_GREATER_THAN', 'deve essere maggiore di "XXXRELATEDXXX".', 0, 1),
+(NOW(), 'it', 'public', 'form', '_GREATER_EQUAL_TO', 'deve essere maggiore o al limite uguale a "XXXRELATEDXXX".', 0, 1),
 (NOW(), 'it', 'public', 'form', '_AT_LEAST', 'deve essere almeno pari a "XXXRELATEDXXX".', 0, 1),
 (NOW(), 'it', 'public', 'form', '_LOWER_THAN', 'deve essere minore di "XXXRELATEDXXX"', 0, 1),
+(NOW(), 'it', 'public', 'form', '_LOWER_EQUAL_THAN', 'deve essere minore o al più uguale a "XXXRELATEDXXX"', 0, 1),
 
 (NOW(), 'it', 'public', 'form', '_MUST_BE_NUMERIC', 'deve essere un numero', 0, 1),
 (NOW(), 'it', 'public', 'form', '_MUST_CONTAIN_ONLY_NUMBERS', 'deve contenere solo numeri', 0, 1),
@@ -1817,6 +1853,7 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'it', 'public', 'form', '_MUST_BE_A_PERIODICAL', 'deve essere una stringa formata da un numero seguito da uno dei seguenti termini: year, month, week, day, hour', 0, 1),
 (NOW(), 'it', 'public', 'form', '_MUST_BE_AFTER', 'deve essere data successiva a "XXXRELATEDXXX"', 0, 1),
 (NOW(), 'it', 'public', 'form', '_MUST_BE_AFTER_OR_EQUAL', 'deve essere una data successiva o al limite uguale a "XXXRELATEDXXX"', 0, 1),
+(NOW(), 'it', 'public', 'form', '_MUST_BE_AFTER_INDEX', 'deve essere un valore successivo o al limite uguale a "XXXRELATEDXXX"', 0, 1),
 (NOW(), 'it', 'public', 'form', '_MUST_BE_BEFORE', 'deve essere data precedente a "XXXRELATEDXXX"', 0, 1),
 (NOW(), 'it', 'public', 'form', '_MUST_BE_BEFORE_OR_EQUAL', 'deve essere una data precedente o al limite uguale a "XXXRELATEDXXX"', 0, 1),
 (NOW(), 'it', 'public', 'form', '_INVALID_IBAN', 'il codice IBAN inserito non &egrave; valido', 0, 1),
@@ -1979,8 +2016,10 @@ INSERT INTO `dictionary` (`updated`, `lang`, `area`, `what`, `xkey`, `xval`, `xl
 (NOW(), 'en', 'public', 'form', '_MUST_BE_DIFFERENT', 'must be different from "XXXRELATEDXXX".', 0, 1),
 
 (NOW(), 'en', 'public', 'form', '_GREATER_THAN', 'have to be greater than "XXXRELATEDXXX".', 0, 1),
+(NOW(), 'en', 'public', 'form', '_GREATER_EQUAL_TO', 'have to be greater or at least the same as "XXXRELATEDXXX".', 0, 1),
 (NOW(), 'en', 'public', 'form', '_AT_LEAST', 'have to be at least equal to "XXXRELATEDXXX".', 0, 1),
 (NOW(), 'en', 'public', 'form', '_LOWER_THAN', 'have to be lower than "XXXRELATEDXXX".', 0, 1),
+(NOW(), 'en', 'public', 'form', '_LOWER_EQUAL_THAN', 'have to be less than or at most equal to "XXXRELATEDXXX"', 0, 1),
 
 (NOW(), 'en', 'public', 'form', '_MUST_BE_NUMERIC', 'must be numeric', 0, 1),
 (NOW(), 'en', 'public', 'form', '_MUST_CONTAIN_ONLY_NUMBERS', 'can contain only numbers', 0, 1),
@@ -2748,7 +2787,7 @@ INSERT INTO `pages` (`updated`, `lang`, `id_area`, `tpl`, `css`, `xfrom`, `xid`,
 
 -- admin pages it
 
-INSERT INTO `pages` (`updated`, `lang`, `id_area`, `tpl`, `css`, `xfrom`, `xid`, `url`, `name`, `title`, `description`, `xkeys`, `icon`, `id_menu`, `xpos`, `deep`, `ordinal`, `hidden`, `xlock`, `xon`) VALUES
+INSERT INTO `pages` (`updated`, `lang`, `id_area`, `tpl`, `css`, `xfrom`, `xid`, `url`, `name`, `title`, `description`, `xkeys`, `icon`, `id_menu`, `xpos`, `deep`, `ordinal`, `fake`, `xlock`, `xon`) VALUES
 (NOW(),	'it',	1,	'base',	'x3ui',	'home',	'base',	'home',	            'Home',	                'Home',	                        'Home page',                '', '', 0, 0, 0, 'A',	0,	1, 1),
 (NOW(),	'it',	1,	'base',	'x3ui',	'home',	'base',	'msg',	            'Comunicazione',        'Comunicazione',                'Messaggio all\'utente',    '', '', 0, 1, 1, 'A0000001', 0,	1, 1),
 (NOW(),	'it',	1,	'base',	'x3ui',	'home',	'base',	'search',           'Risultati della ricerca', 'Risultati della ricerca',	'Risultati della ricerca',  '', '', 0, 2, 1, 'A0000002', 0, 1, 1),
@@ -2756,7 +2795,7 @@ INSERT INTO `pages` (`updated`, `lang`, `id_area`, `tpl`, `css`, `xfrom`, `xid`,
 (NOW(),	'it',	1,	'login','x3ui',	'home',	'base',	'login/recovery',   'Recupero password',    'Recupero password',            'Recupero password',        '', '', 0, 4, 1, 'A0000004', 0, 1, 1),
 
 (NOW(),	'it',	1,	'base',	'x3ui',	'home',	'widgets', 'widgets', 'Widget',	'Gestione widget', 'Gestione widget', '', '<i class="fa-solid fa-lg fa-fw fa-paperclip"></i>', 1, 1, 1, 'A0011001',	0, 1, 1),
-(NOW(),	'it',	1,	'base',	'x3ui',	'home',	'help',	'help',	'Guida in linea', 'Guida in linea',	'Guida in linea', '', '<i class="fa-solid fa-lg fa-fw fa-circle-question"></i>', 1,	2, 1, 'A0011002',	0, 1, 1),
+(NOW(),	'it',	1,	'base',	'x3ui',	'home',	'help',	'help',	'Guida in linea', 'Guida in linea',	'Guida in linea', '', '<i class="fa-solid fa-lg fa-fw fa-circle-question"></i>', 1,	2, 1, 'A0011002', 0, 1, 1),
 (NOW(),	'it',	1,	'base',	'x3ui',	'home',	'base',	'profile', 'Profilo', 'Profilo utente',	'Profilo utente', '', '<i class="fa-solid fa-lg fa-fw fa-user"></i>', 1, 3,	1, 'A0011003', 0, 1, 1),
 (NOW(),	'it',	1,	'base',	'x3ui',	'home',	'base',	'info',	'info',	'Info',	'Informazioni sul CMS X3', '', '<i class="fa-solid fa-lg fa-fw fa-circle-info"></i>', 1, 4,	1, 'A0011004', 0, 1, 1),
 (NOW(),	'it',	1,	'base',	'x3ui',	'home',	'base',	'login/logout',	'Esci',	'Esci',	'Chiudi sessione', '', '<i class="fa-solid fa-lg fa-fw fa-power-off"></i>',	1, 5, 1, 'A0011005', 0,	1, 1),
@@ -2790,7 +2829,7 @@ INSERT INTO `pages` (`updated`, `lang`, `id_area`, `tpl`, `css`, `xfrom`, `xid`,
 
 -- admin pages en
 
-INSERT INTO `pages` (`updated`, `lang`, `id_area`, `tpl`, `css`, `xfrom`, `xid`, `url`, `name`, `title`, `description`, `xkeys`, `icon`, `id_menu`, `xpos`, `deep`, `ordinal`, `hidden`, `xlock`, `xon`) VALUES
+INSERT INTO `pages` (`updated`, `lang`, `id_area`, `tpl`, `css`, `xfrom`, `xid`, `url`, `name`, `title`, `description`, `xkeys`, `icon`, `id_menu`, `xpos`, `deep`, `ordinal`, `fake`, `xlock`, `xon`) VALUES
 (NOW(),	'en',	1,	'base',	'x3ui',	'home',	'base',	'home',	'Home',	'Home',	'Home page', '', '', 0,	0, 0, 'A', 0, 1, 1),
 (NOW(),	'en',	1,	'base',	'x3ui',	'home',	'base',	'msg',	'Message',	'Message',	'Message', '', '', 0, 1, 1,	'A0000001',	0, 1, 1),
 (NOW(),	'en',	1,	'base',	'x3ui',	'home',	'base',	'search', 'Search result', 'Search result',	'Search result', '', '', 0,	2,	1, 'A0000002', 0, 1, 1),
@@ -3000,6 +3039,9 @@ CREATE TABLE IF NOT EXISTS `sites` (
   `updated` datetime NOT NULL,
   `xcode` char(32) NOT NULL,
   `domain` varchar(128) NOT NULL,
+  `title` varchar(128) NOT NULL,
+  `email` varchar(128) NOT NULL,
+  `replyto` varchar(128) NOT NULL,
   `xdatabase` varchar(32) NOT NULL,
   `version` varchar(16) NOT NULL,
   `xon` tinyint(1) NOT NULL,
@@ -3010,8 +3052,8 @@ CREATE TABLE IF NOT EXISTS `sites` (
 -- Dumping data for table `sites`
 --
 
-INSERT INTO `sites` (`updated`, `xcode`, `domain`, `xdatabase`, `version`, `xon`) VALUES
-(NOW(), '', 'ZZZDOMAIN', 'default', '0.9.99 STABLE', 1);
+INSERT INTO `sites` (`updated`, `xcode`, `domain`, `title`, `email`, `replyto`, `xdatabase`, `version`, `xon`) VALUES
+(NOW(), '', 'ZZZDOMAIN', '', '', '', 'default', '0.9.99 STABLE', 1);
 
 -- --------------------------------------------------------
 

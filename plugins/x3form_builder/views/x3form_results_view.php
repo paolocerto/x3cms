@@ -64,7 +64,7 @@ if (!empty($items[0]))
 	echo '</tbody></table>
     </div>';
 
-    echo '<div id="form_pager" class="pager">'.X4Pagination_helper::tw_admin_pager(BASE_URL.'x3form_builder/results/'.$id_area.'/'.$lang.'/'.$id_form.'/', $items[1], 5, false, '', '').'</div>';
+    echo '<div id="form_pager" class="pager">'.X4Pagination_helper::tw_admin_pager(BASE_URL.'x3form_builder/results/'.$id_area.'/'.$lang.'/'.$id_form.'/', $items[1], 5, '').'</div>';
 }
 else
 {

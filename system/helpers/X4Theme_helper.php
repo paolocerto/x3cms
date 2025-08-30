@@ -188,10 +188,10 @@ class X4Theme_helper
 	/**
 	 * Build a simple breadcrumb
 	 */
-	public static function navbar(array $pages, string $sep = ' > ', bool $home = true) : string
+	public static function navbar(array $pages, string $sep = ' > ', bool $home = true, string $css = '') : string
 	{
 		$str = '';
-		if (!empty($pages))
+		if (sizeof($pages[0]) > 1)
 		{
 			// chain of pages
 			$item = array_pop($pages[0]);
@@ -215,7 +215,7 @@ class X4Theme_helper
 
 				// add a crumb
 				$str .= (($home || $i->url != 'home') && !$i->fake)
-                    ? '<a href="'.BASE_URL.$url.$param.'" title="'.stripslashes($i->description).'">'.stripslashes($i->name).'</a><span>'.$sep.'</span>'
+                    ? '<a class="'.$css.'" href="'.BASE_URL.$url.$param.'" title="'.stripslashes($i->description).'">'.stripslashes($i->name).'</a><span>'.$sep.'</span>'
                     : stripslashes($i->name).'<span>'.$sep.'</span>';
 			}
 			// do we have to show home?
@@ -598,13 +598,13 @@ class X4Theme_helper
             // horizontal background
             if (isset($section['s']['img_h']) && !empty($section['s']['img_h']))
             {
-                $css[] = '#sn'.($index).'{background-image: url('.ROOT.'cms/files/'.SPREFIX.'/filemanager/img/'.$section['s']['img_h'].')}';
+                $css[] = '#sn'.($index).'{background-image: url('.FMPATH.'img/'.$section['s']['img_h'].');background-size:cover;}';
             }
 
             // vertical background
             if (isset($section['s']['img_v']) && !empty($section['s']['img_v']))
             {
-                $css[] = '@media (max-width: 1024px) {#sn'.($index).'{background-image: url('.ROOT.'cms/files/'.SPREFIX.'/filemanager/img/'.$section['s']['img_v'].')}}';
+                $css[] = '@media (max-width: 1024px) {#sn'.($index).'{background-image: url('.FMPATH.'img/'.$section['s']['img_v'].');background-size:cover;}}';
             }
         }
         else
@@ -660,11 +660,11 @@ class X4Theme_helper
     {
         $grid = array(
             1 => '',
-            2 => 'grid lg:grid-cols-2 sm:grid-cols-1 grid-cols-1',
-            3 => 'grid lg:grid-cols-3 sm:grid-cols-2 grid-cols-1',
-            4 => 'grid xl:grid-cols-4 lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 grid-cols-1',
-            5 => 'grid xl:grid-cols-5 lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-2 grid-cols-1',
-            6 => 'grid xl:grid-cols-6 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1',
+            2 => 'gap-x-6 gap-y-8 grid lg:grid-cols-2 sm:grid-cols-1 grid-cols-1',
+            3 => 'gap-x-6 gap-y-8 grid lg:grid-cols-3 sm:grid-cols-2 grid-cols-1',
+            4 => 'gap-x-6 gap-y-8 grid xl:grid-cols-4 lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 grid-cols-1',
+            5 => 'gap-x-6 gap-y-8 grid xl:grid-cols-5 lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-2 grid-cols-1',
+            6 => 'gap-x-6 gap-y-8 grid xl:grid-cols-6 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1',
         );
         return $grid[$nc];
     }
@@ -867,7 +867,7 @@ class X4Theme_helper
         $tmp = '';
         if ($article_index == 0)
         {
-            $tmp = '<div class="'.$grid.' gap-6 px-2 md:px-4 pb-2">';
+            $tmp = '<div class="'.$grid.' px-2 md:px-4 pb-2">';
 
             // handle width
             if ($section['width'] != 'fullwidth')
@@ -884,7 +884,7 @@ class X4Theme_helper
         {
             // close the grid for each row
             // is this a good idea???
-            $tmp = '</div>'.NL.'<div class="'.$grid.' pt-4 pb-2 gap-6 px-2 md:px-4">';
+            $tmp = '</div>'.NL.'<div class="'.$grid.' pt-4 pb-2 px-2 md:px-4">';
         }
         return $tmp;
     }
@@ -975,7 +975,7 @@ class X4Theme_helper
                                             x-show="'.$key.'"
                                             '.$transition.'
                                         >
-                                            <div class="sub rounded-md shadow-lg w-64 mt-10 pb-4">
+                                            <div class="sub rounded-md shadow-lg w-72 mt-10 pb-4">
                                                 '.$sub_screen.'
                                             </div>
                                         </div>
@@ -985,14 +985,20 @@ class X4Theme_helper
                 else
                 {
                     // with link
+                    if ($i['mode'] == 0)
+                    {
+                        $i['name'] = str_replace(' ', '&nbsp;', stripslashes($i['name']));
+                    }
+                    list($link, $mobile) = self::link($i, $style, $active, $svg, '');
+
                     $menu_items .= ' <div @click.away="'.$key.' = false" class="relative hidden md:inline-flex" x-data="{ '.$key.': false }">
                                         <button
                                             x-on:mouseover="'.$key.' = true"
                                             x-on:ontouchstart="'.$key.' = true"
                                             onclick="window.location.href=\''.$i['url'].'\';"
-                                            class="focus:outline-none pt-2 '.$style.'"
+                                            class="'.$style.'"
                                         >
-                                            <span>'.str_replace(' ', '&nbsp;', stripslashes($i['name'])).'</span>
+                                            <span>'.$i['name'].'</span>
                                             '.$svg.'
                                         </button>
 
@@ -1003,10 +1009,13 @@ class X4Theme_helper
                                             '.$transition.'
                                             class="z-50"
                                         >
-                                            <div class="px-2 py-2 bg-white shadow">
+                                            <div class="sub rounded-md shadow-lg w-72 mt-10 pb-4">
                                                 '.$sub_screen.'
                                             </div>
                                         </div>
+                                    </div>
+                                    <div class="w-full inline-flex md:hidden pb-1 lg:py-0 border-t border-b-gray-200">
+                                        '.$mobile.'
                                     </div>
                                     '.$sub_mobile;
                 }
@@ -1090,7 +1099,7 @@ class X4Theme_helper
                                             x-show="'.$key.'"
                                             '.$transition.'
                                         >
-                                            <div class="sub rounded-md shadow-lg w-64 mt-10 pb-4">
+                                            <div class="sub rounded-md shadow-lg w-72 mt-10 pb-4">
                                                 '.$sub_screen.'
                                             </div>
                                         </div>
@@ -1191,7 +1200,7 @@ class X4Theme_helper
         $mobile = '<a
             '.$mobile_click.'
             title="'.stripslashes($item['title']).'"
-            class="px-2 pt-2 '.$btn_style.' '.$active.'"
+            class="px-2 '.$btn_style.' '.$active.'"
         >
             '.$btn_label.'
         </a>';

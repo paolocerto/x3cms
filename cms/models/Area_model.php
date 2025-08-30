@@ -96,6 +96,16 @@ class Area_model extends X4Model_core
 	}
 
     /**
+	 * Get domain by id area
+	 */
+	public function get_domain(int $id_area) : string
+	{
+		return (string) $this->db->query_var('SELECT s.domain
+            FROM sites s
+            JOIN areas a ON a.id_site = s.id');
+	}
+
+    /**
 	 * Reset xdefault
 	 */
 	public function reset_xdefault(int $id_site, int $id_area) : array

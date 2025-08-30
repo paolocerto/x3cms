@@ -13,7 +13,45 @@
  * here you set all
  */
 
+/**
+ * Initialize secret
+ */
+function init_secret() : void
+{
+    $source = APATH.'files/files';
+    $destination = APATH.'files/secret/'.SPREFIX.SECRET;
+    if (!is_dir($source.'/files'))
+    {
+        echo 'Missing files for secret';
+        die;
+    }
+
+    // create secret
+    mkdir($destination, 0777, true);
+    // copy dir
+    $iterator = new RecursiveIteratorIterator(
+        new RecursiveDirectoryIterator($source, RecursiveDirectoryIterator::SKIP_DOTS),
+        RecursiveIteratorIterator::SELF_FIRST
+    );
+
+    foreach ($iterator as $item) {
+        $destPath = $destination . DIRECTORY_SEPARATOR . $iterator->getSubPathName();
+
+        if ($item->isDir()) {
+            // Create directory
+            if (!is_dir($destPath)) {
+                mkdir($destPath, 0777, true);
+            }
+        } else {
+            // Copy file
+            copy($item->getRealPath(), $destPath);
+        }
+    }
+}
+
 // start config
+
+define('SALT', '2dcadffa3da9b59d02e9361fc599f8cb');
 
 /**
  * Define SPREFIX: a prefix used for the path to files folder
@@ -33,9 +71,14 @@ if (!isset($_SESSION['ffprefix']) || $_SESSION['ffprefix'] != SPREFIX)
 }
 
 $default = [];
+// key for extra config file
+define('SECRET', md5(SPREFIX.SALT.$_SERVER['DOCUMENT_ROOT']));
+if (!file_exists(APATH.'files/secret/'.SPREFIX.SECRET))
+{
+    init_secret();
+}
 // extra config file
 // here we store info about extra areas
-define('SECRET', md5($_SERVER['DOCUMENT_ROOT']));
 if (file_exists(APATH.'files/'.SECRET.'/'.SECRET.'.txt'))
 {
     $default = json_decode(file_get_contents(APATH.'files/'.SECRET.'/'.SECRET.'.txt'), true);
@@ -57,7 +100,6 @@ define('SITE', 'sitekey');				// site key used for checking login status: use an
 // security
 define('HASH', 'sha1');					// hash method (sha1, sha512 or whatever you want, up to 128 char) DO NOT CHANGE AFTER INSTALLATION!
 
-define('SALT', 'aLongSecretComplexString');
 
 // localization
 define('TIMEZONE', 'Europe/Rome');		// set time zone (see http://www.php.net/manual/en/timezones.php for a list of supported timezones)
@@ -83,7 +125,6 @@ define('APC', false);					// if true the most frequently executed queries will b
 
 // Flmngr API Key for TinyMCE
 define('FLMNGR_API_KEY', 'FLMNFLMN');   // default API key
-define('FLMNGR_SCRIPT', '<script src="//cdn.public.flmngr.com/'.FLMNGR_API_KEY.'/widgets.js"></script>');
 
 // database configuration array
 $db_config = [];

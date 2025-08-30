@@ -15,7 +15,7 @@ echo '<h1 class="mt-6">'.$page->icon.' '.$theme._TRAIT_._MENU_LIST.'</h1>';
 echo '<table>
 	<thead>
         <tr>
-            <th class="w-28">'._MENU_MODE.'</th>
+            <th class="w-80">'._MENU_MODE.'</th>
             <th class="w-40">'._MENUS.'</th>
             <th></th>
             <th class="w-40">'._ACTIONS.'</th>

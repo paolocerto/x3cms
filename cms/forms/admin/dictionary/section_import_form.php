@@ -8,7 +8,7 @@
  * @package		X3CMS
  */
 
-// word import form
+// dictionary section import form
 
 // build the form
 $fields = [];

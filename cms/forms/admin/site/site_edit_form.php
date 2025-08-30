@@ -25,6 +25,13 @@ $fields[] = array(
     'type' => 'html',
     'value' => '<div class="bg-white text-gray-700 md:px-8 md:pb-8 px-4 pb-4" style="border:1px solid white">'
 );
+
+$fields[] = array(
+    'label' => null,
+    'type' => 'html',
+    'value' => '<div class="grid grid-cols-1 md:grid-cols-2 gap-x-4"><div>'
+);
+
 $fields[] = array(
     'label' => _VERSION,
     'type' => 'text',
@@ -32,6 +39,13 @@ $fields[] = array(
     'name' => 'version',
     'extra' => 'class="w-full" disabled="disabled"'
 );
+
+$fields[] = array(
+    'label' => null,
+    'type' => 'html',
+    'value' => '</div><div>'
+);
+
 $fields[] = array(
     'label' => _KEYCODE,
     'type' => 'text',
@@ -39,6 +53,13 @@ $fields[] = array(
     'name' => 'xcode',
     'extra' => 'class="w-full"'
 );
+
+$fields[] = array(
+    'label' => null,
+    'type' => 'html',
+    'value' => '</div><div>'
+);
+
 $fields[] = array(
     'label' => _DOMAIN,
     'type' => 'text',
@@ -46,6 +67,12 @@ $fields[] = array(
     'name' => 'domain',
     'rule' => 'required|url',
     'extra' => 'class="w-full"'
+);
+
+$fields[] = array(
+    'label' => null,
+    'type' => 'html',
+    'value' => '</div><div>'
 );
 
 $fields[] = array(
@@ -61,5 +88,51 @@ $fields[] = array(
 $fields[] = array(
     'label' => null,
     'type' => 'html',
-    'value' => '</div>'
+    'value' => '</div><div>'
+);
+
+
+$fields[] = array(
+    'label' => _SITE_TITLE,
+    'type' => 'text',
+    'value' => $site->title,
+    'name' => 'title',
+    'rule' => 'required',
+    'extra' => 'class="w-full"'
+);
+
+$fields[] = array(
+    'label' => null,
+    'type' => 'html',
+    'value' => '</div><div>'
+);
+
+
+$fields[] = array(
+    'label' => _MAIL_FROM,
+    'type' => 'text',
+    'value' => $site->email,
+    'name' => 'email',
+    'rule' => 'required|mail',
+    'extra' => 'class="w-full"'
+);
+$fields[] = array(
+    'label' => null,
+    'type' => 'html',
+    'value' => '</div><div>'
+);
+
+$fields[] = array(
+    'label' => _MAIL_REPLY,
+    'type' => 'text',
+    'value' => $site->replyto,
+    'name' => 'replyto',
+    'rule' => 'required|mail',
+    'extra' => 'class="w-full"'
+);
+
+$fields[] = array(
+    'label' => null,
+    'type' => 'html',
+    'value' => '</div></div></div>'
 );
