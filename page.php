@@ -53,6 +53,8 @@ define('ROOT', $root.'/');
  */
 define('PATH', $_SERVER['DOCUMENT_ROOT'].ROOT);
 
+eco PATH;die;
+
 /**
  * Define SPATH: the path to x4webapp folder
  * Absolute path
