@@ -18,9 +18,10 @@
  */
 function init_secret() : void
 {
-    $source = APATH.'files/files';
+    // TO REVIEW TOTALLY
+    $source = APATH.'files';
     $destination = APATH.'files/secret/'.SPREFIX.SECRET;
-    if (!is_dir($source.'/files'))
+    if (!is_dir($destination.'/files'))
     {
         echo 'Missing files for secret';
         die;
@@ -75,7 +76,7 @@ $default = [];
 define('SECRET', md5(SPREFIX.SALT.$_SERVER['DOCUMENT_ROOT']));
 if (!file_exists(APATH.'files/secret/'.SPREFIX.SECRET))
 {
-    init_secret();
+    //init_secret();
 }
 // extra config file
 // here we store info about extra areas
