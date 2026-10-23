@@ -199,7 +199,7 @@ final class X4mysql_driver extends X3db_driver
 		}
 		catch (PDOException $e)
 		{
-			if (DEBUG)
+			if (false) // WAS DEBUG
 			{
 				$this->print_error($sql, $e->getMessage());
 				die;
