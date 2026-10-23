@@ -41,6 +41,9 @@ define('ROOT', $root.'/');
  */
 define('PATH', str_replace('public', '', $_SERVER['DOCUMENT_ROOT']));
 
+
+echo PATH;die;
+
 /**
  * Define SPATH: the path to x4webapp folder
  * Absolute path
@@ -105,8 +108,6 @@ else
 {
 	date_default_timezone_set(TIMEZONE);
 }
-
-echo APATH;die;
 
 /**
  * Load Router
