@@ -106,6 +106,8 @@ else
 	date_default_timezone_set(TIMEZONE);
 }
 
+echo APATH;die;
+
 /**
  * Load Router
  */
