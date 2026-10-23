@@ -155,4 +155,5 @@ class Msg2
 	public $command = [];
 	public $update = [];
 	public $redirect;
+    public $delay = null;
 }

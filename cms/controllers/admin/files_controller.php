@@ -480,7 +480,7 @@ class Files_controller extends X3ui_controller
                 ];
 
 				$msg->update = array(
-					'element' => 'topic',
+					'element' => 'page',
 					'url' => BASE_URL.'files/index/'.$item->id_area.'?'.http_build_query($qs)
 				);
 			}

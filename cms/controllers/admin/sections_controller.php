@@ -220,7 +220,6 @@ class Sections_controller extends X3ui_controller
 			$error = [];
 			$mod = new Section_model();
 
-
             // get the previuos
             if ($id)
             {

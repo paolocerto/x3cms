@@ -129,7 +129,7 @@ class Pages_controller extends X3ui_controller
 
             if ($what == 'xon' && $result[1])
             {
-                $mod->update_sitemap($this->site->data->domain, $mod->get_id_area(), $mod->get_lang());
+                $mod->update_sitemap($id_area, X4Route_core::$lang);
             }
 
 			$this->dict->get_words();
@@ -241,7 +241,7 @@ class Pages_controller extends X3ui_controller
 					 ? 'pages'
 					 : '';
 
-				$result = $mod->insert_page($post, $this->site->data->domain);
+				$result = $mod->insert_page($post);
 
 				$msg = AdminUtils_helper::set_msg($result);
 
@@ -394,7 +394,7 @@ class Pages_controller extends X3ui_controller
                 $post['xpos']--;
             }
 
-            $result = $mod->update_page($page, $post, $this->site->data->domain);
+            $result = $mod->update_page($page, $post);
 
              APC && apcu_clear_cache();
 
@@ -519,7 +519,7 @@ class Pages_controller extends X3ui_controller
 					$tmod->reset_sections($page->id_area, $page->id, $post['tpl']);
 				}
 
-				$result = $mod->update_page($page, $post, $this->site->data->domain);
+				$result = $mod->update_page($page, $post);
 
 				APC && apcu_clear_cache();
 
@@ -587,7 +587,7 @@ class Pages_controller extends X3ui_controller
 		if (is_null($msg))
 		{
 			$mod = new Page_model($item->id_area, $item->lang, $item->id);
-			$result = $mod->delete_page($item->id, $this->site->data->domain);
+			$result = $mod->delete_page($item->id);
 
 			if ($result[1])
 			{

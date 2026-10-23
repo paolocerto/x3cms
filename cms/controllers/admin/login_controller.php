@@ -310,7 +310,7 @@ class Login_controller extends X4Cms_controller
 
 				// build msg
 				$body = $view->__toString();
-				$msg = mb_convert_encoding($body, 'ISO-8859-1', 'auto');
+				$msg = mb_convert_encoding($body, 'UTF-8', 'auto');
 
 				// recipients
                 $recipients = ['to' => []];
@@ -373,7 +373,7 @@ class Login_controller extends X4Cms_controller
 
 					// build msg
 					$body = $view->__toString();
-					$msg = mb_convert_encoding($body, 'ISO-8859-1', 'auto');
+					$msg = mb_convert_encoding($body, 'UTF-8', 'auto');
 
 					// recipients
                     $recipients = ['to' => []];

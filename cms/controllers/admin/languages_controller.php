@@ -166,6 +166,11 @@ class Languages_controller extends X3ui_controller
 
 				if ($result[1])
 				{
+                    if (!$id)
+                    {
+                        AdminUtils_helper::set_priv($_SESSION['xuid'], $result[0], 'languages', $post['id_area']);
+                    }
+
 					$msg->update = array(
 						'element' => 'page',
 						'url' => BASE_URL.'languages'

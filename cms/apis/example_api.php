@@ -21,7 +21,7 @@ class Example
      * Required by restler
      */
     public $restler;
-    
+
 	/**
 	 * Model to use
 	 */
@@ -100,10 +100,10 @@ class Example
 		foreach ($this->fields as $i)
 		{
 			//you may also vaildate the data here
-
 			if (!isset($data[$i]))
+            {
 				throw new RestException(417,"$i field missing");
-
+            }
 			$a[$i] = $data[$i];
 		}
 

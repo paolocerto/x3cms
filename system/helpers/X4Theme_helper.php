@@ -21,7 +21,7 @@ class X4Theme_helper
 	 */
 	public static function recontent(string $html) : string
 	{
-        if (!isset($_SESSION['nickname']))
+        if (!isset($_SESSION['username']))
         {
             return $html;
         }
@@ -30,7 +30,7 @@ class X4Theme_helper
             '@NOME@'
         );
         $rpl = array(
-            $_SESSION['nickname']
+            $_SESSION['username']
         );
         return str_replace($src, $rpl, self::reset_url(stripslashes($html)));
 	}
@@ -91,7 +91,7 @@ class X4Theme_helper
 	/**
 	 * Set an existent template
 	 */
-	public static function set_tpl(string $template, string $alternative_theme = '') : string
+	public static function set_tpl(string $template, string $alternative_theme_url = '') : string
 	{
         if (empty($alternative_theme_url))
         {
@@ -101,8 +101,8 @@ class X4Theme_helper
         }
         else
         {
-            return (!empty($template) && file_exists(TPATH.$alternative_theme.'templates/'.$template.'.php'))
-                ? TPATH.$alternative_theme.'templates/'.$template
+            return (!empty($template) && file_exists(TPATH.$alternative_theme_url.'/templates/'.$template.'.php'))
+                ? TPATH.$alternative_theme.'/templates/'.$template
                 : '';
         }
     }

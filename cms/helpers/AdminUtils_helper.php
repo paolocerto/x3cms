@@ -415,8 +415,8 @@ class AdminUtils_helper
                             if (isset($v[$i]))
                             {
                                 $res .= (is_array($v[$i]))
-                                    ? '<td>'.json_encode($v[$i]).'</td>'
-                                    : '<td>'.stripslashes($v[$i]).'</td>';
+                                    ? '<td class="overflow-hidden">'.json_encode($v[$i]).'</td>'
+                                    : '<td class="overflow-hidden">'.stripslashes($v[$i]).'</td>';
                             }
                             else
                             {

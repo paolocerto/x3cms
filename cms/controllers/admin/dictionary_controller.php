@@ -261,7 +261,7 @@ class Dictionary_controller extends X3ui_controller
                 if ($result[1])
                 {
                     // reset cache
-                    APC && apcu_delete(SITE.'dict'.$post['area'].post['lang'].$post['what']);
+                    APC && apcu_delete(SITE.'dict'.$post['area'].$post['lang'].$post['what']);
 
                     $msg->update = array(
                         'element' => 'page',
