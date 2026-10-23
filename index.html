@@ -1,0 +1,116 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Under Maintenance</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+                         Roboto, Helvetica, Arial, sans-serif;
+            background: #f5f6f8;
+            color: #252a34;
+            text-align: center;
+        }
+
+        .maintenance {
+            max-width: 560px;
+            width: 100%;
+            padding: 48px 32px;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.06);
+        }
+
+        .icon {
+            font-size: 56px;
+            margin-bottom: 24px;
+        }
+
+        h1 {
+            margin: 0 0 18px;
+            font-size: clamp(28px, 5vw, 38px);
+            font-weight: 700;
+            letter-spacing: -1px;
+        }
+
+        p {
+            margin: 0 0 16px;
+            font-size: 17px;
+            line-height: 1.7;
+            color: #626977;
+        }
+
+        .status {
+            display: inline-block;
+            margin-top: 16px;
+            padding: 9px 16px;
+            border-radius: 30px;
+            background: #fff3df;
+            color: #98651a;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        footer {
+            margin-top: 32px;
+            font-size: 13px;
+            color: #969ba5;
+        }
+
+        @media (max-width: 480px) {
+            .maintenance {
+                padding: 36px 22px;
+            }
+
+            p {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="maintenance">
+        <div class="icon" aria-hidden="true">🛠️</div>
+
+        <h1>We'll Be Back Soon!</h1>
+
+        <p>
+            We're currently performing scheduled maintenance
+            to improve your experience.
+        </p>
+
+        <p>
+            Our website will be back online as soon as possible.
+            Thank you for your patience and understanding.
+        </p>
+
+        <div class="status">Website under maintenance</div>
+
+        <footer>
+            &copy; <span id="year"></span> All rights reserved.
+        </footer>
+    </main>
+
+    <script>
+        document.getElementById('year').textContent =
+            new Date().getFullYear();
+    </script>
+</body>
+</html>
