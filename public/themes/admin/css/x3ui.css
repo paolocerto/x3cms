@@ -251,6 +251,9 @@ tr:not(.no_border) td:not(:first-child) {border-left:1px solid #d1d5db;}
 tr:not(.no_border):nth-child(even) {background-color: #e5e7eb;}
 td.marked, div.marked {background-color:var(--main-darkcolor);color:#fff}
 
+table.shrinked td {vertical-align:middle;line-height:1em !important;}
+table.shrinked td input[type="text"] {padding:.3em .5em !important}
+
 div.marked.softwarn {background-color:var(--warn-color) !important;color:#fff}
 
 div.sort_item table {margin:0}

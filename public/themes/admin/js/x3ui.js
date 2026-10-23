@@ -2,8 +2,6 @@
  * X3 CMS Admin with Alpine.js
  */
 
-
-
 // constants
 const zero_option = '<option value="0">--</option>';
 
@@ -480,6 +478,7 @@ function xmodal() {
                     if (json.message != "") {
                         this.error_msg = '<p class="failed md:px-10 p-6">'+json.message+'</p>';
                     }
+                    scrollToItem("xmodal_head");
                     this.afterSubmission(btn);
                 }
             })
@@ -863,14 +862,18 @@ function configurator() {
         xdata: null,
         xextra_check: null, // callback
         xoptions: null,
-        setup(fields, data, container, table, url, name, move, checkItem) {
-            this.xfields = fields;
+        setup(fields, container, table, url, name, move, checkItem) {
+            if (fields.length == 0) {
+                this.xfields = JSON.parse(document.getElementById(name).value);
+            } else {
+                this.xfields = fields;
+            }
             this.xcontainer = container;
             this.xtable = table;
             this.xurl = url;
             this.xname = name;
             this.xmove = move;
-            this.xdata = data;
+            this.xdata = JSON.parse(document.getElementById(this.xcontainer).value); // this is a JSON
             // callback to execute extra check on the item
             this.xextra_check = checkItem;
         },
@@ -912,7 +915,7 @@ function configurator() {
                         let tel = document.getElementById(e.name);
                         if (tel != null) {
                             val = tel.value;
-                            val = val.replace(/'/g, "&quot;");
+                            val = val.replace(/"/g, '');
                         } else {
                             val = "";
                         }

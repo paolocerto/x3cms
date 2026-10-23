@@ -202,7 +202,7 @@ class Page_model extends X4Model_core
 	 * Updating the page must maintain the consistency of relations with the other pages
 	 * After the update we have to refresh the sitemap.xml file
 	 */
-	public function update_page(stdClass $page, array $post, string $domain) : array
+	public function update_page(stdClass $page, array $post) : array
 	{
 		// build the update query
 		$update = '';
@@ -310,7 +310,7 @@ class Page_model extends X4Model_core
 		$this->menu->ordinal($page->id_area, $page->lang, 'home', 'A');
 
 		// update sitemap.xml
-		$this->update_sitemap($domain, $page->id_area, $page->lang);
+		$this->update_sitemap($page->id_area, $page->lang);
 
 		return $result;
 	}
@@ -319,7 +319,7 @@ class Page_model extends X4Model_core
 	 * Insert a new page
 	 * After the insertion we have to update the sitemap.xml file
 	 */
-	public function insert_page(array $post, string $domain) : array
+	public function insert_page(array $post) : array
 	{
 		// get deep
 		$array['deep'] = $this->get_deep($post['xfrom']) + 1;
@@ -359,7 +359,7 @@ class Page_model extends X4Model_core
 		$this->menu->ordinal($this->id_area, $this->lang, 'home', 'A');
 
 		// update sitemap.xml
-		$this->update_sitemap($domain, $this->id_area, $this->lang);
+		$this->update_sitemap($this->id_area, $this->lang);
 
 		return $res;
 	}
@@ -421,7 +421,7 @@ class Page_model extends X4Model_core
 	 * Delete a page
 	 * After the deletion we have to update the sitemap.xml file
 	 */
-	public function delete_page(int $id, string $domain) : array
+	public function delete_page(int $id) : array
 	{
 		// get page data
 		$page = $this->get_page_by_id($id);
@@ -448,7 +448,7 @@ class Page_model extends X4Model_core
 			$this->menu->ordinal($page->id_area, $page->lang, 'home', 'A');
 
 			// update sitemap.xml
-			$this->update_sitemap($domain, $page->id_area, $page->lang);
+			$this->update_sitemap($page->id_area, $page->lang);
 		}
 		return $result;
 	}
@@ -482,13 +482,15 @@ class Page_model extends X4Model_core
 	/**
 	 * Update sitemap.xml
 	 */
-	public function update_sitemap(string $domain, int $id_area, string $lang) : int
+	public function update_sitemap(int $id_area, string $lang) : int
 	{
         // is a public area?
-        $area = $this->get_by_id($id_area, 'areas', 'private');
+        $area = $this->get_by_id($id_area, 'areas', 'id_site, private');
 
         if ($area->private == 0)
         {
+            $domain = $this->get_var('domain', 'sites', 'id = '.$area->id_site);
+
             // get pages
             $pages = $this->db->query('SELECT p.url, p.lang, a.updated
                 FROM pages p

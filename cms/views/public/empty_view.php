@@ -16,6 +16,9 @@ if (isset($location) && !empty($location))
 {
     switch ($location)
     {
+        case 'none':
+            // nothing
+            break;
         case 'back':
             echo 'window.history.back();';
             break;

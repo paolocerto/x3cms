@@ -171,18 +171,22 @@ $fields[] = array(
     'value' => '<h3 class="mt-6">'._X3FB_RULE.'</h3><p>'._X3FB_RULE_SUGGESTION.'</p>'
 );
 
-$rules = empty($item->rule)
-    ? '[]'
-    : $item->rule;
-
 $fields[] = array(
     'label' => null,
     'type' => 'html',
     'value' => '<div
         x-data="configurator()"
-        x-init=\'setup('.json_encode($js_fields).', '.$rules.', "xrule", "tcomposer", "x3form_builder/decompose/", "js_fields", 1, "checkRule")\'
+        x-init=\'setup([], "xrule", "tcomposer", "x3form_builder/decompose/", "js_fields", 1, "checkRule")\'
         x-cloak
     >'
+);
+
+$fields[] = array(
+    'label' => null,
+    'type' => 'textarea',
+    'value' => json_encode($js_fields),
+    'name' => 'js_fields',
+    'extra' => 'class="hidden"'
 );
 
 $fields[] = array(
@@ -261,10 +265,14 @@ $fields[] = array(
     'value' => '<table id="tcomposer">'.$tr.'</table>'
 );
 
+$start_value = empty($item->rule)
+    ? '[]'
+    : $item->rule;
+
 $fields[] = array(
     'label' => null,
     'type' => 'textarea',
-    'value' => $item->rule,
+    'value' => $start_value,
     'name' => 'xrule',
     'extra' => 'class="hidden"'
 );

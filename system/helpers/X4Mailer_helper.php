@@ -149,7 +149,7 @@ class X4Mailer_helper
         {
             foreach ($recipients['bcc'] as $i)
             {
-                $mail->addBcc(self::sanitize(strtolower($i['mail'])));  //, self::sanitize($i['name'])
+                $mail->addBcc(self::sanitize(strtolower($i['mail']))); //, self::sanitize($i['name']));
             }
         }
 

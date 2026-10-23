@@ -17,10 +17,10 @@ function targetBlank() {
     internal = new RegExp(internal, "i");
 
     let a = document.links;
-    for (i = 0; i < a.length; i++) {
-        let href = a[i].href;
-        if(href != 'javascript:void(0)' && !internal.test(href) ) {
-            a[i].setAttribute('target', '_blank');
+    for (let link of a) {
+        let href = link.href;
+        if(href != undefined && href != 'javascript:void(0)' && !internal.test(href) ) {
+            link.setAttribute('target', '_blank');
         }
     }
 };
@@ -56,8 +56,16 @@ function alphaNumCheck(str) {
     return str.replace(/[^0-9a-zA-ZàèìòùÀÈÌÒÙ]/gi, '');
 }
 
+function textCheck(str) {
+    return str.replace(/[^0-9a-zA-ZàèìòùÀÈÌÒÙ\s]/gi, '');
+}
+
 function symbolsCheck(str) {
     return str.replace(/[^0-9a-zA-ZàèìòùÀÈÌÒÙ\s-!$%^&*()_+|~={}\[\]:;?.]/gi, '');
+}
+
+function toLower(str) {
+    return str.toLowerCase();
 }
 
 // format numbers
@@ -105,6 +113,20 @@ function isAfterToday(date) {
 
 function isAfterDate(start, end) {
     return new Date(end).valueOf() > new Date(start).valueOf();
+}
+
+function humanFileSize(size) {
+    const i = Math.floor(Math.log(size) / Math.log(1024));
+    return (
+        (size / Math.pow(1024, i)).toFixed(2) * 1 +
+        " " +
+        ["B", "kB", "MB", "GB", "TB"][i]
+    );
+}
+
+function isValueInSelect(selectId, value) {
+    const selectElement = document.getElementById(selectId);
+    return Array.from(selectElement.options).some(option => option.value === value);
 }
 
 // form handling
@@ -354,7 +376,11 @@ function xmodal() {
                             break;
                         case 'redirect':
                             this.completed(json.message, 'modal');
-                            setTimeout(function(){window.location = json.update['url']}, 1000);
+                            let delay = 1000;
+                            if (json.delay != null) {
+                                delay = parseInt(json.delay);
+                            }
+                            setTimeout(function(){window.location = json.update['url']}, delay);
                             break;
                         case 'blank':
                             this.completed(json.message, 'modal');
@@ -369,12 +395,13 @@ function xmodal() {
                     //console.log(json.message);
                     if (json.message != "") {
                         this.error_msg = json.message;
+                        scrollToItem("xmodal_head");
                     }
                     this.afterSubmission(btn);
                 }
             })
             .catch((error) => {
-                this.error_msg = '<p class="failed md:px-8 p-6">'+error+'</p>';
+                this.error_msg = error;
                 this.afterSubmission(btn);
             });
         },
@@ -616,7 +643,8 @@ function page_box() {
                 this.afterSubmission(btn);
             })
             .catch((error) => {
-               this.error_msg = '<p class="failed md:px-8 p-6">'+error+'</p>';
+                //console.log(error+"xxx");
+                this.error_msg = '<p class="failed md:px-8 p-6">'+error+'</p>';
                 this.afterSubmission(btn);
             });
         },
@@ -689,9 +717,25 @@ function page_box() {
     return {...page, ...xactions, ...xevents};
 }
 
-// shorten urlencoded string
-function compact(str) {
-    return str.replace(/%22%3A0%2C%22/g, "=").replace(/%22%3A0%7D%2C%7B%22/g, "*").replace(/%22%2C%22/g, ",").replace(/%2F/g, "_.").replace(/%22%3A%22/g, "@").replace(/%20/g, "+");
+function checker(prefix, items) {
+    let chk = true;
+    items.forEach((item) => {
+        const abroad = ["_birth_region", "_birth_place", "_fiscal_id"];
+        let el = document.getElementById(prefix + item);
+        el.classList.remove("softwarn");
+        if (abroad.includes(item)) {
+            let el2 = document.getElementById(prefix + item + "_abroad");
+            if (el.value == "" && el2.value == "") {
+                chk = false;
+                el.classList.add("softwarn");
+                el2.classList.add("softwarn");
+            }
+        } else if (el.value == "") {
+            chk = false;
+            el.classList.add("softwarn");
+        }
+    });
+    return chk;
 }
 
 const validate = function(e, v) {
@@ -745,14 +789,14 @@ function configurator() {
         xdata: null,
         xextra_check: null, // callback
         xoptions: null,
-        setup(fields, data, container, table, url, name, move, checkItem) {
+        setup(fields, container, table, url, name, move, checkItem) {
             this.xfields = fields;
             this.xcontainer = container;
             this.xtable = table;
             this.xurl = url;
             this.xname = name;
             this.xmove = move;
-            this.xdata = data;
+            this.xdata = JSON.parse(document.getElementById(this.xcontainer).value); // this is a JSON
             // callback to execute extra check on the item
             this.xextra_check = checkItem;
         },
@@ -794,7 +838,7 @@ function configurator() {
                         let tel = document.getElementById(e.name);
                         if (tel != null) {
                             val = tel.value;
-                            val = val.replace(/'/g, "&quot;");
+                            val = val.replace(/"/g, '');
                         } else {
                             val = "";
                         }

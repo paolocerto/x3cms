@@ -31,7 +31,8 @@ RewriteBase HTAROOT
 #RewriteRule ^(.*)$ HTADOMAIN/$1 [L,R=301]
 RewriteRule ^(.*)/$ $1 [L,R=301]
 
-RewriteRule ^(en|it)/sitemap\.xml$ files/SITEMAP_PREFIX_$1_sitemap.xml [L]
+RewriteCond %{HTTP_HOST} ^(?:www\.)?([^.]+)\.([^.]+)$ [NC]
+RewriteRule ^(en|it)/sitemap\.xml$ cms/files/%1%2_$1_sitemap.xml [L]
 RewriteRule ^cms/files/(.*)$ cms/files/$1 [L]
 RewriteRule ^files/js/(.+)$ files/js/$1 [L]
 RewriteRule !\.(htm|html|js|ico|txt|gif|jpg|jpeg|png|css|less|pdf|xml|zip|swf|wmv|rm|mov|flv|mp4|ogv|webm|ttf|eot|woff|woff2|svg|json|map|7z|p7m)$ page.php

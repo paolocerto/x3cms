@@ -30,6 +30,8 @@ class X4Form_core
         if (!empty($name))
 		{
 			// Set the filename
+
+            // plugin
             if (!empty($module) && file_exists(PATH.'plugins/'.$module.'/forms/'.$name.'_form.php'))
             {
                 $this->filename = PATH.'plugins/'.$module.'/forms/'.$name.'_form.php';

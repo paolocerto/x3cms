@@ -150,7 +150,7 @@ class X4Time_helper
 	 * @param string	format
 	 * @return string	modified datetime
 	 */
-	public static function reformat($date, $old_format, $new_format)
+	public static function reformat($date, $old_format = 'Y-m-d', $new_format = 'd-m-Y')
 	{
 		$date = str_replace(array('/', '\\', '-', '.'), '-', trim($date));
 		$old_format = str_replace(array('/', '\\', '-', '.'), '-', $old_format);
@@ -443,6 +443,18 @@ class X4Time_helper
 			$s += $t[2] * 3600;
 		}
 		return $s;
+	}
+
+    /**
+	 * Convert seconds to time (hh:mm:ss)
+	 */
+	public static function sec2time(int $sec) : string
+	{
+        $h = round($sec / 3600);
+        $tmp = $sec - $h*3600;
+        $m = floor($tmp/60, );
+        $s = $tmp % 60;
+		return str_pad($h, 2, '0', STR_PAD_LEFT).':'.str_pad($m, 2, '0', STR_PAD_LEFT).':'.str_pad($s, 2, '0', STR_PAD_LEFT);
 	}
 
 	/**

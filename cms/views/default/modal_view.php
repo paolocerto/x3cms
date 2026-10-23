@@ -29,7 +29,7 @@ $close = (isset($close))
         class="xmodal fixed overflow-y-auto inset-x-2 <?php echo $width ?> mx-auto
             p-4 md:p-8 lg:p-10 rounded-xl shadow-2xl max_h80 bg-white text-gray-700"
     >
-        <div class="modal_head flex flex-row items-center justify-between mb-10">
+        <div id="xmodal_head" class="modal_head flex flex-row items-center justify-between mb-10">
             <h2><?php echo $title ?></h2>
             <?php echo $close ?>
         </div>

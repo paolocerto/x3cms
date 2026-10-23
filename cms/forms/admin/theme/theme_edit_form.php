@@ -105,10 +105,14 @@ $fields[] = array(
     <table id="tcomposer">'.$tr.'</table>'
 );
 
+$start_value = empty($item->styles)
+    ? '[]'
+    : $item->styles;
+
 $fields[] = array(
 'label' => null,
 'type' => 'textarea',
-'value' => $item->styles,
+'value' => $start_value,
 'name' => 'styles',
 'extra' => 'class="hidden"'
 );

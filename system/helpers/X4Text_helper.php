@@ -37,6 +37,14 @@ class X4Text_helper
 		'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
 		'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z');
 
+    /**
+     * Replace strange letter case to normal
+     */
+    public static function normalize_string(string $str) : string
+    {
+        return iconv("utf-8", "us-ascii//TRANSLIT", $str);
+    }
+
 	/**
 	 * Get the excerpt, long max_length, from a string
 	 */
@@ -168,9 +176,9 @@ class X4Text_helper
     /**
 	 * Create random string
 	 * /
-	public static function randomize(int $length)
+	public static function randomize(int $length =  6)
 	{
-		$codice_random = bin2hex(openssl_random_pseudo_bytes(6));
+		$codice_random = bin2hex(openssl_random_pseudo_bytes($length));
 		$xcode = uniqid().$codice_random;
 	}
 	*/
@@ -683,6 +691,38 @@ class X4Text_helper
             throw new Exception ('Error parsing JSON', 400);
         }
         return (array) $decoded;
+    }
+
+    /**
+     * replace XXX marked items in a string
+     */
+    public static function replace_markers(string $str, string $replacer, bool $count = false) : array
+    {
+        // Pattern to match XXXanything_hereXXX
+        $pattern = '/XXX([^X]+)XXX/';
+
+        // Find all matches
+        preg_match_all($pattern, $str, $matches);
+
+        // Get the marker names (without XXX wrapper)
+        $markers = array_map('strtolower', $matches[1]);
+
+        // Replace each marker with numbered input field
+        $counter = 0;
+        $modifiedHtml = preg_replace_callback($pattern, function($match) use (&$counter, $replacer, $count)
+        {
+            $inputField = $count
+                ? str_replace('XXXCOUNTERXXX', $counter, $replacer)
+                : $replacer;
+                //'<input type="text" name="marker' . $counter . '" placeholder="' . htmlspecialchars($match[1]) . '">';
+            $counter++;
+            return $inputField;
+        }, $str);
+
+        return [
+            'html' => $modifiedHtml,
+            'markers' => $markers
+        ];
     }
 }
 

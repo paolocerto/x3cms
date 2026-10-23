@@ -467,4 +467,13 @@ class X4Utils_helper
             setcookie(COOKIE, $_SESSION['buyer'], time()+(86400*15), '/');
         }
     }
+
+    /**
+     * Fake object
+     */
+    public static function fake_object(array $fields_values) : stdClass
+    {
+        return json_decode(json_encode($fields_values));
+    }
+
 }

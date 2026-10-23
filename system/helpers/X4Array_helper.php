@@ -198,7 +198,6 @@ class X4Array_helper
 					$final_index = implode('_', $fi);
 					$a[$final_index] = $i;
 				}
-
 			}
 		}
 		return $a;
@@ -326,6 +325,28 @@ class X4Array_helper
         });
 		return $a;
 	}
+
+    /**
+     * count less or equal
+     */
+    public static function countLessOrEqual(array $sortedArray, float $target) : int
+    {
+        $left = 0;
+        $right = count($sortedArray) - 1;
+        $result = -1;
+
+        while ($left <= $right) {
+            $mid = intval(($left + $right) / 2);
+
+            if ($sortedArray[$mid] <= $target) {
+                $result = $mid;
+                $left = $mid + 1;
+            } else {
+                $right = $mid - 1;
+            }
+        }
+        return $result + 1; // +1 because we want count, not index
+    }
 
     /**
 	 * Shuffle associative array

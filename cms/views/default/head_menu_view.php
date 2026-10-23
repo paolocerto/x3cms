@@ -199,7 +199,7 @@ echo stripslashes(X4Theme_helper::module($this->site, $page, [], 'x3banners', 'b
                         id="logo"
                         href="<?php echo BASE_URL ?>"
                         class="flex flex-row gap-x-2 items-center pt-2 ml-2">
-                        <img class="flex-none" src="<?php echo THEME_URL ?>img/chebeo_long.png" width="140"  alt="<?php echo _HOME_PAGE ?>" />
+                        <img class="flex-none" src="<?php echo THEME_URL ?>img/x3cms_extended_dark.png" width="140"  alt="<?php echo _HOME_PAGE ?>" />
                     </a>
 
                     <div class="mobile flex flex-row-reverse justify-right gap-4 md:hidden pt-2 pr-2">

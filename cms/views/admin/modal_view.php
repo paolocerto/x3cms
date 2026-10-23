@@ -25,7 +25,7 @@ $away = (isset($away))
             rounded shadow-2xl xmodal"
     >
         <div>
-            <div class="bg-white text-gray-700 md:px-8 md:pt-8 px-4 py-4">
+            <div id="xmodal_head" class="bg-white text-gray-700 md:px-8 md:pt-8 px-4 py-4">
                 <div class="flex flex-row items-center justify-between">
                     <h3 class="my-3 font-bold tracking-tight"><?php echo $title ?></h3>
                     <a class="link" @click="close()" @keyup.escape.window="close()">

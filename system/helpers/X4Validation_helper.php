@@ -44,7 +44,8 @@ class X4Validation_helper
 		array('value' => 'maxlength', 	'option' => 'maxlength: check the maximum value length', 												'param' => array(0, 'integer')),
 		array('value' => 'equal', 		'option' => 'equal: check if a value is equal to another field',										'param' => array(1, 0)),
 		array('value' => 'different', 	'option' => 'different: check if a value is different to another field', 								'param' => array(1, 0)),
-		array('value' => 'alpha',       'option' => 'alpha: check if a value contains only alphabetic chars', 						            'param' => array(0, 'text')),
+		array('value' => 'different_if','option' => 'different: check if a value is different to another field only if another value is equal to', 	'param' => array(1, 'text', 'text', 'integer')), // (eg. field1-field2-value_field2
+        array('value' => 'alpha',       'option' => 'alpha: check if a value contains only alphabetic chars', 						            'param' => array(0, 'text')),
 		array('value' => 'alphanumeric', 'option' => 'alphanumeric: check if a value contains only alphanumeric chars', 						'param' => array(0, 0)),
 		array('value' => 'numeric', 	'option' => 'numeric: check if a value contains only numbers', 											'param' => array(0, 0)),
 		array('value' => 'greater', 	'option' => 'greater: check if a value is greater than a value in another field', 						'param' => array(1, 0)),
@@ -89,6 +90,7 @@ class X4Validation_helper
         '_required_ifcontains',
 		'_equal',
 		'_different',
+        '_different_if',
 		'_sizes',
 		'_small',
 		'_weight',
@@ -736,6 +738,25 @@ class X4Validation_helper
 		}
 	}
 
+    /**
+	 * Different IF rule
+	 * if the field value and the field value defined in tok[1] are equals then catch an error
+	 */
+	private static function _different_if(array &$field, array $tok, bool &$e, array $_post, array $_files)
+	{
+		if (
+            isset($_post[$tok[2]]) &&                   // for checkboxes
+            $_post[$tok[2]] == $_post[$tok[3]] &&       // the condition is satisfied
+            $_post[$field['name']] == $_post[$tok[1]])  // the value is equal
+		{
+			$field['error'][] = array(
+			    'msg' => '_must_be_different',
+			    'related' => $tok[1]
+			);
+			$e = false;
+		}
+	}
+
 	/**
 	 * Sizes rule
 	 * if the sizes of the image uploaded are greater than defined in tok[1] (width) and tok[2] (height) then catch an error
@@ -1183,7 +1204,7 @@ class X4Validation_helper
 		{
 			$field['error'][] = array(
 			    'msg' => '_lower_than',
-			    'related' => $tok[1]
+			    'related' => $tok[2]
 			);
 			$e = false;
 		}

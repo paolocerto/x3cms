@@ -6,20 +6,26 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="format-detection" content="telephone=no">
 
-  <title><?php echo SERVICE ?></title>
-  <link rel="stylesheet" type="text/css" href="<?php echo $domain ?>/themes/default/css/mail.css">
+    <title><?php echo $site->title ?></title>
+
+    <style>
+<?php
+echo file_get_contents($_SERVER['DOCUMENT_ROOT'].'/themes/default/css/mail.css');
+?>
+    </style>
+
 </head>
-<body style="margin:0; padding:0;" bgcolor="#F0F0F0" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
-<table border="0" width="100%" height="100%" cellpadding="0" cellspacing="0" bgcolor="#F0F0F0">
+<body style="margin:0; padding:0;" bgcolor="#0ea5e9" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<table border="0" width="100%" height="100%" cellpadding="0" cellspacing="0" bgcolor="#0ea5e9">
   <tr>
-    <td align="center" valign="top" bgcolor="#F0F0F0" style="background-color: #F0F0F0;">
+    <td align="center" valign="top" bgcolor="#0ea5e9" style="background-color: #0ea5e9;">
 
       <br>
 
       <table border="0" width="600" cellpadding="0" cellspacing="0" class="container">
-        <tr>
+        <tr bgcolor="#0ea5e9" style="background-color: #0ea5e9;">
           <td class="container-padding header" align="left">
-            <a href="<?php echo $domain ?>" title="<?php echo SERVICE ?>"><img src="<?php echo $domain ?>/themes/default/img/x3cms.png" alt="X3 CMS"></a>
+            <a href="<?php echo $site->domain ?>" title="<?php echo $site->title ?>"><img src="<?php echo $site->domain ?>/themes/default/img/chebeo_long.png" alt="<?php echo $site->title ?>"></a>
           </td>
         </tr>
         <tr>
@@ -29,11 +35,6 @@
 
             <div class="title"><?php echo $subject ?></div>
             <br>
-
-            <div class="body-text">
-              <?php echo $sub_subject ?>
-              <br><br>
-            </div>
 
             <div class="hr">&nbsp;</div>
 
@@ -46,7 +47,7 @@ if (substr($message, 0, 1) == '<')
 }
 else
 {
-	echo '<p>'.nl2br($message).'</p>';
+	echo '<p>'.$message.'</p>';
 }
 ?>
             <br><br>
@@ -59,10 +60,10 @@ else
           <td class="container-padding footer-text" align="left">
             <br><br>
 
-            <strong><?php echo SERVICE ?></strong><br>
+            <strong><?php echo $site->title ?></strong><br>
 
-            <a href="mailto:<?php echo MAIL ?>"><?php echo MAIL ?></a><br>
-            <a href="<?php echo $domain ?>"><?php echo $domain ?></a><br>
+            <a href="mailto:<?php echo $site->replyto ?>"><?php echo $site->replyto ?></a><br>
+            <a href="<?php echo $site->domain ?>"><?php echo $site->domain ?></a><br>
             <br><br>
 
           </td>

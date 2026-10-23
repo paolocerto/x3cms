@@ -347,7 +347,7 @@ class X4Form_helper
 			{
 				$tmp .= $e['aold'];
 			}
-			else
+			elseif (isset($e['old']) && !isset($e['hide_old']))
 			{
 				$tmp .= $e['old'];
 			}
@@ -428,6 +428,7 @@ class X4Form_helper
 	{
 		$inline = false;
         $extra = '';
+        $group = '';
         $class = 'checkbox';
         $container = 'flex flex-col md:flex-row gap-4';
 		if (isset($e['extra']))
@@ -442,15 +443,19 @@ class X4Form_helper
             $extra = $e['extra'];
 		}
 
-        if (isset($e['columns']))
+        // require inline
+        if ($inline && isset($e['columns']))
         {
             $container = 'grid '. $e['columns'].' gap-x-4';
         }
 
+        if (isset($e['group']))
+        {
+            $group = $e['group'];
+        }
+
 		$tmp = '';
-
         $c = 0;
-
         $error = isset($e['error'])
 				? 'class="error"'
 				: '';
@@ -477,16 +482,37 @@ class X4Form_helper
 			$o = $e['options'][2];
 
             $n = sizeof($e['options'][0]);
+            $old_group = '';
+
 			foreach ($e['options'][0] as $k => $i)
 			{
+                if ($group && $old_group != $i->$group)
+                {
+                    if ($old_group != '')
+                    {
+                        $tmp .= '</div></div>';
+                        if ($n > 10 && $k >= round(($n - 10)/2) && isset($e['separator']))
+                        {
+                            $tmp .= $e['separator'];
+                            unset($e['separator']);
+                        }
+                    }
+                    $tmp .= '<div class="mt-2" x-data="{extend:false}">
+                            <b><a @click="extend=!extend">'.$i->$group.'</a></b>
+                        <div x-show="extend">';
+                    $old_group = $i->$group;
+                }
+                elseif (empty($group))
+                {
+                    if ($n > 3 && $k == round($n/2) && isset($e['separator']))
+                    {
+                        $tmp .= $e['separator'];
+                    }
+                }
+
 				$checked = (isset($e['checked']) && in_array($i->$v, $e['checked']))
 					? 'checked="checked"'
 					: '';
-
-                if ($n > 10 && $k == round($n/2) && isset($e['separator']))
-                {
-                    $tmp .= $e['separator'];
-                }
 
 				$tmp .= '<div class="'.$class.'">
                             <label '.$error.' for="'.$e['name'].'_'.$c.'">
@@ -500,8 +526,12 @@ class X4Form_helper
 
         if ($inline)
 		{
+            if ($group)
+            {
+                $tmp .= '</div></div>';
+            }
             // NOTE: this works only with TailwindCSS
-			$tmp = '<div class="'.$container.' mt-2">'.$tmp.'</div>';
+			$tmp = '<div class="'.$container.' mt-2"><div>'.$tmp.'</div></div>';
 		}
 		return $tmp.self::suggestion($e);
 	}
@@ -958,7 +988,7 @@ class X4Form_helper
                         if ($chk)
                         {
                             $dis = ' disabled = "disabled"';
-                            $sign = 'x';
+                            $sign = '-';
                         }
                     }
 				}
