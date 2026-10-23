@@ -39,7 +39,7 @@ define('ROOT', $root.'/');
  * Define PATH: the CMS ROOT extended to the folder that contains the site with X3CMS
  * Absolute path
  */
-define('PATH', str_replace('public/', '', $_SERVER['DOCUMENT_ROOT']));
+define('PATH', str_replace('public_html/public', 'public_html/', $_SERVER['DOCUMENT_ROOT']));
 
 /**
  * Define SPATH: the path to x4webapp folder
