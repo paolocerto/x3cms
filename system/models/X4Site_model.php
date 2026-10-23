@@ -28,7 +28,7 @@ class X4Site_model extends X4Model_core
 	/**
 	 * @var string	Language code
 	 */
-	public $lang;
+	public $lang = 'en';
 
 	/**
 	 * @var int	Time
@@ -51,15 +51,17 @@ class X4Site_model extends X4Model_core
 		X4Route_core::set_lang($this->area->lang);
 
 		// get site
-		$this->data = X4Route_core::$area != 'x3cli'
+		$tmp = X4Route_core::$area != 'x3cli'
                    ? $this->get_site_data($this->area->id)
                    : $this->get_site_data(1, false);
 
-		if (!is_object($this->area) || !is_object($this->data))
+		if (!is_object($this->area) || !is_object($tmp))
 		{
             header('Location: '.ROOT.'public/msg/message/_page_not_found');
 			die;
 		}
+
+        $this->data = $tmp;
 
 		// set now
 		$this->now = time();
@@ -101,7 +103,7 @@ class X4Site_model extends X4Model_core
 	/**
 	 * Get site related object
 	 */
-	public function get_site_data(int $id_area, bool $domain = true) : stdClass
+	public function get_site_data(int $id_area, bool $domain = true) : mixed
 	{
 		// check APC
 		$c = (APC)
